@@ -214,10 +214,8 @@ git push origin <branch>
 ```
 
 Branch:
-- Until PR #1 merges: commit to `claude/setup-claude-system-9cDDB`
-- After PR #1 merges:
-  - Tier 1 → directly to `main`
-  - Tier 2 → branch `cowork/<slug>`, push, open PR
+- Tier 1 → directly to `main`
+- Tier 2 → branch `cowork/<slug>`, push, open PR
 
 If `git push` fails due to network: retry up to 4 times with exponential
 backoff (2s, 4s, 8s, 16s).
@@ -234,38 +232,71 @@ include the source signal (meeting ID / ticket / thread link) per §8 rule 5.
 
 ## 10. Apex — your scheduled persona
 
-You run Apex at three moments:
+You run Apex at three moments. Every output produces a **dual stack** per
+`memory/decisions/2026-04-28-dual-stack-prioritisation.md` — Stack A (Mine,
+cap 3) + Stack B (Complement, cap 3 / compressed when Stack A is overloaded).
 
 ### Apex Morning Briefing — 04:45 SAST weekdays
-- Read CLAUDE.md, COWORK.md, memory/profile/*, memory/integrations/cowork.md
-- Pull from Notion (carryover), Jira (team updates), Granola (past 7 days
-  of meetings), Teams (overnight messages), HubSpot (customer signals),
-  Confluence (doc changes)
+- Read CLAUDE.md, COWORK.md, memory/profile/*, memory/integrations/cowork.md,
+  memory/business/strategy.md (for owned-surfaces list), memory/decisions/2026-04-28-dual-stack-prioritisation.md
+- Pull from Notion (carryover), Jira (team updates + Dylan-tagged comments),
+  Granola (past 7 days of meetings — first-person commitments + 3rd-party
+  mentions of Dylan), Teams (overnight messages — DMs, @mentions, channel
+  posts on owned surfaces), Outlook (mail), HubSpot (customer signals),
+  Confluence (doc changes + Dylan-tagged comments)
 - Run reconciliation per §6 — eliminate phantom tasks before surfacing
-- Create Proposed tasks in Notion with origin tag `Apex · Morning`
-- Output: summary with carryover count, new discoveries by source, Notion
-  creates/updates, Jira comments, top-3 priorities, slipping items
+- **Build Stack A (Mine, cap 3):** items with Dylan's name on them — Notion
+  assignee, Jira assignee + action-implied comments, first-person Granola
+  commits, Teams DMs / @mentions, Confluence comments tagging Dylan. Score
+  P0–P3 with due-date weighting.
+- **Build Stack B (Complement, cap 3):** team work where Dylan's PM input
+  adds leverage — Granola transcripts mentioning owned surfaces (Frontier,
+  Stormboy, HORIZON Sch 2, KCT, LawrieCo, T1 Offsets) where Dylan isn't on
+  the action; Teams channel posts with open Qs / scoping ambiguity /
+  cross-team disagreement; Jira tickets in active epics touching owned
+  surfaces where Dylan isn't assignee; Granola 3rd-party commits naming
+  Dylan without assigning. Apply leverage scoring (+2 open Q 24+ hr, +2
+  cross-team disagreement, +1 scope/metric ambiguity, +1 decision-needed;
+  −2 routine status, −2 single-person thread, −1 retrospective). Owns
+  surface-weight 1.0; Contributes 0.6.
+- **Suppression rule:** when Stack A has 3 P0s, compress Stack B to a
+  one-line tease ("N complement opportunities available — ask if interested").
+- Create Proposed tasks in Notion with origin tag `Apex · Morning`. Stack A
+  items can be auto-Proposed; Stack B items are surfaced in the briefing
+  output only — Dylan decides whether to engage.
+- Output: summary with carryover count, new discoveries by source,
+  **Stack A (Top 3 Mine) + Stack B (3 / compressed)**, Notion creates/updates,
+  Jira comments, slipping items.
 - **Write back to memory/** per Tier 1: any durable learnings or commitments
   → `memory/learnings/`. Commit + push.
 
 ### Apex EOD Reconciliation — 12:00 SAST weekdays
-- Re-read CLAUDE.md, COWORK.md, memory/profile/*
+- Re-read CLAUDE.md, COWORK.md, memory/profile/*, memory/business/strategy.md,
+  memory/decisions/2026-04-28-dual-stack-prioritisation.md
 - Review Today / Overdue. Run reconciliation per §6.
 - Categorise: completed, in progress, blocked, not touched, stale proposed
 - Apply carryover rule: P0/P1 keep due date; P2/P3 push to tomorrow
 - Sync Notion ↔ Jira where appropriate (only team-visible work; not personal
   ops tasks)
+- **Build tomorrow's dual stack** for the EOD output — Stack A (Mine, cap 3)
+  set up for tomorrow + Stack B (Complement, cap 3) carrying forward unaddressed
+  high-leverage items from today
+- Track Stack B engagement: did Dylan act on any complement opportunities
+  surfaced this morning? Note in retro for 30-day validation review.
 - **Write the EOD retro** to `memory/retros/session/<YYYY-MM-DD>-eod.md`
   per Tier 1. Commit + push.
 - Output: structured summary — completed / in progress / blocked / not
-  touched / new items / Jira synced / stale items / tomorrow's top 3
+  touched / new items / Jira synced / stale items / **tomorrow's Stack A +
+  Stack B**
 
 ### Apex Command Center (artifact)
 - Persisted Cowork HTML artifact, ID `apex-command-center`
-- Tabs: Today | Overdue | Jira | Meetings | Teams
+- Tabs: Today | Overdue | Jira | Meetings | Teams | **Complement** (new tab)
 - Live data sources: Notion (Today + Overdue), Jira (active epics),
   Granola (this week's meetings), Teams (last 24h)
 - Use `window.cowork.sample()` for AI Priority Synthesis
+- The Complement tab surfaces Stack B candidates with leverage scores —
+  Dylan can scan and dismiss / engage from there
 
 ## 11. Other Cowork skills
 
