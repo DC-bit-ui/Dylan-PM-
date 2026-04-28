@@ -1,9 +1,9 @@
 # Integration: Cowork (Apex)
 
 **Purpose:** Cowork is the Claude environment where **Apex** runs. Apex is Dylan's automated daily workflow system — the orchestration layer that pulls from connected systems and writes outputs Dylan and this Claude Code repo consume.
-**Direction:** primarily outbound (Apex writes to Notion / Jira / Granola directly, and drops summaries into this repo when relevant).
-**Access:** Apex runs *in* Cowork. This Claude Code session reads its outputs but doesn't trigger it.
-**Status:** **operational** (vs aspirational). Validated by Cowork handoff 2026-04-28.
+**Direction:** **bidirectional.** Cowork writes to Notion / Jira / Granola directly *and* writes back to this repo's `memory/` per the contract in `/COWORK.md` (root of repo).
+**Access:** Apex runs *in* Cowork. This Claude Code session reads its outputs but doesn't trigger it. Cowork accesses this repo via the GitHub MCP scoped to `DC-bit-ui/Dylan-PM-`.
+**Status:** **operational** for outbound-from-Cowork (Apex → Notion/Jira). **Pending** for inbound-to-this-repo (Cowork writing to `memory/`) — bootstrap when Cowork's GitHub MCP is verified.
 
 ---
 
@@ -69,11 +69,17 @@ This repo does **not** duplicate the Notion workstack. `workspace/current/action
 
 ## What Apex needs / can read from this repo
 
-When Apex prioritises, it benefits from:
-- `memory/business/strategy.md` — to weight against OKRs (currently sparse)
-- `memory/initiatives/INDEX.md` — for cross-epic context
-- `memory/profile/decision-frameworks.md` — the P0–P3 lens (already populated)
+**Full contract:** `/COWORK.md` at repo root — the inverse of `CLAUDE.md`, written for the Cowork environment. Defines tiered write protocol, what to read at session start, off-limits files, and bootstrap checklist.
+
+**Quick reference — Apex reads at every run:**
+- `CLAUDE.md` — always-loaded behavioural rules
+- `memory/profile/*` — voice, decision frameworks, working-style (incl. connector-first + reconciliation rules)
+- `memory/business/glossary.md` + `strategy.md` — domain language + weighting
+- `memory/initiatives/INDEX.md` (+ relevant initiative file)
 - `memory/people/roster.md` — for stakeholder context on tasks
+- `memory/decisions/INDEX.md` — to avoid contradicting standing decisions
+
+**Apex writes to this repo per Tier 1 rules in `/COWORK.md` §4** — primarily learnings, meeting syntheses, decisions, initiative state changes, and retros.
 
 ---
 
@@ -89,6 +95,8 @@ When Apex prioritises, it benefits from:
 - [ ] HubSpot CRM search validated against live data
 - [ ] Confluence CQL search validated
 - [ ] Bidirectional Notion ↔ Jira sync (currently primarily one-direction Notion writes)
+- [ ] **GitHub MCP for `DC-bit-ui/Dylan-PM-` enabled in Cowork** — required for the `/COWORK.md` contract to be live
+- [ ] **Cowork bootstrap probe** — first write to `memory/learnings/` to confirm the path works (per `/COWORK.md` §11)
 
 ## Discussed future enhancements (per handoff)
 - Bidirectional Notion ↔ Jira sync (create Jira from Notion, two-way status)

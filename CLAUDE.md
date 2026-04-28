@@ -4,7 +4,9 @@ This file is **always loaded**. It is the master prompt that tailors every Claud
 
 > Cockpit metaphor: this file is the cockpit. `memory/`, `.claude/agents/`, `.claude/skills/`, `playbooks/`, and `templates/` are the aircraft. The connected systems (Notion, Jira, Granola, Teams, Outlook, HubSpot, Confluence) and Cowork's Apex automation are the airspace.
 
-**Last reviewed:** 2026-04-28 — populated from Cowork handoff.
+**Mirror file:** [`COWORK.md`](COWORK.md) is the symmetric contract for the Cowork environment (Apex + external skill packs). It defines what Cowork reads from this repo and what it writes back. The two files together form the bidirectional contract — keep them aligned.
+
+**Last reviewed:** 2026-04-28 — populated from Cowork handoff; bidirectional Cowork contract added.
 
 ---
 
