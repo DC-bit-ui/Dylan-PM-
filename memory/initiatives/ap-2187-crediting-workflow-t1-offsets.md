@@ -3,7 +3,7 @@
 **Jira key:** [AP-2187](https://agriprove.atlassian.net/browse/AP-2187)
 **Status:** discovery [from Jira snapshot 2026-04-28]
 **Stage:** discovery
-**DRI:** Unassigned (likely needs Dylan PRD ownership)
+**DRI:** Unassigned. **Dylan does not own this** — contributes only (corrected 2026-04-28).
 **Last updated:** 2026-04-28
 
 ## Why it exists
@@ -14,7 +14,7 @@ _(to fill — proposed: time-to-generate T1 Offsets Report; templates reused for
 
 ## Current state
 - **Discovery phase** — not yet defined / scoped for development
-- Unassigned — gap; this is a likely Dylan-owned PRD when picked up
+- Unassigned — gap. **Dylan is not the intended owner**; contributes only (corrected 2026-04-28). PM ownership TBD.
 
 ## Recent changes (newest first)
 - 2026-04-28 — Initiative file created from Cowork handoff snapshot

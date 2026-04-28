@@ -27,8 +27,8 @@ When OKRs are finalised, populate this section and update `/okr-check` to reacti
 ---
 
 ## Where Dylan owns / contributes
-- **Owns (PM):** Frontier (AP-1963, AP-2009), Stormboy alignment, T1 Offsets Report PRD-side
-- **Contributes (PM support):** HORIZON validation framework (AP-2116), KCT phase 1 (AP-1964), LawrieCo referrer view (AP-1965)
+- **Owns (PM):** Frontier (AP-1963, AP-2009), Stormboy alignment
+- **Contributes (PM support):** HORIZON validation framework (AP-2116), KCT phase 1 (AP-1964), LawrieCo referrer view (AP-1965), T1 Offsets Report / Crediting Workflow Template (AP-2187)
 
 ## Bets we're NOT making (this period)
 _(populate as Dylan articulates the say-no list)_
