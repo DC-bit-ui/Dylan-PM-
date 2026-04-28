@@ -5,6 +5,7 @@
 ## Recent (last 30 days)
 | Date | Type | Title | File |
 |---|---|---|---|
+| 2026-04-28 | correction | Cowork uses connected folders, not GitHub MCP — corrected COWORK.md §2 | `2026-04/2026-04-28-cowork-folder-not-mcp.md` |
 | 2026-04-28 | architecture | Cowork ↔ this-repo is bidirectional — formalised in `/COWORK.md` | `2026-04/2026-04-28-cowork-bidirectional.md` |
 | 2026-04-28 | mechanism + behaviour | Reconciliation rule + connector-first protocol + PRD reference-only | `2026-04/2026-04-28-reconciliation-and-connectors.md` |
 | 2026-04-28 | mechanism | Cowork handoff absorbed — system architecture reconciled | `2026-04/2026-04-28-cowork-handoff-absorbed.md` |

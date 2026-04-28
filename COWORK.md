@@ -33,14 +33,36 @@ It is **not** the workstack. Notion is canonical for tasks (per `memory/decision
 
 ## 2. How to access it
 
-`[ASSUMPTION]` Cowork accesses this repo via the **GitHub MCP server** scoped to `DC-bit-ui/Dylan-PM-`. Two patterns:
+**Cowork connects local folders directly** (per Anthropic's [Cowork getting-started docs](https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork) and the [Projects feature](https://support.claude.com/en/articles/14116274-organize-your-tasks-with-projects-in-claude-cowork)). The right mechanism is a **Cowork Project pointed at the local clone of this repo** — currently `C:\Dylan PM` on Dylan's machine. Cowork then has **direct filesystem read + write** to the entire repo within its sandboxed VM.
 
-- **Read:** `mcp__github__get_file_contents` for specific files; `mcp__github__search_code` for keyword scans across the repo
-- **Write:** `mcp__github__create_or_update_file` for direct commits; `mcp__github__create_pull_request` for PR-gated changes
+This is cleaner than GitHub MCP for two reasons:
+1. **Lower latency** — no API round-trip per file read
+2. **Whole-repo context** — Cowork can read all of `memory/` at once, not request files one-by-one
+3. **Cowork's GitHub MCP isn't a default connector** — confirmed missing from the standard Cowork connector list (2026-04-28)
 
-If a clone-and-work-locally pattern is available in Cowork (filesystem access), use that for multi-file changes — fewer round-trips.
+### Setup
 
-If the GitHub MCP isn't enabled, this contract is inert. Dylan to enable.
+1. **Clone the repo locally:** `C:\Dylan PM` (per `playbooks/local-setup-windows.md`)
+2. **Create a Cowork Project** pointed at that folder:
+   - Cowork app → Projects → New Project → "Use existing folder" → select `C:\Dylan PM`
+   - Name: `Dylan PM Operating System`
+3. **Set Project Instructions** (per Cowork's Project-level instructions): a short bootstrap pointing Cowork at `COWORK.md` — see §3 below
+4. **Connect the same MCP set** Cowork already uses (Notion, Jira, Granola, Teams, Outlook, HubSpot, Confluence)
+5. **Upload external skill packs** as Cowork skills (`agriprove-pm`, `soil-carbon-audit`, etc.) — these stay in Cowork's Skills layer; this repo's `.claude/skills/` are Claude-Code-side reference content, not Cowork skills
+
+### Git workflow
+
+Cowork modifies files in the connected folder. Two patterns for committing back:
+
+**Pattern A — Cowork commits from the VM (preferred for autonomy):**
+- Cowork runs `git add … && git commit -m "[cowork] …" && git push` in the sandboxed VM at the end of a write cycle
+- Requires git auth in the VM (PAT or SSH key)
+
+**Pattern B — Dylan commits manually:**
+- Cowork writes to the folder; Dylan reviews + commits via Claude Code or a Git client
+- Slower compounding, but no auth burden in the VM
+
+Default to **Pattern A** for Tier 1 writes (low-risk, factual); **Pattern B** for Tier 2 writes (which become PRs anyway).
 
 ---
 
@@ -126,18 +148,25 @@ If Cowork detects something it thinks should change in a Tier 3 file, it logs a 
 
 ## 6. Sync mechanics
 
-**Direction:** this repo is the source of truth. Cowork's writes land here; this is where the diff lives.
+**Direction:** this repo is the source of truth. Cowork's writes land in the connected folder; the Git repo is the durable diff log.
+
+**Mechanism:** Cowork has direct filesystem access to `C:\Dylan PM` (the local clone) within its sandboxed VM. No GitHub MCP needed.
 
 **Cadence:**
-- **Read at every Apex run** (Morning Briefing 04:45 SAST, EOD Reconciliation 12:00 SAST). Cache in-session; refresh next run.
+- **Read at every Apex run** (Morning Briefing 04:45 SAST, EOD Reconciliation 12:00 SAST). The connected-folder access means whole-tree reads are cheap — re-read each run rather than caching across runs (caching invites stale data; the Project Instructions trigger re-read every session).
 - **Write on capture moments** — Granola synthesis, decision logged, learning captured, retro written. Don't batch (loses context).
+- **Commit + push** at the end of each Apex run cycle (Pattern A) or batch nightly (Pattern B) — see §2.
 
 **Conflicts:**
-- If Cowork's write would conflict with a recent Claude Code edit, **open a PR** rather than force-push. Manual resolution by Dylan.
-- If the working branch has diverged, fetch and rebase onto the latest `main` before committing.
+- If Cowork's write would conflict with a recent Claude Code edit (i.e. the local repo has diverged from origin), Cowork should `git fetch origin && git rebase origin/<branch>` before pushing. If the rebase fails, open a PR with the conflicting branch and let Dylan resolve.
+- Never force-push.
 
 **Branch strategy:**
-- `[ASSUMPTION]` Cowork commits to the active feature branch (currently `claude/setup-claude-system-9cDDB`) until that's merged. Then Cowork commits to `main` directly for Tier 1, branches `cowork/<slug>` for Tier 2.
+- Until PR #1 (the bootstrap PR) merges: Cowork commits to the active feature branch (`claude/setup-claude-system-9cDDB`).
+- After PR #1 merges:
+  - **Tier 1 writes** → directly to `main` with `[cowork]` prefix in commit messages
+  - **Tier 2 writes** → branch `cowork/<slug>`, push, open PR
+- All commits include the source signal in the body (Granola meeting ID, Jira ticket, Teams thread link) per §5 rule 5.
 
 ---
 
@@ -201,12 +230,98 @@ Each of these should produce either a memory write or a deliberate "no — nothi
 
 ## 11. Bootstrap checklist for Cowork
 
-- [ ] GitHub MCP enabled, scoped to `DC-bit-ui/Dylan-PM-`
-- [ ] Apex Morning Briefing's prompt includes "READ CLAUDE.md and memory/profile/* at start"
-- [ ] Apex EOD Reconciliation's prompt includes "WRITE end-of-day retro to `memory/retros/session/` per Tier 1 rules"
-- [ ] External skill packs each include a "READ memory/profile/communication.md before drafting" step
-- [ ] First write probe: Apex commits a placeholder learning (`memory/learnings/<month>/<date>-cowork-bootstrap-probe.md`) to verify write path works
-- [ ] First read probe: Apex Morning Briefing logs which `memory/` files it loaded and the byte counts — confirms the GitHub MCP returned content
+### Folder + project setup
+- [ ] Repo cloned to `C:\Dylan PM` per `playbooks/local-setup-windows.md`
+- [ ] Cowork app updated to latest desktop version
+- [ ] **New Cowork Project created**, "Use existing folder" → `C:\Dylan PM`. Name: `Dylan PM Operating System`
+- [ ] **Project Instructions** populated with the appendix in §13 below
+- [ ] **Global Instructions** (Settings → Cowork → Edit) set the always-on voice rule — see §13
+
+### Connectors + skills (existing Cowork setup, just verify)
+- [ ] Notion, Jira, Granola, Teams, Outlook, HubSpot, Confluence connectors all present in this Project's connector list
+- [ ] External skill packs uploaded as Cowork skills: `agriprove-pm`, `agriprove-backend`, `agriprove-design`, `soil-carbon-audit`, `soil-carbon-batch-audit`, `internal-comms`
+- [ ] Apex skills (Morning Briefing, EOD Reconciliation, Command Center) present and scheduled
+
+### Apex prompt updates
+- [ ] Apex Morning Briefing prompt includes: "READ `CLAUDE.md`, `COWORK.md`, `memory/profile/*`, and `memory/integrations/cowork.md` at start"
+- [ ] Apex EOD Reconciliation prompt includes: "WRITE end-of-day retro to `memory/retros/session/<YYYY-MM-DD>-eod.md` per Tier 1 rules in COWORK.md §4; commit + push at end"
+- [ ] External skill packs each include: "READ `memory/profile/communication.md` before drafting"
+
+### Git workflow in the VM (Pattern A)
+- [ ] Git installed in the Cowork VM (verify with `git --version`)
+- [ ] Git auth configured (PAT or SSH key) for `DC-bit-ui/Dylan-PM-`
+- [ ] `git config user.name "Cowork (Apex)"` and `user.email` set so commits are attributable
+- [ ] Test commit: a probe learning (see below) committed and pushed successfully
+
+### Validation probes
+- [ ] **Read probe** — Apex Morning Briefing logs which `memory/` files it loaded and their byte counts (confirms folder access works)
+- [ ] **Write probe** — Apex commits `memory/learnings/<month>/<date>-cowork-bootstrap-probe.md` containing one sentence, then pushes. Verify on GitHub.
+- [ ] **Tier 2 probe** — Apex opens a PR proposing a one-line edit to `working-style.md`. Dylan reviews and merges (or closes if no change needed). Validates the PR-gated path.
+
+---
+
+## 12. Meta — improving this contract
+
+This file is editable. If Cowork notices a routing rule that's wrong (something keeps landing in the wrong tier, or a Tier 3 file that should be Tier 2), **propose the change via Tier 2 PR**. The contract evolves.
+
+---
+
+## 13. Appendix — paste-ready Project Instructions
+
+Copy this into **Cowork → Project → Settings → Project Instructions** for the `Dylan PM Operating System` project. Keep it short; the detail lives in `COWORK.md`.
+
+```
+This Cowork Project operates against Dylan's PM operating system.
+The connected folder (`C:\Dylan PM`) is the source of truth.
+
+AT SESSION/JOB START — always read:
+1. COWORK.md (root) — your contract for this project
+2. CLAUDE.md (root) — always-loaded behavioural rules and modes
+3. memory/profile/communication.md — voice, tone, behavioural rules
+4. memory/profile/decision-frameworks.md — P0–P3 prioritisation
+5. memory/profile/working-style.md — connector-first protocol, reconciliation rule
+6. memory/business/glossary.md — domain terminology
+7. memory/integrations/cowork.md — Apex's own contract
+8. memory/decisions/INDEX.md — standing decisions to honour
+
+BEFORE drafting anything on Dylan's behalf:
+- Read memory/profile/communication.md for voice
+- Pull live data via the relevant MCP (Notion / Jira / Granola / Teams /
+  Outlook / HubSpot / Confluence) — connector-first protocol
+- For task-stack outputs (focus, standup, status), run the reconciliation
+  flow per memory/decisions/2026-04-28-reconciliation-flow.md
+
+WHEN WRITING TO memory/ follow the tiered protocol in COWORK.md §4:
+- Tier 1 (direct commit): learnings, meeting syntheses, small decisions,
+  roster additions, initiative state changes, retros
+- Tier 2 (PR required): behavioural rules, new skills/agents,
+  integration contracts, strategy edits, COWORK.md itself
+- Tier 3 (off-limits): CLAUDE.md, .claude/agents/, .claude/skills/,
+  memory/profile/identity.md, memory/profile/communication.md
+
+UNIVERSAL RULES (COWORK.md §5):
+- Append, don't overwrite — supersede with forward link
+- Date-stamp every entry (YYYY-MM-DD)
+- Update the relevant INDEX.md when adding files
+- Cite sources (Granola meeting / Jira ticket / Teams thread / email)
+- Use confidence markers: [high], [moderate], [low], [ASSUMPTION]
+- Match Dylan's voice — no flattery, no preamble
+
+GIT WORKFLOW (COWORK.md §2 Pattern A):
+- After each capture-moment write: `git add … && git commit -m "[cowork] <description>" && git push`
+- Tier 2 changes: branch `cowork/<slug>`, push, open PR
+
+For full detail, COWORK.md is the contract. Read it.
+```
+
+### Recommended Global Instructions (Settings → Cowork → Edit)
+
+```
+Default voice: direct, opinionated, no flattery. Cite sources.
+Match the project's COWORK.md or CLAUDE.md if one is present.
+Use confidence markers ([high], [moderate], [low], [ASSUMPTION]).
+Distinguish live data (this session via MCP) from cached/snapshot data.
+```
 
 ---
 

@@ -68,6 +68,6 @@ Append don't overwrite; date-stamp; update INDEX.md; cross-link with relative pa
 
 ## Open questions for Dylan
 
-- `[ASSUMPTION]` GitHub MCP is the access mechanism. If Cowork has filesystem access via clone-and-work pattern, that may be cleaner — TBD on Cowork's capabilities
+- ~~`[ASSUMPTION]` GitHub MCP is the access mechanism~~ → **Resolved 2026-04-28:** Cowork uses **direct filesystem access via Project-connected folders**, not GitHub MCP. GitHub MCP isn't a default Cowork connector. See `memory/learnings/2026-04/2026-04-28-cowork-folder-not-mcp.md`. `COWORK.md` §2, §6, §11 updated; new §13 with paste-ready Project Instructions.
 - Branching strategy after this PR merges: Tier 1 directly to `main`, or always via short-lived branches? Currently writing it as "to `main` for Tier 1, branches for Tier 2"
-- Frequency of memory reads — every Apex run reads everything, or cache between runs and refresh weekly? Default: every run, cache in-session
+- Frequency of memory reads — currently every Apex run reads everything (filesystem access makes this cheap)
