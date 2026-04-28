@@ -1,35 +1,87 @@
-# People Roster
+# People Roster — AgriProve
 
-**Last updated:** 2026-04-28 (initial bootstrap — needs population)
+**Last updated:** 2026-04-28 (populated from Cowork handoff)
 
 > Stakeholders, partners, and key contacts. Claude reads this before drafting anything for or about a named person.
 
-> **Format:** alphabetical by first name within each section. Don't store anything Dylan wouldn't be comfortable being seen by the person.
+---
 
 ## Internal — leadership
-### _(name)_
-- **Role:** _(fill)_
-- **Reports to:** _(fill)_
-- **Cadence with Dylan:** _(weekly 1:1, monthly review, ad-hoc)_
-- **Cares about:** _(fill — what they actually optimise for)_
-- **Format preference:** _(short Slack? long email? doc-first?)_
-- **Communication notes:** _(quirks Claude should respect — "wants the chart first", "hates emojis", "responds in voice memo")_
-- **History with Dylan:** _(notable past interactions, alignment, friction)_
 
-## Internal — team / cross-functional
-### _(name)_
-_(repeat structure)_
+### Kieren Whittock
+- **Role:** Leadership stakeholder; CPO-equivalent
+- **Cadence with Dylan:** 1:1s; Granola transcripts available
+- **Cares about:** product strategy, delivery progress, team unblocking
+- **System presence:** Teams, Jira, Granola meetings
+- **Format preference:** _(to learn — track over time)_
+- **Communication notes:**
+  - Treated as P0 trigger when explicitly asks for something urgently (per Apex priority framework)
+- **History with Dylan:** ongoing 1:1 cadence
 
-## Internal — skip-level / wider org
-### _(name)_
-_(repeat)_
+---
 
-## External — customers, partners, vendors
-### _(name)_
-- **Org:** _(fill)_
-- **Their role:** _(fill)_
-- **Why they matter to Dylan:** _(fill)_
-- **Last interaction:** _(date — link to meeting note if any)_
+## Internal — engineering team
+
+### Cadel Watson
+- **Role:** Dev lead / backend engineer
+- **System presence:** Jira (assignee), Teams, Granola
+- **Owns:** HORIZON model validation framework (epic **AP-2116** — Schedule 2 run)
+- **Cadence with Dylan:** 1:1s; standup overlap
+- **Communication notes:**
+  - Backend-side authority; consult on HORIZON technical questions
+
+### Steve Le Moenic
+- **Role:** Developer
+- **System presence:** Jira (assignee)
+- **Owns:**
+  - **AP-1965** — LawrieCo referrer view (Development)
+  - **AP-1964** — Operation KCT phase 1 (Development)
+- **Cadence with Dylan:** PM check-ins
+
+### Will Frecheville
+- **Role:** Engineer
+- **System presence:** Teams, Granola meetings
+- **Cadence with Dylan:** 1:1s; meeting overlap
+
+---
+
+## Internal — cross-functional
+
+### Claudia
+- **Role:** Growth — lead scraping
+- **System presence:** referenced in tasks; not a Jira assignee
+- **Surface:** Stormboy partner — lead generation pipeline
+- **Cadence with Dylan:** _(to confirm — likely Stormboy process alignment sessions)_
+
+### Hobbs
+- **Role:** Field team
+- **System presence:** referenced in user research / Frontier user
+- **Surface:** Frontier user; Stormboy field-side
+- **Cadence with Dylan:** UX feedback sessions
+
+### Ben
+- **Role:** Field team
+- **System presence:** referenced in user research / Frontier user
+- **Surface:** Frontier user; Stormboy field-side
+- **Cadence with Dylan:** UX feedback sessions
+
+---
+
+## External — partners / referrers
+
+### LawrieCo
+- **Org:** AgriProve referrer / partner
+- **Surface:** Has a dedicated referrer view (epic AP-1965) — partner-facing UI for tracking referred properties
+
+---
 
 ## Watch list
-_(people whose moves Dylan should track — leadership changes, key customers signaling, etc.)_
+_(populate over time — leadership changes, key customers signaling, etc.)_
+
+---
+
+## Profile gaps to fill
+- [ ] Kieren — communication style preferences (long email? short Slack? doc-first?)
+- [ ] Format preferences for each engineer (where they want PRDs to land — Notion? Confluence?)
+- [ ] Surnames where missing (Hobbs, Ben, Claudia)
+- [ ] Last-interaction history per person (track via meeting-synthesizer over time)

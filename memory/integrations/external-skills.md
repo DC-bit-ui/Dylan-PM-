@@ -1,38 +1,63 @@
-# External Skill Packs
+# External Skill Packs (live in Cowork)
 
-> Dylan has skill packs already implemented elsewhere that capture operating procedures and product context. This system **references** them rather than copying them — single source of truth.
+> Dylan has skill packs already implemented in **Cowork** that capture operating procedures and product context. This Claude Code repo **references** them rather than copying — single source of truth.
 
-**Last updated:** 2026-04-28 (initial — needs Dylan to confirm paths)
+**Last updated:** 2026-04-28 (corrected from cowork handoff)
 
-## Known external skills
+---
 
-### `agriprove-pm`
-- **Purpose:** Agriprove PM operating procedures
-- **Location:** _(TBD — Dylan to confirm: user-level `~/.claude/skills/`, project-level elsewhere, Claude.ai user skills, or other)_
-- **When to invoke:** any time this system is making PM decisions for Agriprove products
-- **Read-this-first:** when drafting PRDs, prioritising work, or preparing exec materials
+## Active skills
 
-### `agriprove-backend`
-- **Purpose:** backend system context for Agriprove
-- **Location:** _(TBD)_
-- **When to invoke:** sizing engineering scope, understanding system constraints, briefing backend changes
+| Skill | Purpose | Where it lives |
+|---|---|---|
+| `agriprove-pm` | PM workflow, PRD templates, Jira epic conventions | Cowork |
+| `agriprove-backend` | Domain model, system architecture, technical feasibility | Cowork |
+| `agriprove-design` | Design system tokens, Magic Patterns prompting, Chakra UI | Cowork |
+| `soil-carbon-audit` | ERF project audit automation | Cowork |
+| `soil-carbon-batch-audit` | Batch audit across portfolio | Cowork |
+| `internal-comms` | Status reports, leadership updates | Cowork |
 
-### `agriprove-design-system`
-- **Purpose:** design system context
-- **Location:** _(TBD)_
-- **When to invoke:** UI / UX decisions, component reuse, design consistency questions
+> **Correction note:** earlier scaffold used `agriprove-design-system` — actual name is `agriprove-design`.
 
-## How agents in this repo should use them
+---
 
-1. **Default:** if a session has these skills available (e.g. user-level skills loaded), agents should invoke them when relevant — they take precedence over generic guidance for Agriprove-specific questions.
-2. **Detection:** Claude Code surfaces available skills in the session — agents can check before acting.
-3. **Fallback:** if an agriprove-* skill is *not* available in the session, the agent should say so and proceed with general best practices, flagging that Agriprove-specific procedures may differ.
+## How agents in this Claude Code repo should reference them
 
-## What we don't do
-- Don't copy these skills into this repo — they live where they live
-- Don't fabricate Agriprove-specific procedures from memory of generic PM practice
+Cowork's skills don't load automatically into this Claude Code session. When relevant, agents in this repo should:
+
+1. **Acknowledge precedence.** "Agriprove-specific procedures live in `agriprove-pm` (Cowork). Dylan should run this in Cowork if he wants the procedure-bound version." 
+2. **Default to general best practice with a flag.** "Drafting using general PM best practice; in Cowork, `agriprove-pm` would supply Agriprove-specific PRD template and epic conventions."
+3. **Don't fabricate Agriprove-specific procedures** that aren't documented in this repo's `memory/`.
+
+---
+
+## When to invoke each (within Cowork)
+
+- **`agriprove-pm`** — any time Dylan is making PM decisions for Agriprove products: PRD writing, prioritisation, exec materials, sprint planning. The `prd` and `decision-log` skills in this repo would benefit from Agriprove-specific template — that template lives in `agriprove-pm`.
+- **`agriprove-backend`** — sizing engineering scope, understanding HORIZON / Frontier / system constraints, briefing backend changes.
+- **`agriprove-design`** — UI/UX decisions, component reuse via Chakra, Magic Patterns prompting, design consistency questions.
+- **`soil-carbon-audit`** — ERF project-level audit automation. Domain: regulatory.
+- **`soil-carbon-batch-audit`** — portfolio-wide batch audit. Domain: regulatory.
+- **`internal-comms`** — status reports, leadership updates. The `stakeholder-update` skill in this repo aligns with this; in Cowork, `internal-comms` likely supplies the Agriprove-specific tone / template.
+
+---
+
+## Open architectural question (push-back point)
+
+There's overlap between Cowork skills and this Claude Code repo's skills:
+- Cowork `internal-comms` ↔ this repo's `stakeholder-update` skill
+- Cowork `agriprove-pm` (PRD templates, Jira conventions) ↔ this repo's `prd`, `decision-log`
+- Cowork `soil-carbon-audit` is domain-specific (no analog here)
+
+**Recommendation:** Cowork is for *live workflow execution* (writes to Notion, runs scheduled tasks, has the connectors). This Claude Code repo is for *strategic memory and reasoning* (durable artifacts, decisions, retros, business intelligence).
+
+Where they overlap, Cowork wins for execution; this repo wins for memory. The **Agriprove-specific templates** (PRD, status update tones) probably belong in *both* — referenced from Cowork, with copies / links in `templates/` here for offline drafting.
+
+> **Action item for Dylan:** decide whether to extract the Agriprove PRD template into `templates/prd.md` here, or keep `agriprove-pm` as the only source.
+
+---
 
 ## Open questions
-- Where exactly are these skills installed?
-- Are there other skill packs (e.g. agriprove-data, agriprove-customer-success) that should be referenced here?
-- Is there an authoritative index of Agriprove skills somewhere Dylan maintains?
+- Are skills in `~/.claude/skills/` (user-level) or somewhere else within Cowork?
+- Are there Cowork skills we're not aware of?
+- Is there an authoritative index of Cowork skills somewhere?

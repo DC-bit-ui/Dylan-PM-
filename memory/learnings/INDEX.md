@@ -5,6 +5,7 @@
 ## Recent (last 30 days)
 | Date | Type | Title | File |
 |---|---|---|---|
+| 2026-04-28 | mechanism | Cowork handoff absorbed — system architecture reconciled | `2026-04/2026-04-28-cowork-handoff-absorbed.md` |
 | 2026-04-28 | mechanism | Dylan operates with external workflows that need to read/write this system | `2026-04/2026-04-28-external-integration-need.md` |
 
 ## Promoted → standing rules

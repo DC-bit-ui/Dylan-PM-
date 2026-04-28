@@ -4,28 +4,55 @@
 
 > **Rule:** if it's not in this index, agents shouldn't claim live data from it.
 
-## Live (or aspirational) connectors
+**Last updated:** 2026-04-28 (validated against Cowork handoff)
+
+---
+
+## Connectors
 
 | System | Purpose | Direction | Status | File |
 |---|---|---|---|---|
-| Granola | Meeting notes & transcripts | read | aspirational | `granola.md` |
-| Notion | Work items, docs | read/write | aspirational | `notion.md` |
-| Jira | Tickets, roadmap items | read/write | aspirational | `jira.md` |
-| Outlook | Emails | read | aspirational | `outlook.md` |
-| Microsoft Teams | Channel updates | read | aspirational | `teams.md` |
-| cowork | Cross-system summarisation | read (drops to inbox) | aspirational | `cowork.md` |
+| **Cowork (Apex)** | Daily orchestration; runs Morning Briefing + EOD Reconciliation + Command Center | outbound (writes to Notion / Jira; drops summaries) | operational | `cowork.md` |
+| **Notion** | Personal workstack ("Work Priorities" DB) | read primary; write rare | operational | `notion.md` |
+| **Jira** | Team workstack — AgriProve cloud | read primary; write via Apex | operational | `jira.md` |
+| **Granola** | Meeting notes & transcripts | read | operational | `granola.md` |
+| **Microsoft Teams** | Chat (channel monitoring not yet wired) | read | operational | `teams.md` |
+| **Outlook** | Email + calendar | read; draft | operational | `outlook.md` |
+| **HubSpot** | CRM, customer signals | read | available, not validated | `hubspot.md` |
+| **Confluence** | Long-form docs | read; write rare | available, not validated | `confluence.md` |
 
-## External skill packs (referenced, not copied)
-
-| Skill | Where it lives | Used for |
+## External skill packs (live in Cowork — not copied here)
+| Skill | Domain | File documenting |
 |---|---|---|
-| `agriprove-pm` | _(TBD — confirm path with Dylan)_ | Agriprove PM operating procedures |
-| `agriprove-backend` | _(TBD)_ | Backend system context |
-| `agriprove-design-system` | _(TBD)_ | Design system context |
+| `agriprove-pm` | PM workflow, PRD, Jira conventions | `external-skills.md` |
+| `agriprove-backend` | System architecture, feasibility | `external-skills.md` |
+| `agriprove-design` | Design system, Chakra, Magic Patterns | `external-skills.md` |
+| `soil-carbon-audit` | ERF project audit | `external-skills.md` |
+| `soil-carbon-batch-audit` | Portfolio batch audit | `external-skills.md` |
+| `internal-comms` | Status reports, leadership updates | `external-skills.md` |
+
+---
 
 ## Default integration shape (every new system follows this)
 
-1. **Inbound:** writes to `inbox/<source>/` (raw) or directly to `workspace/current/actions.md` / `memory/initiatives/<slug>.md` (structured, with frontmatter)
-2. **Outbound:** reads from named, stable paths under `memory/`
+1. **Inbound:** writes to `inbox/<source>/` (raw) or directly to Notion / `memory/initiatives/<slug>.md` (structured)
+2. **Outbound:** reads from named, stable paths in `memory/`
 3. **Contract:** documented in this directory, one file per system
 4. **Failure mode:** agent states explicitly when connector is unavailable; falls back to inbox drops; never fabricates
+
+---
+
+## Authoritative source-of-truth map
+
+| Domain | Source of truth | Confirmed |
+|---|---|---|
+| Dylan's personal tasks | Notion "Work Priorities" DB | ✅ |
+| Team delivery / engineering | Jira AP project | ✅ |
+| Meeting content | Granola | ✅ |
+| Strategic memory (decisions, retros, learnings, briefs) | this repo `memory/` | ✅ |
+| Long-form documentation | Confluence | ✅ |
+| Customer / CRM | HubSpot | ✅ |
+| Async team comms | Teams | ✅ |
+| Email + calendar | Outlook | ✅ |
+
+When a fact is sourced live, name the system. When sourced from a snapshot (`memory/...`), name the file + last-updated.
