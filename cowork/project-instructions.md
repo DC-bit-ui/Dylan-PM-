@@ -298,6 +298,57 @@ cap 3) + Stack B (Complement, cap 3 / compressed when Stack A is overloaded).
 - The Complement tab surfaces Stack B candidates with leverage scores —
   Dylan can scan and dismiss / engage from there
 
+### Apex Weekly Sweep — Friday 16:00 SAST
+Per `memory/decisions/2026-04-28-curation-cadence.md`. Runs after Dylan's
+working week ends but while AEST team Thursday/Friday activity is captured
+(16:00 SAST = 18:00 AEST).
+
+- Read CLAUDE.md, COWORK.md, memory/profile/*, memory/decisions/2026-04-28-curation-cadence.md
+- **Dispatch the `memory-curator` subagent** via the `/sweep` skill
+  (`.claude/commands/sweep.md`). It produces the sweep report.
+- **Dispatch the `retrospector` subagent** for the weekly retro (writes to
+  `memory/retros/weekly/<YYYY-WW>-<slug>.md`)
+- **Pattern promotion review:** any learning that has appeared 3+ times →
+  draft a Tier 2 PR promoting it to a standing rule in `memory/profile/`
+  (NOT `communication.md` or `identity.md` — those are off-limits)
+- **Decision review:** flag standing decisions in `memory/decisions/INDEX.md`
+  contradicted by recent activity for supersede
+- **Dual-stack source-quality check:** count Stack A false-positives, Stack B
+  engagements, suppression frequency this week. Feeds the monthly review.
+- **Reconciliation accuracy:** ambiguous-flag rate, correct done-ack rate
+- **Tier 1 commits:** INDEX updates, dedupe merges, supersede markers,
+  cross-link gaps fixed → directly to main
+- **Tier 2 PRs:** profile promotions, decision supersedes → branch
+  `cowork/sweep-<YYYY-WW>`, push, open PR
+- Output: sweep report (per `/sweep` skill output template) + weekly retro
+
+### Triggered sweeps (override the schedule)
+Apex Morning Briefing each weekday checks two trigger conditions:
+
+- **Volume:** count unprocessed learnings since last sweep. If >12, prepend
+  "Sweep recommended today" to the briefing output and queue the sweep for
+  that evening.
+- **Churn:** if a learning superseded another within 7 days (check
+  `memory/learnings/INDEX.md` for forward-link annotations), queue an
+  immediate profile review for the affected file — do NOT wait for Friday.
+
+### Apex Monthly Review — first Monday of month, 16:00 SAST
+- **Strategic alignment:** does the workstack ladder to current strategy?
+- **Owned-surfaces review:** has Dylan's role shifted? Update
+  `memory/business/strategy.md` if so (Tier 2 PR — Dylan reviews)
+- **30-day validation reviews** for each new mechanism (currently:
+  reconciliation flow, dual-stack prioritisation, curation cadence itself)
+- Output: monthly review report → `memory/retros/monthly/<YYYY-MM>.md`
+  (Tier 1) + any proposed Tier 2 PRs for strategy / profile changes
+
+### Apex Quarterly System Review — manual, first week of quarter
+- **Not Apex-scheduled** — this is a Dylan + Claude Code session
+- Reviews CLAUDE.md, COWORK.md, hard rules, agent + skill inventory,
+  integration contracts vs actual usage
+- Apex's role: prepare a pre-read pulling sweep reports from the quarter
+  to surface candidate changes; Dylan + Claude Code make the architectural
+  calls
+
 ## 11. Other Cowork skills
 
 Six external skill packs are loaded in this Project. Use them when the
