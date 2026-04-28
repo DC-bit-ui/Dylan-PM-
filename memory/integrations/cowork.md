@@ -42,6 +42,11 @@
 3. **Jira writes use discretion.** Personal/operational tasks ("send notes", "schedule meeting") stay Notion-only. Team-visible work syncs.
 4. **Granola scan = 7 days.** Items >3 days old with no Notion task get priority bumped (escalation rule).
 5. **Origin tagging.** All auto-created Notion tasks tagged `Apex · Morning` or `Apex · Reconciliation`.
+6. **Dual-stack prioritisation** (per [`memory/decisions/2026-04-28-dual-stack-prioritisation.md`](../decisions/2026-04-28-dual-stack-prioritisation.md)). Every prioritisation output (Morning Briefing, EOD, Command Center, `/focus`, `/standup`) produces:
+   - **Stack A — Mine (cap 3):** Notion / Jira assignee, Jira action-implied @-mentions, Granola first-person commits, Teams DMs / @mentions, Confluence comments tagging Dylan
+   - **Stack B — Complement (cap 3, compressed when Stack A overloaded with P0s):** team work touching owned surfaces (Frontier, Stormboy, HORIZON Sch 2, KCT, LawrieCo, T1 Offsets) where Dylan isn't on the action — leverage-scored
+   - Stack A items can be auto-Proposed in Notion; Stack B items are surface-only — Dylan decides whether to engage
+7. **Reconciliation runs first.** Every Apex output runs `/reconcile` (per [`memory/decisions/2026-04-28-reconciliation-flow.md`](../decisions/2026-04-28-reconciliation-flow.md)) before building either stack. Phantom-done items don't appear.
 
 ---
 
