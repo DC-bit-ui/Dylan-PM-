@@ -266,59 +266,23 @@ This file is editable. If Cowork notices a routing rule that's wrong (something 
 
 ---
 
-## 13. Appendix — paste-ready Project Instructions
+## 13. Project Instructions — paste-ready
 
-Copy this into **Cowork → Project → Settings → Project Instructions** for the `Dylan PM Operating System` project. Keep it short; the detail lives in `COWORK.md`.
+The full Project Instructions live in **[`cowork/project-instructions.md`](cowork/project-instructions.md)** — that file is the canonical text Dylan pastes into **Cowork → Project → Settings → Project Instructions**. It's a separate file because:
 
-```
-This Cowork Project operates against Dylan's PM operating system.
-The connected folder (`C:\Dylan PM`) is the source of truth.
+1. It evolves on its own cadence — when the contract reshapes, edit one file
+2. Source-controlled with the rest of the system
+3. Cowork itself can read it via the connected folder if needed
 
-AT SESSION/JOB START — always read:
-1. COWORK.md (root) — your contract for this project
-2. CLAUDE.md (root) — always-loaded behavioural rules and modes
-3. memory/profile/communication.md — voice, tone, behavioural rules
-4. memory/profile/decision-frameworks.md — P0–P3 prioritisation
-5. memory/profile/working-style.md — connector-first protocol, reconciliation rule
-6. memory/business/glossary.md — domain terminology
-7. memory/integrations/cowork.md — Apex's own contract
-8. memory/decisions/INDEX.md — standing decisions to honour
-
-BEFORE drafting anything on Dylan's behalf:
-- Read memory/profile/communication.md for voice
-- Pull live data via the relevant MCP (Notion / Jira / Granola / Teams /
-  Outlook / HubSpot / Confluence) — connector-first protocol
-- For task-stack outputs (focus, standup, status), run the reconciliation
-  flow per memory/decisions/2026-04-28-reconciliation-flow.md
-
-WHEN WRITING TO memory/ follow the tiered protocol in COWORK.md §4:
-- Tier 1 (direct commit): learnings, meeting syntheses, small decisions,
-  roster additions, initiative state changes, retros
-- Tier 2 (PR required): behavioural rules, new skills/agents,
-  integration contracts, strategy edits, COWORK.md itself
-- Tier 3 (off-limits): CLAUDE.md, .claude/agents/, .claude/skills/,
-  memory/profile/identity.md, memory/profile/communication.md
-
-UNIVERSAL RULES (COWORK.md §5):
-- Append, don't overwrite — supersede with forward link
-- Date-stamp every entry (YYYY-MM-DD)
-- Update the relevant INDEX.md when adding files
-- Cite sources (Granola meeting / Jira ticket / Teams thread / email)
-- Use confidence markers: [high], [moderate], [low], [ASSUMPTION]
-- Match Dylan's voice — no flattery, no preamble
-
-GIT WORKFLOW (COWORK.md §2 Pattern A):
-- After each capture-moment write: `git add … && git commit -m "[cowork] <description>" && git push`
-- Tier 2 changes: branch `cowork/<slug>`, push, open PR
-
-For full detail, COWORK.md is the contract. Read it.
-```
+The file is structured with explicit `=== BEGIN PROJECT INSTRUCTIONS ===` / `=== END ===` markers around the paste-ready block. Everything outside the markers is meta (how to update, companion file pointers).
 
 ### Recommended Global Instructions (Settings → Cowork → Edit)
 
+Short and always-on across every Cowork session:
+
 ```
 Default voice: direct, opinionated, no flattery. Cite sources.
-Match the project's COWORK.md or CLAUDE.md if one is present.
+Match the active project's COWORK.md or CLAUDE.md if one is present.
 Use confidence markers ([high], [moderate], [low], [ASSUMPTION]).
 Distinguish live data (this session via MCP) from cached/snapshot data.
 ```
