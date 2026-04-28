@@ -4,6 +4,7 @@
 
 | Date | Decision | Owner | Status | File |
 |---|---|---|---|---|
+| 2026-04-28 | Layered curation cadence — daily / weekly Friday 16:00 SAST / monthly / quarterly + volume + churn triggers | Dylan | accepted | `2026-04-28-curation-cadence.md` |
 | 2026-04-28 | Dual-stack prioritisation — Mine (cap 3) + Complement (cap 3, compressed when Mine overloaded) | Dylan | accepted | `2026-04-28-dual-stack-prioritisation.md` |
 | 2026-04-28 | Cowork bidirectional contract — Cowork reads from and writes back to `memory/` per tiered protocol | Dylan | accepted | `2026-04-28-cowork-bidirectional-contract.md` |
 | 2026-04-28 | Reconciliation flow — eliminate phantom-open tasks before surfacing the workstack | Dylan | accepted | `2026-04-28-reconciliation-flow.md` |

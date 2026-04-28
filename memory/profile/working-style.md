@@ -24,8 +24,21 @@
 ### Apex schedule (automated)
 | Time (SAST) | Time (AEST) | What runs |
 |---|---|---|
-| 04:45 weekdays | 06:45 | **Apex Morning Briefing** — pulls from Notion / Jira / Granola (7-day window) / Teams / HubSpot / Confluence; creates Proposed tasks in Notion |
-| 12:00 weekdays | 14:00 | **Apex EOD Reconciliation** — categorises today's tasks, syncs Notion ↔ Jira, sets up tomorrow |
+| 04:45 weekdays | 06:45 | **Apex Morning Briefing** — pulls Notion / Jira / Granola (7d) / Teams / HubSpot / Confluence; produces dual stack (Mine + Complement); creates Proposed tasks in Notion. Also evaluates volume + churn triggers for early sweep |
+| 12:00 weekdays | 14:00 | **Apex EOD Reconciliation** — categorises today's tasks, syncs Notion ↔ Jira, sets up tomorrow's dual stack |
+| 16:00 Friday | 18:00 Friday | **Apex Weekly Sweep** — memory-curator + weekly retro + pattern promotion + decision review + dual-stack source-quality check |
+| 16:00 first Mon | 18:00 first Mon | **Apex Monthly Review** — strategic alignment + owned-surfaces review + 30-day validation reviews |
+
+Plus **Quarterly System Review** (manual, Dylan + Claude Code, first week of quarter) — not Apex-scheduled.
+
+### Curation cadence rationale
+Per `memory/decisions/2026-04-28-curation-cadence.md`. Layered cadence — different concerns move at different speeds:
+- **Daily** = operational (reconciliation, retros)
+- **Weekly** = behavioural (pattern promotion, learning curation)
+- **Monthly** = strategic (alignment, surface refresh)
+- **Quarterly** = architectural (CLAUDE.md, COWORK.md, hard rules)
+
+**Triggers override the schedule:** >12 unprocessed learnings since last sweep → run early; learning that supersedes another within 7 days → immediate profile review for that file.
 
 ### Dylan's working window
 - SAST hours overlap with **end of Australian workday** — morning catches the day's late updates
