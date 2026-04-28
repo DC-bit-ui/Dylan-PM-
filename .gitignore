@@ -1,0 +1,19 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/
+.idea/
+
+# Local-only Claude state
+.claude/settings.local.json
+.claude/.session-cache/
+/tmp/
+
+# Sensitive drops — keep raw input local unless explicitly committed
+inbox/secrets/
+
+# Built / generated
+*.log
+node_modules/
