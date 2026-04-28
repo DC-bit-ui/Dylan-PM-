@@ -1,33 +1,48 @@
 # Customers
 
-**Last updated:** 2026-04-28 (initial bootstrap — needs population)
+**Last updated:** 2026-04-28 (initial population from Cowork handoff)
 
 ## ICP — Ideal Customer Profile
-_(fill — the archetype we build for)_
+**Australian landholders** seeking to participate in soil-carbon credit generation under the Emissions Reduction Fund (ERF) and earn ACCUs (Australian Carbon Credit Units).
+
+- Geography: Australia (regulatory specific to ACCU scheme)
+- Land use: agricultural — properties with soil carbon improvement potential
+- Buyer journey: typically multi-year (carbon project commitments span years)
 
 ## Segments
-### Segment A
-- **Description:** _(fill)_
-- **Why they buy:** _(fill — JTBD)_
-- **Size / value:** _(fill — rough sizing)_
-- **Common objections:** _(fill)_
-- **Where they live:** _(fill — channels, communities)_
 
-### Segment B
-_(repeat)_
+### Direct landholders
+_(to confirm — sizing, channels, sub-segments)_
+
+### Referred landholders (via partners like LawrieCo)
+- LawrieCo referrer view (epic AP-1965) suggests a partner-driven funnel exists
+- Referrer view is likely the partner-facing UI for tracking referred properties / progress
+
+## Internal users (also "customers" in product terms)
+- **Field team** — Hobbs, Ben — primary Frontier users for property management
+- **Growth team** — Claudia — Stormboy lead pipeline
 
 ## Personas
-### Persona 1: _(name / archetype)_
-- **Role:** _(fill)_
-- **Goals:** _(fill)_
-- **Frustrations:** _(fill)_
-- **What good looks like for them:** _(fill)_
 
-### Persona 2
-_(repeat)_
+### Persona 1: Field operator (Hobbs / Ben archetype)
+- **Role:** field-based property management for AgriProve
+- **Goals:** efficient property creation, accurate spatial data capture, fast snapshot generation
+- **Frustrations / pain points:** _(to learn from feedback sessions)_
+- **What good looks like:** Frontier flows that are fast, mobile-friendly, accurate
 
-## Key customer interviews / research
-_(link to research notes in `memory/deliverables/research/` as they accumulate)_
+### Persona 2: Growth operator (Claudia archetype)
+- **Role:** lead scraping / pipeline ops
+- **Goals:** clean lead data into the pipeline; visible handoff to Field team
+- **Pain points:** Stormboy process alignment is the primary surface for these
+
+### Persona 3: External landholder (end customer)
+_(to populate — JTBD framing)_
+
+### Persona 4: Referrer partner (LawrieCo archetype)
+_(to populate)_
 
 ## Anti-personas
-_(who we explicitly do NOT build for — equally important)_
+_(populate over time — who AgriProve explicitly does NOT build for)_
+
+## Research artifacts
+_(link to `memory/deliverables/research/...` as research accumulates; from Granola transcripts of UX feedback sessions)_

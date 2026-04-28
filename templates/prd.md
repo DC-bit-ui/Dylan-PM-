@@ -1,62 +1,34 @@
-# PRD: <Title>
+# PRD Template — Reference Only
 
-**Status:** draft | review | approved | shipped
-**Author:** Dylan
-**Last updated:** <YYYY-MM-DD>
-**Stakeholders:** <names>
-**Linked initiative:** <`memory/initiatives/<slug>.md`>
+**Important:** AgriProve's canonical PRD template lives in **Confluence**, not here. This file is intentionally a pointer to keep this repo aligned with live documentation — if the team edits the template, we don't drift.
 
 ---
 
-## TL;DR
-<One sentence: what we're building, for whom, why it matters.>
+## How to start a new PRD
 
-## Problem
-<3-5 lines. The user pain in their words. Cite research / data — `memory/business/customers.md`, `memory/deliverables/research/...`.>
+**In Confluence (preferred):**
+1. Navigate: **AgriProve Platform** → **Product Requirements** → **Create new PRD**
+2. Confluence applies the canonical template from the SCRUM space
+3. Direct template folder: <https://agriprove.atlassian.net/wiki/spaces/SCRUM/folder/367656961>
 
-## Why now
-<The trigger. Why this quarter, not next. What changes if we don't.>
+**In Cowork:**
+- The `agriprove-pm` skill drafts PRDs against the same canonical template. Use that skill when working in Cowork — it has live access and the latest template version.
 
-## Target user
-<Persona link → `memory/business/customers.md#persona-…`. Concrete, not "all users".>
+**In this Claude Code repo (offline drafting):**
+- Run the `/prd` skill — it will draft the structure and content based on `memory/profile/communication.md` (voice) and `memory/business/strategy.md` (grounding)
+- Then **paste the draft into a fresh Confluence PRD page** so the canonical template wraps it
+- Do **not** treat any local file in `templates/` or `memory/deliverables/` as the source of truth — Confluence wins
 
-## Goals
-- <outcome>, measured by <metric> moving from <current> to <target>
+## Why reference-only
 
-## Non-goals
-- <thing we are explicitly not doing in this scope>
+If we copy the template here, it forks. Edits in Confluence won't propagate. The system has to align to live documentation, not a snapshot.
 
-## Success metric
-- **Primary:** <metric — link → `memory/business/metrics.md#…`>
-- **Guardrails:** <metrics that must not regress>
+## What this repo *does* hold for PRDs
 
-## Solution overview
-<The shape of the solution in 2-3 paragraphs. Diagrams welcome.>
+- **Drafts in flight:** `memory/deliverables/prds/<initiative>-<slug>.md` — working drafts before they go to Confluence
+- **Voice guide:** `memory/profile/communication.md` — how Dylan writes
+- **Grounding:** `memory/business/strategy.md`, `memory/business/customers.md`, `memory/initiatives/<file>.md`
+- **Decision references:** linked PRDs cite `memory/decisions/...`
 
-## Detailed requirements
-### Must-have (v1)
-- <requirement>
-
-### Should-have
-- <requirement>
-
-### Could-have (later)
-- <requirement>
-
-## Open questions
-- <question> — owner: <name> — needed by: <date>
-
-## Risks
-- <risk> — severity: <low/med/high> — mitigation: <…>
-
-## Dependencies
-- <team / system> — for: <…>
-
-## Rollout plan
-<Phased? Gated? Beta cohort? What kills the launch?>
-
-## Appendix
-- Linked research: <…>
-- Linked decisions: <…>
-- [ASSUMPTION] markers used:
-  - <assumption> — to validate by <…>
+## Logged: 2026-04-28
+Decision to use reference-only mode rather than copying the template into this repo.
