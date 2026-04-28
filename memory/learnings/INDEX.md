@@ -5,7 +5,7 @@
 ## Recent (last 30 days)
 | Date | Type | Title | File |
 |---|---|---|---|
-| _(none yet)_ | | | |
+| 2026-04-28 | mechanism | Dylan operates with external workflows that need to read/write this system | `2026-04/2026-04-28-external-integration-need.md` |
 
 ## Promoted → standing rules
 > Learnings that have been confirmed enough to live in `profile/` or `business/`. Linked here for traceability.
@@ -15,4 +15,4 @@
 | _(none yet)_ | | |
 
 ## Monthly archives
-- _(YYYY-MM/)_
+- `2026-04/`

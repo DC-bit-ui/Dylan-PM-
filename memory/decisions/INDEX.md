@@ -4,4 +4,4 @@
 
 | Date | Decision | Owner | Status | File |
 |---|---|---|---|---|
-| _(none yet)_ | | | | |
+| 2026-04-28 | Integration architecture — two-layer model | Dylan | accepted | `2026-04-28-integration-architecture.md` |

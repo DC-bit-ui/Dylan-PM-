@@ -48,9 +48,27 @@ These are the directories that grow over time. Treat them as authoritative:
 | `memory/retros/` | Retrospectives — daily, weekly, per-initiative |
 | `workspace/current/` | What Dylan is actively working on this week |
 | `workspace/archive/` | Completed work, kept for retrieval |
-| `inbox/` | Raw drops — meeting transcripts, emails, screenshots — to be processed |
+| `inbox/` | Raw drops — meeting transcripts, emails, screenshots — to be processed (namespaced as `inbox/<source>/`) |
+| `memory/integrations/` | Contracts for external systems Claude reads from / writes to (Granola, Notion, Jira, Outlook, Teams, cowork) |
 
 Each directory has an `INDEX.md` you should keep up to date when adding entries.
+
+### Connected systems — read live when available
+
+Dylan operates across multiple connected systems. If their connectors are enabled in this session, agents should pull live data rather than asking Dylan to paste:
+
+- **Granola** — meeting notes & transcripts → primary input for `meeting-synthesizer`
+- **Notion** — work items, docs → reconciled by `initiative-tracker`, surfaced by `/focus`
+- **Jira** — tickets, roadmap → reconciled by `initiative-tracker`, sized by `data-analyst`
+- **Outlook** — emails → surfaced by `/focus` and `stakeholder-comms`
+- **Microsoft Teams** — channel updates → surfaced by `initiative-tracker`
+- **cowork** — produces cross-system summaries that drop into `inbox/cowork/`
+
+Each contract lives in `memory/integrations/<system>.md` — read it before claiming live data.
+
+### External skill packs
+
+Dylan maintains skill packs outside this repo for product-specific operating procedures: `agriprove-pm`, `agriprove-backend`, `agriprove-design-system`. When relevant to the task, **invoke them in preference to generic guidance**. See `memory/integrations/external-skills.md`.
 
 ---
 

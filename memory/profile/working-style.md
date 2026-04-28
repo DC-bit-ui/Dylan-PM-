@@ -21,8 +21,20 @@
 - Where I plan the week: _(fill — file, doc, tool)_
 - Where I plan the day: _(fill)_
 
-## Tools I use
-- _(fill — Linear / Jira / Notion / Slack / etc.)_
+## Tools I use (connected systems)
+
+| Tool | Used for | Integration contract |
+|---|---|---|
+| Granola | Meeting notes & transcripts | `memory/integrations/granola.md` |
+| Notion | Work items, docs | `memory/integrations/notion.md` |
+| Jira | Tickets, roadmap | `memory/integrations/jira.md` |
+| Outlook | Email | `memory/integrations/outlook.md` |
+| Microsoft Teams | Team channel updates | `memory/integrations/teams.md` |
+| cowork | Cross-system summarisation | `memory/integrations/cowork.md` |
+
+External skill packs in active use: `agriprove-pm`, `agriprove-backend`, `agriprove-design-system` — see `memory/integrations/external-skills.md`.
+
+The aim is **hands-off**: this Claude OS pulls from these systems and routes outputs to the right places automatically. Dylan should not be retyping content from one system into another.
 
 ## How I want Claude to behave
 - Default to drafting, not interviewing

@@ -4,6 +4,15 @@
 
 > One section per product / surface Dylan touches.
 
+> **Note (2026-04-28):** Dylan referenced three skill packs — `agriprove-pm`, `agriprove-backend`, `agriprove-design-system` — implying "Agriprove" is the company / product family. Treat as `[ASSUMPTION]` until Dylan confirms; once confirmed, fill in below.
+
+## Agriprove (umbrella) [ASSUMPTION — confirm with Dylan]
+- **Company / product family:** Agriprove
+- **Surfaces referenced via skill packs:**
+  - **PM operating procedures** — see `memory/integrations/external-skills.md` → `agriprove-pm`
+  - **Backend** — see `memory/integrations/external-skills.md` → `agriprove-backend`
+  - **Design system** — see `memory/integrations/external-skills.md` → `agriprove-design-system`
+
 ## Product / Surface 1
 - **Name:** _(fill)_
 - **What it does:** _(fill — one paragraph)_

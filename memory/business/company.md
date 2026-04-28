@@ -3,7 +3,7 @@
 **Last updated:** 2026-04-28 (initial bootstrap — needs population)
 
 ## Basics
-- **Name:** _(fill)_
+- **Name:** Agriprove _([ASSUMPTION] inferred 2026-04-28 from skill names — confirm with Dylan)_
 - **What it does (one sentence):** _(fill)_
 - **Stage:** _(seed / Series X / public / etc.)_
 - **Size:** _(headcount, rough)_
