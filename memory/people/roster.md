@@ -47,21 +47,21 @@
 
 ## Internal — cross-functional
 
-### Claudia
+### Claudia Bryant
 - **Role:** Growth — lead scraping
-- **System presence:** referenced in tasks; not a Jira assignee
+- **System presence:** Teams (sourced); referenced in tasks; not a Jira assignee
 - **Surface:** Stormboy partner — lead generation pipeline
 - **Cadence with Dylan:** _(to confirm — likely Stormboy process alignment sessions)_
 
-### Hobbs
+### Hobbs Margaret
 - **Role:** Field team
-- **System presence:** referenced in user research / Frontier user
+- **System presence:** Teams (sourced); referenced in user research / Frontier user
 - **Surface:** Frontier user; Stormboy field-side
 - **Cadence with Dylan:** UX feedback sessions
 
-### Ben
+### Ben Payne
 - **Role:** Field team
-- **System presence:** referenced in user research / Frontier user
+- **System presence:** Teams (sourced); referenced in user research / Frontier user
 - **Surface:** Frontier user; Stormboy field-side
 - **Cadence with Dylan:** UX feedback sessions
 
@@ -82,6 +82,9 @@ _(populate over time — leadership changes, key customers signaling, etc.)_
 
 ## Profile gaps to fill
 - [ ] Kieren — communication style preferences (long email? short Slack? doc-first?)
-- [ ] Format preferences for each engineer (where they want PRDs to land — Notion? Confluence?)
-- [ ] Surnames where missing (Hobbs, Ben, Claudia)
+- [ ] Format preferences for each engineer (where they want PRDs to land — likely Confluence per AgriProve flow)
+- [x] Surnames captured (Hobbs Margaret, Ben Payne, Claudia Bryant) — 2026-04-28
 - [ ] Last-interaction history per person (track via meeting-synthesizer over time)
+
+## Sourcing protocol (durable rule)
+When a new person is introduced — or a known person needs more detail — **fetch from Teams / Outlook / Granola / HubSpot via MCP first**. Do not ask Dylan to spell names or fill in roles he can already retrieve from the connected systems. Ask Dylan only when the connectors return nothing or when judgement (cadence preferences, tone) is required.

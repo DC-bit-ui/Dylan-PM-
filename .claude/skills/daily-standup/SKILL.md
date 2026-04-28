@@ -12,13 +12,15 @@ description: Generate today's standup entry. Pulls live from Notion (Today + Don
 
 ## Workflow
 
-1. **Pull from Notion:**
+1. **Run `/reconcile` first.** Eliminate phantom-open tasks (meetings already booked, replies already sent, Jira tickets already updated) before composing Yesterday/Today. The reconciliation report's "✅ recommend mark done" items belong in **Yesterday**, not in **Today**.
+
+2. **Pull from Notion:**
    - Today view: `https://www.notion.so/fd5f23d7e071496dae6df273cbd901be?v=b920ba6653a54dee973847b167cadfd7`
    - Done (recent): `https://www.notion.so/fd5f23d7e071496dae6df273cbd901be?v=c3221ec7cf9a43d7b66f8d808ad16a00`
 
-2. **Pull from Jira:** `project = AP AND assignee = '712020:177437ab-7799-4e10-8604-116a8def9eb1' AND updated >= -1d ORDER BY updated DESC`
+3. **Pull from Jira:** `project = AP AND assignee = '712020:177437ab-7799-4e10-8604-116a8def9eb1' AND updated >= -1d ORDER BY updated DESC`
 
-3. **Optional — overnight context:**
+4. **Optional — overnight context (already partly covered by reconciliation):**
    - Teams chat search since last standup time (helpful given the SAST↔AEST gap)
    - Granola scan for any meeting Dylan missed overnight
 

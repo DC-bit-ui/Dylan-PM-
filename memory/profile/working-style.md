@@ -58,6 +58,8 @@ External skill packs in active use (live in Cowork, **not** this repo): `agripro
 3. **Cite memory files** when grounding a claim (path + line).
 4. **Distinguish live vs cached.** When using Notion/Jira/Granola data, say whether it came live (via MCP this session) or from a `memory/` snapshot.
 5. **Don't duplicate Notion.** Tasks live in Notion; this repo holds strategic memory, decisions, deliverables, retros, and reasoning.
+6. **Connectors first, ask second.** Before asking Dylan for facts the connected systems already hold (a person's full name, a Jira status, a meeting time, a Confluence page, a HubSpot record, a Granola transcript), **try the relevant MCP tool first**. Only ask Dylan when (a) connectors aren't enabled in the session, (b) they return nothing, or (c) the question requires judgement Dylan alone can give (preference, tone, intent). Saying "let me check Teams / Notion / Jira" beats "what's their surname?".
+7. **Reconcile before surfacing tasks.** When generating any work-stack output (`/focus`, `/standup`, status update), run the reconciliation flow described in `memory/decisions/2026-04-28-reconciliation-flow.md` first — don't surface a task as open if Teams/Outlook/Granola/Jira/Confluence show it's already done. Phantom tasks are the most common signal failure.
 
 ---
 

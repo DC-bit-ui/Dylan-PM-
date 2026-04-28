@@ -9,3 +9,4 @@
 | `stakeholder-update.md` | Weekly status comms |
 | `decision-process.md` | Making a non-trivial decision |
 | `incident-response.md` | Something went wrong |
+| `local-setup-windows.md` | One-time: clone this repo to `C:\Dylan PM` and wire up MCPs locally |

@@ -16,9 +16,11 @@ _(to confirm — inferred from active epics:)_
 - Operation KCT phase 1 (AP-1964 — partner-driven)
 
 ## Current OKRs
-_(not yet captured — needs Dylan to populate)_
+**Status:** _Q OKRs are still being decided for the quarter (confirmed by Dylan, 2026-04-28). Until they land, `/okr-check` will return "OKRs pending — alignment lens unavailable; treat strategic priorities (above) as the proxy."_
 
-### Objective 1: _(fill)_
+When OKRs are finalised, populate this section and update `/okr-check` to reactivate the alignment lens.
+
+### Objective 1: _(pending)_
 - **KR1.1:** _(measurable)_ — current: _(value)_ — target: _(value)_
 - **KR1.2:** …
 

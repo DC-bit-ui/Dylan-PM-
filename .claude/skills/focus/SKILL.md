@@ -10,19 +10,21 @@ description: Surface today's top 3 priorities. Queries Notion ("Work Priorities"
 
 ## Workflow
 
-1. **Pull live state from Notion** via `mcp__47501ce1-32b1-4956-a3cf-3a370bc547c9__notion-query-database-view`:
+1. **Run `/reconcile` first** (see `.claude/skills/reconcile/SKILL.md`). Don't surface a task as open until connector signals (Outlook / Teams / Jira / Confluence / Granola) have been checked. Phantom "open" tasks are the most common signal failure — eliminate them before ranking.
+
+2. **Pull live state from Notion** via `mcp__47501ce1-32b1-4956-a3cf-3a370bc547c9__notion-query-database-view`:
    - **Today view** — `https://www.notion.so/fd5f23d7e071496dae6df273cbd901be?v=b920ba6653a54dee973847b167cadfd7`
    - **Overdue view** — `https://www.notion.so/fd5f23d7e071496dae6df273cbd901be?v=57a05dc240464ae394be512a932db9a9`
    - **Backlog (ranked)** — `https://www.notion.so/fd5f23d7e071496dae6df273cbd901be?v=27ba53cd27444506910b03f29392577c`
 
-2. **Cross-reference Jira** for any AP-tickets where Dylan is assignee and recently updated (`project = AP AND assignee = '712020:177437ab-7799-4e10-8604-116a8def9eb1' AND updated >= -1d`). Items in Jira but not yet in Notion are gaps Apex should have caught — flag them.
+3. **Cross-reference Jira** for any AP-tickets where Dylan is assignee and recently updated (`project = AP AND assignee = '712020:177437ab-7799-4e10-8604-116a8def9eb1' AND updated >= -1d`). Items in Jira but not yet in Notion are gaps Apex should have caught — flag them.
 
-3. **Score each open Notion item** using Dylan's P0–P3 framework (see `memory/profile/decision-frameworks.md`):
+4. **Score each open (post-reconciliation) Notion item** using Dylan's P0–P3 framework (see `memory/profile/decision-frameworks.md`):
    - P0 priority + due today/overdue → top of stack
    - P1 with Today Rank set → next
    - Watch for escalation rule violations (Granola commitment >3 days old without active Notion task → bump priority and flag)
 
-4. **Pick top 3.** Be ruthless. Anything below #3 is "later".
+5. **Pick top 3.** Be ruthless. Anything below #3 is "later".
 
 5. **Output:**
 

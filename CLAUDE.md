@@ -85,7 +85,7 @@ Each directory has an `INDEX.md`. Keep it current.
 - **Jira** — team workstack (canonical for delivery). See `memory/integrations/jira.md`.
 - **`workspace/current/actions.md`** — fallback only when Notion is unreachable.
 
-Skills `/focus` and `/standup` query Notion directly via MCP.
+Skills `/focus` and `/standup` query Notion directly via MCP, and **always run `/reconcile` first** to validate completion against connector signals (see §6.1 below).
 
 ---
 
@@ -105,6 +105,28 @@ If a connector is enabled in this session, **pull live data** rather than asking
 | Cowork (Apex) | Daily orchestration | `memory/integrations/cowork.md` |
 
 When using live data, **say so** — and distinguish from snapshots (`memory/...` last-updated).
+
+### 6.1 Connector-first protocol
+
+Before asking Dylan for facts the connected systems already hold, **try the relevant MCP tool first**:
+- A person's full name, role, or last interaction → Teams / Outlook / Granola / HubSpot
+- A meeting's status, attendees, or whether it was booked → Outlook calendar / Teams
+- A ticket's status, comments, or recent transitions → Jira
+- A doc's existence, last edit, or content → Confluence
+- An email thread → Outlook
+- A meeting transcript or commitment → Granola
+
+Ask Dylan only when (a) connectors aren't enabled, (b) they return nothing, or (c) the question requires Dylan's judgement (preference, intent, tone).
+
+### 6.2 Reconciliation rule (phantom-task elimination)
+
+Before surfacing any task in `/focus`, `/standup`, or stakeholder updates, **run `/reconcile`** (`.claude/skills/reconcile/SKILL.md`). It checks each open Notion task against connector signals (Outlook calendar/mail, Teams, Jira, Confluence, Granola commitments) and categorises:
+1. **Done-ack** — signal found post-creation → recommend mark done with evidence + timestamp + system
+2. **Still-open** — no signal → keep, prioritise with reference to the source commitment
+3. **Ambiguous** — can't programmatically verify → flag for Dylan's eye
+4. **Missing from workstack** — Granola commitment without a corresponding task → propose adding
+
+Apex's EOD Reconciliation handles part of this on schedule (12:00 SAST) — `/reconcile` is the on-demand version, callable any time.
 
 ### External skill packs (live in Cowork, not this repo)
 `agriprove-pm`, `agriprove-backend`, `agriprove-design`, `soil-carbon-audit`, `soil-carbon-batch-audit`, `internal-comms`. See `memory/integrations/external-skills.md`. Where overlap exists with this repo's skills, **Cowork wins for execution; this repo wins for memory**.
