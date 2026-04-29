@@ -2,7 +2,7 @@
 
 > ⚠️ **Notion is the canonical workstack** for Dylan's tasks. See `memory/integrations/notion.md`.
 >
-> This file is a **fallback** used only when the Notion connector is unavailable in a session. Apex (Cowork) maintains Notion via Morning Briefing (04:45 SAST) and EOD Reconciliation (12:00 SAST).
+> This file is a **fallback** used only when the Notion connector is unavailable in a session. Apex (Cowork) maintains Notion via Morning Briefing (04:45 SAST) and EOD Reconciliation (17:30 SAST).
 >
 > Decision: `memory/decisions/2026-04-28-notion-canonical-workstack.md`
 

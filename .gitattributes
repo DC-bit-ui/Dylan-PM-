@@ -1,0 +1,30 @@
+# Cross-platform line-ending policy.
+# Windows hosts should also set: git config --global core.autocrlf true
+# Linux/macOS hosts should also set: git config --global core.autocrlf input
+# That combination makes both surfaces store LF in git, with Windows checkouts
+# getting CRLF on disk transparently. Prevents whip-saw when the same repo is
+# touched from Cowork (Linux mount) and a Windows host on the same day.
+
+* text=auto eol=lf
+
+# Shell scripts must always be LF, regardless of host
+*.sh text eol=lf
+
+# Markdown is text — let auto + eol=lf govern
+*.md text
+
+# JSON, YAML, TOML — text, LF
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+
+# Common binaries — never normalise
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.ico binary

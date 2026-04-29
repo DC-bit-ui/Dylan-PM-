@@ -9,7 +9,7 @@ description: Reconcile Dylan's open Notion tasks against connector signals (Outl
 
 Tasks like "Book meeting with X", "Reply to Y", "Update Jira AP-1234" often get created and then completed within the hour — but they sit in the Notion workstack as "open" for days. This pollutes `/focus`, inflates `/standup`, and creates the impression of a longer queue than reality.
 
-Apex's EOD Reconciliation handles part of this at 12:00 SAST, but it doesn't run on-demand. This skill is the on-demand version, callable any time and chained automatically by `/focus` and `/standup`.
+Apex's EOD Reconciliation handles part of this at 17:30 SAST, but it doesn't run on-demand. This skill is the on-demand version, callable any time and chained automatically by `/focus` and `/standup`.
 
 ## The flow
 

@@ -11,7 +11,7 @@
 - **AEST** — Australian Eastern Standard Time. Team's primary timezone.
 - **AP** — Jira project key for **AgriProve Platform** (primary delivery project).
 - **AO** — Jira project key for **AgriProve Operations** (business workstreams).
-- **Apex** — Dylan's automated daily workflow system: Morning Briefing (04:45 SAST) + EOD Reconciliation (12:00 SAST) + Command Center artifact. Lives in Cowork.
+- **Apex** — Dylan's automated daily workflow system: Morning Briefing (04:45 SAST) + EOD Reconciliation (17:30 SAST) + Command Center artifact. Lives in Cowork.
 - **ArcGIS** — spatial data platform used by Frontier for GeoMapper.
 
 ## C

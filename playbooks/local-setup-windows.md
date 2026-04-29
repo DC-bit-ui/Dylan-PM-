@@ -130,7 +130,7 @@ The Stop hook nudges end-of-session capture. The SessionStart hook can prime con
 | Capability | Cowork | Local Claude Code |
 |---|---|---|
 | Apex Morning Briefing (04:45 SAST) | ✅ runs here | ❌ does not run; reads results |
-| Apex EOD Reconciliation (12:00 SAST) | ✅ runs here | ❌ |
+| Apex EOD Reconciliation (17:30 SAST) | ✅ runs here | ❌ |
 | External skill packs (`agriprove-pm`, `soil-carbon-audit`, …) | ✅ canonical | ❌ |
 | `/focus`, `/standup`, `/reconcile` (this repo's skills) | partially (via Apex) | ✅ on demand |
 | Drafting PRDs / briefs / decisions | ✅ via skills | ✅ via skills (saves to `memory/deliverables/`) |
