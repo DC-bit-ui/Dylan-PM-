@@ -5,6 +5,7 @@
 ## Recent (last 30 days)
 | Date | Type | Title | File |
 |---|---|---|---|
+| 2026-04-29 | correction | GitHub MCP is web-only — Cowork desktop is filesystem-only | `2026-04/2026-04-29-mcp-surface-availability.md` |
 | 2026-04-28 | research | Claude multi-surface architecture in 2026 — and the seam pattern that addresses it | `2026-04/2026-04-28-multi-surface-research.md` |
 | 2026-04-28 | mechanism | Curation cadence — weekly default, layered, triggered | `2026-04/2026-04-28-curation-cadence.md` |
 | 2026-04-28 | architecture | Dual-stack prioritisation — Mine + Complement, implemented in PR #2 | `2026-04/2026-04-28-dual-stack-implemented.md` |
