@@ -244,3 +244,20 @@ If `memory/` files are sparse (rare now — bootstrap is populated):
 This file is editable. If you (Claude) notice a pattern that warrants a new section, agent, or skill, **propose it** in conversation. Once Dylan agrees, edit. The system is designed to evolve.
 
 When a Cowork output (Apex morning briefing summary, etc.) lands in `inbox/cowork/`, route durable insights to `memory/business/`, `memory/people/`, or `memory/learnings/` per the routing rules in `memory/integrations/cowork.md`.
+
+---
+
+## 15. Multi-surface strategy
+
+Dylan uses Claude across multiple surfaces (Cowork desktop, Claude Code CLI, claude.ai web, Claude mobile). Anthropic does not unify memory across surfaces — chat memory, Cowork Project memory, and Claude Code local memory are separate namespaces with no auto-sync.
+
+**The pattern:**
+- **Cowork + this repo (`C:\Dylan PM`)** = engineered memory + system of record
+- **Claude Code (CLI)** = same memory layer; for system edits and code-shaped work
+- **claude.ai web + Claude mobile** = whiteboard / capture-only — durable insights bridge into `memory/` via `inbox/cowork/`
+
+**The seam:** at the end of any valuable claude.ai or mobile session, ask Claude to summarise into the capture template (in `playbooks/multi-surface-capture.md`), paste into `inbox/cowork/<YYYY-MM-DD>-<topic>.md`. Apex Morning Briefing or `/inbox-process` routes it to `memory/`.
+
+**For known-durable mobile work,** use Dispatch (Pro/Max) — fires a Cowork session on the Windows machine that can write to `memory/` directly.
+
+Full detail: [`memory/decisions/2026-04-28-multi-surface-strategy.md`](memory/decisions/2026-04-28-multi-surface-strategy.md), [`playbooks/multi-surface-capture.md`](playbooks/multi-surface-capture.md).

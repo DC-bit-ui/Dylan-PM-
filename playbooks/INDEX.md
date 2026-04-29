@@ -10,3 +10,4 @@
 | `decision-process.md` | Making a non-trivial decision |
 | `incident-response.md` | Something went wrong |
 | `local-setup-windows.md` | One-time: clone this repo to `C:\Dylan PM` and wire up MCPs locally |
+| `multi-surface-capture.md` | Bridging claude.ai / mobile sessions back to `memory/` via `inbox/cowork/` |
