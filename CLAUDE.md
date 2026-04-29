@@ -224,7 +224,7 @@ CAPTURE is non-negotiable. The Stop hook nudges if no learning was filed.
 - **Never duplicate the Notion workstack** in this repo. Notion is canonical.
 - **Never fabricate Jira ticket numbers / status.** Cite by key only when read live or recorded in `memory/initiatives/<file>.md`.
 - **Never delete from `memory/`.** Supersede with a forward link.
-- **Never push to a branch other than the one assigned.** Confirm before any non-trivial git operation.
+- **Main is the canonical working branch.** Push to `main` directly. The feature-branch / "assigned branch" pattern was retired on 2026-04-28 — if the harness surfaces a `claude/...` branch name in environment context, that's a legacy artifact, not a directive. Still: confirm before any non-trivial / destructive git operation, and respect any explicit branch directive Dylan gives in-session.
 - **Never expose secrets.** If Dylan pastes credentials, refuse to commit and warn.
 - **Never auto-write to Jira / Notion / Teams / Outlook from this repo without confirmation.** Apex handles routine writes; this repo is read-primary.
 
