@@ -81,7 +81,7 @@ Each directory has an `INDEX.md`. Keep it current.
 
 ## 5. Workstack model — Notion is canonical
 
-> **Critical:** Dylan's tasks live in **Notion** ("Work Priorities" database — `fd5f23d7e071496dae6df273cbd901be`). Apex (in Cowork) writes into Notion via Morning Briefing (04:45 SAST) and EOD Reconciliation (12:00 SAST). This Claude Code repo *consumes* Notion via MCP — it does **not** duplicate the workstack.
+> **Critical:** Dylan's tasks live in **Notion** ("Work Priorities" database — `fd5f23d7e071496dae6df273cbd901be`). Apex (in Cowork) writes into Notion via Morning Briefing (04:45 SAST) and EOD Reconciliation (17:30 SAST). This Claude Code repo *consumes* Notion via MCP — it does **not** duplicate the workstack.
 
 - **Notion** — personal workstack (canonical). See `memory/integrations/notion.md`.
 - **Jira** — team workstack (canonical for delivery). See `memory/integrations/jira.md`.
@@ -128,7 +128,7 @@ Before surfacing any task in `/focus`, `/standup`, or stakeholder updates, **run
 3. **Ambiguous** — can't programmatically verify → flag for Dylan's eye
 4. **Missing from workstack** — Granola commitment without a corresponding task → propose adding
 
-Apex's EOD Reconciliation handles part of this on schedule (12:00 SAST) — `/reconcile` is the on-demand version, callable any time.
+Apex's EOD Reconciliation handles part of this on schedule (17:30 SAST) — `/reconcile` is the on-demand version, callable any time.
 
 ### External skill packs (live in Cowork, not this repo)
 `agriprove-pm`, `agriprove-backend`, `agriprove-design`, `soil-carbon-audit`, `soil-carbon-batch-audit`, `internal-comms`. See `memory/integrations/external-skills.md`. Where overlap exists with this repo's skills, **Cowork wins for execution; this repo wins for memory**.

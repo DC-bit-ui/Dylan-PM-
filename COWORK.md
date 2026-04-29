@@ -153,7 +153,7 @@ If Cowork detects something it thinks should change in a Tier 3 file, it logs a 
 **Mechanism:** Cowork has direct filesystem access to `C:\Dylan PM` (the local clone) within its sandboxed VM. No GitHub MCP needed.
 
 **Cadence:**
-- **Read at every Apex run** (Morning Briefing 04:45 SAST, EOD Reconciliation 12:00 SAST). The connected-folder access means whole-tree reads are cheap — re-read each run rather than caching across runs (caching invites stale data; the Project Instructions trigger re-read every session).
+- **Read at every Apex run** (Morning Briefing 04:45 SAST, EOD Reconciliation 17:30 SAST). The connected-folder access means whole-tree reads are cheap — re-read each run rather than caching across runs (caching invites stale data; the Project Instructions trigger re-read every session).
 - **Write on capture moments** — Granola synthesis, decision logged, learning captured, retro written. Don't batch (loses context).
 - **Commit + push** at the end of each Apex run cycle (Pattern A) or batch nightly (Pattern B) — see §2.
 

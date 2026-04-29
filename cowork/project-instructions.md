@@ -270,7 +270,7 @@ cap 3) + Stack B (Complement, cap 3 / compressed when Stack A is overloaded).
 - **Write back to memory/** per Tier 1: any durable learnings or commitments
   → `memory/learnings/`. Commit + push.
 
-### Apex EOD Reconciliation — 12:00 SAST weekdays
+### Apex EOD Reconciliation — 17:30 SAST weekdays
 - Re-read CLAUDE.md, COWORK.md, memory/profile/*, memory/business/strategy.md,
   memory/decisions/2026-04-28-dual-stack-prioritisation.md
 - Review Today / Overdue. Run reconciliation per §6.
@@ -369,7 +369,7 @@ When a skill drafts something on Dylan's behalf, ALWAYS read
 ## 12. Session patterns (when to do what)
 
 **Pattern A — Daily driver (Apex scheduled).** Most of the project's value
-runs through Apex: Morning Briefing 04:45 SAST, EOD 12:00 SAST. These read
+runs through Apex: Morning Briefing 04:45 SAST, EOD 17:30 SAST. These read
 memory/, query connectors, write to Notion + memory/, commit + push. Dylan
 reviews the Command Center.
 

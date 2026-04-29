@@ -5,6 +5,8 @@
 ## Recent (last 30 days)
 | Date | Type | Title | File |
 |---|---|---|---|
+| 2026-04-29 | correction + architecture | Apex prompts live in Cowork per-task Instructions field; "light prompt" hypothesis falsified | `2026-04/2026-04-29-apex-prompts-location-and-falsified-hypothesis.md` |
+| 2026-04-29 | preference | Dylan likes visual artifact output for briefings (Daily widget style) — preserve signal even though Daily flow is being deleted | `2026-04/2026-04-29-visual-artifact-preference.md` |
 | 2026-04-29 | diagnostic | Cowork bootstrap probe — false negative; folder was un-cloned | `2026-04/2026-04-29-cowork-bootstrap-probe.md` |
 | 2026-04-29 | correction | GitHub MCP is web-only — Cowork desktop is filesystem-only | `2026-04/2026-04-29-mcp-surface-availability.md` |
 | 2026-04-28 | research | Claude multi-surface architecture in 2026 — and the seam pattern that addresses it | `2026-04/2026-04-28-multi-surface-research.md` |
