@@ -81,7 +81,7 @@ Each directory has an `INDEX.md`. Keep it current.
 
 ## 5. Workstack model — Notion is canonical
 
-> **Critical:** Dylan's tasks live in **Notion** ("Work Priorities" database — `fd5f23d7e071496dae6df273cbd901be`). Apex (in Cowork) writes into Notion via Morning Briefing (04:45 SAST) and EOD Reconciliation (12:00 SAST). This Claude Code repo *consumes* Notion via MCP — it does **not** duplicate the workstack.
+> **Critical:** Dylan's tasks live in **Notion** ("Work Priorities" database — `fd5f23d7e071496dae6df273cbd901be`). Apex (in Cowork) writes into Notion via Morning Briefing (04:45 SAST) and EOD Reconciliation (17:30 SAST). This Claude Code repo *consumes* Notion via MCP — it does **not** duplicate the workstack.
 
 - **Notion** — personal workstack (canonical). See `memory/integrations/notion.md`.
 - **Jira** — team workstack (canonical for delivery). See `memory/integrations/jira.md`.
@@ -128,7 +128,7 @@ Before surfacing any task in `/focus`, `/standup`, or stakeholder updates, **run
 3. **Ambiguous** — can't programmatically verify → flag for Dylan's eye
 4. **Missing from workstack** — Granola commitment without a corresponding task → propose adding
 
-Apex's EOD Reconciliation handles part of this on schedule (12:00 SAST) — `/reconcile` is the on-demand version, callable any time.
+Apex's EOD Reconciliation handles part of this on schedule (17:30 SAST) — `/reconcile` is the on-demand version, callable any time.
 
 ### External skill packs (live in Cowork, not this repo)
 `agriprove-pm`, `agriprove-backend`, `agriprove-design`, `soil-carbon-audit`, `soil-carbon-batch-audit`, `internal-comms`. See `memory/integrations/external-skills.md`. Where overlap exists with this repo's skills, **Cowork wins for execution; this repo wins for memory**.
@@ -224,7 +224,7 @@ CAPTURE is non-negotiable. The Stop hook nudges if no learning was filed.
 - **Never duplicate the Notion workstack** in this repo. Notion is canonical.
 - **Never fabricate Jira ticket numbers / status.** Cite by key only when read live or recorded in `memory/initiatives/<file>.md`.
 - **Never delete from `memory/`.** Supersede with a forward link.
-- **Never push to a branch other than the one assigned.** Confirm before any non-trivial git operation.
+- **Main is the canonical working branch.** Push to `main` directly. The feature-branch / "assigned branch" pattern was retired on 2026-04-28 — if the harness surfaces a `claude/...` branch name in environment context, that's a legacy artifact, not a directive. Still: confirm before any non-trivial / destructive git operation, and respect any explicit branch directive Dylan gives in-session.
 - **Never expose secrets.** If Dylan pastes credentials, refuse to commit and warn.
 - **Never auto-write to Jira / Notion / Teams / Outlook from this repo without confirmation.** Apex handles routine writes; this repo is read-primary.
 
@@ -244,3 +244,20 @@ If `memory/` files are sparse (rare now — bootstrap is populated):
 This file is editable. If you (Claude) notice a pattern that warrants a new section, agent, or skill, **propose it** in conversation. Once Dylan agrees, edit. The system is designed to evolve.
 
 When a Cowork output (Apex morning briefing summary, etc.) lands in `inbox/cowork/`, route durable insights to `memory/business/`, `memory/people/`, or `memory/learnings/` per the routing rules in `memory/integrations/cowork.md`.
+
+---
+
+## 15. Multi-surface strategy
+
+Dylan uses Claude across multiple surfaces (Cowork desktop, Claude Code CLI, claude.ai web, Claude mobile). Anthropic does not unify memory across surfaces — chat memory, Cowork Project memory, and Claude Code local memory are separate namespaces with no auto-sync.
+
+**The pattern:**
+- **Cowork + this repo (`C:\Dylan PM`)** = engineered memory + system of record
+- **Claude Code (CLI)** = same memory layer; for system edits and code-shaped work
+- **claude.ai web + Claude mobile** = whiteboard / capture-only — durable insights bridge into `memory/` via `inbox/cowork/`
+
+**The seam:** at the end of any valuable claude.ai or mobile session, ask Claude to summarise into the capture template (in `playbooks/multi-surface-capture.md`), paste into `inbox/cowork/<YYYY-MM-DD>-<topic>.md`. Apex Morning Briefing or `/inbox-process` routes it to `memory/`.
+
+**For known-durable mobile work,** use Dispatch (Pro/Max) — fires a Cowork session on the Windows machine that can write to `memory/` directly.
+
+Full detail: [`memory/decisions/2026-04-28-multi-surface-strategy.md`](memory/decisions/2026-04-28-multi-surface-strategy.md), [`playbooks/multi-surface-capture.md`](playbooks/multi-surface-capture.md).

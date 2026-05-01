@@ -4,7 +4,7 @@
 
 > **Rule:** if it's not in this index, agents shouldn't claim live data from it.
 
-**Last updated:** 2026-04-28 (validated against Cowork handoff)
+**Last updated:** 2026-04-29 — added `cowork/` subdirectory for Apex prompt snapshots; flagged stale fields in `cowork.md`
 
 ---
 
@@ -12,7 +12,7 @@
 
 | System | Purpose | Direction | Status | File |
 |---|---|---|---|---|
-| **Cowork (Apex)** | Daily orchestration; runs Morning Briefing + EOD Reconciliation + Command Center | outbound (writes to Notion / Jira; drops summaries) | operational | `cowork.md` |
+| **Cowork (Apex)** | Daily orchestration; runs Morning Briefing + EOD Reconciliation + Command Center | bidirectional (Apex writes to Notion/Jira; Cowork writes back to `memory/` per [`/COWORK.md`](../../COWORK.md)) | operational; bootstrap complete 2026-04-29 | `cowork.md` (contract) + [`cowork/`](cowork/) (artifacts: prompt snapshots, diagnostics) |
 | **Notion** | Personal workstack ("Work Priorities" DB) | read primary; write rare | operational | `notion.md` |
 | **Jira** | Team workstack — AgriProve cloud | read primary; write via Apex | operational | `jira.md` |
 | **Granola** | Meeting notes & transcripts | read | operational | `granola.md` |

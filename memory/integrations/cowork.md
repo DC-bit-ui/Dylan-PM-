@@ -2,23 +2,28 @@
 
 **Purpose:** Cowork is the Claude environment where **Apex** runs. Apex is Dylan's automated daily workflow system — the orchestration layer that pulls from connected systems and writes outputs Dylan and this Claude Code repo consume.
 **Direction:** **bidirectional.** Cowork writes to Notion / Jira / Granola directly *and* writes back to this repo's `memory/` per the contract in `/COWORK.md` (root of repo).
-**Access:** Apex runs *in* Cowork. This Claude Code session reads its outputs but doesn't trigger it. Cowork accesses this repo via the GitHub MCP scoped to `DC-bit-ui/Dylan-PM-`.
-**Status:** **operational** for outbound-from-Cowork (Apex → Notion/Jira). **Pending** for inbound-to-this-repo (Cowork writing to `memory/`) — bootstrap when Cowork's GitHub MCP is verified.
+**Access:** Apex runs *in* Cowork. This Claude Code session reads its outputs but doesn't trigger it. Cowork accesses this repo via its **connected-folder filesystem mount** to `C:\Dylan PM` (NOT GitHub MCP — corrected 2026-04-28; superseded a prior architectural claim).
+**Status:** **operational, bidirectional.** Outbound (Apex → Notion/Jira) live since launch; inbound (Cowork writing back to `memory/`) live since bootstrap completed 2026-04-29. See [`../../inbox/cowork/2026-04-29-apex-flow-diagnostic.md`](../../inbox/cowork/2026-04-29-apex-flow-diagnostic.md) for the diagnostic that confirmed the mount works for scheduled runs.
+
+**Verbatim prompt snapshots:** see [`cowork/`](cowork/) subdirectory — Morning Briefing and EOD Reconciliation prompts captured 2026-04-29.
 
 ---
 
 ## What Apex is — three components
 
 ### 1. Apex Morning Briefing
-- **Schedule:** 04:45 SAST (06:45 AEST), weekdays. Cron: `45 4 * * 1-5`.
-- **Location:** `C:\Users\DylanCronje\Documents\Claude\Scheduled\apex-morning-briefing\SKILL.md`
+- **Schedule (intended):** 04:45 SAST weekdays. *Note:* SAST=UTC+2, AEST=UTC+10 → 04:45 SAST = 12:45 AEST (8h gap, not 2h).
+- **Cron currently configured:** `45 4 * * 1-5` — but Cowork's cron interprets in **AEST**, so this fires at 04:45 AEST = **20:45 SAST the night before**. The intended fire requires `45 12 * * 1-5` (12:45 AEST). Pending fix as of 2026-04-29.
+- **Prompt source of truth:** Cowork's per-task instructions field. Captured snapshot: [`cowork/apex-morning-briefing-prompt-2026-04-29.md`](cowork/apex-morning-briefing-prompt-2026-04-29.md). The prior claim of a SKILL.md path under `Documents\Claude\Scheduled\` was unverified by the 2026-04-29 diagnostic and is treated as superseded.
 - **What it does:** Pre-work synthesis. Pulls from Notion (carryover), Jira (team updates), Granola (past 7 days of meetings), Teams (overnight messages), HubSpot (customer signals), Confluence (doc changes). Creates **Proposed** tasks in Notion with context.
 - **Granola scan window:** 7 days — catches commitments from earlier in the week at risk of slipping.
 - **Output:** summary with carryover count, new discoveries by source, Notion creates/updates, Jira comments, top-3 priorities, slipping items.
 
 ### 2. Apex EOD Reconciliation
-- **Schedule:** 12:00 SAST (14:00 AEST), weekdays. Cron: `0 12 * * 1-5`.
-- **Location:** `C:\Users\DylanCronje\Documents\Claude\Scheduled\apex-eod-reconciliation\SKILL.md`
+- **Schedule (intended):** **17:30 SAST** weekdays per the prompt's TIMEZONE CONTEXT line ("at 5:30 PM SAST… team has finished their day"). 17:30 SAST = 01:30 AEST next day → cron should be `30 1 * * 2-6`.
+- **Cron currently configured:** `0 12 * * 1-5` — interpreted in AEST = 04:00 SAST. Wrong relative to the prompt's stated intent of 17:30 SAST. Pending fix as of 2026-04-29.
+- **Prior claim of "12:00 SAST":** superseded — was incorrect; prompt anchors at 17:30 SAST.
+- **Prompt source of truth:** Cowork's per-task instructions field. Captured snapshot: [`cowork/apex-eod-reconciliation-prompt-2026-04-29.md`](cowork/apex-eod-reconciliation-prompt-2026-04-29.md).
 - **What it does:** Progress consolidation. Reviews Today/Overdue. Categorises tasks (completed, in progress, blocked, not touched, stale proposed). Scans for items added during the day. Handles carryovers (P0/P1 keep due date, P2/P3 push to tomorrow). Syncs to Jira where appropriate.
 - **Jira sync rules (built into EOD):**
   - Notion `Done` + `Linked Jira` → transition Jira ticket + add comment
@@ -42,6 +47,11 @@
 3. **Jira writes use discretion.** Personal/operational tasks ("send notes", "schedule meeting") stay Notion-only. Team-visible work syncs.
 4. **Granola scan = 7 days.** Items >3 days old with no Notion task get priority bumped (escalation rule).
 5. **Origin tagging.** All auto-created Notion tasks tagged `Apex · Morning` or `Apex · Reconciliation`.
+6. **Dual-stack prioritisation** (per [`memory/decisions/2026-04-28-dual-stack-prioritisation.md`](../decisions/2026-04-28-dual-stack-prioritisation.md)). Every prioritisation output (Morning Briefing, EOD, Command Center, `/focus`, `/standup`) produces:
+   - **Stack A — Mine (cap 3):** Notion / Jira assignee, Jira action-implied @-mentions, Granola first-person commits, Teams DMs / @mentions, Confluence comments tagging Dylan
+   - **Stack B — Complement (cap 3, compressed when Stack A overloaded with P0s):** team work touching owned surfaces (Frontier, Stormboy, HORIZON Sch 2, KCT, LawrieCo, T1 Offsets) where Dylan isn't on the action — leverage-scored
+   - Stack A items can be auto-Proposed in Notion; Stack B items are surface-only — Dylan decides whether to engage
+7. **Reconciliation runs first.** Every Apex output runs `/reconcile` (per [`memory/decisions/2026-04-28-reconciliation-flow.md`](../decisions/2026-04-28-reconciliation-flow.md)) before building either stack. Phantom-done items don't appear.
 
 ---
 
@@ -89,14 +99,19 @@ This repo does **not** duplicate the Notion workstack. `workspace/current/action
 - Confluence scan: same — `searchConfluenceUsingCql` needs a probe call against the AgriProve cloud
 - This Claude Code session can't trigger Apex; if it needs Apex output now, ask Dylan to run Cowork
 
-## Setup status (2026-04-28)
+## Setup status (updated 2026-04-29)
 - [x] Apex skills configured in Cowork
-- [ ] First manual run of each scheduled task (to grant tool permissions)
+- [x] First manual run of each scheduled task (Morning + EOD have multiple successful runs in transcript history; Daily Briefing has degenerate runs only)
 - [ ] HubSpot CRM search validated against live data
 - [ ] Confluence CQL search validated
-- [ ] Bidirectional Notion ↔ Jira sync (currently primarily one-direction Notion writes)
-- [ ] **GitHub MCP for `DC-bit-ui/Dylan-PM-` enabled in Cowork** — required for the `/COWORK.md` contract to be live
-- [ ] **Cowork bootstrap probe** — first write to `memory/learnings/` to confirm the path works (per `/COWORK.md` §11)
+- [ ] Bidirectional Notion ↔ Jira sync (currently primarily one-direction Notion writes; EOD prompt §4 specifies bidirectional but real-world coverage unverified)
+- [x] ~~GitHub MCP~~ → **superseded.** Cowork uses connected-folder filesystem mount to `C:\Dylan PM`. No GitHub MCP needed. (Corrected 2026-04-28.)
+- [x] **Cowork bootstrap probe** — completed 2026-04-29. See [`../../inbox/cowork/2026-04-29-probe-diff.md`](../../inbox/cowork/2026-04-29-probe-diff.md) for post-bootstrap probe content.
+
+## Open issues (2026-04-29)
+- [ ] **Cron timezone** — all three scheduled flows fire 8h early because cron interprets in AEST, expressions written in SAST. Fix: rewrite cron expressions per [`cowork/apex-morning-briefing-prompt-2026-04-29.md`](cowork/apex-morning-briefing-prompt-2026-04-29.md) and [`cowork/apex-eod-reconciliation-prompt-2026-04-29.md`](cowork/apex-eod-reconciliation-prompt-2026-04-29.md) intent.
+- [ ] **Daily Briefing redundancy** — `daily-briefing` task has SKILL.md = "TBD" and no per-task instructions. Diagnostic confirms it produces no unique value. Pending decision to delete or repurpose.
+- [ ] **Silent-failure observability** — diagnostic flagged one EOD session (`local_98189b59`) producing empty output with no alert. No monitoring exists for failed scheduled runs.
 
 ## Discussed future enhancements (per handoff)
 - Bidirectional Notion ↔ Jira sync (create Jira from Notion, two-way status)

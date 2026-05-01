@@ -187,6 +187,74 @@ Never write to:
 If you detect something that should change in a Tier 3 file, log a Tier 1
 learning describing the case and let Dylan decide.
 
+### When to capture — judgment, not keywords
+
+Default: capture, don't ask. If Dylan says something he expects to apply
+going forward, write it to memory/ — don't wait for him to prefix it with
+"remember that".
+
+Capture immediately when Dylan:
+- States a preference about how he works, communicates, or thinks
+  ("I prefer X to Y", "don't lead with X", "always Y first")
+- Corrects a fact, term, or framing you used. The correction goes to
+  memory/, not the original.
+- Articulates a rule he expects to apply going forward ("from now on...",
+  "we don't...", "always...", "never...")
+- Introduces a new term, person, product, or concept not already in memory/
+- Says any explicit signal: "remember that", "save this", "make a note",
+  "include this in memory", "add to memory"
+- Repeats the same correction twice in one conversation — that's a signal,
+  even if neither time was prefixed
+
+The trigger is "Dylan expects this to stick", NOT "Dylan said a magic word".
+
+When the signal is ambiguous, default to capture with [moderate] confidence
+and a note "supersede if corrected". False positives are cheap — Dylan can
+supersede. False negatives compound — Dylan repeats himself.
+
+Do NOT capture: speculation, brainstorming, exploratory thinking, opinions
+about external topics, in-the-moment frustration with no rule attached.
+
+### The no-silent-fallback rule
+
+The canonical memory location is the **filesystem under the connected
+folder** at `memory/...`. That is the only place memory lives.
+
+You MUST NOT use:
+- Claude.ai's built-in "memory" / "auto-memory" tool. It is a separate,
+  per-session system that Dylan's wider OS does not consume. Captures saved
+  there are invisible to Apex, Claude Code, and every external skill pack.
+- Any parallel folder (`memory-export/`, `claude-memory/`, `for-import-later/`,
+  `memory-staging/`, etc.). There is no "later import" — files outside
+  `memory/` are not consumed.
+- Conversation-attached files in lieu of a write, unless Dylan explicitly
+  asks for an attachment.
+
+If the canonical write FAILS (read-only mount, permission denied, path
+missing, tool returns error), surface it in chat in this exact shape:
+
+> ❗ Memory write failed.
+> Path: `<full path under memory/>`
+> Capture: `<one-line summary of what was being written>`
+> Tool: `<tool name>` — Error: `<verbatim error>`
+> **No fallback created.** Possible causes: connected-folder mount is
+> read-only this session, folder access needs re-granting in Cowork →
+> Project → Settings, or the parent directory needs creating first.
+> Please resolve the access issue and ask me to retry.
+
+The capture is now ONLY in this conversation. Better to lose a capture and
+flag it visibly than to scatter files no one reads.
+
+### Confirm captures in one line
+
+After every successful memory write, confirm in one line:
+
+> ✅ Captured: `<path>` — "<one-line summary>" — commit `<sha>` (Tier 1) /
+> PR `<url>` (Tier 2)
+
+One line. One path. One reference. Don't list multiple files unless the
+capture genuinely spans multiple files; even then, keep it tight.
+
 ## 8. Universal write rules
 
 Apply to every commit, every file write, every memory addition:
@@ -214,10 +282,8 @@ git push origin <branch>
 ```
 
 Branch:
-- Until PR #1 merges: commit to `claude/setup-claude-system-9cDDB`
-- After PR #1 merges:
-  - Tier 1 → directly to `main`
-  - Tier 2 → branch `cowork/<slug>`, push, open PR
+- Tier 1 → directly to `main`
+- Tier 2 → branch `cowork/<slug>`, push, open PR
 
 If `git push` fails due to network: retry up to 4 times with exponential
 backoff (2s, 4s, 8s, 16s).
@@ -234,38 +300,122 @@ include the source signal (meeting ID / ticket / thread link) per §8 rule 5.
 
 ## 10. Apex — your scheduled persona
 
-You run Apex at three moments:
+You run Apex at three moments. Every output produces a **dual stack** per
+`memory/decisions/2026-04-28-dual-stack-prioritisation.md` — Stack A (Mine,
+cap 3) + Stack B (Complement, cap 3 / compressed when Stack A is overloaded).
 
 ### Apex Morning Briefing — 04:45 SAST weekdays
-- Read CLAUDE.md, COWORK.md, memory/profile/*, memory/integrations/cowork.md
-- Pull from Notion (carryover), Jira (team updates), Granola (past 7 days
-  of meetings), Teams (overnight messages), HubSpot (customer signals),
-  Confluence (doc changes)
+- Read CLAUDE.md, COWORK.md, memory/profile/*, memory/integrations/cowork.md,
+  memory/business/strategy.md (for owned-surfaces list), memory/decisions/2026-04-28-dual-stack-prioritisation.md
+- Pull from Notion (carryover), Jira (team updates + Dylan-tagged comments),
+  Granola (past 7 days of meetings — first-person commitments + 3rd-party
+  mentions of Dylan), Teams (overnight messages — DMs, @mentions, channel
+  posts on owned surfaces), Outlook (mail), HubSpot (customer signals),
+  Confluence (doc changes + Dylan-tagged comments)
 - Run reconciliation per §6 — eliminate phantom tasks before surfacing
-- Create Proposed tasks in Notion with origin tag `Apex · Morning`
-- Output: summary with carryover count, new discoveries by source, Notion
-  creates/updates, Jira comments, top-3 priorities, slipping items
+- **Build Stack A (Mine, cap 3):** items with Dylan's name on them — Notion
+  assignee, Jira assignee + action-implied comments, first-person Granola
+  commits, Teams DMs / @mentions, Confluence comments tagging Dylan. Score
+  P0–P3 with due-date weighting.
+- **Build Stack B (Complement, cap 3):** team work where Dylan's PM input
+  adds leverage — Granola transcripts mentioning owned surfaces (Frontier,
+  Stormboy, HORIZON Sch 2, KCT, LawrieCo, T1 Offsets) where Dylan isn't on
+  the action; Teams channel posts with open Qs / scoping ambiguity /
+  cross-team disagreement; Jira tickets in active epics touching owned
+  surfaces where Dylan isn't assignee; Granola 3rd-party commits naming
+  Dylan without assigning. Apply leverage scoring (+2 open Q 24+ hr, +2
+  cross-team disagreement, +1 scope/metric ambiguity, +1 decision-needed;
+  −2 routine status, −2 single-person thread, −1 retrospective). Owns
+  surface-weight 1.0; Contributes 0.6.
+- **Suppression rule:** when Stack A has 3 P0s, compress Stack B to a
+  one-line tease ("N complement opportunities available — ask if interested").
+- Create Proposed tasks in Notion with origin tag `Apex · Morning`. Stack A
+  items can be auto-Proposed; Stack B items are surfaced in the briefing
+  output only — Dylan decides whether to engage.
+- Output: summary with carryover count, new discoveries by source,
+  **Stack A (Top 3 Mine) + Stack B (3 / compressed)**, Notion creates/updates,
+  Jira comments, slipping items.
 - **Write back to memory/** per Tier 1: any durable learnings or commitments
   → `memory/learnings/`. Commit + push.
 
-### Apex EOD Reconciliation — 12:00 SAST weekdays
-- Re-read CLAUDE.md, COWORK.md, memory/profile/*
+### Apex EOD Reconciliation — 17:30 SAST weekdays
+- Re-read CLAUDE.md, COWORK.md, memory/profile/*, memory/business/strategy.md,
+  memory/decisions/2026-04-28-dual-stack-prioritisation.md
 - Review Today / Overdue. Run reconciliation per §6.
 - Categorise: completed, in progress, blocked, not touched, stale proposed
 - Apply carryover rule: P0/P1 keep due date; P2/P3 push to tomorrow
 - Sync Notion ↔ Jira where appropriate (only team-visible work; not personal
   ops tasks)
+- **Build tomorrow's dual stack** for the EOD output — Stack A (Mine, cap 3)
+  set up for tomorrow + Stack B (Complement, cap 3) carrying forward unaddressed
+  high-leverage items from today
+- Track Stack B engagement: did Dylan act on any complement opportunities
+  surfaced this morning? Note in retro for 30-day validation review.
 - **Write the EOD retro** to `memory/retros/session/<YYYY-MM-DD>-eod.md`
   per Tier 1. Commit + push.
 - Output: structured summary — completed / in progress / blocked / not
-  touched / new items / Jira synced / stale items / tomorrow's top 3
+  touched / new items / Jira synced / stale items / **tomorrow's Stack A +
+  Stack B**
 
 ### Apex Command Center (artifact)
 - Persisted Cowork HTML artifact, ID `apex-command-center`
-- Tabs: Today | Overdue | Jira | Meetings | Teams
+- Tabs: Today | Overdue | Jira | Meetings | Teams | **Complement** (new tab)
 - Live data sources: Notion (Today + Overdue), Jira (active epics),
   Granola (this week's meetings), Teams (last 24h)
 - Use `window.cowork.sample()` for AI Priority Synthesis
+- The Complement tab surfaces Stack B candidates with leverage scores —
+  Dylan can scan and dismiss / engage from there
+
+### Apex Weekly Sweep — Friday 16:00 SAST
+Per `memory/decisions/2026-04-28-curation-cadence.md`. Runs after Dylan's
+working week ends but while AEST team Thursday/Friday activity is captured
+(16:00 SAST = 18:00 AEST).
+
+- Read CLAUDE.md, COWORK.md, memory/profile/*, memory/decisions/2026-04-28-curation-cadence.md
+- **Dispatch the `memory-curator` subagent** via the `/sweep` skill
+  (`.claude/commands/sweep.md`). It produces the sweep report.
+- **Dispatch the `retrospector` subagent** for the weekly retro (writes to
+  `memory/retros/weekly/<YYYY-WW>-<slug>.md`)
+- **Pattern promotion review:** any learning that has appeared 3+ times →
+  draft a Tier 2 PR promoting it to a standing rule in `memory/profile/`
+  (NOT `communication.md` or `identity.md` — those are off-limits)
+- **Decision review:** flag standing decisions in `memory/decisions/INDEX.md`
+  contradicted by recent activity for supersede
+- **Dual-stack source-quality check:** count Stack A false-positives, Stack B
+  engagements, suppression frequency this week. Feeds the monthly review.
+- **Reconciliation accuracy:** ambiguous-flag rate, correct done-ack rate
+- **Tier 1 commits:** INDEX updates, dedupe merges, supersede markers,
+  cross-link gaps fixed → directly to main
+- **Tier 2 PRs:** profile promotions, decision supersedes → branch
+  `cowork/sweep-<YYYY-WW>`, push, open PR
+- Output: sweep report (per `/sweep` skill output template) + weekly retro
+
+### Triggered sweeps (override the schedule)
+Apex Morning Briefing each weekday checks two trigger conditions:
+
+- **Volume:** count unprocessed learnings since last sweep. If >12, prepend
+  "Sweep recommended today" to the briefing output and queue the sweep for
+  that evening.
+- **Churn:** if a learning superseded another within 7 days (check
+  `memory/learnings/INDEX.md` for forward-link annotations), queue an
+  immediate profile review for the affected file — do NOT wait for Friday.
+
+### Apex Monthly Review — first Monday of month, 16:00 SAST
+- **Strategic alignment:** does the workstack ladder to current strategy?
+- **Owned-surfaces review:** has Dylan's role shifted? Update
+  `memory/business/strategy.md` if so (Tier 2 PR — Dylan reviews)
+- **30-day validation reviews** for each new mechanism (currently:
+  reconciliation flow, dual-stack prioritisation, curation cadence itself)
+- Output: monthly review report → `memory/retros/monthly/<YYYY-MM>.md`
+  (Tier 1) + any proposed Tier 2 PRs for strategy / profile changes
+
+### Apex Quarterly System Review — manual, first week of quarter
+- **Not Apex-scheduled** — this is a Dylan + Claude Code session
+- Reviews CLAUDE.md, COWORK.md, hard rules, agent + skill inventory,
+  integration contracts vs actual usage
+- Apex's role: prepare a pre-read pulling sweep reports from the quarter
+  to surface candidate changes; Dylan + Claude Code make the architectural
+  calls
 
 ## 11. Other Cowork skills
 
@@ -287,7 +437,7 @@ When a skill drafts something on Dylan's behalf, ALWAYS read
 ## 12. Session patterns (when to do what)
 
 **Pattern A — Daily driver (Apex scheduled).** Most of the project's value
-runs through Apex: Morning Briefing 04:45 SAST, EOD 12:00 SAST. These read
+runs through Apex: Morning Briefing 04:45 SAST, EOD 17:30 SAST. These read
 memory/, query connectors, write to Notion + memory/, commit + push. Dylan
 reviews the Command Center.
 
