@@ -5,26 +5,39 @@
 # getting CRLF on disk transparently. Prevents whip-saw when the same repo is
 # touched from Cowork (Linux mount) and a Windows host on the same day.
 
+# Default: detect text vs binary, normalise to LF on commit
 * text=auto eol=lf
 
-# Shell scripts must always be LF, regardless of host
-*.sh text eol=lf
+# Markdown / docs / config — LF (matches GitHub rendering and most editors)
+*.md       text eol=lf
+*.markdown text eol=lf
+*.txt      text eol=lf
+*.json     text eol=lf
+*.yml      text eol=lf
+*.yaml     text eol=lf
+*.toml     text eol=lf
 
-# Markdown is text — let auto + eol=lf govern
-*.md text
+# Code / scripts that run on POSIX — LF
+*.sh       text eol=lf
+*.py       text eol=lf
+*.js       text eol=lf
+*.ts       text eol=lf
 
-# JSON, YAML, TOML — text, LF
-*.json text eol=lf
-*.yml text eol=lf
-*.yaml text eol=lf
-*.toml text eol=lf
+# Windows-native scripts — CRLF (PowerShell, cmd, batch)
+*.ps1      text eol=crlf
+*.psm1     text eol=crlf
+*.psd1     text eol=crlf
+*.bat      text eol=crlf
+*.cmd      text eol=crlf
 
-# Common binaries — never normalise
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.gif binary
-*.pdf binary
-*.zip binary
-*.gz binary
-*.ico binary
+# Binaries — leave alone
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.gif      binary
+*.pdf      binary
+*.zip      binary
+*.gz       binary
+*.ico      binary
+*.woff     binary
+*.woff2    binary
