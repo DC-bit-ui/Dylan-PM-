@@ -13,3 +13,4 @@
 | 2026-04-28 | PRD template — reference Confluence canonical, do not copy locally | Dylan | accepted | _(see `templates/prd.md` and `.claude/skills/prd/SKILL.md`)_ |
 | 2026-04-28 | Notion is canonical workstack; this repo is strategic memory | Dylan | accepted | `2026-04-28-notion-canonical-workstack.md` |
 | 2026-04-28 | Integration architecture — two-layer model | Dylan | accepted (extended by Notion-canonical decision) | `2026-04-28-integration-architecture.md` |
+| 2026-05-01 | Proactive memory capture is judgment-based; canonical writes only, no silent fallbacks | Dylan | accepted | `2026-05-01-proactive-memory-capture-and-no-fallback.md` |

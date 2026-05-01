@@ -132,6 +132,52 @@ Cowork must **never write** to:
 
 If Cowork detects something it thinks should change in a Tier 3 file, it logs a learning (Tier 1) describing the case and lets Dylan decide.
 
+### Tier 1 — When to capture (judgment, not keywords)
+
+Capture proactively. Default is "write the learning"; the absence of an explicit "remember that" prefix is not a reason to skip.
+
+Cowork captures immediately when Dylan:
+- States a preference about how he works, communicates, or thinks ("I prefer X to Y", "don't lead with X", "always Y first")
+- Corrects a fact, term, or framing — the correction is the durable content, not the original
+- Articulates a rule he expects to apply going forward ("from now on…", "we don't…", "always / never…")
+- Introduces a new term, person, product, or concept not already in `memory/`
+- Says any explicit signal: "remember that", "save this", "make a note", "include this in memory", "add to memory"
+- Repeats the same correction twice in one conversation — that's the signal, regardless of phrasing
+
+The trigger is **"Dylan expects this to stick"**, not "Dylan said the magic word".
+
+When the signal is ambiguous, default to capture with `[moderate]` confidence and a note `supersede if corrected`. False positives are cheap (Dylan supersedes); false negatives compound (Dylan repeats himself).
+
+Do not capture: speculation, brainstorming, opinions about external topics, in-the-moment frustration without an attached rule.
+
+### The no-silent-fallback rule
+
+The **canonical memory location is the filesystem at the connected folder root** (`<connected-folder>/memory/...`). That is the only place memory lives.
+
+Cowork must NOT use:
+- **Claude.ai's built-in "memory" / "auto-memory" tool.** It is a separate, per-session system that Dylan's wider OS does not consume. Captures saved there are invisible to Apex, Claude Code, and every external skill pack.
+- **Any parallel folder** (`memory-export/`, `claude-memory/`, `for-import-later/`, `memory-staging/`, etc.). There is no "later import"; files outside `memory/` are not consumed.
+- **Conversation-attached files** in lieu of a write, unless Dylan explicitly asks for an attachment.
+
+If the canonical write FAILS (read-only mount, permission denied, path missing, tool returns error), surface it in chat in this exact shape:
+
+> ❗ Memory write failed.
+> Path: `<full path under memory/>`
+> Capture: `<one-line summary>`
+> Tool: `<tool name>` — Error: `<verbatim error>`
+> **No fallback created.** Possible causes: connected-folder mount read-only this session, folder access needs re-granting in Cowork → Project → Settings, or parent directory needs creating first.
+> Please resolve and ask me to retry.
+
+The capture is now in the conversation only. Better to lose a capture and flag it visibly than to scatter files no one reads.
+
+### Confirm captures in one line
+
+After every successful memory write:
+
+> ✅ Captured: `<path>` — "<one-line summary>" — commit `<sha>` (Tier 1) / PR `<url>` (Tier 2)
+
+One line. One path. One reference.
+
 ---
 
 ## 5. Universal rules (apply to every write)
