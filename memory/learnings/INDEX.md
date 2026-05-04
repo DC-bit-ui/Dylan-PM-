@@ -5,6 +5,7 @@
 ## Recent (last 30 days)
 | Date | Type | Title | File |
 |---|---|---|---|
+| 2026-05-04 | correction + operational hazard | PR base-branch routing bug — legacy `claude/setup-claude-system-9cDDB` causes PRs to merge into a phantom (3 instances in 24h); fix is branch deletion + base verification gate | `2026-05/2026-05-04-pr-base-branch-routing-bug.md` |
 | 2026-05-01 | diagnostic / mental model | "Looks-like-work" anti-pattern — surface output without durable side effects (Daily Briefing + memory-export both instances this week) | `2026-05/2026-05-01-looks-like-work-anti-pattern.md` |
 | 2026-04-29 | correction + architecture | Apex prompts live in Cowork per-task Instructions field; "light prompt" hypothesis falsified | `2026-04/2026-04-29-apex-prompts-location-and-falsified-hypothesis.md` |
 | 2026-04-29 | preference | Dylan likes visual artifact output for briefings (Daily widget style) — preserve signal even though Daily flow is being deleted | `2026-04/2026-04-29-visual-artifact-preference.md` |
