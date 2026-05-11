@@ -1,0 +1,102 @@
+# Apex Morning Briefing — 2026-05-04
+
+**Run time:** 04:45 SAST (automated)
+**Status:** Normal run — Notion creates + updates completed
+
+---
+
+## Sources scanned
+
+- Notion: Today view (0 items), Overdue view (100 items)
+- Jira: Active epics (5), Dylan's tickets (9), Last 24h updates (12), Prod status (15), Blocked (0)
+- Granola: 13 meetings (Apr 28 – May 1)
+- Teams: Searched — no results returned (possible connectivity gap or quiet period)
+- Confluence: 0 pages updated in last 24h
+- HubSpot: Not queried (no clear PM action signals from Jira/Granola)
+
+---
+
+## Carryover state
+
+100 overdue items in Notion. Today view empty (no tasks due today). Key in-flight:
+- P0 Waiting: "Review Snapshot automation designs" (due Apr 21, 13 days overdue)
+- P0 Waiting: "Investigate Ben's snapshot automation bug AP-2232" (due Apr 28)
+- P0 Not started: "Stormboy — 1:1 with Claudia Claude Code workflow" (due Apr 28, 6 days overdue)
+- P1 In progress: "Address Search — send materials to Athul + Loom" AP-2245 (due Apr 28, 6 days overdue)
+
+---
+
+## Granola action items found (week of Apr 28 – May 1)
+
+13 meetings scanned. Key open commitments:
+
+| Commitment | Meeting | Days elapsed | Status |
+|---|---|---|---|
+| Send PRD + designs + Loom to Athul for address search | Apr 28 kickoff | 6 days | In progress (Notion), escalated to P0 |
+| Review snapshot automation designs (50+ comments) | May 1 standup | 3 days | P0/Waiting in Notion |
+| Build comms tracking artifact (Burnham's + John Hartley) | May 1 Stormboy standup | 3 days | NEW — created in Notion |
+| Walk Adeline through snapshot process | May 1 Stormboy standup | 3 days | NEW — created in Notion |
+| 1:1 with Claudia (Claude Code setup) + Ben (operationalization) | May 1 Stormboy standup | 3 days | Existing Notion task, updated |
+| EIH automation strategy / skill build | Apr 30 DJ meeting | 4 days | Existing Proposed in Notion |
+
+---
+
+## Jira signals
+
+**Active epics:**
+- AP-1963 Frontier Phase 2 (Dylan, Development) — in active sprint
+- AP-2253 Frontier Address Search (Athul, Discovery)
+- AP-2116 Schedule 2 model validation (Cadel, Development)
+- AP-1964 KCT phase 1 (Steve, Development)
+- AP-2187 T1 Offsets Report crediting workflow (no assignee, Discovery)
+
+**Prod items (need review):**
+- AP-2274 — "Verify new Schedule 2 calculations using Duncan CP2 example" (Cadel) — NEW Notion task created
+
+**High-priority Dylan tickets in Development:**
+- AP-2215 — HubSpot mandatory fields scaffold (High, in Development) — tracked in Notion
+- AP-2228 — Review address search designs, unblock designers (High, unassigned) — signals P0 urgency on address search Loom task
+- AP-2222 — Finalise property management address designs (High, unassigned)
+- AP-2223 — HubSpot mandatory fields Stormboy (High, unassigned)
+
+**Reconciled Done:**
+- AP-2268 HubSpot queue backup — marked Done in Jira today; Notion task updated to Done
+
+---
+
+## Notion writes
+
+**Created (3 new Proposed tasks):**
+1. "Horizon — review AP-2274 in Prod: verify Schedule 2 calculations" — P1, Today Rank 3
+2. "Stormboy — build end-to-end comms tracking artifact (Burnham's + John Hartley)" — P2, Today Rank 6
+3. "Stormboy — walk Adeline through snapshot process and advance automation designs" — P2, Today Rank 7
+
+**Updated (3 existing tasks):**
+1. "Address Search — send materials to Athul + record Loom walkthrough" — escalated to P0, Today Rank 1, Next step refreshed with AP-2228 designer-blocked context
+2. "Stormboy — 1:1 with Claudia to define exact Claude Code workflow" — Today Rank 2, Next step refreshed (6 days overdue)
+3. "Bugs — AP-2268 HubSpot queue backup recurring" — marked Done (AP-2268 Done in Jira)
+
+---
+
+## Top 3 priorities
+
+1. **Address search materials to Athul + unblock designers** (P0) — designers blocked on Frontier address search designs per AP-2228; 6 days since kickoff. Send PRD, Figma, Loom today.
+2. **Claudia 1:1 — Claude Code workflow for Storm Boy team** (P0) — 6 days overdue; 147 contacts waiting to be allocated; Ben and Claudia can't self-run without this.
+3. **Snapshot automation designs — internal review** (P0) — 13 days overdue; 50+ comments unactioned; Dylan must review before Daniel + Ben customer-facing review.
+
+---
+
+## Slipping items
+
+- "Review Snapshot automation designs" — P0, 13 days overdue (due Apr 21)
+- "Stormboy — 1:1 with Claudia" — P0, 6 days overdue (due Apr 28)
+- "Address Search — send materials to Athul" — escalated to P0, 6 days overdue (due Apr 28)
+- "Frontier — deliver HubSpot mandatory fields list" (AP-2215) — P1, 4 days overdue (due Apr 30)
+
+---
+
+## Systems notes
+
+- Teams MCP: searches returned no results — possible quiet Monday morning (AEST team public holiday Vic/Ranch on leave per May 1 standup note) or connectivity gap
+- Confluence: clean, no updates in last 24h
+- Granola: 13 meetings retrieved via list_meetings; query_granola_meetings couldn't locate them via NL query — worked around using get_meetings by ID
