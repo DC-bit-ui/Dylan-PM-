@@ -261,3 +261,63 @@ Dylan uses Claude across multiple surfaces (Cowork desktop, Claude Code CLI, cla
 **For known-durable mobile work,** use Dispatch (Pro/Max) — fires a Cowork session on the Windows machine that can write to `memory/` directly.
 
 Full detail: [`memory/decisions/2026-04-28-multi-surface-strategy.md`](memory/decisions/2026-04-28-multi-surface-strategy.md), [`playbooks/multi-surface-capture.md`](playbooks/multi-surface-capture.md).
+
+---
+
+## 16. Career signal surfacing — read carefully
+
+**Career-aggregation data lives OUTSIDE this repo.** Dylan's career portfolio (brag-doc / CV / interview-prep / comp-discussion artifact) lives in his **personal Notion workspace** (page `3288c08eb28f81378a20f1a9913dcd27`). Because this repo's IP boundary with AgriProve is non-trivial, no career-aggregation content persists in `memory/` — even sanitised.
+
+**Compliance gate.** The Apex sync described in [`memory/integrations/cowork/apex-career-signal-capture-prompt-2026-05-11.md`](memory/integrations/cowork/apex-career-signal-capture-prompt-2026-05-11.md) (DRAFT) is **gated behind Dylan's completion of the compliance self-assessment** in [`inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md`](inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md). Until that self-assessment is signed and the corresponding Notion page is populated with actual policy citations, **do not advise Dylan to activate the Apex flows**.
+
+**In-session protocol — safe regardless of compliance gate:**
+
+This Claude's job is to **surface** career signal during normal work, never persist. When you spot a category below during any task, flag it inline with `[CAREER]`, propose the sanitised STAR shape, let Dylan decide whether to capture into personal Notion himself.
+
+### What counts as career signal
+
+| Category | Examples |
+|---|---|
+| Owned decisions | Dylan drove a strategic choice; the outcome shipped |
+| Scope expansions | New surface owned, new direct report, P&L exposure, new stakeholder forum |
+| Quantified wins | Cycle-time reduction, conversion lift, cost cut, on-time launch, audit-pass rate |
+| Positive feedback | Granola transcript shows someone crediting Dylan; Outlook/Teams praise |
+| Milestones | Promotions, comp changes, anniversaries, external speaking |
+| Skill firsts | First use of a new methodology (e.g., first Shape Up cycle) |
+| Public artifacts | Blog post, podcast, talk, public release, conference appearance |
+
+### How to surface in conversation
+
+```
+[CAREER] <one-line summary>
+  Source: <Granola/Outlook/Jira/Confluence/etc.>
+  Suggested Notion section: <Raw Log / Portfolio / Skill / Public Artifact / Comp Annex>
+  Suggested STAR shape (sanitised, ratio not absolute):
+    S: <category-level situation>
+    T: <Dylan's task>
+    A: <action taken>
+    R: <quantified result>
+```
+
+Dylan decides whether to capture. **Do not** write the signal to any file in `memory/`. **Do not** auto-write to Notion from this Claude (Apex handles writes only after the compliance gate is open).
+
+### Subagent behaviour
+- `meeting-synthesizer`: when parsing Granola transcripts, append a `[CAREER]` block after decisions/actions.
+- `retrospector`: when running retros, surface `[CAREER]` signals before promoting them to ordinary learnings.
+- `pm-strategist`: when reviewing a decision Dylan drove, mention the portfolio implication.
+- All other subagents: surface opportunistically.
+
+### Confidentiality rules (apply when proposing STAR shape)
+
+Strip → keep:
+- Customer names → archetype ("tier-1 cattle station in NSW")
+- Specific revenue / ACCU / hectare absolutes → ratios, percentages, multipliers
+- Internal product code names → descriptive ("audit-batch-processing tool")
+- Named team members (mostly) → role titles ("led team of 6", "presented to CEO")
+- Unannounced roadmap / strategy → category
+- Internal conflicts / named failures → category-level learning
+- Third-party NDA-bound names → type ("federal regulator")
+
+If unsure, default to over-stripping and flag for Dylan.
+
+Full architecture and setup: [`inbox/cowork/2026-05-11-career-portfolio-setup.md`](inbox/cowork/2026-05-11-career-portfolio-setup.md). Compliance assessment: [`inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md`](inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md).

@@ -4,7 +4,7 @@
 >
 > **Rule:** the parent [`../cowork.md`](../cowork.md) holds the *contract* (what Apex does, where outputs land, off-limits files). This subdirectory holds *artifacts* (verbatim prompts, prompt-version history, diagnostic outputs that need persistence).
 
-**Last updated:** 2026-04-29
+**Last updated:** 2026-05-11
 
 ---
 
@@ -14,6 +14,7 @@
 |---|---|---|---|
 | 2026-04-29 | Morning Briefing | [`apex-morning-briefing-prompt-2026-04-29.md`](apex-morning-briefing-prompt-2026-04-29.md) | First captured snapshot. Source: Cowork per-task instructions field (inferred). |
 | 2026-04-29 | EOD Reconciliation | [`apex-eod-reconciliation-prompt-2026-04-29.md`](apex-eod-reconciliation-prompt-2026-04-29.md) | First captured snapshot. EOD time intent in prompt = 17:30 SAST; conflicts with `../cowork.md` and current cron. |
+| 2026-05-11 | Career Signal Capture (daily/weekly/monthly) | [`apex-career-signal-capture-prompt-2026-05-11.md`](apex-career-signal-capture-prompt-2026-05-11.md) | **DRAFT. NOT ACTIVE.** Activation gated by compliance assessment in [`../../../inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md`](../../../inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md). Writes to Dylan's personal Notion via separate `personal_notion` MCP token. |
 
 **Capture rule:** when Dylan edits an Apex prompt in Cowork, capture a fresh dated snapshot (don't overwrite). Keeps a diff trail.
 
