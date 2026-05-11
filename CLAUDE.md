@@ -268,11 +268,13 @@ Full detail: [`memory/decisions/2026-04-28-multi-surface-strategy.md`](memory/de
 
 **Career-aggregation data lives OUTSIDE this repo.** Dylan's career portfolio (brag-doc / CV / interview-prep / comp-discussion artifact) lives in his **personal Notion workspace** (page `3288c08eb28f81378a20f1a9913dcd27`). Because this repo's IP boundary with AgriProve is non-trivial, no career-aggregation content persists in `memory/` — even sanitised.
 
-**Compliance gate.** The Apex sync described in [`memory/integrations/cowork/apex-career-signal-capture-prompt-2026-05-11.md`](memory/integrations/cowork/apex-career-signal-capture-prompt-2026-05-11.md) (DRAFT) is **gated behind Dylan's completion of the compliance self-assessment** in [`inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md`](inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md). Until that self-assessment is signed and the corresponding Notion page is populated with actual policy citations, **do not advise Dylan to activate the Apex flows**.
+**Operational model: single gate, then trustless automation.** The Apex flows described in [`memory/integrations/cowork/apex-career-signal-capture-prompt-2026-05-11.md`](memory/integrations/cowork/apex-career-signal-capture-prompt-2026-05-11.md) (DRAFT) are **gated behind Dylan's one-time sign-off on the compliance assessment** ([`inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md`](inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md)). Once that sign-off is in place, the system runs **autonomously**: daily capture → weekly auto-promotion (gated by sanitisation + canary list + confidence threshold) → weekly audit digest to Cowork chat. Dylan is not a per-entry dependency. He spot-checks the digest and redacts post-hoc if anything slipped.
 
-**In-session protocol — safe regardless of compliance gate:**
+Until the compliance assessment is signed, **do not advise Dylan to activate the Apex flows**. After it's signed, treat the system as live — the daily/weekly/monthly Apex tasks are the writers.
 
-This Claude's job is to **surface** career signal during normal work, never persist. When you spot a category below during any task, flag it inline with `[CAREER]`, propose the sanitised STAR shape, let Dylan decide whether to capture into personal Notion himself.
+**In-session protocol — safe regardless of gate state:**
+
+This Claude's job is to **surface** career signal during normal work, never persist locally. When you spot a category below during any task, flag it inline with `[CAREER]`, propose the sanitised STAR shape. Apex picks it up via Granola/Outlook/Teams scanning; Dylan doesn't need to remember to capture.
 
 ### What counts as career signal
 
@@ -299,7 +301,7 @@ This Claude's job is to **surface** career signal during normal work, never pers
     R: <quantified result>
 ```
 
-Dylan decides whether to capture. **Do not** write the signal to any file in `memory/`. **Do not** auto-write to Notion from this Claude (Apex handles writes only after the compliance gate is open).
+**Do not** write the signal to any file in `memory/`. **Do not** auto-write to Notion from this Claude. Apex writes after the compliance gate is open; until then, your tag is a verbal nudge.
 
 ### Subagent behaviour
 - `meeting-synthesizer`: when parsing Granola transcripts, append a `[CAREER]` block after decisions/actions.
@@ -320,4 +322,4 @@ Strip → keep:
 
 If unsure, default to over-stripping and flag for Dylan.
 
-Full architecture and setup: [`inbox/cowork/2026-05-11-career-portfolio-setup.md`](inbox/cowork/2026-05-11-career-portfolio-setup.md). Compliance assessment: [`inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md`](inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md).
+Full architecture and setup: [`inbox/cowork/2026-05-11-career-portfolio-setup.md`](inbox/cowork/2026-05-11-career-portfolio-setup.md). Compliance assessment: [`inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md`](inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md). Cowork policy review task: [`inbox/cowork/2026-05-11-cowork-policy-review-task.md`](inbox/cowork/2026-05-11-cowork-policy-review-task.md).
