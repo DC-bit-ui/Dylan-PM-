@@ -1,0 +1,153 @@
+<svg viewBox="0 0 720 560" xmlns="http://www.w3.org/2000/svg" style="font-family: Inter, system-ui, sans-serif; background: #fff">
+  <title>HORIZON Snapshot — HubSpot Ticket Lifecycle and Notification Routing</title>
+
+  <style>
+    .box { rx: 6; }
+    .title { font-size: 11.5px; font-weight: 600; fill: #1F2937; }
+    .subtitle { font-size: 9.5px; fill: #6B7280; }
+    .stage-label { font-size: 9px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+    .connector { stroke: #9CA3AF; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    .connector-auto { stroke: #3DBA78; stroke-width: 1.5; fill: none; marker-end: url(#arrow-green); }
+    .connector-manual { stroke: #9CA3AF; stroke-width: 1.5; fill: none; marker-end: url(#arrow); stroke-dasharray: 4 3; }
+    .badge { font-size: 7.5px; font-weight: 600; letter-spacing: 0.3px; }
+    .note { font-size: 9px; fill: #6B7280; }
+  </style>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9CA3AF"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3DBA78"/>
+    </marker>
+  </defs>
+
+  <!-- TITLE -->
+  <text x="360" y="24" text-anchor="middle" style="font-size:16px;font-weight:700;fill:#1F2937">Ticket Lifecycle — HORIZON Snapshot Requests Pipeline</text>
+  <text x="360" y="40" text-anchor="middle" class="subtitle">HubSpot pipeline ID: 1433968072 · Proposed: add "Ready for Review" stage</text>
+
+  <!-- PIPELINE HEADER -->
+  <rect x="12" y="52" width="696" height="24" rx="4" fill="#E5E7EB" opacity="0.3"/>
+  <text x="24" y="68" class="stage-label" fill="#6B7280">HUBSPOT TICKET PIPELINE STAGES</text>
+
+  <!-- STAGE 1 -->
+  <rect x="20" y="84" width="152" height="56" class="box" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="96" y="104" text-anchor="middle" class="title" fill="#92400E">New HORIZON</text>
+  <text x="96" y="116" text-anchor="middle" class="title" fill="#92400E">Snapshot Request</text>
+  <text x="96" y="130" text-anchor="middle" class="subtitle" fill="#92400E">Auto-created by HubSpot</text>
+  <rect x="112" y="132" width="50" height="12" rx="3" fill="#F59E0B" opacity="0.15"/>
+  <text x="137" y="141" text-anchor="middle" class="badge" fill="#92400E">EXISTING</text>
+
+  <!-- STAGE 2 -->
+  <rect x="198" y="84" width="140" height="56" class="box" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="4 2"/>
+  <text x="268" y="104" text-anchor="middle" class="title" fill="#92400E">Snapshot</text>
+  <text x="268" y="116" text-anchor="middle" class="title" fill="#92400E">In Progress</text>
+  <text x="268" y="130" text-anchor="middle" class="subtitle" fill="#92400E">Model run triggered</text>
+  <rect x="224" y="132" width="56" height="12" rx="3" fill="#F59E0B" opacity="0.15"/>
+  <text x="252" y="141" text-anchor="middle" class="badge" fill="#92400E">REPURPOSE</text>
+
+  <!-- STAGE 3 (NEW) -->
+  <rect x="364" y="84" width="140" height="56" class="box" fill="#D1FAE5" stroke="#3DBA78" stroke-width="2"/>
+  <text x="434" y="104" text-anchor="middle" class="title" fill="#065F46">Ready</text>
+  <text x="434" y="116" text-anchor="middle" class="title" fill="#065F46">for Review</text>
+  <text x="434" y="130" text-anchor="middle" class="subtitle" fill="#065F46">Triggers notification</text>
+  <rect x="408" y="132" width="52" height="12" rx="3" fill="#3DBA78" opacity="0.2"/>
+  <text x="434" y="141" text-anchor="middle" class="badge" fill="#065F46">NEW STAGE</text>
+
+  <!-- STAGE 4 -->
+  <rect x="530" y="84" width="140" height="56" class="box" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1.5"/>
+  <text x="600" y="104" text-anchor="middle" class="title">Complete</text>
+  <text x="600" y="116" text-anchor="middle" class="title">& Sent</text>
+  <text x="600" y="130" text-anchor="middle" class="subtitle">Growth confirms</text>
+  <rect x="574" y="132" width="50" height="12" rx="3" fill="#9CA3AF" opacity="0.15"/>
+  <text x="599" y="141" text-anchor="middle" class="badge" fill="#6B7280">EXISTING</text>
+
+  <!-- Stage arrows -->
+  <line x1="172" y1="112" x2="196" y2="112" class="connector-auto"/>
+  <line x1="338" y1="112" x2="362" y2="112" class="connector-auto"/>
+  <line x1="504" y1="112" x2="528" y2="112" class="connector-manual"/>
+
+  <!-- TRIGGER: Frontier request -->
+  <rect x="20" y="172" width="152" height="44" class="box" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="96" y="190" text-anchor="middle" class="title">Growth Request</text>
+  <text x="96" y="204" text-anchor="middle" class="subtitle">Via Frontier Actions menu</text>
+  <line x1="96" y1="140" x2="96" y2="170" class="connector-auto"/>
+
+  <!-- TRIGGER: Model run via socModelRunTrigger -->
+  <rect x="198" y="172" width="140" height="44" class="box" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="268" y="188" text-anchor="middle" class="title">socModelRunTrigger</text>
+  <text x="268" y="202" text-anchor="middle" class="subtitle">mutation → Temporal</text>
+  <rect x="210" y="206" width="54" height="12" rx="3" fill="#9CA3AF" opacity="0.15"/>
+  <text x="237" y="215" text-anchor="middle" class="badge" fill="#6B7280">TEMPORAL</text>
+  <line x1="268" y1="140" x2="268" y2="170" class="connector-auto"/>
+
+  <!-- Model completes -->
+  <rect x="198" y="246" width="140" height="44" class="box" fill="#D1FAE5" stroke="#3DBA78" stroke-width="1"/>
+  <text x="268" y="264" text-anchor="middle" class="title" fill="#065F46">status → COMPLETED</text>
+  <text x="268" y="278" text-anchor="middle" class="subtitle" fill="#065F46">Webhook to HubSpot</text>
+  <rect x="210" y="280" width="36" height="12" rx="3" fill="#3DBA78" opacity="0.15"/>
+  <text x="228" y="289" text-anchor="middle" class="badge" fill="#065F46">AUTO</text>
+  <line x1="268" y1="216" x2="268" y2="244" class="connector-auto"/>
+
+  <!-- Arrow from completion to Ready for Review -->
+  <path d="M 338 268 L 434 268 L 434 244" class="connector-auto" fill="none"/>
+  <text x="386" y="262" text-anchor="middle" class="note" fill="#065F46">moves ticket</text>
+
+  <!-- HubSpot workflow automation -->
+  <rect x="364" y="244" width="310" height="56" class="box" fill="#ECFDF5" stroke="#3DBA78" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="519" y="260" text-anchor="middle" class="stage-label" fill="#065F46">HUBSPOT WORKFLOW ON STAGE ENTRY</text>
+  <text x="519" y="274" text-anchor="middle" class="subtitle" fill="#065F46">Triggered when ticket enters "Ready for Review"</text>
+  <text x="519" y="288" text-anchor="middle" class="subtitle" fill="#065F46">Two parallel actions:</text>
+  <line x1="434" y1="140" x2="434" y2="242" class="connector-auto"/>
+
+  <!-- Action 1: Teams post -->
+  <rect x="364" y="326" width="154" height="64" class="box" fill="#F3F4F6" stroke="#6366F1" stroke-width="1.5"/>
+  <text x="441" y="344" text-anchor="middle" class="title" fill="#4338CA">Teams Channel Post</text>
+  <text x="441" y="358" text-anchor="middle" class="subtitle">Product > Platform Notifications</text>
+  <text x="441" y="372" text-anchor="middle" class="subtitle">@Growth member + snapshot link</text>
+  <rect x="376" y="378" width="64" height="12" rx="3" fill="#6366F1" opacity="0.1"/>
+  <text x="408" y="387" text-anchor="middle" class="badge" fill="#4338CA">CONNECTOR</text>
+
+  <line x1="441" y1="300" x2="441" y2="324" class="connector-auto"/>
+
+  <!-- Action 2: HubSpot task -->
+  <rect x="536" y="326" width="138" height="64" class="box" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="605" y="344" text-anchor="middle" class="title">HubSpot Task</text>
+  <text x="605" y="358" text-anchor="middle" class="subtitle">Assigned to ticket owner</text>
+  <text x="605" y="372" text-anchor="middle" class="subtitle">"Review & send snapshot"</text>
+  <rect x="564" y="378" width="48" height="12" rx="3" fill="#9CA3AF" opacity="0.15"/>
+  <text x="588" y="387" text-anchor="middle" class="badge" fill="#6B7280">OPTIONAL</text>
+
+  <line x1="570" y1="300" x2="605" y2="324" class="connector-auto"/>
+
+  <!-- SNAPSHOT TOOL -->
+  <rect x="314" y="422" width="240" height="56" class="box" fill="#0F1A2E" stroke="#3DBA78" stroke-width="2"/>
+  <text x="434" y="442" text-anchor="middle" style="font-size:13px;font-weight:700;fill:#5CC184">Snapshot Tool (pop-out tab)</text>
+  <text x="434" y="458" text-anchor="middle" style="font-size:9.5px;fill:#8FA3B8">Review → Generate → Edit → Export → Send</text>
+  <text x="434" y="472" text-anchor="middle" style="font-size:9.5px;fill:#8FA3B8">frontier.agriprove.io/snapshot?propertyId=xxx</text>
+
+  <line x1="441" y1="390" x2="441" y2="420" class="connector-manual"/>
+  <text x="447" y="410" class="note">Growth clicks link</text>
+
+  <!-- On Send -->
+  <rect x="314" y="504" width="240" height="32" class="box" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="434" y="522" text-anchor="middle" class="title" fill="#1E40AF">On send → ticket to "Complete & Sent"</text>
+
+  <line x1="434" y1="478" x2="434" y2="502" class="connector-auto"/>
+
+  <!-- Connect to Complete & Sent stage -->
+  <path d="M 554 520 L 600 520 L 600 142" class="connector-manual" fill="none"/>
+
+  <!-- Legend -->
+  <rect x="12" y="546" width="696" height="14" rx="3" fill="#E5E7EB" opacity="0.15"/>
+  <line x1="24" y1="554" x2="48" y2="554" stroke="#3DBA78" stroke-width="1.5"/>
+  <text x="52" y="557" style="font-size:8px;fill:#065F46">Automated</text>
+  <line x1="112" y1="554" x2="136" y2="554" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="140" y="557" style="font-size:8px;fill:#6B7280">Manual</text>
+  <rect x="200" y="550" width="8" height="8" rx="1" fill="#ECFDF5" stroke="#3DBA78" stroke-width="1" stroke-dasharray="3 1.5"/>
+  <text x="212" y="557" style="font-size:8px;fill:#6B7280">HubSpot workflow</text>
+  <rect x="310" y="550" width="8" height="8" rx="1" fill="#D1FAE5" stroke="#3DBA78" stroke-width="1.5"/>
+  <text x="322" y="557" style="font-size:8px;fill:#6B7280">New/changed</text>
+  <rect x="394" y="550" width="8" height="8" rx="1" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="406" y="557" style="font-size:8px;fill:#6B7280">Existing</text>
+</svg>

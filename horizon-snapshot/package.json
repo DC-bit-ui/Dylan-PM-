@@ -1,0 +1,17 @@
+{
+  "name": "horizon-snapshot",
+  "version": "0.1.0",
+  "description": "HORIZON Snapshot generator for AgriProve",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "express": "^4.21.0",
+    "jszip": "^3.10.1",
+    "multer": "^1.4.5-lts.1",
+    "puppeteer": "^23.0.0"
+  }
+}

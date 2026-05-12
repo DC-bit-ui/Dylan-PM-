@@ -1,0 +1,621 @@
+// ═══════════════════════════════════════════
+// HORIZON Snapshot Generator — Frontend App
+// Frontier dark theme · Review → Edit → Send
+// ═══════════════════════════════════════════
+
+const state = {
+  parsed: null,
+  calcs: null,
+  images: {},
+  centroid: null,
+  zoneStats: null,
+  narratives: { page2: '', page4: '', email: '' },
+  apiReady: false,
+  currentPage: 1,
+  totalPages: 12,
+  currentStep: 1,
+  completedSteps: new Set(),
+  devMode: false,
+  loaded: false,
+  source: 'upload', // 'platform' or 'upload'
+  uploadedFile: null
+};
+
+const PAGE_LABELS = [
+  'Cover', 'HORIZON Analysis', 'Soil & Carbon Indicators', 'Portfolio & ACCU Potential',
+  'Background', 'Economics', 'The AgriProve Difference', 'The AgriProve Advantage',
+  'The AgriProve Process', 'Your ACCUs', 'The AgriProve Assessment', 'Contact Us'
+];
+
+const DYNAMIC_PAGES = new Set([1, 2, 3, 4, 6]);
+
+// ═══ PIPELINE DATA (Phase 0 — demo; Phase 0.5 pulls from HubSpot) ═══
+const PIPELINE_DATA = [
+  {
+    id: 'snap-001',
+    name: 'Dawlish Road',
+    address: 'Dawlish Rd, Dorrigo NSW 2453',
+    area: 39,
+    rainfall: 1542,
+    projects: 1,
+    status: 'ready',
+    statusLabel: 'Ready for Review',
+    requestDate: '2026-05-03',
+    requestedBy: 'Ben Sherry',
+    hubspotStage: 'Snapshot Requested'
+  },
+  {
+    id: 'snap-002',
+    name: 'Castle Hill Station',
+    address: 'Castle Hill, Longreach QLD 4730',
+    area: 8336,
+    rainfall: 640,
+    projects: 11,
+    status: 'ready',
+    statusLabel: 'Ready for Review',
+    requestDate: '2026-05-04',
+    requestedBy: 'Ben Sherry',
+    hubspotStage: 'Snapshot Requested'
+  },
+  {
+    id: 'snap-003',
+    name: 'Doongara Pastoral',
+    address: 'Doongara Rd, Coonamble NSW 2829',
+    area: 4120,
+    rainfall: 480,
+    projects: 6,
+    status: 'in-progress',
+    statusLabel: 'In Progress',
+    requestDate: '2026-05-02',
+    requestedBy: 'Ben Sherry',
+    hubspotStage: 'Snapshot In Progress'
+  },
+  {
+    id: 'snap-004',
+    name: 'Wirrabilla',
+    address: 'Wirrabilla Rd, Condobolin NSW 2877',
+    area: 1850,
+    rainfall: 410,
+    projects: 3,
+    status: 'complete',
+    statusLabel: 'Complete',
+    requestDate: '2026-04-28',
+    requestedBy: 'Ben Sherry',
+    hubspotStage: 'Snapshot Sent',
+    completedDate: '2026-05-01'
+  },
+  {
+    id: 'snap-005',
+    name: 'Bellata Aggregation',
+    address: 'Bellata NSW 2397',
+    area: 6200,
+    rainfall: 590,
+    projects: 8,
+    status: 'queued',
+    statusLabel: 'Queued',
+    requestDate: '2026-05-05',
+    requestedBy: 'Growth Team',
+    hubspotStage: 'Model Run Complete'
+  },
+  {
+    id: 'snap-006',
+    name: 'LawrieCo Holdings',
+    address: 'Moree NSW 2400',
+    area: 12400,
+    rainfall: 570,
+    projects: 16,
+    status: 'queued',
+    statusLabel: 'Queued',
+    requestDate: '2026-05-05',
+    requestedBy: 'Growth Team',
+    hubspotStage: 'Model Run Complete'
+  }
+];
+
+let pipelineFilter = 'all';
+
+function renderPipeline() {
+  const list = document.getElementById('pipelineList');
+  const filtered = pipelineFilter === 'all'
+    ? PIPELINE_DATA
+    : PIPELINE_DATA.filter(function(s) { return s.status === pipelineFilter; });
+
+  document.getElementById('pipelineCount').textContent = filtered.length;
+
+  // Update filter button states
+  document.querySelectorAll('.pipe-filter').forEach(function(btn) {
+    btn.classList.remove('active');
+  });
+  var activeBtn = document.querySelector('.pipe-filter[onclick*="' + pipelineFilter + '"]');
+  if (activeBtn) activeBtn.classList.add('active');
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="pipeline-empty">No snapshots match this filter.</div>';
+    return;
+  }
+
+  var html = '';
+  for (var i = 0; i < filtered.length; i++) {
+    var s = filtered[i];
+    var dateStr = s.status === 'complete' && s.completedDate
+      ? 'Completed ' + s.completedDate
+      : 'Requested ' + s.requestDate + ' by ' + s.requestedBy;
+
+    html += '<div class="pipe-card" onclick="selectPipelineItem(\'' + s.id + '\')" data-id="' + s.id + '">'
+      + '<div class="pipe-status ' + s.status + '">' + s.statusLabel + '</div>'
+      + '<div class="pipe-name">' + s.name + '</div>'
+      + '<div class="pipe-address">' + s.address + '</div>'
+      + '<div class="pipe-meta">'
+      + '<span class="pipe-meta-item"><strong>' + s.area.toLocaleString() + '</strong> ha</span>'
+      + '<span class="pipe-meta-item"><strong>' + s.rainfall + '</strong> mm</span>'
+      + '<span class="pipe-meta-item"><strong>' + s.projects + '</strong> project' + (s.projects !== 1 ? 's' : '') + '</span>'
+      + '</div>'
+      + '<div class="pipe-date">' + dateStr + '</div>'
+      + '</div>';
+  }
+  list.innerHTML = html;
+}
+
+function filterPipeline(status) {
+  pipelineFilter = status;
+  renderPipeline();
+}
+
+function selectPipelineItem(id) {
+  var item = PIPELINE_DATA.find(function(s) { return s.id === id; });
+  if (!item) return;
+
+  // Highlight selected card
+  document.querySelectorAll('.pipe-card').forEach(function(c) { c.classList.remove('selected'); });
+  var card = document.querySelector('.pipe-card[data-id="' + id + '"]');
+  if (card) card.classList.add('selected');
+
+  if (item.status === 'ready') {
+    toast('Loading ' + item.name + ' snapshot data...', 'info');
+    // In Phase 0.5, this would fetch from Frontier API
+    // For demo, prompt to switch to Upload and use the test ZIP
+    setTimeout(function() {
+      toast(item.name + ' — switch to Upload ZIP and load the model output to review', 'info');
+    }, 1500);
+  } else if (item.status === 'complete') {
+    toast(item.name + ' snapshot was sent on ' + item.completedDate, 'success');
+  } else if (item.status === 'in-progress') {
+    toast(item.name + ' is currently being reviewed', 'info');
+  } else {
+    toast(item.name + ' is queued — model output ready, pending review', 'info');
+  }
+}
+
+// ═══ DATA SOURCE TOGGLE ═══════════════════════════════════
+function setSource(src) {
+  state.source = src;
+  document.getElementById('srcPlatform').classList.toggle('active', src === 'platform');
+  document.getElementById('srcUpload').classList.toggle('active', src === 'upload');
+
+  // Show/hide upload panel vs pipeline panel
+  var uploadPanel = document.getElementById('upload-panel');
+  var pipelinePanel = document.getElementById('pipeline-panel');
+
+  if (src === 'platform') {
+    if (uploadPanel) uploadPanel.style.display = 'none';
+    if (pipelinePanel) { pipelinePanel.style.display = 'block'; renderPipeline(); }
+    // Hide review panels when switching to pipeline view (unless data already loaded)
+    if (!state.loaded) {
+      document.getElementById('review-panel').style.display = 'none';
+      document.getElementById('calc-panel').style.display = 'none';
+      document.getElementById('generate-panel').style.display = 'none';
+    }
+  } else {
+    if (uploadPanel) uploadPanel.style.display = 'block';
+    if (pipelinePanel) pipelinePanel.style.display = 'none';
+  }
+}
+
+// ═══ DEV MODE ═══════════════════════════════════════════════
+function toggleDevMode() {
+  state.devMode = !state.devMode;
+  document.body.classList.toggle('dev-mode', state.devMode);
+  document.getElementById('devToggle').classList.toggle('active', state.devMode);
+}
+
+// ═══ DATA LOADING ═══════════════════════════════════════════
+function loadSnapshotData(data) {
+  state.parsed = data.parsed;
+  state.calcs = data.calcs;
+  state.images = data.images || {};
+  state.centroid = data.centroid;
+  state.zoneStats = data.zoneStats;
+  state.loaded = true;
+
+  if (data.narratives) {
+    state.narratives = { ...state.narratives, ...data.narratives };
+  }
+
+  // Update header badge
+  const badge = document.getElementById('propertyBadge');
+  badge.textContent = state.parsed.name || 'Unknown Property';
+  badge.style.display = 'inline-block';
+
+  // Show data panels
+  document.getElementById('review-panel').style.display = 'block';
+  document.getElementById('calc-panel').style.display = 'block';
+  document.getElementById('generate-panel').style.display = 'block';
+
+  // Collapse upload panel after successful load
+  const uploadPanel = document.getElementById('upload-panel');
+  if (uploadPanel) {
+    const zone = document.getElementById('zipUpload');
+    zone.classList.add('has-file');
+    zone.onclick = null; // Remove click handler — no file input in this state
+    zone.innerHTML = `<div class="upload-file-info">
+      <div>
+        <div class="filename">&#10003; ${state.uploadedFile || 'Model output'}</div>
+        <div class="filesize">Parsed successfully</div>
+      </div>
+      <button class="remove" onclick="resetUpload(event)">&#10005; Clear</button>
+    </div>`;
+  }
+
+  renderPropertySummary();
+  renderCalcGrid();
+  renderAllPages();
+  renderThumbs();
+
+  document.getElementById('exportBtn').disabled = false;
+  setStatus('Snapshot ready for review');
+  goToStep(1);
+  completeStep(0); // Mark "data loaded" conceptually
+}
+
+// ═══ UPLOAD ═══════════════════════════════════════════════
+async function handleUpload(file) {
+  if (!file) return;
+  state.uploadedFile = file.name;
+  setStatus('Processing ' + file.name + '...', true);
+  const form = new FormData();
+  form.append('file', file);
+
+  try {
+    const resp = await fetch('/api/upload', { method: 'POST', body: form });
+    if (!resp.ok) throw new Error(await resp.text());
+    const data = await resp.json();
+    loadSnapshotData(data);
+    toast('Model output processed: ' + file.name, 'success');
+  } catch (e) {
+    setStatus('Upload error: ' + e.message);
+    toast('Upload failed: ' + e.message, 'error');
+    console.error(e);
+  }
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('active');
+  const file = e.dataTransfer.files[0];
+  if (file && file.name.endsWith('.zip')) handleUpload(file);
+  else toast('Please upload a .zip file', 'error');
+}
+
+function resetUpload(e) {
+  if (e) e.stopPropagation();
+  state.loaded = false;
+  state.parsed = null;
+  state.calcs = null;
+  state.images = {};
+  state.uploadedFile = null;
+  state.narratives = { page2: '', page4: '', email: '' };
+
+  // Reset upload zone
+  const zone = document.getElementById('zipUpload');
+  zone.classList.remove('has-file');
+  zone.innerHTML = `<div class="icon">&#128193;</div>
+    <p>Drop model output <strong>.zip</strong> here<br><span style="font-size:10px;opacity:0.7">or click to browse</span></p>
+    <input type="file" id="zipInput" accept=".zip" style="display:none" onchange="handleUpload(this.files[0])">`;
+  zone.onclick = () => document.getElementById('zipInput').click();
+
+  // Hide data panels
+  document.getElementById('review-panel').style.display = 'none';
+  document.getElementById('calc-panel').style.display = 'none';
+  document.getElementById('generate-panel').style.display = 'none';
+  document.getElementById('edit-panel').style.display = 'none';
+  document.getElementById('send-panel').style.display = 'none';
+
+  // Reset header
+  document.getElementById('propertyBadge').style.display = 'none';
+  setStatus('No snapshot loaded');
+
+  // Reset pages
+  renderAllPages();
+  renderThumbs();
+  showPage(1);
+}
+
+// ═══ API KEY ═══════════════════════════════════════════════
+async function setApiKey() {
+  const key = document.getElementById('apiKey').value.trim();
+  if (!key) return;
+  try {
+    const resp = await fetch('/api/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ apiKey: key })
+    });
+    if (!resp.ok) throw new Error('Invalid API key');
+    state.apiReady = true;
+    const dot = document.getElementById('apiDot');
+    dot.classList.remove('not-ready');
+    dot.classList.add('ready');
+    dot.title = 'API configured';
+    toast('API key configured', 'success');
+  } catch (e) {
+    toast('API key error: ' + e.message, 'error');
+  }
+}
+
+// ═══ NARRATIVE GENERATION ═══════════════════════════════════
+async function regenerate(page) {
+  if (!state.loaded) return;
+
+  if (!state.apiReady) {
+    toast('Enter a Claude API key first', 'error');
+    return;
+  }
+
+  setStatus('Regenerating ' + page + '...', true);
+  const guidance = document.getElementById('regenGuidance').value.trim();
+
+  try {
+    const resp = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        parsed: state.parsed,
+        calcs: state.calcs,
+        zoneStats: state.zoneStats,
+        style: document.getElementById('commStyle').value,
+        guidance,
+        page
+      })
+    });
+    if (!resp.ok) throw new Error(await resp.text());
+    const data = await resp.json();
+    state.narratives[page] = data[page];
+    applyNarratives();
+
+    if (page === 'page2') showPage(2);
+    if (page === 'page4') showPage(4);
+    toast(page + ' regenerated', 'success');
+    setStatus('Narrative updated');
+  } catch (e) {
+    toast('Regen error: ' + e.message, 'error');
+    setStatus('Regeneration failed');
+  }
+}
+
+async function generateAll() {
+  if (!state.loaded) {
+    toast('Upload a model output ZIP first', 'error');
+    return;
+  }
+  if (!state.apiReady) {
+    toast('Enter a Claude API key first', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('generateAllBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Generating...';
+  setStatus('Generating all narratives...', true);
+
+  try {
+    const resp = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        parsed: state.parsed,
+        calcs: state.calcs,
+        zoneStats: state.zoneStats,
+        style: document.getElementById('commStyle').value
+      })
+    });
+    if (!resp.ok) throw new Error(await resp.text());
+    const data = await resp.json();
+    state.narratives = { ...state.narratives, ...data };
+    applyNarratives();
+
+    // Show edit and send panels
+    document.getElementById('edit-panel').style.display = 'block';
+    document.getElementById('send-panel').style.display = 'block';
+
+    completeStep(1);
+    goToStep(2);
+    showPage(2);
+    toast('Narratives generated', 'success');
+    setStatus('Narratives ready for review');
+  } catch (e) {
+    toast('Generation error: ' + e.message, 'error');
+    setStatus('Generation failed');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Generate All Narratives';
+}
+
+function applyNarratives() {
+  const p2 = document.querySelector('[data-page="2"] #narrative-page2');
+  const p4 = document.querySelector('[data-page="4"] #narrative-page4');
+  if (p2 && state.narratives.page2) p2.textContent = state.narratives.page2;
+  if (p4 && state.narratives.page4) p4.textContent = state.narratives.page4;
+  if (state.narratives.email) {
+    document.getElementById('emailOutput').textContent = state.narratives.email;
+  }
+}
+
+// ═══ PDF EXPORT ═════════════════════════════════════════════
+async function exportPDF() {
+  const btn = document.getElementById('exportBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Generating PDF...';
+  setStatus('Rendering PDF...', true);
+
+  try {
+    const pages = document.getElementById('pageContainer').innerHTML;
+    const snapshotStyles = getSnapshotStyles();
+    const fullHtml = `<!DOCTYPE html><html><head>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+      <style>${snapshotStyles}
+      body{overflow:visible;height:auto;background:#fff;margin:0;padding:0}
+      .page-wrapper{width:210mm;margin:0}
+      .page{width:210mm;height:297mm;page-break-after:always}
+      [contenteditable]{outline:none!important}
+      </style></head><body>${pages}</body></html>`;
+
+    const name = state.parsed ? state.parsed.name.replace(/[^a-zA-Z0-9]/g, '_') : 'Snapshot';
+    const resp = await fetch('/api/export-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ html: fullHtml, filename: `HORIZON_Snapshot_${name}.pdf` })
+    });
+
+    if (!resp.ok) throw new Error(await resp.text());
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `HORIZON_Snapshot_${name}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    completeStep(3);
+    toast('PDF downloaded', 'success');
+    setStatus('PDF exported');
+  } catch (e) {
+    toast('PDF error: ' + e.message, 'error');
+    setStatus('PDF export failed');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Export PDF';
+}
+
+function getSnapshotStyles() {
+  const full = document.querySelector('style').textContent;
+  const idx = full.indexOf('.page{');
+  return idx >= 0 ? full.substring(idx) : full;
+}
+
+// ═══ PROPERTY SUMMARY ═══════════════════════════════════════
+function renderPropertySummary() {
+  const p = state.parsed; if (!p) return;
+  const c = state.calcs || {};
+  document.getElementById('propertySummary').innerHTML = `
+    <div class="property-summary">
+      <div class="prop-name">${p.name || 'Unknown'}</div>
+      <div class="prop-address">${p.address || 'No address'}</div>
+      <div class="prop-meta">
+        <div class="meta-item"><strong>${p.totalArea ? p.totalArea.toLocaleString() : '—'}</strong> ha total</div>
+        <div class="meta-item"><strong>${p.eligibleArea ? p.eligibleArea.toLocaleString() : '—'}</strong> ha eligible (${p.eligiblePct || '—'}%)</div>
+        <div class="meta-item"><strong>${p.rainfall ? p.rainfall.toLocaleString() : '—'}</strong> mm rainfall</div>
+      </div>
+    </div>
+    <div class="data-grid">
+      <div class="data-card"><div class="label">Soil Types</div><div class="value" style="font-size:12px">${p.soilClasses ? p.soilClasses.join(', ') : '—'}</div></div>
+      <div class="data-card"><div class="label">Production</div><div class="value" style="font-size:12px">${p.productionSystem || '—'}</div></div>
+      <div class="data-card"><div class="label">pH Range</div><div class="value">${p.phMin ? p.phMin + ' – ' + p.phMax : '—'}</div></div>
+      <div class="data-card"><div class="label">Depth Range</div><div class="value">${p.depthMin ? p.depthMin + ' – ' + p.depthMax + ' m' : '—'}</div></div>
+    </div>`;
+}
+
+function renderCalcGrid() {
+  const c = state.calcs; if (!c) return;
+  document.getElementById('calcGrid').innerHTML = `
+    <div class="data-card highlight"><div class="label">ACCU Rate</div><div class="value">${c.accuRate} /ha/yr</div></div>
+    <div class="data-card highlight"><div class="label">Total ACCUs (25yr)</div><div class="value">~${c.totalAccu.toLocaleString()}</div></div>
+    <div class="data-card"><div class="label">Projects (~400ha)</div><div class="value">${c.numProjects}</div></div>
+    <div class="data-card"><div class="label">Total Cores</div><div class="value">${c.totalCores}</div></div>
+    <div class="data-card"><div class="label">Cost/Core</div><div class="value">$${c.costPerCore}</div></div>
+    <div class="data-card highlight"><div class="label">Baseline Cost</div><div class="value">$${c.baselineCost.toLocaleString()}</div></div>
+    <div class="data-card"><div class="label">Deferred ACCUs</div><div class="value">${c.deferredAccus.toLocaleString()}</div></div>
+    <div class="data-card"><div class="label">Land Use</div><div class="value">${c.landUse}</div></div>`;
+}
+
+// ═══ PAGE RENDERING ═════════════════════════════════════════
+function renderAllPages() {
+  const p = state.parsed || {};
+  const c = state.calcs || {};
+  const name = p.name || 'PROPERTY NAME';
+  const nameUpper = name.toUpperCase();
+  const n2 = state.narratives.page2 || '<em style="color:#999">[Narrative will be generated after uploading model output]</em>';
+  const n4 = state.narratives.page4 || '<em style="color:#8FA3B8">[Narrative will be generated after uploading model output]</em>';
+  const mapSrc = state.images.map || '';
+  const depthSrc = state.images.map_depth || '';
+  const phSrc = state.images.map_ph || '';
+  const fmtNum = (n) => n ? n.toLocaleString() : '—';
+
+  const container = document.getElementById('pageContainer');
+  container.innerHTML = `
+<!-- PAGE 1 --><div class="page-wrapper" data-page="1"><div class="page sp-cover">
+<div class="cover-left"><div style="font-size:22px;font-weight:800;color:#5CC184">agriprove</div><div class="prepared">Prepared by<br><strong>AgriProve</strong></div></div>
+<div class="cover-right"><h2>HORIZON<br>SNAPSHOT</h2><h3>${nameUpper}</h3></div>
+</div></div>
+
+<!-- PAGE 2 --><div class="page-wrapper" data-page="2"><div class="page">
+<div class="sp-header"><h1>HORIZON SNAPSHOT</h1></div><div class="sp-subheader"><h2>HORIZON ANALYSIS</h2></div>
+<div class="sp-content"><div class="sp-map-container">${mapSrc?'<img src="'+mapSrc+'">':'<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;font-size:13px">Zone map from model output</div>'}
+<div class="sp-legend"><div class="sp-legend-title">Horizon Layer</div>
+<div class="sp-legend-item"><div class="sp-legend-color" style="background:transparent;border:2px solid #E74C3C"></div>Farm Boundary</div>
+<div class="sp-legend-item"><div class="sp-legend-color" style="background:transparent;border:2px dashed #333"></div>Eligible Area</div>
+<div class="sp-legend-item"><div class="sp-legend-color" style="background:#00800066"></div>Strength Zones</div>
+<div class="sp-legend-item"><div class="sp-legend-color" style="background:#67B87666"></div>Reference Zones</div>
+<div class="sp-legend-item"><div class="sp-legend-color" style="background:#FF830066"></div>Opportunity Zones</div>
+</div></div><div class="sp-summary" contenteditable="true" id="narrative-page2">${n2}</div></div>
+</div></div>
+
+<!-- PAGE 3 --><div class="page-wrapper" data-page="3"><div class="page">
+<div class="sp-header"><h1>HORIZON SNAPSHOT</h1></div>
+<div class="sp-content" style="padding-top:8px">
+<div class="sp-map-half"><div class="sp-map-label">PH &amp; SOIL TYPE</div>${phSrc?'<img src="'+phSrc+'">':'<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;font-size:13px">pH map from model output</div>'}</div>
+<div class="sp-map-half"><div class="sp-map-label" style="background:#1A3A3A">SOIL DEPTH</div>${depthSrc?'<img src="'+depthSrc+'">':'<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;font-size:13px">Depth map from model output</div>'}</div>
+<div class="sp-subheader" style="margin:0 -32px;padding:6px 32px"><h2>CARBON INDICATORS</h2></div>
+<table class="sp-carbon-table"><thead><tr><th>Soil Type</th><th>Rainfall (mm)</th><th>Water Holding</th><th>Productivity</th><th>Carbon Stability</th><th>ACCU/ha/yr</th></tr></thead>
+<tbody><tr><td>${c.soil?c.soil.dominant:'—'}</td><td>${fmtNum(c.rainfall)}</td><td>${c.soil?c.soil.water:'—'}</td><td>${c.soil?c.soil.productivity:'—'}</td><td>${c.soil?c.soil.stability:'—'}</td><td style="font-weight:700">${c.accuRate||'—'}</td></tr></tbody></table>
+</div></div></div>
+
+<!-- PAGE 4 --><div class="page-wrapper" data-page="4"><div class="page sp-dark">
+<div class="sp-header"><h1>HORIZON SNAPSHOT</h1></div>
+<div class="sp-portfolio">
+<div class="sp-portfolio-map" id="portfolioMap"></div>
+<div class="sp-property-header"><span style="font-size:20px">&#128205;</span><h2>${nameUpper}</h2></div>
+<div class="sp-property-summary" contenteditable="true" id="narrative-page4">${n4}</div>
+<div class="sp-accu-card"><div class="headline">Estimated ACCU Potential</div><div class="number">~${fmtNum(c.totalAccu)}</div><div class="subtitle">over 25 years</div></div>
+<div class="sp-stat-row">
+<div class="sp-stat"><div class="stat-label">Eligible Area</div><div class="stat-value">${c.eligibleArea?Math.round(c.eligibleArea).toLocaleString():'—'} ha</div><div class="stat-sub">${c.eligiblePct||'—'}% of property</div></div>
+<div class="sp-stat"><div class="stat-label">Estimated Rate</div><div class="stat-value">${c.accuRate||'—'}</div><div class="stat-sub">ACCUs/ha/year</div></div>
+<div class="sp-stat"><div class="stat-label">Number of projects</div><div class="stat-value">${c.numProjects||'—'}</div><div class="stat-sub">~400ha each</div></div>
+</div><div class="sp-disclaimer">Disclaimer: All figures are estimates. Final ACCU yields depend on measured soil carbon increases.</div>
+</div></div></div>
+
+<!-- PAGE 5 --><div class="page-wrapper" data-page="5"><div class="page sp-dark">
+<div style="padding:20px 32px"><div class="sp-bg-title">BACKGROUND</div>
+<div class="sp-bg-q">1. WHAT IS A SOIL CARBON PROJECT?</div><div class="sp-bg-card">Soil organic carbon (SOC) is the carbon stored in organic matter in your soil. When you improve how you manage your land through better grazing, fertiliser use, or pasture practice you build more carbon in the ground. The Australian Government (Clean Energy Regulator) assesses that increase and issues carbon credits to you in the form of Australian Carbon Credit Units (ACCUs).</div>
+<div class="sp-bg-q">2. WHAT IS AN ACCU?</div><div class="sp-bg-card">An ACCU (Australian Carbon Credit Unit) is a government-backed carbon credit issued by the Clean Energy Regulator (CER). Each ACCU represents one tonne of CO₂ equivalent that has been stored in the soil or prevented from entering the atmosphere. ACCUs are a tradeable commodity. You can sell them to corporations, government programs, or hold them for future use.</div>
+<div class="sp-bg-q">3. WHAT DOES IT MEAN FOR YOUR FARM?</div>
+<div class="sp-bg-grid"><div class="sp-bg-benefit"><h4>Healthier Soil</h4><p>Higher soil carbon improves water-holding capacity and microbial activity. Your soil becomes more fertile and resilient over time.</p></div><div class="sp-bg-benefit"><h4>Drought Resilience</h4><p>Soils with higher carbon recover faster after dry periods and continue to perform in low-rainfall years.</p></div><div class="sp-bg-benefit"><h4>Greater Productivity</h4><p>Land with more soil carbon produces faster pasture growth and higher crop yields.</p></div><div class="sp-bg-benefit"><h4>New Income Stream</h4><p>ACCUs are issued to you as a landowner. You are earning an additional income stream from the management practices you intend to improve.</p></div></div>
+</div></div></div>
+
+<!-- PAGE 6 --><div class="page-wrapper" data-page="6"><div class="page sp-dark">
+<div class="sp-econ"><div class="sp-econ-title">THE AGRIPROVE<br>ECONOMICS<span>.</span></div>
+<div class="sp-econ-option"><h3>OPTION 1: SUCCESS FEE MODEL<br><span style="font-size:11px;color:#8FA3B8;font-weight:400">BASELINE SAMPLING FEE &amp; 25% OF ACCUS</span></h3>
+<table class="sp-econ-table"><thead><tr><th>Fee</th><th>Description</th><th>Price</th></tr></thead><tbody>
+<tr><td>Baseline sampling</td><td><span class="desc">The only cost to the customer over the lifetime of the project is the baseline sampling cost. This is an initial estimate and will be finalised in the SLA.</span></td><td>$${c.baselineCost?c.baselineCost.toLocaleString():'—'}</td></tr>
+<tr><td>ACCU success fee</td><td><span class="desc">AgriProve will cover the cost of all project administration, sampling design, certification, baseline reporting, carbon project plan, offset reporting, project auditing, subsequent sampling, data processing from our 25% success fee.</span></td><td>25%</td></tr>
+</tbody></table></div>
+<div class="sp-econ-option"><h3>OPTION 2: SUCCESS FEE + FUTURE ACCU MODEL*<br><span style="font-size:11px;color:#8FA3B8;font-weight:400">DEFER BASELINE SAMPLING FEE &amp; 25% OF ACCUS</span></h3>
+<div class="sp-econ-note">* Deferred baseline available up to $50,000 AUD</div>
+<table class="sp-econ-table"><thead><tr><th>Fee</th><th>Description</th><th>Price</th></tr></thead><tbody>
+<tr><td>Baseline sampling</td><td><span class="desc">Payment of baselining can be deferred to be paid with ACCUs. These ACCUs are priced at $12.50 and must be generated within the first 5 years.</span></td><td>${c.deferredAccus?c.deferredAccus.toLocaleString()+' ACCUs':'—'}</td></tr>
+<tr><td>ACCU success fee</td><td><span class="desc">AgriProve will cover the cost of all project administration, sampling design, certification, baseline reporting, carbon project plan, offset reporting, project auditing, subsequent sampling, data processing from our 25% success fee.</span></td><td>25%</td></tr>
+</tbody></table></div></div></div></div>
+
+<!-- PAGE 7 --><div class="page-wrapper" data-page="7"><div class="page sp-dark">
+<div class="sp-static-title">THE AGRIPROVE<br>DIFFERENCE<span>.</span></div>
+<div class="sp-value-list">
+<div class="sp-value-item"><div class="sp-value-icon">&#127793;</div><div><h4>THE AGRIPROVE PLATFORM</h4><p>Optimise operational decision making across multiple farms for carbon credits, emissions, and sustainability targets.</p></div><

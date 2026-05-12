@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HORIZON Snapshot Generator — AgriProve</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:#f0f2f5;color:#1a2b3c;overflow:hidden;height:100vh}
+#toolbar{background:#1A3A3A;color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;height:56px;z-index:100}
+#toolbar h1{font-size:16px;font-weight:600;letter-spacing:0.02em}
+#toolbar .logo{color:#5CC184;font-weight:700;margin-right:8px}
+#toolbar .status{font-size:12px;color:#8FA3B8;display:flex;align-items:center;gap:8px}
+#toolbar .status .dot{width:8px;height:8px;border-radius:50%;background:#5CC184}
+#workspace{display:flex;height:calc(100vh - 56px)}
+#sidebar{width:360px;min-width:360px;background:#fff;border-right:1px solid #e2e8f0;overflow-y:auto;padding:0}
+.panel{border-bottom:1px solid #e2e8f0}
+.panel-header{padding:14px 20px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#6b7c8d;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.panel-header:hover{background:#f8fafb}
+.panel-header .arrow{transition:transform 0.2s}
+.panel.collapsed .panel-body{display:none}
+.panel.collapsed .arrow{transform:rotate(-90deg)}
+.panel-body{padding:0 20px 16px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:11px;font-weight:500;color:#6b7c8d;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;font-family:inherit}
+.field textarea{resize:vertical;min-height:60px}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#2D6A4F;box-shadow:0 0 0 2px rgba(45,106,79,0.15)}
+.upload-zone{border:2px dashed #d0d7de;border-radius:8px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s}
+.upload-zone:hover{border-color:#2D6A4F;background:#f0faf5}
+.upload-zone.active{border-color:#5CC184;background:#ecfdf5}
+.upload-zone p{font-size:13px;color:#6b7c8d;margin-top:8px}
+.upload-zone .icon{font-size:28px;color:#2D6A4F}
+.btn{padding:8px 16px;border:none;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.btn-primary{background:#2D6A4F;color:#fff}.btn-primary:hover{background:#245a42}
+.btn-secondary{background:#f1f5f9;color:#1a2b3c;border:1px solid #e2e8f0}.btn-secondary:hover{background:#e2e8f0}
+.btn-success{background:#5CC184;color:#fff}.btn-success:hover{background:#4aad6e}
+.btn-full{width:100%;padding:10px}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.data-card{background:#f8fafb;border:1px solid #e2e8f0;border-radius:6px;padding:10px}
+.data-card .label{font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:#6b7c8d;margin-bottom:2px}
+.data-card .value{font-size:15px;font-weight:600;color:#1a2b3c}
+.data-card.highlight{border-left:3px solid #2D6A4F}
+.prompt-box{background:#132C2C;color:#B8D4C8;border-radius:8px;padding:16px;font-size:12px;font-family:'Courier New',monospace;max-height:200px;overflow-y:auto;white-space:pre-wrap;margin:8px 0}
+.paste-area{width:100%;min-height:80px;padding:10px;border:2px dashed #d0d7de;border-radius:8px;font-size:13px;font-family:inherit;resize:vertical}
+.toast{position:fixed;bottom:24px;right:24px;background:#1A3A3A;color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;z-index:1000;animation:slideUp 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+#preview{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;align-items:center;gap:16px;background:#e8ecf0}
+.page-wrapper{position:relative;width:595px;box-shadow:0 2px 12px rgba(0,0,0,0.1);border-radius:4px;overflow:hidden;transition:transform 0.2s}
+.page-wrapper:hover{transform:scale(1.005)}
+.page{width:595px;height:842px;position:relative;overflow:hidden;background:#fff}
+.page-number{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);color:#fff;font-size:10px;padding:2px 8px;border-radius:10px;z-index:10}
+/* Snapshot page styles */
+.sp-dark{background:#1A3A3A;color:#fff}
+.sp-cover{display:flex}
+.sp-cover .cover-left{width:45%;background:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:40px 30px}
+.sp-cover .cover-right{width:55%;background:linear-gradient(135deg,#1A3A3A 0%,#0F2525 100%);display:flex;flex-direction:column;justify-content:center;padding:40px;position:relative}
+.sp-cover .cover-right::before{content:"";position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to right,rgba(92,193,132,0.15),rgba(45,106,79,0.1));clip-path:ellipse(120% 100% at 50% 100%)}
+.sp-cover .logo-text{font-size:22px;font-weight:800;color:#5CC184}
+.sp-cover .logo-sub{font-size:10px;color:#6b7c8d;letter-spacing:0.15em;text-transform:uppercase}
+.sp-cover h2{font-size:42px;font-weight:800;color:#fff;line-height:1.1;letter-spacing:-0.02em}
+.sp-cover h3{font-size:16px;font-weight:400;color:#B8D4C8;margin-top:8px}
+.sp-cover .prepared{font-size:11px;color:#8FA3B8;margin-top:auto;padding-top:20px}
+.sp-header{background:#1A3A3A;padding:12px 32px;display:flex;align-items:center}
+.sp-header h1{font-size:24px;font-weight:800;color:#5CC184;letter-spacing:0.02em}
+.sp-subheader{background:#132C2C;padding:8px 32px;display:flex;align-items:center}
+.sp-subheader h2{font-size:16px;font-weight:700;color:#fff}
+.sp-content{padding:16px 32px}
+.sp-map-container{width:100%;height:380px;background:#f0f2f5;border-radius:4px;overflow:hidden;position:relative}
+.sp-map-container img{width:100%;height:100%;object-fit:contain;background:#1a1a1a}
+.sp-legend{position:absolute;bottom:12px;right:12px;background:rgba(255,255,255,0.95);padding:10px 14px;border-radius:6px;font-size:10px}
+.sp-legend-title{font-weight:700;margin-bottom:4px;font-size:11px}
+.sp-legend-item{display:flex;align-items:center;gap:6px;margin:3px 0}
+.sp-legend-color{width:14px;height:14px;border-radius:2px;border:1px solid rgba(0,0,0,0.1)}
+.sp-summary{font-size:11px;line-height:1.6;color:#333;margin-top:12px;padding:0 4px}
+.sp-summary[contenteditable=true]:hover{outline:2px dashed #2D6A4F;outline-offset:2px;cursor:text}
+.sp-summary[contenteditable=true]:focus{outline:2px solid #2D6A4F;outline-offset:2px;background:rgba(45,106,79,0.03)}
+/* Page 3 */
+.sp-dual-maps{display:flex;flex-direction:column;gap:8px}
+.sp-map-half{height:220px;background:#f0f2f5;border-radius:4px;overflow:hidden;position:relative}
+.sp-map-half img{width:100%;height:100%;object-fit:contain;background:#1a1a1a}
+.sp-map-label{position:absolute;top:0;left:0;background:#132C2C;color:#fff;padding:6px 16px;font-size:13px;font-weight:700}
+.sp-carbon-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:11px}
+.sp-carbon-table th{background:#132C2C;color:#fff;padding:8px 10px;text-transform:uppercase;font-size:10px;letter-spacing:0.06em;font-weight:600}
+.sp-carbon-table td{padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:center;font-style:italic;color:#333}
+.sp-carbon-table td:first-child{text-align:left;font-style:normal;font-weight:500}
+/* Page 4 */
+.sp-portfolio{padding:16px 32px}
+.sp-portfolio-map{width:100%;height:200px;border-radius:6px;overflow:hidden;border:1px solid #2A4055}
+.sp-property-header{display:flex;align-items:center;gap:8px;margin:16px 0 8px;padding:0 4px}
+.sp-property-header h2{font-size:18px;font-weight:700;color:#fff}
+.sp-property-summary{font-size:11px;line-height:1.6;color:#B8D4C8;padding:0 4px}
+.sp-property-summary[contenteditable=true]:hover{outline:2px dashed #5CC184;outline-offset:2px;cursor:text}
+.sp-property-summary[contenteditable=true]:focus{outline:2px solid #5CC184;outline-offset:2px;background:rgba(92,193,132,0.05)}
+.sp-accu-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:16px 20px;text-align:center;margin:12px 4px 8px}
+.sp-accu-card .headline{font-size:11px;color:#8FA3B8;text-transform:uppercase;letter-spacing:0.08em}
+.sp-accu-card .number{font-size:36px;font-weight:700;color:#5CC184;margin:4px 0}
+.sp-accu-card .subtitle{font-size:13px;color:#5CC184;font-weight:500}
+.sp-stat-row{display:flex;gap:8px;padding:0 4px}
+.sp-stat{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:12px;text-align:center}
+.sp-stat .stat-label{font-size:9px;color:#8FA3B8;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px}
+.sp-stat .stat-value{font-size:20px;font-weight:700;color:#fff}
+.sp-stat .stat-sub{font-size:10px;color:#8FA3B8;margin-top:2px}
+.sp-disclaimer{font-size:8px;color:#6b7c8d;padding:6px 8px;margin-top:4px;font-style:italic}
+/* Page 5 - Background */
+.sp-bg-section{padding:20px 32px}
+.sp-bg-title{font-size:32px;font-weight:800;color:#5CC184;margin-bottom:16px}
+.sp-bg-q{font-size:14px;font-weight:700;color:#5CC184;margin:14px 0 6px}
+.sp-bg-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:14px 16px;font-size:11px;line-height:1.5;color:#B8D4C8;margin-bottom:10px}
+.sp-bg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.sp-bg-benefit{background:rgba(92,193,132,0.08);border:1px solid rgba(92,193,132,0.2);border-radius:8px;padding:12px}
+.sp-bg-benefit h4{font-size:12px;font-weight:600;color:#5CC184;margin-bottom:4px}
+.sp-bg-benefit p{font-size:10px;line-height:1.4;color:#B8D4C8}
+/* Page 6 - Economics */
+.sp-econ{padding:20px 32px}
+.sp-econ-title{font-size:28px;font-weight:800;color:#5CC184}
+.sp-econ-title span{color:#E8942E}
+.sp-econ-option{margin-top:16px}
+.sp-econ-option h3{font-size:13px;font-weight:700;color:#E8942E;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sp-econ-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:6px}
+.sp-econ-table th{background:#132C2C;color:#8FA3B8;padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.06em}
+.sp-econ-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.08);color:#B8D4C8;vertical-align:top}
+.sp-econ-table td:last-child{text-align:right;font-weight:600;color:#fff;font-size:14px;white-space:nowrap}
+.sp-econ-table .desc{font-size:10px;color:#8FA3B8;line-height:1.4}
+.sp-econ-note{font-size:9px;color:#8FA3B8;font-style:italic;margin-top:4px}
+/* Static pages common */
+.sp-static-title{font-size:28px;font-weight:800;color:#5CC184;padding:24px 32px 0}
+.sp-static-title span{color:#E8942E}
+.sp-static-body{padding:12px 32px;font-size:11px;color:#B8D4C8;line-height:1.5}
+.sp-value-list{display:flex;flex-direction:column;gap:8px;padding:12px 32px}
+.sp-value-item{background:rgba(92,193,132,0.06);border:1px solid rgba(92,193,132,0.15);border-radius:8px;padding:12px 16px;display:flex;gap:12px;align-items:flex-start}
+.sp-value-item h4{font-size:12px;font-weight:600;color:#5CC184;margin-bottom:2px}
+.sp-value-item p{font-size:10px;color:#B8D4C8;line-height:1.4}
+.sp-value-icon{width:32px;height:32px;background:rgba(92,193,132,0.15);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+/* Contact page */
+.sp-contact{display:flex;height:100%}
+.sp-contact-left{width:50%;background:linear-gradient(135deg,#1A3A3A,#0F2525);display:flex;flex-direction:column;justify-content:flex-start;padding:40px}
+.sp-contact-right{width:50%;background:#132C2C;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:40px}
+.sp-contact h2{font-size:36px;font-weight:800;color:#5CC184}
+.sp-contact-info{margin-top:24px}
+.sp-contact-row{margin:16px 0}
+.sp-contact-row .label{font-size:11px;font-weight:600;color:#5CC184;text-transform:uppercase;letter-spacing:0.06em}
+.sp-contact-row .value{font-size:14px;color:#fff;margin-top:2px}
+/* Wave decoration */
+.sp-wave{position:absolute;bottom:0;left:0;right:0;height:80px;overflow:hidden}
+.sp-wave svg{position:absolute;bottom:0;width:100%}
+/* Editable highlight */
+[contenteditable=true]{transition:outline 0.15s}
+.edit-hint{display:none;font-size:9px;color:#2D6A4F;margin-top:2px}
+[contenteditable=true]:focus + .edit-hint{display:block}
+/* Page nav dots */
+.page-nav{position:fixed;right:16px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;z-index:50}
+.page-dot{width:8px;height:8px;border-radius:50%;background:#c0c8d0;cursor:pointer;transition:all 0.2s}
+.page-dot:hover,.page-dot.active{background:#2D6A4F;transform:scale(1.3)}
+/* Regen panel */
+.regen-panel{background:#f8fafb;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-top:8px}
+.regen-panel h4{font-size:11px;font-weight:600;color:#6b7c8d;text-transform:uppercase;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div id="app">
+<header id="toolbar">
+<div style="display:flex;align-items:center;gap:12px">
+<span class="logo">&#9647;&#9647; agriprove</span>
+<h1>HORIZON Snapshot Generator</h1>
+</div>
+<div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Ready — upload model output to begin</span></div>
+</header>
+<div id="workspace">
+<aside id="sidebar">
+
+<div class="panel" id="upload-panel">
+<div class="panel-header" onclick="togglePanel(this)">
+<span>&#9312; Upload Model Output</span><span class="arrow">&#9660;</span>
+</div>
+<div class="panel-body">
+<div class="upload-zone" id="zipUpload" onclick="document.getElementById('zipInput').click()" ondragover="event.preventDefault();this.classList.add('active')" ondragleave="this.classList.remove('active')" ondrop="handleZipDrop(event)">
+<div class="icon">&#128193;</div>
+<p>Drop model output <strong>.zip</strong> here<br>or click to browse</p>
+<input type="file" id="zipInput" accept=".zip" style="display:none" onchange="handleZipUpload(this.files[0])">
+</div>
+<div style="text-align:center;margin:8px 0;font-size:11px;color:#6b7c8d">— or upload individual files —</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div><label style="font-size:11px;color:#6b7c8d">metadata.txt</label><input type="file" accept=".txt" onchange="handleFileUpload('metadata',this.files[0])" style="font-size:11px"></div>
+<div><label style="font-size:11px;color:#6b7c8d">map.png</label><input type="file" accept="image/*" onchange="handleFileUpload('map',this.files[0])" style="font-size:11px"></div>
+<div><label style="font-size:11px;color:#6b7c8d">map_depth.png</label><input type="file" accept="image/*" onchange="handleFileUpload('map_depth',this.files[0])" style="font-size:11px"></div>
+<div><label style="font-size:11px;color:#6b7c8d">map_ph.png</label><input type="file" accept="image/*" onchange="handleFileUpload('map_ph',this.files[0])" style="font-size:11px"></div>
+<div><label style="font-size:11px;color:#6b7c8d">horizon_landscape.geojson</label><input type="file" accept=".geojson,.json" onchange="handleFileUpload('landscape',this.files[0])" style="font-size:11px"></div>
+<div><label style="font-size:11px;color:#6b7c8d">input.geojson</label><input type="file" accept=".geojson,.json" onchange="handleFileUpload('input',this.files[0])" style="font-size:11px"></div>
+</div>
+</div>
+</div>
+
+<div class="panel collapsed" id="data-panel">
+<div class="panel-header" onclick="togglePanel(this)">
+<span>&#9313; Property Data</span><span class="arrow">&#9660;</span>
+</div>
+<div class="panel-body">
+<div class="field"><label>Property Name</label><input type="text" id="propName" placeholder="From metadata..." onchange="updateData()"></div>
+<div class="field"><label>Address</label><input type="text" id="propAddress" placeholder="From metadata..." onchange="updateData()"></div>
+<div class="data-grid" id="dataGrid"></div>
+<div class="field" style="margin-top:12px"><label>Communication Style</label>
+<select id="commStyle" onchange="updateData()"><option value="standard">Standard (partnership tone)</option><option value="stormboy">Operation Stormboy (high-energy)</option></select></div>
+<div class="field"><label>Land Use Override</label>
+<select id="landUseOverride" onchange="recalculate()"><option value="">Auto-detect from metadata</option><option value="pasture">Pasture / Grazing</option><option value="cropping">Cropping</option></select></div>
+</div>
+</div>
+
+<div class="panel collapsed" id="calc-panel">
+<div class="panel-header" onclick="togglePanel(this)">
+<span>&#9314; Calculations</span><span class="arrow">&#9660;</span>
+</div>
+<div class="panel-body">
+<div class="data-grid" id="calcGrid"></div>
+</div>
+</div>
+
+<div class="panel collapsed" id="narrative-panel">
+<div class="panel-header" onclick="togglePanel(this)">
+<span>&#9315; Narrative Generation</span><span class="arrow">&#9660;</span>
+</div>
+<div class="panel-body">
+<div class="field"><label>Claude API Key</label><input type="password" id="apiKey" placeholder="sk-ant-..."></div>
+<button class="btn btn-primary btn-full" onclick="generateNarratives()" id="genBtn" disabled>Generate Narratives via API</button>
+<div style="text-align:center;margin:8px 0;font-size:11px;color:#6b7c8d">— or copy prompts manually —</div>
+<div class="regen-panel">
+<h4>Page 2 — HORIZON Summary Prompt</h4>
+<button class="btn btn-secondary" onclick="showPrompt('page2')" style="font-size:11px;margin-bottom:6px">Copy Prompt</button>
+<textarea class="paste-area" id="page2Paste" placeholder="Paste Claude response here..." onchange="applyNarrative('page2',this.value)"></textarea>
+</div>
+<div class="regen-panel">
+<h4>Page 4 — Property Summary Prompt</h4>
+<button class="btn btn-secondary" onclick="showPrompt('page4')" style="font-size:11px;margin-bottom:6px">Copy Prompt</button>
+<textarea class="paste-area" id="page4Paste" placeholder="Paste Claude response here..." onchange="applyNarrative('page4',this.value)"></textarea>
+</div>
+<div class="regen-panel" style="margin-top:12px">
+<h4>Regenerate with guidance</h4>
+<textarea class="paste-area" id="regenGuidance" placeholder="e.g. Make the tone more direct, emphasise the soil depth advantage, mention the nearby credited projects..." style="min-height:50px"></textarea>
+<div style="display:flex;gap:6px;margin-top:6px">
+<button class="btn btn-secondary" onclick="regenPrompt('page2')" style="font-size:11px">Regen Page 2</button>
+<button class="btn btn-secondary" onclick="regenPrompt('page4')" style="font-size:11px">Regen Page 4</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="panel collapsed" id="export-panel">
+<div class="panel-header" onclick="togglePanel(this)">
+<span>&#9316; Export</span><span class="arrow">&#9660;</span>
+</div>
+<div class="panel-body">
+<button class="btn btn-success btn-full" onclick="exportPDF()" id="exportBtn" disabled>Export to PDF</button>
+<p style="font-size:10px;color:#6b7c8d;margin-top:6px">Generates a high-quality PDF of all 12 pages. Ensure narratives are populated first.</p>
+</div>
+</div>
+
+</aside>
+<main id="preview">
+<div id="pageContainer"></div>
+</main>
+</div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const state = {
+  files: { metadata: null, map: null, map_depth: null, map_ph: null, landscape: null, input: null, classified: null },
+  images: { map: null, map_depth: null, map_ph: null },
+  parsed: null,
+  calcs: null,
+  narratives: { page2: '', page4: '' },
+  centroid: null,
+  zoneStats: null
+};
+
+// ═══════════════════════════════════════════
+// LOOKUP TABLES
+// ═══════════════════════════════════════════
+const ACCU_RATES = {
+  pasture: [[200,1.5],[300,2.0],[400,2.5],[500,3.0],[600,3.5],[700,4.0],[800,4.5],[900,5.0],[1000,5.5],[1200,6.0]],
+  cropping: [[200,1.0],[300,1.5],[400,2.0],[500,2.0],[600,2.5],[700,2.5],[800,3.0],[900,3.0],[1000,3.5],[1200,3.5]]
+};
+
+const SOIL_CHARS = {
+  'Calcarosol': { water: 'Medium', productivity: 'Medium', stability: 'Medium' },
+  'Chromosol': { water: 'Medium', productivity: 'Medium-High', stability: 'Medium' },
+  'Dermosol': { water: 'High', productivity: 'High', stability: 'High' },
+  'Ferrosol': { water: 'High', productivity: 'High', stability: 'High' },
+  'Hydrosol': { water: 'High', productivity: 'Low', stability: 'Low' },
+  'Kandosol': { water: 'Low-Medium', productivity: 'Low-Medium', stability: 'Low' },
+  'Kurosol': { water: 'Medium', productivity: 'Medium', stability: 'Medium' },
+  'Organosol': { water: 'High', productivity: 'Medium', stability: 'High' },
+  'Podosol': { water: 'Low', productivity: 'Low', stability: 'Low' },
+  'Rudosol': { water: 'Low', productivity: 'Low', stability: 'Low' },
+  'Sodosol': { water: 'Low-Medium', productivity: 'Low-Medium', stability: 'Low-Medium' },
+  'Tenosol': { water: 'Low', productivity: 'Low-Medium', stability: 'Low' },
+  'Vertosol': { water: 'High', productivity: 'High', stability: 'Medium-High' }
+};
+
+const PRICING_BANDS = [
+  [9, 735], [12, 709], [16, 499], [20, 447], [24, 447], [28, 447],
+  [32, 394], [36, 394], [40, 368], [44, 368], [48, 368],
+  [52, 342], [56, 342], [60, 315]
+];
+const CORES_PER_CEA = 24;
+
+// ═══════════════════════════════════════════
+// METADATA PARSER
+// ═══════════════════════════════════════════
+function parseMetadata(text) {
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const d = {};
+  for (const line of lines) {
+    const m = line.match(/^Project name:\s*(.+)/i); if (m) d.name = m[1].trim();
+    const m2 = line.match(/^Total input area:\s*([\d,.]+)\s*ha/i); if (m2) d.totalArea = parseFloat(m2[1].replace(/,/g,''));
+    const m3 = line.match(/^Eligible area:\s*([\d,.]+)\s*ha/i); if (m3) d.eligibleArea = parseFloat(m3[1].replace(/,/g,''));
+    const m4 = line.match(/^Eligible percentage:\s*([\d.]+)%/i); if (m4) d.eligiblePct = parseFloat(m4[1]);
+    const m5 = line.match(/^Address:\s*(.+)/i); if (m5) d.address = m5[1].trim();
+    const m6 = line.match(/^Production systems:\s*(.+)/i); if (m6) d.productionSystem = m6[1].trim().toLowerCase();
+    const m7 = line.match(/^Rainfall:\s*([\d,.]+)\s*mm/i); if (m7) d.rainfall = parseFloat(m7[1].replace(/,/g,''));
+    const m8 = line.match(/^Soil classes in eligible area:\s*(.+)/i); if (m8) d.soilClasses = m8[1].split(',').map(s=>s.trim());
+    const m9 = line.match(/^pH range in eligible area:\s*([\d.]+)\s*-\s*([\d.]+)/i); if (m9) { d.phMin = parseFloat(m9[1]); d.phMax = parseFloat(m9[2]); }
+    const m10 = line.match(/^Soil depth range in eligible area:\s*([\d.]+)\s*-\s*([\d.]+)\s*m/i); if (m10) { d.depthMin = parseFloat(m10[1]); d.depthMax = parseFloat(m10[2]); }
+  }
+  if (!d.eligiblePct && d.totalArea && d.eligibleArea) d.eligiblePct = Math.round((d.eligibleArea / d.totalArea) * 1000) / 10;
+  return d;
+}
+
+// ═══════════════════════════════════════════
+// GEOJSON PARSERS
+// ═══════════════════════════════════════════
+function parseLandscape(geojson) {
+  const stats = {};
+  for (const feat of geojson.features) {
+    const cls = feat.properties.class;
+    stats[cls] = { value: feat.properties.class_value, median: feat.properties.median, mad: feat.properties.mad };
+  }
+  return stats;
+}
+
+function computeCentroid(geojson) {
+  let sumLat = 0, sumLng = 0, count = 0;
+  function walkCoords(coords) {
+    if (typeof coords[0] === 'number') { sumLng += coords[0]; sumLat += coords[1]; count++; return; }
+    for (const c of coords) walkCoords(c);
+  }
+  for (const feat of geojson.features) walkCoords(feat.geometry.coordinates);
+  return count > 0 ? [sumLat / count, sumLng / count] : [-25.2744, 133.7751];
+}
+
+// ═══════════════════════════════════════════
+// CALCULATION ENGINE
+// ═══════════════════════════════════════════
+function getAccuRate(rainfall, landUse) {
+  const table = ACCU_RATES[landUse] || ACCU_RATES.pasture;
+  let rate = table[0][1];
+  for (const [threshold, r] of table) {
+    if (rainfall >= threshold) rate = r;
+  }
+  return rate;
+}
+
+function getCostPerCore(totalCores) {
+  let cost = PRICING_BANDS[PRICING_BANDS.length - 1][1];
+  for (const [cores, price] of PRICING_BANDS) {
+    if (totalCores <= cores) { cost = price; break; }
+    cost = price;
+  }
+  return cost;
+}
+
+function getSoilChars(soilClasses) {
+  if (!soilClasses || soilClasses.length === 0) return { water: 'N/A', productivity: 'N/A', stability: 'N/A', dominant: 'Unknown' };
+  const dominant = soilClasses[0];
+  const chars = SOIL_CHARS[dominant] || { water: 'Medium', productivity: 'Medium', stability: 'Medium' };
+  return { ...chars, dominant, all: soilClasses };
+}
+
+function calculate(parsed) {
+  const landUse = document.getElementById('landUseOverride').value ||
+    (parsed.productionSystem && parsed.productionSystem.includes('crop') ? 'cropping' : 'pasture');
+  const accuRate = getAccuRate(parsed.rainfall || 0, landUse);
+  const eligibleArea = parsed.eligibleArea || 0;
+  const totalAccu = Math.round(eligibleArea * accuRate * 25);
+  const numProjects = Math.max(1, Math.ceil(eligibleArea / 400));
+  const totalCores = numProjects * CORES_PER_CEA;
+  const costPerCore = getCostPerCore(totalCores);
+  const baselineCost = totalCores * costPerCore;
+  const maxDeferred = 50000;
+  const deferredAccus = Math.ceil(Math.min(baselineCost, maxDeferred) / 12.50);
+  const soil = getSoilChars(parsed.soilClasses);
+  return {
+    landUse, accuRate, eligibleArea, totalAccu, numProjects, totalCores,
+    costPerCore, baselineCost, deferredAccus, soil,
+    eligiblePct: parsed.eligiblePct || 0,
+    rainfall: parsed.rainfall || 0,
+    phMin: parsed.phMin, phMax: parsed.phMax,
+    depthMin: parsed.depthMin, depthMax: parsed.depthMax
+  };
+}
+
+// ═══════════════════════════════════════════
+// PROMPT GENERATORS
+// ═══════════════════════════════════════════
+function buildPrompt(page, guidance) {
+  const p = state.parsed;
+  const c = state.calcs;
+  if (!p || !c) return 'No data loaded yet.';
+  const style = document.getElementById('commStyle').value;
+  const zoneInfo = state.zoneStats ? Object.keys(state.zoneStats).join(', ') + ' zones present' : 'zone data not available';
+  const base = `Property: ${p.name || 'Unknown'}
+Address: ${p.address || 'Unknown'}
+Total Area: ${p.totalArea ? p.totalArea.toLocaleString() : '?'} ha
+Eligible Area: ${c.eligibleArea.toLocaleString()} ha (${c.eligiblePct}% of property)
+Rainfall: ${c.rainfall.toLocaleString()} mm
+Production System: ${p.productionSystem || c.landUse}
+Soil Types: ${p.soilClasses ? p.soilClasses.join(', ') : 'Unknown'}
+pH Range: ${c.phMin || '?'} - ${c.phMax || '?'}
+Soil Depth Range: ${c.depthMin || '?'} - ${c.depthMax || '?'} m
+ACCU Rate: ${c.accuRate} ACCUs/ha/year
+Estimated ACCU Potential: ~${c.totalAccu.toLocaleString()} over 25 years
+Zones: ${zoneInfo}
+Communication Style: ${style === 'stormboy' ? 'Operation Stormboy (high-energy, value-driven)' : 'Standard (partnership tone, warm, education-focused)'}`;
+
+  if (page === 'page2') {
+    return `You are writing the HORIZON Summary for Page 2 of an AgriProve HORIZON Snapshot document. This is a sales/recruitment document for Australian landholders considering soil carbon projects.
+
+${base}
+
+Write a ~150 word HORIZON Summary paragraph that:
+- References ACTUAL zone locations visible on the map (e.g. "Strength Zones along the northern boundary")
+- Explains what Strength, Stable (Reference), and Opportunity zones mean
+- Explains why eligible area is less than total area (forests, infrastructure, waterways excluded)
+- Uses ONLY defensible language: "estimated", "potential", "could support" — NEVER "delivers" or "guarantees"
+- Includes a brief geospatial disclaimer
+- Contains NO em dashes (use commas or full stops instead)
+- Is warm but professional${style === 'stormboy' ? ', with higher energy and value-driven framing' : ''}
+${guidance ? '\nAdditional guidance: ' + guidance : ''}
+Write ONLY the paragraph text, no headers or labels.`;
+  }
+
+  if (page === 'page4') {
+    return `You are writing the Property Summary for Page 4 of an AgriProve HORIZON Snapshot document. This is a sales/recruitment document for Australian landholders considering soil carbon projects.
+
+${base}
+
+Soil Characteristics (for ${c.soil.dominant}):
+- Water Holding: ${c.soil.water}
+- Productivity: ${c.soil.productivity}
+- Carbon Stability: ${c.soil.stability}
+
+Write a ~145 word Property Summary paragraph that:
+- Names specific soil types (not "various soil types")
+- Includes the exact rainfall figure (e.g. "receiving 640mm of annual rainfall")
+- References depth distribution and what it means for carbon crediting
+- Frames Opportunity Zones as upside potential, NOT deficiency
+- References any Strength Zones by their on-property location
+- Uses ONLY defensible language: "estimated", "potential", "could support"
+- Includes a condensed geospatial disclaimer
+- Contains NO em dashes
+- Is ${style === 'stormboy' ? 'high-energy, value-driven' : 'warm, partnership-focused'}
+${guidance ? '\nAdditional guidance: ' + guidance : ''}
+Write ONLY the paragraph text, no headers or labels.`;
+  }
+  return '';
+}
+
+// ═══════════════════════════════════════════
+// FILE HANDLERS
+// ═══════════════════════════════════════════
+async function handleZipUpload(file) {
+  if (!file) return;
+  setStatus('Processing zip file...');
+  try {
+    const zip = await JSZip.loadAsync(file);
+    const fileMap = { 'metadata.txt': 'metadata', 'map.png': 'map', 'map_depth.png': 'map_depth', 'map_ph.png': 'map_ph', 'horizon_landscape.geojson': 'landscape', 'input.geojson': 'input', 'classified.geojson': 'classified' };
+    for (const [zipName, stateKey] of Object.entries(fileMap)) {
+      const entry = zip.file(zipName);
+      if (entry) {
+        if (stateKey === 'metadata') {
+          state.files.metadata = await entry.async('string');
+        } else if (['map','map_depth','map_ph'].includes(stateKey)) {
+          const blob = await entry.async('blob');
+          state.images[stateKey] = URL.createObjectURL(blob);
+          state.files[stateKey] = true;
+        } else {
+          const text = await entry.async('string');
+          state.files[stateKey] = JSON.parse(text);
+        }
+      }
+    }
+    processData();
+    document.getElementById('zipUpload').classList.add('active');
+    toast('Model output loaded successfully');
+  } catch (e) { setStatus('Error: ' + e.message); console.error(e); }
+}
+
+function handleZipDrop(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('active');
+  const file = e.dataTransfer.files[0];
+  if (file && file.name.endsWith('.zip')) handleZipUpload(file);
+}
+
+async function handleFileUpload(key, file) {
+  if (!file) return;
+  if (key === 'metadata') {
+    state.files.metadata = await file.text();
+  } else if (['map','map_depth','map_ph'].includes(key)) {
+    state.images[key] = URL.createObjectURL(file);
+    state.files[key] = true;
+  } else {
+    const text = await file.text();
+    state.files[key] = JSON.parse(text);
+  }
+  processData();
+}
+
+function processData() {
+  if (state.files.metadata) {
+    state.parsed = parseMetadata(state.files.metadata);
+    document.getElementById('propName').value = state.parsed.name || '';
+    document.getElementById('propAddress').value = state.parsed.address || '';
+  }
+  if (state.files.landscape) {
+    state.zoneStats = parseLandscape(state.files.landscape);
+  }
+  if (state.files.input) {
+    state.centroid = computeCentroid(state.files.input);
+  }
+  recalculate();
+  expandPanel('data-panel');
+  expandPanel('calc-panel');
+}
+
+function recalculate() {
+  if (!state.parsed) return;
+  state.parsed.name = document.getElementById('propName').value || state.parsed.name;
+  state.parsed.address = document.getElementById('propAddress').value || state.parsed.address;
+  state.calcs = calculate(state.parsed);
+  renderDataGrid();
+  renderCalcGrid();
+  renderPages();
+  document.getElementById('genBtn').disabled = false;
+  document.getElementById('exportBtn').disabled = false;
+  setStatus('Data loaded — review and generate narratives');
+}
+
+function updateData() { recalculate(); }
+
+// ═══════════════════════════════════════════
+// DATA DISPLAY
+// ═══════════════════════════════════════════
+function renderDataGrid() {
+  const p = state.parsed;
+  if (!p) return;
+  const grid = document.getElementById('dataGrid');
+  grid.innerHTML = `
+    <div class="data-card"><div class="label">Total Area</div><div class="value">${p.totalArea ? p.totalArea.toLocaleString() + ' ha' : '—'}</div></div>
+    <div class="data-card highlight"><div class="label">Eligible Area</div><div class="value">${p.eligibleArea ? p.eligibleArea.toLocaleString() + ' ha' : '—'}</div></div>
+    <div class="data-card"><div class="label">Eligible %</div><div class="value">${p.eligiblePct ? p.eligiblePct + '%' : '—'}</div></div>
+    <div class="data-card"><div class="label">Rainfall</div><div class="value">${p.rainfall ? p.rainfall.toLocaleString() + ' mm' : '—'}</div></div>
+    <div class="data-card"><div class="label">Soil Types</div><div class="value" style="font-size:12px">${p.soilClasses ? p.soilClasses.join(', ') : '—'}</div></div>
+    <div class="data-card"><div class="label">pH Range</div><div class="value">${p.phMin ? p.phMin + ' – ' + p.phMax : '—'}</div></div>
+    <div class="data-card"><div class="label">Depth Range</div><div class="value">${p.depthMin ? p.depthMin + ' – ' + p.depthMax + ' m' : '—'}</div></div>
+    <div class="data-card"><div class="label">Production</div><div class="value">${p.productionSystem || '—'}</div></div>`;
+}
+
+function renderCalcGrid() {
+  const c = state.calcs;
+  if (!c) return;
+  document.getElementById('calcGrid').innerHTML = `
+    <div class="data-card highlight"><div class="label">ACCU Rate</div><div class="value">${c.accuRate} /ha/yr</div></div>
+    <div class="data-card highlight"><div class="label">Total ACCUs (25yr)</div><div class="value">~${c.totalAccu.toLocaleString()}</div></div>
+    <div class="data-card"><div class="label">Projects (~400ha)</div><div class="value">${c.numProjects}</div></div>
+    <div class="data-card"><div class="label">Total Cores</div><div class="value">${c.totalCores}</div></div>
+    <div class="data-card"><div class="label">Cost/Core</div><div class="value">$${c.costPerCore}</div></div>
+    <div class="data-card highlight"><div class="label">Baseline Cost</div><div class="value">$${c.baselineCost.toLocaleString()}</div></div>
+    <div class="data-card"><div class="label">Deferred ACCUs</div><div class="value">${c.deferredAccus.toLocaleString()}</div></div>
+    <div class="data-card"><div class="label">Land Use</div><div class="value">${c.landUse}</div></div>`;
+}
+
+// ═══════════════════════════════════════════
+// PAGE RENDERERS
+// ═══════════════════════════════════════════
+function renderPages() {
+  const container = document.getElementById('pageContainer');
+  const p = state.parsed || {};
+  const c = state.calcs || {};
+  const name = p.name || 'PROPERTY NAME';
+  const nameUpper = name.toUpperCase();
+  const n2 = state.narratives.page2 || '<em style="color:#999;font-size:11px">[Click "Generate Narratives" or paste Claude response to populate]</em>';
+  const n4 = state.narratives.page4 || '<em style="color:#8FA3B8;font-size:11px">[Click "Generate Narratives" or paste Claude response to populate]</em>';
+  const mapSrc = state.images.map || '';
+  const depthSrc = state.images.map_depth || '';
+  const phSrc = state.images.map_ph || '';
+
+  container.innerHTML = `
+<!-- PAGE 1: COVER -->
+<div class="page-wrapper"><div class="page sp-cover" data-page="1">
+<span class="page-number">1</span>
+<div class="cover-left">
+  <div><div class="logo-text">agriprove</div></div>
+  <div class="prepared">Prepared by<br><strong>AgriProve</strong></div>
+</div>
+<div class="cover-right">
+  <h2>HORIZON<br>SNAPSHOT</h2>
+  <h3>${nameUpper}</h3>
+  <div class="sp-wave"><svg viewBox="0 0 600 80" preserveAspectRatio="none"><path d="M0,40 Q150,0 300,40 T600,40 L600,80 L0,80 Z" fill="rgba(92,193,132,0.08)"/></svg></div>
+</div>
+</div></div>
+
+<!-- PAGE 2: HORIZON ANALYSIS -->
+<div class="page-wrapper"><div class="page" data-page="2">
+<span class="page-number">2</span>
+<div class="sp-header"><h1>HORIZON SNAPSHOT</h1></div>
+<div class="sp-subheader"><h2>HORIZON ANALYSIS</h2></div>
+<div class="sp-content">
+  <div class="sp-map-container">
+    ${mapSrc ? '<img src="'+mapSrc+'" alt="HORIZON Zone Map">' : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999">Upload map.png to preview</div>'}
+    <div class="sp-legend">
+      <div class="sp-legend-title">Horizon Layer</div>
+      <div class="sp-legend-item"><div class="sp-legend-color" style="background:transparent;border:2px solid #E74C3C"></div> Farm Boundary</div>
+      <div class="sp-legend-item"><div class="sp-legend-color" style="background:transparent;border:2px dashed #333"></div> Eligible Area</div>
+      <div class="sp-legend-item"><div class="sp-legend-color" style="background:#00800066"></div> Strength Zones</div>
+      <div class="sp-legend-item"><div class="sp-legend-color" style="background:#67B87666"></div> Reference Zones</div>
+      <div class="sp-legend-item"><div class="sp-legend-color" style="background:#FF830066"></div> Opportunity Zones</div>
+    </div>
+  </div>
+  <div class="sp-summary" contenteditable="true" id="narrative-page2" data-narrative="page2">${n2}</div>
+</div>
+</div></div>
+
+<!-- PAGE 3: PH & SOIL / DEPTH / CARBON INDICATORS -->
+<div class="page-wrapper"><div class="page" data-page="3">
+<span class="page-number">3</span>
+<div class="sp-header"><h1>HORIZON SNAPSHOT</h1></div>
+<div class="sp-content" style="padding-top:8px">
+  <div class="sp-dual-maps">
+    <div class="sp-map-half">
+      <div class="sp-map-label">PH & SOIL TYPE</div>
+      ${phSrc ? '<img src="'+phSrc+'" alt="pH Map">' : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999">Upload map_ph.png</div>'}
+    </div>
+    <div class="sp-map-half">
+      <div class="sp-map-label" style="background:#1A3A3A">SOIL DEPTH</div>
+      ${depthSrc ? '<img src="'+depthSrc+'" alt="Depth Map">' : '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999">Upload map_depth.png</div>'}
+    </div>
+  </div>
+  <div style="margin-top:10px">
+    <div class="sp-subheader" style="margin:0 -32px;padding:6px 32px"><h2>CARBON INDICATORS</h2></div>
+    <table class="sp-carbon-table">
+      <thead><tr><th>Soil Type</th><th>Rainfall (mm)</th><th>Water Holding</th><th>Productivity</th><th>Carbon Stability</th><th>ACCU/ha/year</th></tr></thead>
+      <tbody><tr>
+        <td>${c.soil ? c.soil.dominant : '—'}</td>
+        <td>${c.rainfall ? c.rainfall.toLocaleString() : '—'}</td>
+        <td>${c.soil ? c.soil.water : '—'}</td>
+        <td>${c.soil ? c.soil.productivity : '—'}</td>
+        <td>${c.soil ? c.soil.stability : '—'}</td>
+        <td style="font-weight:700">${c.accuRate || '—'}</td>
+      </tr></tbody>
+    </table>
+  </div>
+</div>
+</div></div>
+
+<!-- PAGE 4: PORTFOLIO / SUMMARY / ACCU POTENTIAL -->
+<div class="page-wrapper"><div class="page sp-dark" data-page="4">
+<span class="page-number">4</span>
+<div class="sp-header"><h1>HORIZON SNAPSHOT</h1></div>
+<div class="sp-portfolio">
+  <div class="sp-portfolio-map" id="portfolioMap"></div>
+  <div class="sp-property-header">
+    <span style="font-size:20px">&#128205;</span>
+    <h2>${nameUpper}</h2>
+  </div>
+  <div class="sp-property-summary" contenteditable="true" id="narrative-page4" data-narrative="page4">${n4}</div>
+  <div class="sp-accu-card">
+    <div class="headline">Estimated ACCU Potential</div>
+    <div class="number">~${c.totalAccu ? c.totalAccu.toLocaleString() : '—'}</div>
+    <div class="subtitle">over 25 years</div>
+  </div>
+  <div class="sp-stat-row">
+    <div class="sp-stat"><div class="stat-label">Eligible Area</div><div class="stat-value">${c.eligibleArea ? Math.round(c.eligibleArea).toLocaleString() : '—'} ha</div><div class="stat-sub">${c.eligiblePct || '—'}% of property</div></div>
+    <div class="sp-stat"><div class="stat-label">Estimated Rate</div><div class="stat-value">${c.accuRate || '—'}</div><div class="stat-sub">ACCUs/ha/year</div></div>
+    <div class="sp-stat"><div class="stat-label">Number of projects</div><div class="stat-value">${c.numProjects || '—'}</div><div class="stat-sub">~400ha each</div></div>
+  </div>
+  <div class="sp-disclaimer">Disclaimer: All figures are estimates. Final ACCU yields depend on measured soil carbon increases.</div>
+</div>
+</div></div>
+
+<!-- PAGE 5: BACKGROUND -->
+<div class="page-wrapper"><div class="page sp-dark" data-page="5">
+<span class="page-number">5</span>
+<div class="sp-bg-section">
+  <div class="sp-bg-title">BACKGROUND</div>
+  <div class="sp-bg-q">1. WHAT IS A SOIL CARBON PROJECT?</div>
+  <div class="sp-bg-card">Soil organic carbon (SOC) is the carbon stored in organic matter in your soil. When you improve how you manage your land through better grazing, fertiliser use, or pasture practice you build more carbon in the ground. The Australian Government (Clean Energy Regulator) assesses that increase and issues carbon credits to you in the form of Australian Carbon Credit Units (ACCUs).</div>
+  <div class="sp-bg-q">2. WHAT IS AN ACCU?</div>
+  <div class="sp-bg-card">An ACCU (Australian Carbon Credit Unit) is a government-backed carbon credit issued by the Clean Energy Regulator (CER). Each ACCU represents one tonne of CO\u2082 equivalent that has been stored in the soil or prevented from entering the atmosphere. ACCUs are a tradeable commodity. You can sell them to corporations, government programs, or hold them for future use.</div>
+  <div class="sp-bg-q">3. WHAT DOES IT MEAN FOR YOUR FARM?</div>
+  <div class="sp-bg-grid">
+    <div class="sp-bg-benefit"><h4>Healthier Soil</h4><p>Higher soil carbon improves water-holding capacity and microbial activity. Your soil becomes more fertile and resilient over time.</p></div>
+    <div class="sp-bg-benefit"><h4>Drought Resilience</h4><p>Soils with higher carbon recover faster after dry periods and continue to perform in low-rainfall years.</p></div>
+    <div class="sp-bg-benefit"><h4>Greater Productivity</h4><p>Land with more soil carbon produces faster pasture growth and higher crop yields, benefits you see in the paddock.</p></div>
+    <div class="sp-bg-benefit"><h4>New Income Stream</h4><p>ACCUs are issued to you as a landowner. You are earning an additional income stream from the management practices you intend to improve.</p></div>
+  </div>
+</div>
+</div></div>
+
+<!-- PAGE 6: ECONOMICS -->
+<div class="page-wrapper"><div class="page sp-dark" data-page="6">
+<span class="page-number">6</span>
+<div class="sp-econ">
+  <div class="sp-econ-title">THE AGRIPROVE<br>ECONOMICS<span>.</span></div>
+  <div class="sp-econ-option">
+    <h3>&#127919; OPTION 1: SUCCESS FEE MODEL<br><span style="font-size:11px;color:#8FA3B8;font-weight:400">BASELINE SAMPLING FEE & 25% OF ACCUS</span></h3>
+    <table class="sp-econ-table">
+      <thead><tr><th>Fee</th><th>Description</th><th>Price</th></tr></thead>
+      <tbody>
+        <tr><td>Baseline sampling</td><td><span class="desc">The only cost to the customer over the lifetime of the project is the baseline sampling cost. This is an initial estimate and will be finalised in the SLA.</span></td><td>$${c.baselineCost ? c.baselineCost.toLocaleString() : '—'}</td></tr>
+        <tr><td>ACCU success fee</td><td><span class="desc">AgriProve will cover the cost of all project administration, sampling design, certification, baseline reporting, carbon project plan, offset reporting, project auditing, subsequent sampling, data processing from our 25% success fee.</span></td><td>25%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sp-econ-option">
+    <h3>&#127919; OPTION 2: SUCCESS FEE + FUTURE ACCU MODEL*<br><span style="font-size:11px;color:#8FA3B8;font-weight:400">DEFER BASELINE SAMPLING FEE & 25% OF ACCUS</span></h3>
+    <div class="sp-econ-note">* Deferred baseline available up to $50,000 AUD</div>
+    <table class="sp-econ-table">
+      <thead><tr><th>Fee</th><th>Description</th><th>Price</th></tr></thead>
+      <tbody>
+        <tr><td>Baseline sampling</td><td><span class="desc">Payment of baselining can be deferred to be paid with ACCUs. These ACCUs are priced at $12.50 and must be generated within the first 5 years.</span></td><td>${c.deferredAccus ? c.deferredAccus.toLocaleString() + ' ACCUs' : '—'}</td></tr>
+        <tr><td>ACCU success fee</td><td><span class="desc">AgriProve will cover the cost of all project administration, sampling design, certification, baseline reporting, carbon project plan, offset reporting, project auditing, subsequent sampling, data processing from our 25% success fee.</span></td><td>25%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div></div>
+
+<!-- PAGE 7: THE AGRIPROVE DIFFERENCE -->
+<div class="page-wrapper"><div class="page sp-dark" data-page="7">
+<span class="page-number">7</span>
+<div class="sp-static-title">THE AGRIPROVE<br>DIFFERENCE<span style="color:#E8942E">.</span></div>
+<div class="sp-value-list">
+  <div class="sp-value-item"><div class="sp-value-icon">&#127793;</div><div><h4>THE AGRIPROVE PLATFORM</h4><p>Optimise operational decision making across multiple farms for carbon credits, emissions, and sustainability targets.</p></div></div>
+  <div class="sp-value-item"><div class="sp-value-icon">&#129309;</div><div><h4>SHARED SUCCESS MODEL</h4><p>The only cost to you will be the baseline costs. All ongoing management, sampling and auditing will be taken from AgriProve's 25% success fee. A joint interest in your success.</p></div></div>
+  <div class="sp-value-item"><div class="sp-value-icon">&#127806;</div><div><h4>OWN YOUR LAND MANAGEMENT</h4><p>You know your farm better than anyone; we do not require any additional agronomist costs and you maintain on-farm autonomy.</p></div></div>
+  <div class="sp-value-item"><div class="sp-value-icon">&#128737;</div><div><h4>NO LANDHOLDER RISK</h4><p>AgriProve represents you as project proponent, managing all regulatory and compliance risk. Providing flexibility for the lifetime of the project.</p></div></div>
+  <div class="sp-value-item"><div class="sp-value-icon">&#128176;</div><div><h4>COMMITMENT TO INVESTMENT</h4><p>We have invested over $25 million in research and development and technology, giving you access to our expertise and learnings from the largest soil database in the world.</p></div></div>
+  <div class="sp-value-item"><div class="sp-value-icon">&#128221;</div><div><h4>PROJECT PLANNING FOR SUCCESS AND SUCCESSION</h4><p>Projects are mapped to group production systems and land titles specifically to optimise soil sequestration, whilst keeping your projects succession proof.</p></div></div>
+</div>
+</div></div>
+
+<!-- PAGE 8: THE AGRIPROVE ADVANTAGE -->
+<div class="page-wrapper"><div class="page sp-dark" data-page="8">
+<span class="page-number">8</span>
+<div class="sp-static-title">THE AGRIPROVE<br>ADVANTAGE<span style="color:#E8942E">.</span></div>
+<div class="sp-static-body">
+  <div class="sp-bg-card" style="margin-bottom:12px">
+    <h4 style="color:#5CC184;font-size:13px;margin-bottom:6px">HORIZON TECHNOLOGY</h4>
+    <p>HORIZON combines satellite remote sensing with machine learning and over 30,000 soil samples to deliver verification-grade accuracy across your entire property. See your soil carbon stocks across every paddock, not just once every five years, but continuously. See variability and hotspots to guide management decisions where they matter most. See how carbon responds to your practices in near real-time, so you can adjust before small issues become costly problems. This is complete visibility. 100% coverage. Monthly updates. Annual crediting cycles.</p>
+  </div>
+  <div class="sp-bg-card" style="margin-bottom:12px">
+    <h4 style="color:#5CC184;font-size:13px;margin-bottom:6px">PROJECT OVERVIEW</h4>
+    <p>The Project Overview tool provides an interactive map of each CEA and strata in your soil carbon projects. Ideal for large farms, it simplifies oversight, supports compliance, and helps optimise land use by centralising all project boundaries and data.</p>
+  </div>
+  <div class="sp-bg-card">
+    <h4 style="color:#5CC184;font-size:13px;margin-bottom:6px">INTEGRATED SOIL DATA</h4>
+    <p>The Integrated Soil Data tool compiles soil results across your carbon project, showing a clear timeline of soil health and carbon gains. It helps farms optimise management, boost fertility, and improve climate resilience and sustainability reporting.</p>
+  </div>
+</div>
+</div></div>
+
+<!-- PAGE 9: THE AGRIPROVE PROCESS -->
+<div class="page-wrapper"><div class="page sp-dark" data-page="9">
+<span class="page-number">9</span>
+<div class="sp-static-title">THE AGRIPROVE<br>PROCESS<span style="color:#E8942E">.</span></div>
+<div class="sp-static-body" style="padding-top:16px">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:center">
+    <div class="sp-bg-card" style="text-align:center;padding:16px"><div style="font-size:28px;margin-bottom:8px">&#128221;</div><h4 style="color:#E8942E;margin-bottom:6px;font-size:12px">Sign Up</h4><p style="font-size:10px">Start your soil carbon journey by creating an account at agriprove.io. It only takes a minute to get started.</p></div>
+    <div class="sp-bg-card" style="text-align:center;padding:16px"><div style="font-size:28px;margin-bottom:8px">&#128270;</div><h4 style="color:#E8942E;margin-bottom:6px;font-size:12px">Assess</h4><p style="font-size:10px">We will assess your eligibility and help you understand the potential of soil carbon on your land.</p></div>
+    <div class="sp-bg-card" style="text-align:center;padding:16px"><div style="font-size:28px;margin-bottom:8px">&#128203;</div><h4 style="color:#E8942E;margin-bottom:6px;font-size:12px">Register</h4><p style="font-size:10px">Provide farm details and we will handle project registration with the Clean Energy Regulator.</p></div>
+    <div class="sp-bg-card" style="text-align:center;padding:16px"><div style="font-size:28px;margin-bottom:8px">&#127793;</div><h4 style="color:#E8942E;margin-bottom:6px;font-size:12px">Baseline</h4><p style="font-size:10px">We measure your starting soil carbon levels through expert soil sampling.</p></div>
+    <div class="sp-bg-card" style="text-align:center;padding:16px"><div style="font-size:28px;margin-bottom:8px">&#128736;</div><h4 style="color:#E8942E;margin-bottom:6px;font-size:12px">Implement</h4><p style="font-size:10px">Apply land management strategies to boost soil carbon and farm productivity.</p></div>
+    <div class="sp-bg-card" style="text-align:center;padding:16px"><div style="font-size:28px;margin-bottom:8px">&#128200;</div><h4 style="color:#E8942E;margin-bottom:6px;font-size:12px">Measure</h4><p style="font-size:10px">Track and verify changes in your soil carbon over time.</p></div>
+  </div>
+  <div style="display:flex;justify-content:center;gap:12px;margin-top:16px">
+    <div class="sp-bg-card" style="text-align:center;padding:16px;flex:0 0 45%"><div style="font-size:28px;margin-bottom:8px">&#127775;</div><h4 style="color:#E8942E;margin-bottom:6px;font-size:12px">Credits</h4><p style="font-size:10px">Convert your soil carbon gains into Australian Carbon Credit Units and unlock new income streams.</p></div>
+    <div class="sp-bg-card" style="text-align:center;padding:16px;flex:0 0 45%"><div style="font-size:28px;margin-bottom:8px">&#128178;</div><h4 style="color:#E8942E;margin-bottom:6px;font-size:12px">Sell / Marketplace</h4><p style="font-size:10px">Turn your soil carbon gains into income. Sell your ACCUs or use them on the AgriProve Marketplace to reinvest in your farm.</p></div>
+  </div>
+</div>
+</div></div>
+
+<!-- PAGE 10: YOUR ACCUS -->
+<div class="page-wrapper"><div class="page sp-dark" data-page="10">
+<span class="page-number">10</span>
+<div class="sp-static-title">YOUR ACCUS</div>
+<div class="sp-static-body">
+  <div class="sp-bg-q" style="color:#5CC184">HOW DO I CLAIM MY ACCUS?</div>
+  <div class="sp-bg-card">AgriProve will complete all the requirements for farmers to earn revenue from soil carbon projects, including reporting, management and sale of Australian Carbon Credit Units (ACCUs). If an increase in soil carbon levels is recorded from soil sampling, an offsets report is submitted to the Clean Energy Regulator (CER) to apply for ACCUs to be awarded to the project. Once ACCUs are awarded, the farmer can hold or sell the ACCUs.</div>
+  <div class="sp-bg-q" style="color:#5CC184">HOW CAN I SELL MY ACCUS?</div>
+  <div class="sp-bg-card">Your ANREU (Australian National Registry of Emissions Units) account puts you in control of your ACCUs. Once issued, AgriProve transfers your ACCUs to your nominated ANREU account within 5 business days, and from there, you decide what to do with them.</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px">
+    <div class="sp-bg-benefit"><h4>DIRECT PURCHASE</h4><p>AgriProve purchases your ACCUs directly at an agreed price, giving you certainty and a clear return at the time of sale.</p></div>
+    <div class="sp-bg-benefit"><h4>BROKERED SALE</h4><p>AgriProve brokers a sale to an identified buyer, or refers you to a third-party broker to manage the sale directly.</p></div>
+    <div class="sp-bg-benefit"><h4>HOLD FOR FUTURE</h4><p>Keep your ACCUs in your ANREU account and sell or use them when the time is right, including for your own carbon neutrality purposes.</p></div>
+  </div>
+  <div class="sp-bg-q" style="color:#5CC184">ARE THERE ANY ONGOING COSTS?</div>
+  <div class="sp-bg-card">All soil carbon projects require an independent third party audit the first time they generate ACCUs, and this cost is covered by AgriProve. These audits are approximately $30,000 per audit. All costs for every soil sampling round after baseline is covered by AgriProve.</div>
+</div>
+</div></div>
+
+<!-- PAGE 11: THE AGRIPROVE ASSESSMENT -->
+<div class="page-wrapper"><div class="page sp-dark" data-page="11">
+<span class="page-number">11</span>
+<div class="sp-static-title">THE AGRIPROVE<br>ASSESSMENT<span style="color:#E8942E">.</span></div>
+<div class="sp-static-body">
+  <div style="display:flex;gap:16px;align-items:flex-start">
+    <div style="flex:1">
+      <h3 style="font-size:14px;font-weight:600;color:#fff;margin-bottom:8px">NEXT STEPS: AGRIPROVE PROJECT PROPOSAL</h3>
+      <p>This AgriProve Project Proposal collects all the key information required to register your soil carbon project with the Clean Energy Regulator (CER). It outlines your property's baseline conditions, confirms land eligibility, and details the land management activities you intend to implement to build soil carbon and generate carbon credits.</p>
+    </div>
+  </div>
+  <div style="margin-top:16px">
+    <h3 style="font-size:16px;font-weight:700;color:#5CC184;margin-bottom:12px">SELECT YOUR ELIGIBLE ACTIVITY</h3>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+      <div class="sp-bg-benefit"><h4>New pasture development</h4><p>Setting up and maintaining new pastures where you did not have any before.</p></div>
+      <div class="sp-bg-benefit"><h4>Changing land features</h4><p>Changing land features, like reshaping parts of your farm to improve drainage and soil health.</p></div>
+      <div class="sp-bg-benefit"><h4>Adjusting grazing</h4><p>Changing how many animals, how long or intensely they graze, to keep the ground covered and boost soil health.</p></div>
+      <div class="sp-bg-benefit"><h4>Planting cover crops</h4><p>Planting cover crops to keep the soil covered and in good condition during off-seasons.</p></div>
+      <div class="sp-bg-benefit"><h4>Legume introduction</h4><p>Using legume species in a cropping or pasture system.</p></div>
+      <div class="sp-bg-benefit"><h4>Stubble retention</h4><p>Leaving crop stubble in the field after harvest to protect the soil.</p></div>
+      <div class="sp-bg-benefit"><h4>Pasture improvement</h4><p>Improved pastures by reseeding or combining crops with pasture to boost growth.</p></div>
+      <div class="sp-bg-benefit"><h4>Minimum or no-till methods</h4><p>Switching to minimum-till or no-till methods to improve soil health and structure.</p></div>
+    </div>
+  </div>
+</div>
+</div></div>
+
+<!-- PAGE 12: CONTACT US -->
+<div class="page-wrapper"><div class="page sp-dark" data-page="12">
+<span class="page-number">12</span>
+<div class="sp-contact">
+  <div class="sp-contact-left">
+    <h2>CONTACT<br>US</h2>
+  </div>
+  <div class="sp-contact-right">
+    <div style="text-align:center">
+      <div class="logo-text" style="font-size:28px;color:#5CC184;margin-bottom:24px">agriprove</div>
+      <div class="sp-contact-info">
+        <div class="sp-contact-row"><div class="label">Phone</div><div class="value">0403893668</div></div>
+        <div class="sp-contact-row"><div class="label">Email</div><div class="value">ben@agriprove.io</div></div>
+        <div class="sp-contact-row"><div class="label">Website</div><div class="value">www.agriprove.io</div></div>
+        <div class="sp-contact-row"><div class="label">Address</div><div class="value">1/601 Dean St, Albury<br>NSW 2640</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div></div>`;
+
+  // Init portfolio map
+  setTimeout(initPortfolioMap, 100);
+}
+
+// ═══════════════════════════════════════════
+// PORTFOLIO MAP (Leaflet)
+// ═══════════════════════════════════════════
+let portfolioMapInstance = null;
+function initPortfolioMap() {
+  const el = document.getElementById('portfolioMap');
+  if (!el || el.offsetHeight === 0) return;
+  if (portfolioMapInstance) { portfolioMapInstance.remove(); portfolioMapInstance = null; }
+  const center = state.centroid || [-25.2744, 133.7751];
+  const zoom = state.centroid ? 8 : 4;
+  portfolioMapInstance = L.map(el, { zoomControl: false, attributionControl: false }).setView(center, zoom);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }).addTo(portfolioMapInstance);
+  if (state.centroid) {
+    const marker = L.circleMarker(center, { radius: 8, color: '#5CC184', weight: 3, fillColor: '#5CC184', fillOpacity: 0.3 });
+    marker.addTo(portfolioMapInstance);
+    // Add property boundary if available
+    if (state.files.input) {
+      try {
+        L.geoJSON(state.files.input, { style: { color: '#5CC184', weight: 2, fillOpacity: 0.1 } }).addTo(portfolioMapInstance);
+      } catch(e) {}
+    }
+  }
+  setTimeout(() => portfolioMapInstance && portfolioMapInstance.invalidateSize(), 200);
+}
+
+// ═══════════════════════════════════════════
+// NARRATIVE API + PASTE
+// ═══════════════════════════════════════════
+async function generateNarratives() {
+  const key = document.getElementById('apiKey').value.trim();
+  if (!key) { toast('Enter your Claude API key first'); return; }
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true; btn.textContent = 'Generating...';
+  try {
+    for (const page of ['page2', 'page4']) {
+      const prompt = buildPrompt(page);
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, messages: [{ role: 'user', content: prompt }] })
+      });
+      if (!resp.ok) throw new Error('API error: ' + resp.status + ' ' + (await resp.text()));
+      const data = await resp.json();
+      const text = data.content[0].text;
+      state.narratives[page] = text;
+      document.getElementById('narrative-' + page).textContent = text;
+    }
+    toast('Narratives generated successfully');
+  } catch (e) {
+    console.error(e);
+    toast('API call failed. Use manual copy-paste instead. Error: ' + e.message);
+  }
+  btn.disabled = false; btn.textContent = 'Generate Narratives via API';
+}
+
+function applyNarrative(page, text) {
+  if (!text.trim()) return;
+  state.narratives[page] = text.trim();
+  const el = document.getElementById('narrative-' + page);
+  if (el) el.textContent = text.trim();
+  toast(page === 'page2' ? 'Page 2 narrative applied' : 'Page 4 narrative applied');
+}
+
+function showPrompt(page) {
+  const prompt = buildPrompt(page);
+  navigator.clipboard.writeText(prompt).then(() => toast('Prompt copied to clipboard'));
+}
+
+function regenPrompt(page) {
+  const guidance = document.getElementById('regenGuidance').value.trim();
+  const prompt = buildPrompt(page, guidance);
+  navigator.clipboard.writeText(prompt).then(() => toast('Regeneration prompt copied to clipboard (includes your guidance)'));
+}
+
+// ═══════════════════════════════════════════
+// PDF EXPORT
+// ═══════════════════════════════════════════
+async function exportPDF() {
+  const btn = document.getElementById('exportBtn');
+  btn.disabled = true; btn.textContent = 'Generating PDF...';
+  setStatus('Generating PDF... this may take a moment');
+  try {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pages = document.querySelectorAll('.page');
+    for (let i = 0; i < pages.length; i++) {
+      if (i > 0) pdf.addPage();
+      const page = pages[i];
+      const canvas = await html2canvas(page, { scale: 2, useCORS: true, allowTaint: true, logging: false, width: 595, height: 842 });
+      const imgData = canvas.toDataURL('image/jpeg', 0.92);
+      pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+      setStatus('Rendering page ' + (i+1) + ' of ' + pages.length + '...');
+    }
+    const name = (state.parsed && state.parsed.name) ? state.parsed.name.replace(/[^a-zA-Z0-9]/g, '_') : 'Snapshot';
+    pdf.save('HORIZON_Snapshot_' + name + '.pdf');
+    toast('PDF exported successfully');
+    setStatus('PDF exported');
+  } catch (e) {
+    console.error(e);
+    toast('PDF export error: ' + e.message);
+  }
+  btn.disabled = false; btn.textContent = 'Export to PDF';
+}
+
+// ═══════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════
+function togglePanel(header) {
+  header.closest('.panel').classList.toggle('collapsed');
+}
+function expandPanel(id) {
+  document.getElementById(id).classList.remove('collapsed');
+}
+function setStatus(msg) {
+  document.getElementById('statusText').textContent = msg;
+}
+function toast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  renderPages();
+});
+
+// Track inline edits
+document.addEventListener('input', (e) => {
+  if (e.target.dataset && e.target.dataset.narrative) {
+    state.narratives[e.target.dataset.narrative] = e.target.textContent;
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+{
+  "version": "p0.1",
+  "generated_at": "2026-05-08T04:30:00.000Z",
+  "count": 9,
+  "records": {
+    "e0001": {
+      "version": "p0.1",
+      "email_id": "e0001",
+      "deal_id": "aircall-real-active-post-kct-01",
+      "deal_stage_at_time": "KCT Issued (Post-KCT)",
+      "sender_role": "rep",
+      "objections_raised": [],
+      "value_props_landed": [
+        "Confirmed delivery timeline: carbon project plan + key commercial terms by end of week",
+        "Offered post-KCT catch-up call with Will Frecheville (Head of Operations) for any review questions",
+        "Explained that AgriWeb (3rd-party farm record-keeping platform) integrates via shared license — customer doesn't need to re-enter records annually"
+      ],
+      "sentiment_shift": "positive",
+      "summary": "Healthy post-KCT progression call. Customer engaged, asking forward-looking questions about ongoing reporting. No objections raised. 3+ minutes of rapport-building (golf chat) before substance — Ben's signature opening style."
+    },
+    "e0002": {
+      "version": "p0.1",
+      "email_id": "e0002",
+      "deal_id": "D-W-001",
+      "deal_stage_at_time": "Strategy Call",
+      "sender_role": "customer",
+      "objections_raised": [
+        "25/75 revenue split feels steep"
+      ],
+      "value_props_landed": [],
+      "sentiment_shift": "negative",
+      "summary": "Customer pushed back on 25% AgriProve cut — wanted clarity on alternative"
+    },
+    "e0003": {
+      "version": "p0.1",
+      "email_id": "e0003",
+      "deal_id": "D-W-001",
+      "deal_stage_at_time": "Strategy Call",
+      "sender_role": "rep",
+      "objections_raised": [],
+      "value_props_landed": [
+        "25-year diversified income reframing using NRM-region case"
+      ],
+      "sentiment_shift": "positive",
+      "summary": "Rep showed Riverina ACCU revenue projection over 25 years; customer warmed"
+    },
+    "e0004": {
+      "version": "p0.1",
+      "email_id": "e0004",
+      "deal_id": "D-W-001",
+      "deal_stage_at_time": "SLA/KCT Mapping",
+      "sender_role": "customer",
+      "objections_raised": [],
+      "value_props_landed": [
+        "Project plan understandable when walked through"
+      ],
+      "sentiment_shift": "positive",
+      "summary": "Customer engaged with project plan walkthrough"
+    },
+    "e0005": {
+      "version": "p0.1",
+      "email_id": "e0005",
+      "deal_id": "D-W-002",
+      "deal_stage_at_time": "Discovery Call",
+      "sender_role": "rep",
+      "objections_raised": [],
+      "value_props_landed": [
+        "Eligibility confirmed for soil type"
+      ],
+      "sentiment_shift": "positive",
+      "summary": "Rep confirmed mixed-grazing eligibility; customer warmed"
+    },
+    "e0006": {
+      "version": "p0.1",
+      "email_id": "e0006",
+      "deal_id": "D-L-001",
+      "deal_stage_at_time": "Strategy Call",
+      "sender_role": "customer",
+      "objections_raised": [
+        "Implementation feels heavy for partner"
+      ],
+      "value_props_landed": [],
+      "sentiment_shift": "negative",
+      "summary": "Customer flagged that partner not engaged; momentum stalled"
+    },
+    "e0007": {
+      "version": "p0.1",
+      "email_id": "e0007",
+      "deal_id": "D-L-003",
+      "deal_stage_at_time": "Discovery Call",
+      "sender_role": "customer",
+      "objections_raised": [],
+      "value_props_landed": [],
+      "sentiment_shift": "none",
+      "summary": "Customer cordial but no follow-up after 14 days; classic Cold pattern"
+    },
+    "e0008": {
+      "version": "p0.1",
+      "email_id": "e0008",
+      "deal_id": "D-L-004",
+      "deal_stage_at_time": "Strategy Call",
+      "sender_role": "customer",
+      "objections_raised": [
+        "25-year commitment too long for our planning"
+      ],
+      "value_props_landed": [],
+      "sentiment_shift": "negative",
+      "summary": "Customer raised generational planning concern; rep did not deflect with disclosure-template framing"
+    },
+    "e0009": {
+      "version": "p0.1",
+      "email_id": "e0009",
+      "deal_id": "D-L-005",
+      "deal_stage_at_time": "Discovery Call",
+      "sender_role": "customer",
+      "objections_raised": [
+        "Considering DIY methodology"
+      ],
+      "value_props_landed": [],
+      "sentiment_shift": "negative",
+      "summary": "Customer mentioned exploring own-team carbon project; rep did not differentiate AgriProve value-add"
+    }
+  }
+}

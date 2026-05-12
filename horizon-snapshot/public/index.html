@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HORIZON Snapshot Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+/* Reset + Base (Frontier Dark Theme) */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg-page:#0F1A24;
+  --bg-nav:#1A2D3D;
+  --bg-card:#1E3344;
+  --bg-card-hover:#243D52;
+  --border:#2A4055;
+  --text-primary:#E8EDF2;
+  --text-muted:#8FA3B8;
+  --accent:#3DBA78;
+  --accent-teal:#2DD4A8;
+  --success:#34D399;
+  --warning:#F59E0B;
+  --error:#EF4444;
+  --font:'Inter',system-ui,sans-serif;
+}
+body{font-family:var(--font);background:var(--bg-page);color:var(--text-primary);overflow:hidden;height:100vh}
+
+/* HEADER */
+#toolbar{
+  background:var(--bg-nav);height:56px;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  z-index:100;
+}
+#toolbar .logo{font-size:20px;font-weight:800;color:var(--accent);letter-spacing:-0.02em}
+#toolbar .title-group{display:flex;align-items:center;gap:16px}
+#toolbar h1{font-size:14px;font-weight:500;color:var(--text-muted);margin-left:12px}
+#toolbar .property-badge{
+  background:var(--bg-card);border:1px solid var(--border);
+  padding:4px 12px;border-radius:12px;font-size:12px;font-weight:500;
+  color:var(--accent);display:none;
+}
+#toolbar .right-group{display:flex;align-items:center;gap:16px}
+#toolbar .status{font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:8px}
+#toolbar .status .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);transition:background 0.3s}
+#toolbar .status .dot.working{background:var(--warning)}
+#toolbar .dev-toggle{
+  font-size:11px;color:var(--text-muted);cursor:pointer;
+  padding:4px 10px;border-radius:4px;border:1px solid var(--border);
+  background:transparent;font-family:var(--font);transition:all 0.15s;
+}
+#toolbar .dev-toggle:hover{background:var(--bg-card);color:var(--text-primary)}
+#toolbar .dev-toggle.active{background:var(--bg-card);border-color:var(--accent);color:var(--accent)}
+
+/* WORKFLOW STEPS */
+#steps{
+  background:var(--bg-nav);border-bottom:1px solid var(--border);
+  padding:0 24px;height:44px;display:flex;align-items:center;gap:0;
+}
+.step{
+  display:flex;align-items:center;gap:8px;padding:0 16px;height:44px;
+  font-size:12px;font-weight:500;color:var(--text-muted);
+  border-bottom:2px solid transparent;cursor:pointer;transition:all 0.2s;
+  user-select:none;white-space:nowrap;
+}
+.step:hover{color:var(--text-primary)}
+.step.active{color:var(--text-primary);font-weight:600;border-bottom-color:var(--accent)}
+.step.completed{color:var(--accent)}
+.step .step-num{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--border);color:var(--text-muted);
+  font-size:10px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+.step.active .step-num{background:var(--accent);color:#fff}
+.step.completed .step-num{background:var(--accent);color:#fff}
+.step-arrow{color:var(--border);font-size:14px;margin:0 4px}
+
+/* WORKSPACE */
+#workspace{display:flex;height:calc(100vh - 100px)}
+
+/* SIDEBAR */
+#sidebar{
+  width:380px;min-width:380px;background:var(--bg-nav);
+  border-right:1px solid var(--border);overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.panel{border-bottom:1px solid var(--border)}
+.panel-header{
+  padding:14px 20px;font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);
+  cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+  user-select:none;transition:background 0.15s;
+}
+.panel-header:hover{background:var(--bg-card)}
+.panel-header .arrow{transition:transform 0.2s;font-size:10px}
+.panel.collapsed .panel-body{display:none}
+.panel.collapsed .arrow{transform:rotate(-90deg)}
+.panel-body{padding:0 20px 16px}
+.panel.dev-only{display:none}
+.dev-mode .panel.dev-only{display:block}
+
+/* FORM FIELDS */
+.field{margin-bottom:12px}
+.field label{
+  display:block;font-size:11px;font-weight:500;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;
+}
+.field input,.field select,.field textarea{
+  width:100%;padding:8px 12px;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:6px;font-size:13px;font-family:var(--font);
+  color:var(--text-primary);
+}
+.field textarea{resize:vertical;min-height:60px}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 2px rgba(61,186,120,0.15);
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--text-muted);opacity:0.6}
+.field select option{background:var(--bg-card);color:var(--text-primary)}
+.field-readonly{
+  padding:8px 12px;background:var(--bg-page);border:1px solid var(--border);
+  border-radius:6px;font-size:13px;color:var(--text-primary);
+}
+.style-hint{
+  margin:6px 0 0 0;
+  font-size:10.5px;
+  line-height:1.4;
+  color:var(--text-muted);
+  font-style:italic;
+}
+
+/* DATA SOURCE TOGGLE */
+.source-toggle{
+  display:flex;padding:12px 20px;gap:0;border-bottom:1px solid var(--border);
+}
+.source-btn{
+  flex:1;padding:8px 12px;font-size:12px;font-weight:500;
+  font-family:var(--font);cursor:pointer;
+  background:transparent;color:var(--text-muted);
+  border:1px solid var(--border);transition:all 0.15s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.source-btn:first-child{border-radius:6px 0 0 6px;border-right:none}
+.source-btn:last-child{border-radius:0 6px 6px 0}
+.source-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.source-btn .source-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* UPLOAD ZONE */
+.upload-zone{
+  border:2px dashed var(--border);border-radius:8px;padding:24px;
+  text-align:center;cursor:pointer;transition:all 0.2s;
+}
+.upload-zone:hover{border-color:var(--accent);background:rgba(61,186,120,0.05)}
+.upload-zone.active{border-color:var(--accent);background:rgba(61,186,120,0.08)}
+.upload-zone.has-file{border-style:solid;border-color:var(--accent);background:rgba(61,186,120,0.06);padding:12px 16px}
+.upload-zone p{font-size:12px;color:var(--text-muted);margin-top:8px}
+.upload-zone .icon{font-size:28px}
+.upload-file-info{display:flex;align-items:center;justify-content:space-between;width:100%}
+.upload-file-info .filename{font-size:12px;font-weight:500;color:var(--accent);text-align:left}
+.upload-file-info .filesize{font-size:11px;color:var(--text-muted)}
+.upload-file-info .remove{font-size:11px;color:var(--error);cursor:pointer;border:none;background:none;font-family:var(--font)}
+
+/* GENERATE SECTION */
+.generate-section{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:8px;padding:14px;margin-top:12px;
+}
+.generate-section .api-row{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.generate-section .api-row input{
+  flex:1;padding:6px 10px;font-size:12px;
+  background:var(--bg-page);border:1px solid var(--border);
+  border-radius:4px;color:var(--text-primary);font-family:var(--font);
+}
+.generate-section .api-row input:focus{outline:none;border-color:var(--accent)}
+.generate-section .api-row .api-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.generate-section .api-row .api-status.ready{background:var(--accent)}
+.generate-section .api-row .api-status.not-ready{background:var(--border)}
+
+/* BUTTONS */
+.btn{
+  padding:8px 20px;border:none;border-radius:6px;
+  font-size:13px;font-weight:500;cursor:pointer;
+  font-family:var(--font);transition:all 0.15s;
+}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#35a86c}
+.btn-secondary{background:transparent;color:var(--text-muted);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--bg-card);color:var(--text-primary)}
+.btn-hubspot{background:#FF7A59;color:#fff}
+.btn-hubspot:hover{background:#E66648}
+.btn-hubspot:disabled{background:#5A4339;color:#999;cursor:not-allowed}
+
+/* Floating "Report issue" button */
+.feedback-fab{
+  position:fixed;
+  bottom:20px;right:20px;
+  background:var(--bg-card);
+  color:var(--text-primary);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:8px 16px 8px 12px;
+  font-family:var(--font);font-size:12px;font-weight:500;
+  cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,0,0,0.4);
+  display:flex;align-items:center;gap:8px;
+  z-index:900;
+  transition:all 0.15s;
+}
+.feedback-fab:hover{background:var(--bg-card-hover);border-color:var(--accent)}
+.feedback-fab .feedback-icon{
+  width:18px;height:18px;
+  background:var(--warning);
+  color:#fff;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:11px;
+  flex-shrink:0;
+}
+
+/* Send-panel HubSpot block — separated from Export PDF by a hairline */
+.hubspot-block{
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid var(--border);
+}
+.hubspot-block .field-label{
+  display:block;
+  font-size:10px;text-transform:uppercase;letter-spacing:0.08em;
+  color:var(--text-muted);margin-bottom:4px;
+}
+.hubspot-block .field-label .optional{
+  text-transform:none;letter-spacing:0;color:var(--text-muted);opacity:0.7;
+}
+
+/* TOOLBAR ICON BUTTON (Settings gear) */
+.icon-btn{
+  position:relative;width:32px;height:32px;border-radius:6px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--text-muted);cursor:pointer;font-family:var(--font);
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  transition:all 0.15s;
+}
+.icon-btn:hover{background:var(--bg-card);color:var(--text-primary)}
+.icon-btn .key-dot{
+  position:absolute;top:5px;right:5px;width:8px;height:8px;
+  border-radius:50%;background:var(--border);
+  border:2px solid var(--bg-nav);box-sizing:content-box;
+}
+.icon-btn.configured .key-dot{background:var(--accent)}
+
+/* MODAL */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1000;
+  display:none;align-items:center;justify-content:center;
+}
+.modal-backdrop.open{display:flex}
+.modal{
+  width:440px;max-width:92vw;background:var(--bg-nav);
+  border:1px solid var(--border);border-radius:10px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.4);
+  display:flex;flex-direction:column;max-height:80vh;
+}
+.modal-header{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.modal-header h2{font-size:14px;font-weight:600;color:var(--text-primary)}
+.modal-close{
+  background:none;border:none;color:var(--text-muted);font-size:20px;
+  cursor:pointer;font-family:var(--font);line-height:1;padding:0 4px;
+}
+.modal-close:hover{color:var(--text-primary)}
+.modal-body{padding:20px;overflow-y:auto}
+.modal-footer{
+  padding:14px 20px;border-top:1px solid var(--border);
+  display:flex;justify-content:flex-end;gap:8px;
+}
+.modal .status-line{
+  font-size:11px;margin-top:8px;display:flex;align-items:center;gap:6px;
+}
+.modal .status-line .dot{width:8px;height:8px;border-radius:50%;background:var(--border)}
+.modal .status-line.configured .dot{background:var(--accent)}
+.modal .status-line.configured{color:var(--accent)}
+.modal .status-line:not(.configured){color:var(--text-muted)}
+
+/* Simplified API status row in Generate panel (no input — Settings owns it) */
+.api-status-row{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;
+  background:var(--bg-page);border:1px solid var(--border);
+  border-radius:4px;font-size:11px;color:var(--text-muted);margin-bottom:10px;
+}
+.api-status-row .dot{width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0}
+.api-status-row.configured .dot{background:var(--accent)}
+.api-status-row.configured{color:var(--accent)}
+.api-status-row a{color:var(--accent-teal);text-decoration:none;cursor:pointer;margin-left:auto}
+.api-status-row a:hover{text-decoration:underline}
+.btn-success{background:var(--accent-teal);color:#0F1A24;font-weight:600}
+.btn-success:hover{background:#28c49a}
+.btn-full{width:100%;padding:10px}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.btn-group{display:flex;gap:6px;margin-top:8px}
+.btn-group .btn{flex:1}
+
+/* DATA CARDS */
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.data-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:8px;padding:12px;
+}
+.data-card .label{
+  font-size:10px;text-transform:uppercase;letter-spacing:0.08em;
+  color:var(--text-muted);margin-bottom:4px;
+}
+.data-card .value{font-size:15px;font-weight:600;color:var(--text-primary)}
+.data-card.highlight{border-left:3px solid var(--accent)}
+
+/* PROPERTY SUMMARY (review step) */
+.property-summary{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:8px;padding:16px;margin-bottom:12px;
+}
+.property-summary .prop-name{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:2px}
+.property-summary .prop-address{font-size:12px;color:var(--text-muted)}
+.property-summary .prop-meta{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
+.property-summary .meta-item{font-size:12px;color:var(--text-muted)}
+.property-summary .meta-item strong{color:var(--text-primary);font-weight:600}
+
+/* REGEN PANEL */
+.regen-panel{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:8px;padding:12px;margin-top:12px;
+}
+.regen-panel h4{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px}
+.paste-area{
+  width:100%;min-height:60px;padding:10px;
+  background:var(--bg-page);border:1px solid var(--border);
+  border-radius:6px;font-size:12px;font-family:var(--font);
+  color:var(--text-primary);resize:vertical;
+}
+.paste-area:focus{outline:none;border-color:var(--accent)}
+
+/* GROWTH SUMMARY (internal narrative — dedicated panel) */
+.growth-toolbar{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:8px;
+}
+.growth-badge{
+  background:rgba(92,193,132,0.18);
+  color:#5CC184;
+  font-size:9px;font-weight:700;
+  padding:2px 6px;border-radius:3px;
+  letter-spacing:0.06em;text-transform:uppercase;
+}
+.growth-hint{
+  font-size:10.5px;color:var(--text-muted);
+  margin:0 0 8px 0;line-height:1.4;
+}
+.growth-body{
+  background:var(--bg-page);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:10px 12px;
+  font-size:12px;line-height:1.55;
+  color:var(--text-primary);
+  white-space:pre-wrap;
+  max-height:240px;overflow-y:auto;
+  font-family:var(--font);
+}
+.growth-body:focus{outline:none;border-color:var(--accent)}
+.growth-body em{color:var(--text-muted);font-style:italic}
+.btn-copy{
+  background:var(--bg-page);
+  border:1px solid var(--border);
+  color:var(--text-primary);
+  font-size:10px;font-weight:600;
+  padding:4px 10px;border-radius:4px;
+  cursor:pointer;font-family:var(--font);
+  letter-spacing:0.04em;
+}
+.btn-copy:hover{ background:var(--accent);color:#fff;border-color:var(--accent); }
+.btn-copy.copied{ background:#5CC184;color:#fff;border-color:#5CC184; }
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--bg-card);border:1px solid var(--border);
+  color:var(--text-primary);padding:12px 20px;border-radius:8px;
+  font-size:13px;z-index:1000;animation:slideUp 0.3s ease;
+  box-shadow:0 4px 16px rgba(0,0,0,0.3);
+}
+.toast.success{border-left:3px solid var(--accent)}
+.toast.error{border-left:3px solid var(--error)}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* SPINNER */
+.spinner{
+  display:inline-block;width:14px;height:14px;
+  border:2px solid rgba(255,255,255,0.2);border-top-color:#fff;
+  border-radius:50%;animation:spin 0.6s linear infinite;margin-right:6px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* EMPTY STATE */
+.empty-state{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;text-align:center;padding:40px;
+}
+.empty-state .icon{font-size:48px;margin-bottom:16px;opacity:0.5}
+.empty-state h3{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:8px}
+.empty-state p{font-size:13px;color:var(--text-muted);max-width:360px;line-height:1.5}
+
+/* PIPELINE VIEW */
+#pipeline-panel{display:none}
+.pipeline-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px;border-bottom:1px solid var(--border);
+}
+.pipeline-header h3{font-size:13px;font-weight:600;color:var(--text-primary)}
+.pipeline-count{
+  font-size:11px;color:var(--bg-page);background:var(--accent);
+  padding:2px 8px;border-radius:10px;font-weight:600;
+}
+.pipeline-filters{
+  display:flex;gap:6px;padding:10px 20px;border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.pipe-filter{
+  font-size:11px;padding:4px 10px;border-radius:12px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--text-muted);cursor:pointer;font-family:var(--font);
+  transition:all 0.15s;
+}
+.pipe-filter:hover{border-color:var(--text-muted);color:var(--text-primary)}
+.pipe-filter.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.pipeline-list{padding:10px 16px;overflow-y:auto;max-height:calc(100vh - 260px)}
+.pipe-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:8px;padding:14px;margin-bottom:8px;
+  cursor:pointer;transition:all 0.15s;position:relative;
+}
+.pipe-card:hover{border-color:var(--accent);background:var(--bg-card-hover)}
+.pipe-card.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.pipe-card .pipe-name{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
+.pipe-card .pipe-address{font-size:11px;color:var(--text-muted);margin-bottom:10px}
+.pipe-card .pipe-meta{display:flex;gap:12px;flex-wrap:wrap}
+.pipe-card .pipe-meta-item{font-size:10px;color:var(--text-muted)}
+.pipe-card .pipe-meta-item strong{color:var(--text-primary);font-weight:600}
+.pipe-status{
+  position:absolute;top:14px;right:14px;
+  font-size:10px;font-weight:600;padding:3px 8px;
+  border-radius:10px;text-transform:uppercase;letter-spacing:0.04em;
+}
+.pipe-status.ready{background:rgba(61,186,120,0.15);color:var(--accent)}
+.pipe-status.in-progress{background:rgba(245,158,11,0.15);color:var(--warning)}
+.pipe-status.complete{background:rgba(45,212,168,0.15);color:var(--accent-teal)}
+.pipe-status.queued{background:rgba(143,163,184,0.15);color:var(--text-muted)}
+.pipe-card .pipe-date{font-size:10px;color:var(--text-muted);margin-top:8px;font-style:italic}
+.pipeline-empty{
+  text-align:center;padding:40px 20px;
+  font-size:12px;color:var(--text-muted);
+}
+
+/* PREVIEW AREA */
+#preview{flex:1;display:flex;flex-direction:column;background:var(--bg-page);overflow:hidden}
+#preview-toolbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 24px;background:var(--bg-nav);border-bottom:1px solid var(--border);
+  min-height:48px;
+}
+#preview-toolbar .page-nav{display:flex;align-items:center;gap:8px}
+#preview-toolbar .page-nav button{
+  width:32px;height:32px;border-radius:6px;border:1px solid var(--border);
+  background:var(--bg-card);color:var(--text-primary);cursor:pointer;
+  font-size:14px;display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;font-family:var(--font);
+}
+#preview-toolbar .page-nav button:hover{background:var(--bg-card-hover);border-color:var(--accent)}
+#preview-toolbar .page-nav button:disabled{opacity:0.3;cursor:not-allowed}
+#preview-toolbar .page-info{font-size:13px;color:var(--text-muted);min-width:100px;text-align:center}
+#preview-toolbar .page-info strong{color:var(--text-primary)}
+#preview-toolbar .page-type{
+  font-size:11px;color:var(--text-muted);
+  background:var(--bg-card);border:1px solid var(--border);
+  padding:4px 12px;border-radius:12px;
+}
+
+/* Page thumbnails */
+#page-thumbs{
+  display:flex;gap:6px;padding:8px 24px;background:var(--bg-nav);
+  border-bottom:1px solid var(--border);overflow-x:auto;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.thumb{
+  width:48px;height:68px;border-radius:4px;
+  border:2px solid var(--border);cursor:pointer;
+  background:var(--bg-card);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;color:var(--text-muted);
+  transition:all 0.15s;position:relative;
+}
+.thumb:hover{border-color:var(--text-muted)}
+.thumb.active{border-color:var(--accent);color:var(--accent)}
+.thumb.dynamic::after{
+  content:"";position:absolute;top:3px;right:3px;
+  width:5px;height:5px;border-radius:50%;background:var(--accent);
+}
+
+/* Single page display */
+#page-display{
+  flex:1;display:flex;align-items:flex-start;justify-content:center;
+  overflow:auto;padding:24px;
+}
+.page-wrapper{
+  position:relative;width:210mm;
+  box-shadow:0 4px 24px rgba(0,0,0,0.3);border-radius:4px;overflow:hidden;
+}
+
+/* SNAPSHOT PAGE STYLES (OUTPUT DOCUMENT)
+   Sized in physical units (mm) so the on-screen preview uses the same
+   coordinate system Puppeteer uses when rendering the PDF. A 13px font
+   on a 210mm page is the same proportional size on screen and in print —
+   without this, screen showed 595px-wide pages while PDF rendered at
+   ~794px, making the printed text look ~25% smaller than the preview. */
+.page{width:210mm;height:297mm;position:relative;overflow:hidden;background:#fff}
+
+/* Template-overlay rendering — page background is the Canva template,
+   dynamic content sits in absolutely-positioned overlay regions. */
+.page-tpl{
+  background-size:100% 100%;background-repeat:no-repeat;background-position:center;
+}
+.tpl-overlay{
+  position:absolute;box-sizing:border-box;
+  font-family:var(--font);
+}
+.tpl-overlay.opaque-dark{background:#0F2424}
+.tpl-overlay.opaque-light{background:#FFFFFF}
+.tpl-overlay.opaque-green{background:#D6E5C4}
+.tpl-text-cover-name{color:#FFFFFF;font-weight:800;font-size:22px;line-height:1.1;letter-spacing:-0.01em;display:flex;align-items:center}
+.tpl-text-summary{color:#0F2424;font-size:11px;line-height:1.5;padding:6px 8px}
+.tpl-text-property-name{color:#FFFFFF;font-weight:800;font-size:22px;letter-spacing:-0.01em;display:flex;align-items:center;gap:8px}
+.tpl-text-property-summary{color:#FFFFFF;font-size:10px;line-height:1.5;padding:4px 6px}
+.tpl-accu-number{color:#1F3A2D;font-weight:800;font-size:30px;text-align:center;display:flex;align-items:center;justify-content:center}
+.tpl-stat-value{color:#1F3A2D;font-weight:700;font-size:13px;text-align:center;display:flex;align-items:center;justify-content:center}
+.tpl-cell-value{color:#1F3A2D;font-weight:700;font-size:14px;text-align:center;display:flex;align-items:center;justify-content:center}
+.tpl-carbon-cell{color:#1F3A2D;font-size:9.5px;text-align:center;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.tpl-img-fit{width:100%;height:100%;object-fit:cover;display:block}
+.tpl-narrative[contenteditable=true]:hover{outline:1px dashed #5CC184;outline-offset:1px;cursor:text}
+
+/* ─── Surgical overlay regions on Canva templates ─── */
+/* Common base for all overlays */
+.tpl-region{
+  position:absolute;
+  box-sizing:border-box;
+  font-family:var(--font);
+  z-index:2;
+}
+.tpl-region img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* PAGE 2 — HORIZON Analysis (clean Canva template, image frame removed).
+   Authoritative bounds from pixel-scan:
+   - Sub-band ends y=20.40%, x=7.33-92.67% inset
+   - "HORIZON Summary: [Insert here]" line: y=71.05-72.08%, x=7.41-32.23%
+   - Bg pure #FFFFFF, text pure #000000 (sampled from text glyph histogram)
+   - Wave footer starts y=94.87%
+   Map fills the empty white area; summary overlay covers the placeholder line and
+   provides a generous wrap area below for the multi-line narrative. */
+.p2-map-overlay{
+  position:absolute;
+  top:20.4%;left:7.33%;width:85.34%;height:50.7%;
+  background:#FFFFFF;z-index:2;overflow:hidden;
+  border-radius:2px;
+}
+/* object-fit:cover fills the frame edge-to-edge (Canva-style image-frame behavior).
+   May crop a small amount of the map's outer margin — preferable to whitespace gaps. */
+/* Page 2 zone map is now a Leaflet container (satellite basemap + the model's
+   map.png as imageOverlay). Native pan/zoom; zoom out reveals real geographic
+   context instead of empty letterbox. */
+.p2-leaflet-container{
+  width:100%;height:100%;
+  background:#1A2D3D; /* shows briefly while tiles load */
+}
+.p2-leaflet-container.leaflet-container{cursor:grab}
+.p2-leaflet-container.leaflet-container.leaflet-grab{cursor:grab}
+.p2-leaflet-container.leaflet-container.leaflet-dragging{cursor:grabbing}
+/* Page 2 zone overlay uses normal alpha blending (NOT multiply). The PNG is
+   pre-processed in JS: white pixels → alpha 0, and zone-fill pixels (S/R/O)
+   → alpha 70% so the satellite basemap shows through underneath. Outlines
+   (farm boundary, eligible area) stay at 100% alpha. Multiply was the old
+   fallback before pixel-walking — would now darken the zones unintentionally. */
+.p2-leaflet-container .leaflet-image-layer{
+  mix-blend-mode:normal;
+}
+
+/* Zoom +/- buttons matching the Reset View button. Sit next to it in a row. */
+.map-toolbar{
+  position:absolute;
+  top:6px;right:6px;
+  display:flex;gap:4px;
+  z-index:500;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.15s ease;
+}
+.p2-map-overlay:hover .map-toolbar,
+.p2-map-overlay:focus-within .map-toolbar,
+.p3-ph-overlay:hover .map-toolbar,
+.p3-ph-overlay:focus-within .map-toolbar,
+.p3-depth-overlay:hover .map-toolbar,
+.p3-depth-overlay:focus-within .map-toolbar{
+  opacity:1;
+  pointer-events:auto;
+}
+/* Legend + toolbar on page 3 maps must sit above the Leaflet map layers */
+.p3-ph-overlay .p3-legend-img,
+.p3-depth-overlay .p3-legend-img{z-index:500}
+.p3-ph-overlay .map-toolbar,
+.p3-depth-overlay .map-toolbar{z-index:500}
+.map-toolbar .map-zoom-btn,
+.map-toolbar .map-reset-btn{
+  position:static;
+  top:auto;right:auto;
+  opacity:1;
+  pointer-events:auto;
+  margin:0;
+}
+.map-zoom-btn{
+  background:rgba(255,255,255,0.94);
+  border:1px solid rgba(0,0,0,0.15);
+  border-radius:4px;
+  width:24px;height:24px;
+  font-family:var(--font);
+  font-size:14px;font-weight:700;line-height:1;
+  color:#002E34;
+  cursor:pointer;
+  box-shadow:0 1px 3px rgba(0,0,0,0.18);
+  display:flex;align-items:center;justify-content:center;
+}
+.map-zoom-btn:hover{
+  background:#fff;
+  color:#1F3A2D;
+}
+
+/* Page 2 + 3 maps are all Leaflet now — they handle their own cursor / drag.
+   Container styles for the Leaflet hosts on page 3 (same approach as p2). */
+.p3-leaflet-container{
+  width:100%;height:100%;
+  background:#1A2D3D;
+}
+.p3-leaflet-container.leaflet-container{cursor:grab}
+.p3-leaflet-container.leaflet-container.leaflet-grab{cursor:grab}
+.p3-leaflet-container.leaflet-container.leaflet-dragging{cursor:grabbing}
+/* Same "white pixels become transparent" blend for p3 image overlays.
+   We also pre-process pixels to alpha=0 in JS, but mix-blend gives a nicer
+   feathered edge for any near-white pixels we missed in pre-processing. */
+.p3-leaflet-container .leaflet-image-layer{mix-blend-mode:multiply}
+.map-reset-btn {
+  position: absolute;
+  top: 6px; right: 6px;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 600;
+  color: #002E34;
+  cursor: pointer;
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+}
+.p2-map-overlay:hover .map-reset-btn,
+.p3-ph-overlay:hover .map-reset-btn,
+.p3-depth-overlay:hover .map-reset-btn,
+.p2-map-overlay:focus-within .map-reset-btn,
+.p3-ph-overlay:focus-within .map-reset-btn,
+.p3-depth-overlay:focus-within .map-reset-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* Legend + reset button must sit above the Leaflet map layers on page 2 */
+.p2-horizon-legend{z-index:500}
+.p2-map-overlay .map-reset-btn{z-index:500}
+.map-reset-btn:hover {
+  background: #fff;
+  color: #1F3A2D;
+}
+
+/* HORIZON Layer legend on page 2's zone map. Colours match the AgriProve
+   zone palette baked into the model output map.png. */
+.p2-horizon-legend{
+  position:absolute;
+  bottom:6%;left:3%;
+  background:rgba(255,255,255,0.95);
+  border:1px solid rgba(0,46,52,0.15);
+  border-radius:4px;
+  padding:7px 10px;
+  font-family:var(--font);font-size:9px;
+  color:#0F2424;line-height:1.5;
+  box-shadow:0 1px 4px rgba(0,0,0,0.10);
+  z-index:500;  /* must sit above Leaflet's tile-pane (~200) and image-overlay (~300) */
+}
+.p2-horizon-legend .legend-title{
+  font-size:9px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.04em;
+  margin-bottom:4px;color:#0F2424;
+}
+.p2-horizon-legend .legend-row{
+  display:flex;align-items:center;gap:6px;margin:1.5px 0;
+}
+.p2-horizon-legend .legend-swatch{
+  width:11px;height:11px;flex-shrink:0;border-radius:1px;
+}
+.p2-horizon-legend .legend-swatch.outline-red{
+  background:transparent;border:2px solid #E74C3C;
+}
+.p2-horizon-legend .legend-swatch.outline-dashed{
+  background:transparent;border:2px dashed #1F3A2D;
+}
+.p2-summary-overlay{
+  position:absolute;
+  top:70.7%;left:7.41%;width:85.20%;height:23%;
+  background:#FFFFFF;color:#000000;
+  font-family:var(--font);font-size:11px;font-weight:500;line-height:1.55;
+  padding:14px 0 0 0;box-sizing:border-box;z-index:2;
+  overflow:hidden;
+}
+.p2-summary-overlay strong{font-weight:700;color:#000000}
+
+/* PAGE 3 — Soil indicators (clean Canva template).
+   Authoritative bounds from pixel-scan:
+   - pH map area: y=17.83-41.42%, x=2.34-66.88% (matches PH banner inset)
+   - Depth map area: y=47.41-71.97%, x=33.60-97.99% (matches SOIL DEPTH banner inset)
+   - Carbon table area: y=80.11-94.81%, x=7.33-92.59% (matches CARBON INDICATORS banner) */
+/* Map overlays — image is scaled to 107.5% width, anchored left, with overflow:hidden
+   clipping the rightmost 7.5% (which is where the model bakes its tiny illegible legend).
+   We then overlay our own readable HTML legend in the top-left corner. */
+/* "PH & SOIL TYPE" banner overlay — sits at the ORIGINAL banner position.
+   Earlier we shifted it down + added a white cover to create a gap to the top
+   header, but that created a visible artefact. Reverted to flush placement
+   (matches what the carbon banner does). */
+.p3-ph-banner-overlay{
+  position:absolute;
+  top:12.02%;left:2.34%;width:64.54%;height:5.81%;
+  background:#002E34;
+  display:flex;align-items:center;justify-content:flex-start;
+  padding:0 22px;box-sizing:border-box;z-index:3;
+}
+.p3-ph-banner-overlay .banner-title{
+  color:#95C795;
+  font-family:var(--font);font-weight:800;
+  font-size:22px;letter-spacing:-0.01em;
+  text-transform:uppercase;
+}
+
+.p3-ph-overlay{
+  position:absolute;
+  top:17.83%;left:2.34%;width:64.54%;height:21.0%;
+  background:#FFFFFF;z-index:2;overflow:hidden;
+}
+.p3-depth-overlay{
+  position:absolute;
+  top:47.41%;left:33.60%;width:64.39%;height:21.0%;
+  background:#FFFFFF;z-index:2;overflow:hidden;
+}
+/* Page 3 map images are now rendered inside Leaflet (no <img> children of the
+   overlay containers). Legacy img styles removed. */
+
+/* "CARBON INDICATORS" banner — sized to fully cover the original chunky banner
+   (which sits at y=72.02-80.06% in the template).
+   Width spans from PH banner left (2.34%) to SOIL DEPTH banner right (97.99%). */
+.p3-carbon-banner-overlay{
+  position:absolute;
+  top:72.0%;left:2.34%;width:95.65%;height:8.1%;
+  background:#002E34;
+  display:flex;align-items:center;justify-content:flex-start;
+  padding:0 22px;box-sizing:border-box;z-index:3;
+}
+.p3-carbon-banner-overlay .banner-title{
+  color:#95C795;
+  font-family:var(--font);font-weight:800;
+  font-size:30px;letter-spacing:-0.01em;
+  text-transform:uppercase;
+}
+
+/* Carbon table — sits directly below the banner with a hairline separator.
+   Width matches the banner above (x=2.34% to x=97.99%). */
+.p3-carbon-table-overlay{
+  position:absolute;
+  top:80.1%;left:2.34%;width:95.65%;height:13.5%;
+  background:#FFFFFF;z-index:2;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:1px 0 0 0;box-sizing:border-box;
+}
+.p3-carbon-table{
+  width:100%;border-collapse:collapse;
+  font-family:var(--font);font-size:12px;
+}
+.p3-carbon-table th{
+  background:#002E34;color:#95C795;
+  padding:7px 6px;text-align:center;
+  font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.03em;
+}
+.p3-carbon-table td{
+  padding:8px 6px;text-align:center;
+  color:#1F3A2D;font-weight:500;
+  border-bottom:1px solid #E3E8E5;
+  background:#FFFFFF;
+}
+.p3-carbon-table td.p3-carbon-accu{
+  font-weight:800;color:#3DBA78;font-size:14px;
+}
+
+/* Legend PNGs sourced from the Canva template — guaranteed visual match.
+   Positioned bottom-left of each map overlay. */
+.p3-legend-img{
+  position:absolute;
+  bottom:6%;left:4%;
+  z-index:3;
+  display:block;
+  max-width:none;
+}
+.p3-legend-img.ph{ height:40%; width:auto; }
+.p3-legend-img.depth{ width:22%; height:auto; }
+
+/* Legacy HTML legend — kept in case we ever revert to it. */
+.p3-map-legend{
+  position:absolute;
+  bottom:6px;left:6px;
+  background:rgba(255,255,255,0.95);
+  border:1px solid rgba(0,46,52,0.15);
+  border-radius:4px;
+  padding:6px 8px;
+  font-family:var(--font);font-size:8px;
+  color:#0F2424;line-height:1.4;
+  box-shadow:0 1px 4px rgba(0,0,0,0.08);
+  z-index:3;
+}
+.p3-map-legend .legend-title{
+  font-size:8px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.04em;
+  margin-bottom:3px;color:#0F2424;
+}
+.p3-map-legend .legend-row{
+  display:flex;align-items:center;gap:5px;margin:1.5px 0;
+}
+.p3-map-legend .legend-swatch{
+  width:9px;height:9px;border-radius:1px;flex-shrink:0;
+  border:1px solid rgba(0,0,0,0.15);
+}
+
+/* PAGE 4 — Property & Portfolio.
+   Hybrid: stripped Canva PNG (template_page_04_clean.png) provides the page
+   background — dark teal canvas, HORIZON SNAPSHOT title, white card + 4
+   light-grey tiles, disclaimer, wave footer. HTML overlays only the dynamic
+   content: map, property name, summary, and ACCU values inside the tiles. */
+.p4r-page{
+  background-image:url('/templates/template_page_04_clean.png');
+  background-size:100% 100%;
+  background-repeat:no-repeat;
+  background-position:center;
+  font-family:var(--font);
+  color:#FFFFFF;
+}
+/* Empty dark-teal area sits between the baked-in HORIZON SNAPSHOT title
+   (y~5-12%) and the top of the white card (y=70.53%, scanned). Split that
+   ~58% of page into map / property name / summary. */
+.p4r-map{
+  position:absolute;
+  top:14.5%;left:8%;width:84%;height:28%;
+  background:#1A3A3A;
+  border-radius:4px;
+  overflow:hidden;
+  z-index:2;
+}
+.p4r-property-name{
+  position:absolute;
+  top:42.5%;left:8%;width:84%;height:4.5%;
+  color:#95C795;
+  font-size:32px;font-weight:800;
+  letter-spacing:-0.01em;
+  text-transform:uppercase;
+  display:flex;align-items:center;
+  white-space:nowrap;
+  z-index:3;
+}
+.p4r-pin{
+  display:inline-block;
+  width:14px;height:14px;
+  background:#E74C3C;
+  border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg);
+  border:2px solid #FFFFFF;
+  box-shadow:0 1px 2px rgba(0,0,0,0.35);
+  margin-right:10px;
+  flex-shrink:0;
+}
+.p4-summary-overlay{
+  /* Property Summary text on dark teal — absolute-positioned overlay above
+     the white card (white card starts at y=70.53% per pixel scan).
+     Class name preserved so autofit + +/- font controls work. */
+  position:absolute;
+  top:47.5%;left:8%;width:84%;height:22%;
+  padding:0;
+  background:transparent;color:#FFFFFF;
+  font-family:var(--font);font-size:16px;line-height:1.55;
+  box-sizing:border-box;
+  overflow:hidden;
+  z-index:2;
+}
+.p4-summary-overlay strong{font-weight:700;color:#FFFFFF}
+.p4r-summary-label{
+  color:#95C795;
+  font-size:14px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.08em;
+  margin-bottom:2mm;
+  display:block;
+}
+
+/* Font-size controls for editable narratives. Hidden until the user hovers
+   or focuses inside the narrative; reveal on demand to keep the layout clean.
+   Light variant for page 2 (white card); dark variant for page 4 (dark card). */
+.narrative-fontctl{
+  position:absolute;
+  top:2px;right:2px;
+  display:flex;gap:2px;
+  z-index:500;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.15s ease;
+  user-select:none;
+}
+.p2-summary-overlay:hover .narrative-fontctl,
+.p2-summary-overlay:focus-within .narrative-fontctl,
+.p4-summary-overlay:hover .narrative-fontctl,
+.p4-summary-overlay:focus-within .narrative-fontctl{
+  opacity:1;
+  pointer-events:auto;
+}
+.narrative-fontctl button{
+  width:20px;height:20px;
+  background:rgba(255,255,255,0.94);
+  border:1px solid rgba(0,0,0,0.15);
+  border-radius:3px;
+  font-family:var(--font);
+  font-size:11px;font-weight:700;line-height:1;
+  color:#002E34;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  padding:0;
+  box-shadow:0 1px 2px rgba(0,0,0,0.15);
+}
+.narrative-fontctl button:hover{ background:#fff;color:#1F3A2D; }
+.narrative-fontctl.dark button{
+  background:rgba(0,0,0,0.55);
+  border-color:rgba(255,255,255,0.25);
+  color:#fff;
+}
+.narrative-fontctl.dark button:hover{ background:rgba(0,0,0,0.75);color:#fff; }
+.narrative-fontctl .reset{
+  width:auto;padding:0 6px;font-size:10px;font-weight:600;
+}
+/* ACCU tiles — absolute-positioned overlays sitting EXACTLY on top of the
+   baked-in light-grey tile rectangles. Bounds from pngjs pixel-scan of
+   template_page_04_clean.png (rgb(203,212,213) tile colour):
+     Main tile: y=70.53-83.35%, x=11.96-87.78%
+     Tile row:  y=84.24-92.43%, height=8.19%
+       Tile 1: x=11.96-36.02%
+       Tile 2: x=38.04-61.96%
+       Tile 3: x=63.98-87.78%                                        */
+.p4r-accu-main{
+  position:absolute;
+  top:70.53%;left:11.96%;width:75.82%;height:12.82%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3mm;
+  z-index:3;
+  pointer-events:none;
+}
+.p4r-accu-header{
+  color:#002E34;
+  font-weight:800;font-size:24px;
+  letter-spacing:-0.01em;
+}
+.p4r-accu-number{
+  color:#002E34;
+  font-weight:800;font-size:42px;
+  line-height:1;letter-spacing:-0.02em;
+}
+.p4r-accu-sub{
+  color:#046604;
+  font-weight:700;font-size:16px;
+}
+.p4r-tile{
+  position:absolute;
+  top:84.24%;height:8.19%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  z-index:3;
+  pointer-events:none;
+  padding:1.5mm 1mm;box-sizing:border-box;
+  gap:1.2mm;
+}
+.p4r-tile-1{left:11.96%;width:24.06%}
+.p4r-tile-2{left:38.04%;width:23.93%}
+.p4r-tile-3{left:63.98%;width:23.80%}
+.p4r-tile-lbl{
+  color:#002E34;
+  font-weight:700;font-size:18px;
+  letter-spacing:-0.01em;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.p4r-tile-num{
+  color:#002E34;
+  font-weight:800;font-size:18px;
+  line-height:1.1;
+}
+.p4r-tile-sub{
+  color:#046604;
+  font-weight:700;font-size:13px;
+  line-height:1.1;
+}
+
+/* Leaflet map legend on the page-4 portfolio map */
+.p4-leaflet-legend{
+  background:rgba(255,255,255,0.95);
+  border:1px solid rgba(0,46,52,0.15);
+  border-radius:4px;
+  padding:6px 8px;
+  font-family:var(--font);font-size:9px;
+  color:#0F2424;line-height:1.5;
+  box-shadow:0 1px 4px rgba(0,0,0,0.12);
+}
+.p4-leaflet-legend .legend-row{display:flex;align-items:center;gap:6px;margin:1px 0}
+.p4-leaflet-legend .legend-dot{
+  width:9px;height:9px;border-radius:50%;flex-shrink:0;
+  border:1px solid rgba(0,0,0,0.2);
+}
+.p4-leaflet-legend .legend-pin{
+  width:9px;height:9px;flex-shrink:0;
+  background:#E74C3C;
+  border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg);
+  border:1.5px solid #fff;
+  box-shadow:0 0 0 1px rgba(0,0,0,0.15);
+}
+
+/* Prospect teardrop pin on the Leaflet map. Red (#E74C3C) — standard "you are here"
+   convention so it stands out from the green portfolio circles.
+   .prospect-marker is the Leaflet wrapper (transparent so only our shape shows).
+   .prospect-pin is the rotated rounded square that creates the teardrop silhouette.
+   .prospect-pin-inner is a small white centre dot for visual punch. */
+.prospect-marker{background:transparent!important;border:none!important}
+.prospect-pin{
+  width:24px;height:24px;
+  background:#E74C3C;
+  border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg);
+  border:3px solid #FFFFFF;
+  box-shadow:0 2px 6px rgba(0,0,0,0.5);
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.prospect-pin-inner{
+  width:6px;height:6px;border-radius:50%;
+  background:#FFFFFF;
+  transform:rotate(45deg);
+}
+
+/* PAGE 6 — Economics. Template has placeholder text removed; overlays render
+   directly onto empty cells with transparent backgrounds. Pastel green matches
+   the static "$0" / "25%" / "ACCUs" template text.
+   Op1 baseline & Op2 deferred-value cells: transparent (template empty there).
+   Op2 overflow cell ($X when baseline > $50K): OPAQUE dark teal — must cover the
+   static "$0" that's still in the template. */
+.p6-price-overlay{
+  position:absolute;
+  background:transparent;color:#96C896;
+  font-family:var(--font);font-weight:800;font-size:24px;
+  letter-spacing:-0.01em;line-height:1.05;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-sizing:border-box;z-index:3;text-align:center;
+}
+.p6-price-overlay div{margin:0;padding:0}
+.p6-price-1{top:29.0%;left:71%;width:21%;height:4.5%}
+/* Op2 deferred VALUE — renders above the static "ACCUs" label (which sits at
+   y≈71.74-73.39%). Height shrunk so overlay doesn't extend over the static label. */
+.p6-price-2{top:68.5%;left:71%;width:21%;height:3.0%}
+/* Op2 overflow $X — covers the static "$0" cell when baseline > $50K. Opaque dark
+   teal so the underlying "$0" is hidden cleanly. */
+.p6-price-3{top:62.0%;left:71%;width:21%;height:3.5%;background:#002F35}
+
+/* Page 1 cover — surgical property-name overlay.
+   Position aligned to "HORIZON SNAPSHOT" title left margin.
+   Pixel-scan of template_page_01.png:
+   - title left edge: x=643 (51.8%)
+   - placeholder y-range: 981-1070 (55.9%-61.0%)
+   - placeholder right edge: x=984 (79.3%)
+   - bg sampled #F1F5F6, text #002E34 */
+.cover-name-overlay{
+  position:absolute;
+  top:55.5%;left:51.8%;width:28.0%;height:5.7%;
+  background:transparent;
+  color:#002E34;
+  font-family:var(--font);
+  font-weight:800;
+  font-size:28px;
+  line-height:1.05;
+  letter-spacing:-0.01em;
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  box-sizing:border-box;
+  z-index:2;
+}
+.tpl-narrative[contenteditable=true]:focus{outline:1px solid #5CC184;outline-offset:1px;background:rgba(92,193,132,0.08)}
+.sp-dark{background:#1A3A3A;color:#fff}
+.sp-cover{display:flex;background:#0F2424;color:#fff}
+.sp-cover .cover-left{width:42%;background:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:36px 28px;color:#1F3A2D}
+.sp-cover .cover-logo{font-size:20px;font-weight:800;color:#3DBA78;letter-spacing:-0.02em}
+.sp-cover .cover-right{width:58%;background:#0F2424;display:flex;flex-direction:column;justify-content:center;padding:36px 30px;position:relative;overflow:hidden}
+.sp-cover .cover-right::before{content:"";position:absolute;top:0;left:0;right:0;height:200px;background:linear-gradient(180deg,#3a5e4a 0%,#2a4538 60%,#0F2424 100%);opacity:0.6}
+.sp-cover .cover-right::after{content:"";position:absolute;bottom:-20px;left:0;right:0;height:80px;background:linear-gradient(to right,rgba(92,193,132,0.2),rgba(45,106,79,0.12));clip-path:ellipse(120% 100% at 50% 100%)}
+.sp-cover h2{position:relative;z-index:1;font-size:48px;font-weight:800;color:#B8D4A8;line-height:1.05;letter-spacing:-0.02em}
+.sp-cover h3{position:relative;z-index:1;font-size:14px;font-weight:600;color:#FFFFFF;margin-top:14px;letter-spacing:0.04em}
+.sp-cover .prepared{font-size:11px;color:#5A6E62;margin-top:auto;padding-top:20px}
+.sp-cover .prepared strong{color:#1F3A2D;font-weight:700}
+.sp-header{background:#1A3A3A;padding:12px 32px}
+.sp-header h1{font-size:24px;font-weight:800;color:#5CC184}
+.sp-subheader{background:#132C2C;padding:8px 32px}
+.sp-subheader h2{font-size:16px;font-weight:700;color:#fff}
+.sp-content{padding:16px 32px}
+.sp-map-container{width:100%;height:380px;background:#f0f2f5;border-radius:4px;overflow:hidden;position:relative}
+.sp-map-container img{width:100%;height:100%;object-fit:contain;background:#1a1a1a}
+.sp-legend{position:absolute;bottom:12px;right:12px;background:rgba(255,255,255,0.95);padding:10px 14px;border-radius:6px;font-size:10px}
+.sp-legend-title{font-weight:700;margin-bottom:4px;font-size:11px}
+.sp-legend-item{display:flex;align-items:center;gap:6px;margin:3px 0}
+.sp-legend-color{width:14px;height:14px;border-radius:2px;border:1px solid rgba(0,0,0,0.1)}
+.sp-summary{font-size:11px;line-height:1.55;color:#1F3A2D;margin-top:14px;padding:10px 12px;background:#F4F7F1;border-left:3px solid #5CC184;border-radius:2px}
+.sp-summary strong{color:#1F3A2D;font-weight:700}
+.sp-map-empty{display:flex;align-items:center;justify-content:center;height:100%;color:#8FA3B8;font-size:11px;font-style:italic;background:#F0F2F5}
+/* Editable narrative spans — subtle hover/focus, no jarring outlines */
+.sp-editable{outline:none;border-radius:2px;padding:0 2px;transition:background 0.15s}
+.sp-editable:hover{background:rgba(92,193,132,0.12);cursor:text}
+.sp-editable:focus{background:rgba(92,193,132,0.18);box-shadow:inset 0 -1px 0 #5CC184}
+.sp-editable-dark:hover{background:rgba(92,193,132,0.18)}
+.sp-editable-dark:focus{background:rgba(92,193,132,0.25);box-shadow:inset 0 -1px 0 #5CC184}
+/* Page 3 carbon-table: highlight ACCU/ha/yr column */
+.sp-carbon-accu{font-weight:700!important;color:#3DBA78!important;font-style:normal!important}
+.sp-subheader-tight{margin:14px -32px 0;padding:8px 32px}
+/* Page 4 pin */
+.sp-pin{font-size:18px;line-height:1}
+/* Page 6 economics refinements */
+.sp-econ-sub{font-size:10px;color:#8FA3B8;font-weight:400;letter-spacing:0.04em}
+.sp-econ-price{text-align:right!important;font-weight:700!important;color:#5CC184!important;font-size:15px!important;white-space:nowrap}
+[contenteditable=true]:hover{outline:2px dashed var(--accent);outline-offset:2px;cursor:text}
+[contenteditable=true]:focus{outline:2px solid var(--accent);outline-offset:2px;background:rgba(61,186,120,0.03)}
+.sp-map-half{height:220px;background:#f0f2f5;border-radius:4px;overflow:hidden;position:relative;margin-bottom:8px}
+.sp-map-half img{width:100%;height:100%;object-fit:contain;background:#1a1a1a}
+.sp-map-label{position:absolute;top:0;left:0;background:#132C2C;color:#fff;padding:6px 16px;font-size:13px;font-weight:700;z-index:2}
+.sp-carbon-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:11px}
+.sp-carbon-table th{background:#132C2C;color:#fff;padding:8px 10px;text-transform:uppercase;font-size:10px;letter-spacing:0.06em;font-weight:600}
+.sp-carbon-table td{padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:center;font-style:italic;color:#333}
+.sp-carbon-table td:first-child{text-align:left;font-style:normal;font-weight:500}
+.sp-portfolio{padding:16px 32px}
+.sp-portfolio-map{width:100%;height:200px;border-radius:6px;overflow:hidden;border:1px solid #2A4055}
+.sp-property-header{display:flex;align-items:center;gap:8px;margin:16px 0 8px}
+.sp-property-header h2{font-size:18px;font-weight:700;color:#fff}
+.sp-property-summary{font-size:11px;line-height:1.6;color:#B8D4C8}
+.sp-property-summary[contenteditable=true]:hover{outline:2px dashed #5CC184;outline-offset:2px}
+.sp-property-summary[contenteditable=true]:focus{outline:2px solid #5CC184;outline-offset:2px;background:rgba(92,193,132,0.05)}
+.sp-accu-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:16px 20px;text-align:center;margin:12px 0 8px}
+.sp-accu-card .headline{font-size:11px;color:#8FA3B8;text-transform:uppercase;letter-spacing:0.08em}
+.sp-accu-card .number{font-size:36px;font-weight:700;color:#5CC184;margin:4px 0}
+.sp-accu-card .subtitle{font-size:13px;color:#5CC184;font-weight:500}
+.sp-stat-row{display:flex;gap:8px}
+.sp-stat{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:12px;text-align:center}
+.sp-stat .stat-label{font-size:9px;color:#8FA3B8;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px}
+.sp-stat .stat-value{font-size:20px;font-weight:700;color:#fff}
+.sp-stat .stat-sub{font-size:10px;color:#8FA3B8;margin-top:2px}
+.sp-disclaimer{font-size:8px;color:#6b7c8d;padding:6px 0;margin-top:4px;font-style:italic}
+.sp-bg-title{font-size:32px;font-weight:800;color:#5CC184;margin-bottom:16px}
+.sp-bg-q{font-size:14px;font-weight:700;color:#5CC184;margin:14px 0 6px}
+.sp-bg-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:14px 16px;font-size:11px;line-height:1.5;color:#B8D4C8;margin-bottom:10px}
+.sp-bg-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.sp-bg-benefit{background:rgba(92,193,132,0.08);border:1px solid rgba(92,193,132,0.2);border-radius:8px;padding:12px}
+.sp-bg-benefit h4{font-size:12px;font-weight:600;color:#5CC184;margin-bottom:4px}
+.sp-bg-benefit p{font-size:10px;line-height:1.4;color:#B8D4C8}
+.sp-econ{padding:20px 32px}
+.sp-econ-title{font-size:28px;font-weight:800;color:#5CC184}
+.sp-econ-title span{color:#E8942E}
+.sp-econ-option{margin-top:16px}
+.sp-econ-option h3{font-size:13px;font-weight:700;color:#E8942E;margin-bottom:8px}
+.sp-econ-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:6px}
+.sp-econ-table th{background:#132C2C;color:#8FA3B8;padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.06em}
+.sp-econ-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.08);color:#B8D4C8;vertical-align:top}
+.sp-econ-table td:last-child{text-align:right;font-weight:600;color:#fff;font-size:14px;white-space:nowrap}
+.sp-econ-table .desc{font-size:10px;color:#8FA3B8;line-height:1.4}
+.sp-econ-note{font-size:9px;color:#8FA3B8;font-style:italic;margin-top:4px}
+.sp-static-title{font-size:28px;font-weight:800;color:#5CC184;padding:24px 32px 0}
+.sp-static-title span{color:#E8942E}
+.sp-static-body{padding:12px 32px;font-size:11px;color:#B8D4C8;line-height:1.5}
+.sp-value-list{display:flex;flex-direction:column;gap:8px;padding:12px 32px}
+.sp-value-item{background:rgba(92,193,132,0.06);border:1px solid rgba(92,193,132,0.15);border-radius:8px;padding:12px 16px;display:flex;gap:12px;align-items:flex-start}
+.sp-value-item h4{font-size:12px;font-weight:600;color:#5CC184;margin-bottom:2px}
+.sp-value-item p{font-size:10px;color:#B8D4C8;line-height:1.4}
+.sp-value-icon{width:32px;height:32px;background:rgba(92,193,132,0.15);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sp-contact{display:flex;height:100%}
+.sp-contact-left{width:50%;background:linear-gradient(135deg,#1A3A3A,#0F2525);display:flex;flex-direction:column;justify-content:flex-start;padding:40px}
+.sp-contact-right{width:50%;background:#132C2C;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:40px}
+.sp-contact h2{font-size:36px;font-weight:800;color:#5CC184}
+.sp-contact-info{margin-top:24px}
+.sp-contact-row{margin:16px 0}
+.sp-contact-row .label{font-size:11px;font-weight:600;color:#5CC184;text-transform:uppercase;letter-spacing:0.06em}
+.sp-contact-row .value{font-size:14px;color:#fff;margin-top:2px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<header id="toolbar">
+  <div class="title-group">
+    <span class="logo">agriprove</span>
+    <h1>HORIZON Snapshot</h1>
+    <span class="property-badge" id="propertyBadge"></span>
+  </div>
+  <div class="right-group">
+    <div class="status">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">No snapshot loaded</span>
+    </div>
+    <button class="icon-btn" id="settingsBtn" onclick="openSettings()" title="Settings">
+      &#9881;<span class="key-dot"></span>
+    </button>
+    <button class="dev-toggle" id="devToggle" onclick="toggleDevMode()" title="Toggle dev mode for manual upload and API key input">Dev</button>
+  </div>
+</header>
+
+<nav id="steps">
+  <div class="step active" data-step="1" onclick="goToStep(1)">
+    <span class="step-num">1</span> Review
+  </div>
+  <span class="step-arrow">&#8250;</span>
+  <div class="step" data-step="2" onclick="goToStep(2)">
+    <span class="step-num">2</span> Edit
+  </div>
+  <span class="step-arrow">&#8250;</span>
+  <div class="step" data-step="3" onclick="goToStep(3)">
+    <span class="step-num">3</span> Send
+  </div>
+</nav>
+
+<div id="workspace">
+<aside id="sidebar">
+
+  <!-- DATA SOURCE TOGGLE -->
+  <div class="source-toggle">
+    <button class="source-btn" id="srcPlatform" onclick="setSource('platform')" title="View snapshot pipeline queue">
+      <span class="source-dot"></span> Platform
+    </button>
+    <button class="source-btn active" id="srcUpload" onclick="setSource('upload')">
+      <span class="source-dot"></span> Upload ZIP
+    </button>
+  </div>
+
+  <!-- UPLOAD PANEL (visible when Upload source is active) -->
+  <div class="panel" id="upload-panel">
+    <div class="panel-body" style="padding-top:14px">
+      <div class="upload-zone" id="zipUpload"
+           onclick="document.getElementById('zipInput').click()"
+           ondragover="event.preventDefault();this.classList.add('active')"
+           ondragleave="this.classList.remove('active')"
+           ondrop="handleDrop(event)">
+        <div class="icon">&#128193;</div>
+        <p>Drop model output <strong>.zip</strong> here<br><span style="font-size:10px;opacity:0.7">or click to browse</span></p>
+        <input type="file" id="zipInput" accept=".zip" style="display:none" onchange="handleUpload(this.files[0])">
+      </div>
+      <p style="font-size:10px;color:var(--text-muted);margin-top:8px">Upload a model output ZIP for properties with existing HORIZON runs. Accepts .zip files containing metadata.txt, maps, and GeoJSON.</p>
+    </div>
+  </div>
+
+  <!-- PIPELINE VIEW (visible when Platform source is active) -->
+  <div id="pipeline-panel">
+    <div class="pipeline-header">
+      <h3>Snapshot Pipeline</h3>
+      <span class="pipeline-count" id="pipelineCount">0</span>
+    </div>
+    <div class="pipeline-filters">
+      <button class="pipe-filter active" onclick="filterPipeline('all')">All</button>
+      <button class="pipe-filter" onclick="filterPipeline('ready')">Ready for Review</button>
+      <button class="pipe-filter" onclick="filterPipeline('in-progress')">In Progress</button>
+      <button class="pipe-filter" onclick="filterPipeline('complete')">Complete</button>
+      <button class="pipe-filter" onclick="filterPipeline('queued')">Queued</button>
+    </div>
+    <div class="pipeline-list" id="pipelineList"></div>
+  </div>
+
+  <!-- STEP 1: Review -->
+  <div class="panel" id="review-panel" style="display:none">
+    <div class="panel-header" onclick="togglePanel(this)">
+      Property Overview <span class="arrow">&#9660;</span>
+    </div>
+    <div class="panel-body">
+      <div id="propertySummary"></div>
+    </div>
+  </div>
+
+  <div class="panel collapsed" id="calc-panel" style="display:none">
+    <div class="panel-header" onclick="togglePanel(this)">
+      ACCU Calculations <span class="arrow">&#9660;</span>
+    </div>
+    <div class="panel-body"><div class="data-grid" id="calcGrid"></div></div>
+  </div>
+
+  <!-- GENERATE NARRATIVES (visible after data loaded) -->
+  <div class="panel" id="generate-panel" style="display:none">
+    <div class="panel-header" onclick="togglePanel(this)">
+      Generate Narratives <span class="arrow">&#9660;</span>
+    </div>
+    <div class="panel-body">
+      <div class="generate-section">
+        <div class="field" style="margin-bottom:10px">
+          <label>Communication Style</label>
+          <select id="commStyle" onchange="updateStyleHint()">
+            <option value="standard">Standard (partnership tone)</option>
+            <option value="stormboy">Operation Stormboy (high-energy)</option>
+          </select>
+          <p id="styleHint" class="style-hint">Use for someone already familiar with AgriProve, an existing contact, or a warm referral.</p>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="generateAll()" id="generateAllBtn">
+          Generate All Narratives
+        </button>
+        <p style="font-size:10px;color:var(--text-muted);margin-top:6px">Generates assessment summary (Page 2), property narrative (Page 4), and delivery email using Claude.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Edit -->
+  <div class="panel collapsed" id="edit-panel" style="display:none">
+    <div class="panel-header" onclick="togglePanel(this)">
+      Narrative Editing <span class="arrow">&#9660;</span>
+    </div>
+    <div class="panel-body">
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Edit narrative text directly on the page preview. Click any highlighted text to modify. Use guided regeneration below to re-run specific sections with feedback.</p>
+
+      <div class="regen-panel">
+        <h4>Guided Regeneration</h4>
+        <div id="editMemoryIndicator" style="display:none;align-items:center;justify-content:space-between;gap:8px;background:rgba(92,193,132,0.10);border:1px solid rgba(92,193,132,0.35);border-radius:4px;padding:6px 10px;margin-bottom:8px;font-size:10.5px;color:var(--text-primary)"></div>
+        <textarea class="paste-area" id="regenGuidance" placeholder="e.g. Make the tone more direct, emphasise the soil depth advantage..."></textarea>
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="regenerate('page2')" style="font-size:11px">Page 2</button>
+          <button class="btn btn-secondary" onclick="regenerate('page4')" style="font-size:11px">Page 4</button>
+          <button class="btn btn-secondary" onclick="regenerate('email')" style="font-size:11px">Email</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GROWTH SUMMARY — internal, dedicated panel (not part of Edit / Send) -->
+  <div class="panel" id="growth-panel" style="display:none">
+    <div class="panel-header" onclick="togglePanel(this)">
+      Growth Summary <span class="growth-badge">internal</span> <span class="arrow">&#9660;</span>
+    </div>
+    <div class="panel-body">
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:10px;line-height:1.4">
+        Operational handoff brief for the Growth team — opportunity sizing, profile, watch-outs, and next step.
+        Paste into HubSpot, Slack, or your CRM. Edit inline before copying. Not included in the PDF.
+      </p>
+      <div class="growth-toolbar">
+        <button class="btn-copy" onclick="copyGrowthSummary()" title="Copy to clipboard">Copy</button>
+        <button class="btn btn-secondary" onclick="regenerate('growth')" style="font-size:11px">Regenerate</button>
+      </div>
+      <div id="growthOutput" class="growth-body" contenteditable="true" oninput="onGrowthEdit(event)">
+        <em>Growth summary will appear here after narrative generation.</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Send -->
+  <div class="panel collapsed" id="send-panel" style="display:none">
+    <div class="panel-header" onclick="togglePanel(this)">
+      Export &amp; Send <span class="arrow">&#9660;</span>
+    </div>
+    <div class="panel-body">
+      <div class="regen-panel" style="margin-top:0;margin-bottom:12px">
+        <h4>Delivery Email</h4>
+        <div id="emailOutput" style="font-size:11px;color:var(--text-muted);white-space:pre-wrap;max-height:180px;overflow-y:auto">
+          <em>Email copy will appear here after narrative generation.</em>
+        </div>
+      </div>
+      <button class="btn btn-success btn-full" onclick="exportPDF()" id="exportBtn" disabled>
+        Export PDF
+      </button>
+      <p style="font-size:10px;color:var(--text-muted);margin-top:8px">
+        Exports a high-quality A4 PDF ready for delivery to the landholder.
+      </p>
+      <!-- API cost for this snapshot's narrative generation (Anthropic usage) -->
+      <div id="costRow" style="display:none;margin-top:10px;padding:6px 10px;background:var(--bg-page);border:1px solid var(--border);border-radius:4px;font-size:10px;color:var(--text-muted)">
+        <span>API cost this snapshot: <strong id="costValue" style="color:var(--accent)">—</strong></span>
+        <span style="float:right;opacity:0.65" id="costTokens">—</span>
+      </div>
+
+      <!-- HubSpot send-email entry point -->
+      <div class="hubspot-block">
+        <label class="field-label" for="hubspotContact">Landholder name <span class="optional">(optional)</span></label>
+        <input type="text" id="hubspotContact" placeholder="e.g. Sarah O'Brien"
+               style="width:100%;padding:6px 10px;background:var(--bg-page);border:1px solid var(--border);border-radius:4px;font-size:12px;color:var(--text-primary);font-family:var(--font);margin-bottom:8px">
+        <button class="btn btn-hubspot btn-full" onclick="openHubSpotEmail()" id="hubspotBtn" disabled>
+          Send via HubSpot
+        </button>
+        <p style="font-size:10px;color:var(--text-muted);margin-top:6px;line-height:1.4">
+          Copies the AI-generated email body to your clipboard and opens HubSpot
+          (AP1 portal) filtered by the contact name. Falls back to property name
+          if blank. In HubSpot, click the contact, open the email composer, paste.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</aside>
+
+<main id="preview">
+  <div id="preview-toolbar">
+    <div class="page-nav">
+      <button onclick="prevPage()" id="prevBtn" disabled>&#8249;</button>
+      <div class="page-info"><strong id="pageNum">1</strong> / <span id="pageTotal">12</span></div>
+      <button onclick="nextPage()" id="nextBtn">&#8250;</button>
+    </div>
+    <span class="page-type" id="pageType">Cover</span>
+  </div>
+  <div id="page-thumbs"></div>
+  <div id="page-display">
+    <div id="pageContainer"></div>
+  </div>
+</main>
+
+</div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-backdrop" id="settingsModal" onclick="if(event.target===this)closeSettings()">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Settings</h2>
+      <button class="modal-close" onclick="closeSettings()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Claude API Key</label>
+        <input type="password" id="settingsApiKey" placeholder="sk-ant-..." autocomplete="off">
+        <div class="status-line" id="settingsStatus"><span class="dot"></span><span id="settingsStatusText">Not configured</span></div>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.4">Stored in your browser's localStorage. Used to generate narratives via the Anthropic API. The key never leaves this device except to call /api/config on this server.</p>
+      </div>
+
+      <!-- NARRATIVE GUIDE (persistent copy preferences) -->
+      <div class="field" style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border)">
+        <label>Narrative Guide</label>
+        <textarea
+          id="settingsNarrativeGuide"
+          class="paste-area"
+          placeholder="Standing rules for every snapshot. e.g.&#10;- Use Australian English spelling&#10;- Avoid the word 'partnership' — use 'collaboration'&#10;- Always close with a specific timeframe&#10;- Reference soil depth in the final sentence of Property Summary"
+          style="min-height:120px;font-size:12px;line-height:1.5"
+          oninput="onNarrativeGuideEdit()"
+          onblur="saveNarrativeGuide()"></textarea>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:8px;line-height:1.4">
+          Applied to <strong>every</strong> snapshot generation as a persistent rule set.
+          Stored locally in your browser. Different from per-snapshot editorial memory
+          (which only carries within a single property's regens).
+        </p>
+        <div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center;font-size:10.5px;color:var(--text-muted)">
+          <span id="narrativeGuideStatus">Empty</span>
+          <button class="btn btn-secondary" onclick="clearNarrativeGuide()" style="font-size:10px;padding:4px 10px">Clear</button>
+        </div>
+      </div>
+
+      <!-- ROLLING API USAGE / SPEND DASHBOARD -->
+      <div class="field" style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border)">
+        <label>API Usage &amp; Spend</label>
+        <div id="usageStats" style="margin-top:8px;font-size:12px;color:var(--text-primary);line-height:1.55">
+          <div style="opacity:0.65">Loading…</div>
+        </div>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.4">Aggregated from <code>logs/token-usage.jsonl</code> on this server. "Snapshots" counts full generations; per-page regenerations contribute to token/cost totals but don't bump the snapshot count.</p>
+      </div>
+
+      <!-- ACCU PROJECT RESYNC -->
+      <div class="field" style="margin-top:18px;padding-top:18px;border-top:1px solid var(--border)">
+        <label>ACCU Projects (credentialled neighbours)</label>
+        <div id="accuStatus" style="margin-top:8px;font-size:12px;color:var(--text-primary);line-height:1.55">
+          <div style="opacity:0.65">Loading…</div>
+        </div>
+        <button class="btn btn-secondary" id="accuResyncBtn" onclick="resyncAccuProjects()" style="margin-top:10px;font-size:11px">
+          Resync ACCU projects
+        </button>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.4">
+          Re-runs the geocoder against the local raw extract from HubSpot. Takes about a minute (Nominatim rate limit). To pull <em>new</em> ACCU issuances from HubSpot, ask Claude to refresh via the MCP integration first — that updates <code>data/accu_companies_raw.json</code>, then this button re-geocodes.
+        </p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="clearSettingsKey()">Clear</button>
+      <button class="btn btn-primary" onclick="saveSettingsKey()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEEDBACK BUTTON (floating, bottom-right) — captures a screenshot + state
+     and posts to /api/feedback so the team / Claude can debug rendering issues -->
+<button class="feedback-fab" id="feedbackBtn" onclick="openFeedback()" title="Report a rendering issue">
+  <span class="feedback-icon">!</span>
+  <span class="feedback-text">Report issue</span>
+</button>
+
+<!-- FEEDBACK MODAL -->
+<div class="modal-backdrop" id="feedbackModal" onclick="if(event.target===this)closeFeedback()">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Report a rendering issue</h2>
+      <button class="modal-close" onclick="closeFeedback()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>What's wrong?</label>
+        <textarea id="feedbackNote" rows="4" placeholder="e.g. White border on page 2 map, distorted overlay on portrait property, ACCU number cut off..." style="width:100%;padding:8px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--font);color:var(--text-primary);resize:vertical;min-height:80px"></textarea>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:8px;line-height:1.4">A screenshot of the current preview page and the parsed snapshot data will be attached automatically.</p>
+        <div class="status-line" id="feedbackStatus"><span class="dot"></span><span id="feedbackStatusText">Ready</span></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeFeedback()">Cancel</button>
+      <button class="btn btn-primary" id="feedbackSubmitBtn" onclick="submitFeedback()">Submit report</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- html2canvas: used by exportPDF() to snapshot the Leaflet map as a PNG so the
+     PDF preserves the user's exact pan/zoom regardless of container resize. -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

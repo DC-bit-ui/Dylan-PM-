@@ -1,0 +1,7 @@
+Upload error: Error: Corrupted zip: can't find end of central directory
+    at ZipEntries.readEndOfCentral (C:\Dylan PM\horizon-snapshot\node_modules\jszip\lib\zipEntries.js:170:23)
+    at ZipEntries.load (C:\Dylan PM\horizon-snapshot\node_modules\jszip\lib\zipEntries.js:255:14)
+    at C:\Dylan PM\horizon-snapshot\node_modules\jszip\lib\load.js:48:24
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async processZip (C:\Dylan PM\horizon-snapshot\server.js:73:15)
+    at async C:\Dylan PM\horizon-snapshot\server.js:51:16

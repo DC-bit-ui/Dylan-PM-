@@ -1,0 +1,180 @@
+{
+  "version": "b1.1",
+  "generated_at": "2026-05-08T04:30:00.000Z",
+  "deals": [
+    {
+      "deal_id": "31711997037",
+      "deal_name": "Daisy Bank + Bellevue - James Almond",
+      "attribution": "direct",
+      "current_stage": "KCT Issued",
+      "current_stage_friction_from": "KCT Issued",
+      "days_in_current_stage": 426,
+      "median_won_at_stage": 6,
+      "median_lost_at_stage": 12,
+      "risk_class": "amber",
+      "risk_score": 65,
+      "signals": {
+        "stage": {
+          "health": "red",
+          "value": "426d at KCT Issued · 35× past lost-median",
+          "confidence": "high",
+          "note": "Stale by stage timing alone."
+        },
+        "behavioral": {
+          "health": "amber",
+          "value": "Last meaningful contact 23d ago · slowing reply latency",
+          "confidence": "moderate",
+          "note": "Some recent activity. Not ghosted — but engagement is dropping.",
+          "last_meaningful_contact": "2026-04-18",
+          "contact_velocity_30d": 2,
+          "reply_latency_trend": "slowing"
+        },
+        "content": {
+          "health": "green",
+          "value": "Last customer email was warm; mentioned wife on board",
+          "confidence": "moderate",
+          "note": "Content trajectory is positive. The stall isn't cold — it's partner-alignment.",
+          "latest_customer_position": "Thanks for the update Ben — the wife and I are talking it through over Easter. I'll get back to you in early May.",
+          "latest_customer_position_at": "2026-04-18",
+          "sentiment_trajectory": "neutral_warm",
+          "unresolved_objections": [
+            "25-year commitment — partner needs to agree"
+          ]
+        }
+      },
+      "coaching_mode": "stuck_but_live",
+      "what_we_dont_know": [
+        "No phone call logged for this deal in 60+ days — partner's actual position is inferred, not confirmed",
+        "No HubSpot note since 2026-03-12 — rep's read on this deal isn't captured",
+        "James mentioned \"early May\" — that window starts today; no follow-up sent yet"
+      ],
+      "probe": {
+        "recommended": true,
+        "probe_type": "low_pressure_checkin_email",
+        "rationale": "Customer named an \"early May\" timeframe. Today is mid-May. Low-pressure follow-up will reveal whether partner-alignment landed or stalled.",
+        "predicted_outcomes": [
+          {
+            "signal": "reply <24h with positive sentiment",
+            "interpretation": "Partner aligned — push toward SLA Mapping booking this week."
+          },
+          {
+            "signal": "reply 3-7d, neutral or non-committal",
+            "interpretation": "Partner still hesitating — offer joint 30-min call with both partners on."
+          },
+          {
+            "signal": "no reply 14d",
+            "interpretation": "Partner-alignment fell through — move to Closed Lost cleanly."
+          }
+        ]
+      },
+      "coaching_message": "Daisy Bank reads RED by stage but the signal mix tells a more nuanced story — engagement is amber (last contact 23d ago, slowing but not ghosted) and content is green (last email mentioned the wife is on board; James named \"early May\" as his deadline). This is stuck-but-live, not Cold-loss-imminent. The right move is a low-pressure check-in this week — predict warm reply if partner-alignment landed, or no-reply if it didn't. Either way you get a clean signal in days, not months.",
+      "primary_action": "Send the low-pressure check-in probe this week (draft below). Read the response time + tone — that disambiguates whether to push toward SLA Mapping or close-lost cleanly.",
+      "supporting_twin_ids": [
+        "40789889068",
+        "147625095632"
+      ],
+      "enablement": {
+        "inline_draft": {
+          "type": "email",
+          "subject": "Daisy Bank — checking in on early May",
+          "body": "Hi James,\n\nHope Easter was good. You mentioned early May to come back to me on Daisy Bank — just checking in to see where you and the wife landed.\n\nNo pressure to commit either way today. If you've decided to move forward, I can have the SLA mapping conversation booked for this week. If it's not the right time, that's also a useful signal and we can park it cleanly.\n\nOne thing worth mentioning — the autumn soil scan came back stronger than last year. Happy to send the updated HORIZON Snapshot if you'd like to see the current numbers before deciding.\n\nLet me know either way.\n\nBen",
+          "length_words": 135,
+          "tone": "low-pressure check-in, names customer's own timeframe back to them, gives explicit \"no is okay\" framing — designed as a probe, not a push"
+        },
+        "cowork_task": {
+          "type": "generate_horizon_snapshot",
+          "description": "Generate a fresh HORIZON Snapshot for Daisy Bank with annotated comparison to the baseline 14 months ago — what's changed in the model + what's changed in James's property's modelled carbon. Attach to a draft email ready for Ben to send if the probe response is warm.",
+          "estimated_minutes_saved": 45,
+          "delivery": "Ben's Outlook drafts (PDF attached to draft email)"
+        }
+      }
+    },
+    {
+      "deal_id": "41104436568",
+      "deal_name": "Bulgoo Pastoral - Jeremy Pockley",
+      "attribution": "direct",
+      "current_stage": "Strategy Call",
+      "current_stage_friction_from": "Strategy Call",
+      "days_in_current_stage": 271,
+      "median_won_at_stage": 10,
+      "median_lost_at_stage": 30,
+      "risk_class": "red",
+      "risk_score": 97,
+      "coaching_message": "Day 271 at Strategy Call — 9× past lost-median. This deal stalled at Strategy nearly a year ago. Springfield Carbon Project (#144047802829) followed the same trajectory and closed lost as \"Insufficient commitment\". Burnham Grazing (#40789889068) at this exact age was re-engaged with a HORIZON refresh and converted. Pick a path THIS WEEK.",
+      "primary_action": "Either run the nurture-back play (HORIZON Snapshot + \"what's changed\" reframe → Hobbs on-farm) or close-lost. Don't let this drift further.",
+      "supporting_twin_ids": [
+        "40789889068",
+        "144047802829"
+      ]
+    },
+    {
+      "deal_id": "140345085389",
+      "deal_name": "JA - John Atherton",
+      "attribution": "direct",
+      "current_stage": "Strategy Call",
+      "current_stage_friction_from": "Strategy Call",
+      "days_in_current_stage": 249,
+      "median_won_at_stage": 10,
+      "median_lost_at_stage": 30,
+      "risk_class": "red",
+      "risk_score": 95,
+      "coaching_message": "Day 249 at Strategy Call. Strategy-stage stalls coded \"Cold\" account for 36% of losses — Mount Moon Pastoral (#147625095632) is a textbook example: cordial Strategy, no follow-up, closed Cold 60 days later. Davidsons & Laen (#186050120174) at this stage was re-engaged proactively and won. Send the 25-year ACCU projection this week or accept this is Cold.",
+      "primary_action": "Send the 25-year ACCU revenue projection by Friday with explicit \"let's reconnect\" framing. If no response in 7 days, move to closed-lost.",
+      "supporting_twin_ids": [
+        "186050120174",
+        "147625095632"
+      ]
+    },
+    {
+      "deal_id": "141507724737",
+      "deal_name": "Brigalow and Mostowie - Rodger Jefferis",
+      "attribution": "direct",
+      "current_stage": "Strategy Call",
+      "current_stage_friction_from": "Strategy Call",
+      "days_in_current_stage": 245,
+      "median_won_at_stage": 10,
+      "median_lost_at_stage": 30,
+      "risk_class": "red",
+      "risk_score": 94,
+      "coaching_message": "Day 245 at Strategy — Ben's deal. Same age cohort as JA-Atherton and Bulgoo Pastoral. The pattern is clear: Strategy-stalled deals from late 2025 are all sitting in zombie state. Tumbledown Wagyu (#183751836130) was in this cohort and closed lost as \"Insufficient commitment\". Burnham Grazing (#40789889068) was re-engaged via HORIZON refresh and converted. Decision time.",
+      "primary_action": "Run Ben's nurture-back tactic: fresh HORIZON Snapshot + \"what's changed\" frame. If positive response, escalate to Hobbs on-farm.",
+      "supporting_twin_ids": [
+        "40789889068",
+        "183751836130"
+      ]
+    },
+    {
+      "deal_id": "167288289773",
+      "deal_name": "Fenmore Farming - Bruce McLean",
+      "attribution": "direct",
+      "current_stage": "SLA/KCT Mapping",
+      "current_stage_friction_from": "SLA/KCT Mapping",
+      "days_in_current_stage": 200,
+      "median_won_at_stage": 4.5,
+      "median_lost_at_stage": 21,
+      "risk_class": "red",
+      "risk_score": 96,
+      "coaching_message": "Day 200 at SLA/KCT Mapping — the highest-friction transition in the pipeline (4.7× gap between won and lost medians). This stage typically stalls when KCT walkthrough is async and customer's partner isn't engaged. Weatherall CP (#248596297166) and Davidsons & Laen (#186050120174) both progressed from this stage with rep-led 30-min KCT walkthroughs WITH partner on the call. Fenmore needs that intervention or it's a Fisher Brothers (#131569892814) pattern.",
+      "primary_action": "Schedule a 30-min Teams call this week to walk through KCT live with Bruce AND his partner. If partner won't attend, that itself is the diagnosis.",
+      "supporting_twin_ids": [
+        "248596297166",
+        "131569892814"
+      ]
+    },
+    {
+      "deal_id": "183762813378",
+      "deal_name": "Keynes Consulting Pty Ltd - Daniel Keynes",
+      "attribution": "direct",
+      "current_stage": "Qualified Account",
+      "current_stage_friction_from": "Qualified Account",
+      "days_in_current_stage": 181,
+      "median_won_at_stage": 3,
+      "median_lost_at_stage": 5,
+      "risk_class": "red",
+      "risk_score": 88,
+      "coaching_message": "Day 181 at Qualified Account — 36× past lost-median. This deal never progressed past qualification. Stale-zombie at the top of funnel. If never assessed: assess this week. If assessed and no engagement: close lost. Daniel is a consultant entity, not a typical farmer profile — worth a single direct call to triage and decide.",
+      "primary_action": "One triage call THIS WEEK. Decide: book Hobbs visit, defer with reason, or close lost. Don't leave dangling.",
+      "supporting_twin_ids": []
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{"ts":"2026-05-07T06:08:32.873Z","property":"Castle Hill","scope":"full-snapshot-combined","input_tokens":821,"output_tokens":778,"cache_read":0,"cache_creation":0,"cost_usd":0.014133}
+{"ts":"2026-05-07T06:13:24.104Z","property":"Castle Hill","scope":"page4","input_tokens":691,"output_tokens":249,"cache_read":0,"cache_creation":0,"cost_usd":0.005808}
+{"ts":"2026-05-07T06:14:02.277Z","property":"Castle Hill","scope":"page4","input_tokens":715,"output_tokens":285,"cache_read":0,"cache_creation":0,"cost_usd":0.00642}
+{"ts":"2026-05-07T06:21:09.561Z","property":"Castle Hill","scope":"full-snapshot-combined","input_tokens":1050,"output_tokens":740,"cache_read":0,"cache_creation":0,"cost_usd":0.01425}
+{"ts":"2026-05-07T06:31:43.038Z","property":"Castle Hill","scope":"full-snapshot-combined","input_tokens":1050,"output_tokens":767,"cache_read":0,"cache_creation":0,"cost_usd":0.014655}
+{"ts":"2026-05-07T06:55:50.332Z","property":"Tabletop Angus","scope":"full-snapshot-combined","input_tokens":1030,"output_tokens":735,"cache_read":0,"cache_creation":0,"cost_usd":0.014115}
+{"ts":"2026-05-07T07:07:21.629Z","property":"Castle Hill","scope":"full-snapshot-combined","input_tokens":1042,"output_tokens":753,"cache_read":0,"cache_creation":0,"cost_usd":0.014421}
+{"ts":"2026-05-07T07:08:15.137Z","property":"Castle Hill","scope":"email","input_tokens":378,"output_tokens":240,"cache_read":0,"cache_creation":0,"cost_usd":0.004734}
+{"ts":"2026-05-07T08:40:54.411Z","property":"Dawlish Road","scope":"full-snapshot-combined","input_tokens":1037,"output_tokens":754,"cache_read":0,"cache_creation":0,"cost_usd":0.014421}
+{"ts":"2026-05-07T09:41:33.146Z","property":"Carr","scope":"full-snapshot-combined","input_tokens":1044,"output_tokens":737,"cache_read":0,"cache_creation":0,"cost_usd":0.014187}
+{"ts":"2026-05-07T10:45:12.397Z","property":"Carr","scope":"full-snapshot-combined","input_tokens":1044,"output_tokens":801,"cache_read":0,"cache_creation":0,"cost_usd":0.015147}
+{"ts":"2026-05-07T11:09:35.733Z","property":"Carr","scope":"full-snapshot-combined","input_tokens":1044,"output_tokens":780,"cache_read":0,"cache_creation":0,"cost_usd":0.014832}
+{"ts":"2026-05-07T11:13:49.431Z","property":"Carr","scope":"full-snapshot-combined","input_tokens":1044,"output_tokens":728,"cache_read":0,"cache_creation":0,"cost_usd":0.014052}
+{"ts":"2026-05-07T11:27:38.284Z","property":"Carr","scope":"full-snapshot-combined","input_tokens":1572,"output_tokens":980,"cache_read":0,"cache_creation":0,"cost_usd":0.019416}
+{"ts":"2026-05-07T11:30:07.377Z","property":"Carr","scope":"page4","input_tokens":848,"output_tokens":380,"cache_read":0,"cache_creation":0,"cost_usd":0.008244}
+{"ts":"2026-05-07T11:32:15.716Z","property":"Carr","scope":"page4","input_tokens":870,"output_tokens":344,"cache_read":0,"cache_creation":0,"cost_usd":0.00777}
+{"ts":"2026-05-07T11:55:51.720Z","property":"Carr","scope":"full-snapshot-combined","input_tokens":1572,"output_tokens":991,"cache_read":0,"cache_creation":0,"cost_usd":0.019581}
+{"ts":"2026-05-07T12:02:20.412Z","property":"Carr","scope":"page4","input_tokens":1758,"output_tokens":272,"cache_read":0,"cache_creation":0,"cost_usd":0.009354}
+{"ts":"2026-05-07T12:16:12.746Z","property":"Carr","scope":"full-snapshot-combined","input_tokens":1682,"output_tokens":992,"cache_read":0,"cache_creation":0,"cost_usd":0.019926}
+{"ts":"2026-05-07T12:25:25.030Z","property":"Carr","scope":"full-snapshot-combined","input_tokens":2110,"output_tokens":962,"cache_read":0,"cache_creation":0,"cost_usd":0.02076}
+{"ts":"2026-05-07T12:27:49.548Z","property":"Carr","scope":"page2","input_tokens":1795,"output_tokens":225,"cache_read":0,"cache_creation":0,"cost_usd":0.00876}
+{"ts":"2026-05-07T12:34:28.904Z","property":"Carr","scope":"page4","input_tokens":2477,"output_tokens":298,"cache_read":0,"cache_creation":0,"cost_usd":0.011901}
+{"ts":"2026-05-08T06:12:45.434Z","property":"Carr","scope":"full-snapshot-combined","input_tokens":3307,"output_tokens":1041,"cache_read":0,"cache_creation":0,"cost_usd":0.025536}

@@ -1,0 +1,117 @@
+<svg viewBox="0 0 720 520" xmlns="http://www.w3.org/2000/svg" style="font-family: Inter, system-ui, sans-serif; background: #fff">
+  <title>HORIZON Snapshot — Phase 0.5 Frontend Flow</title>
+
+  <style>
+    .box { rx: 6; }
+    .title { font-size: 12px; font-weight: 600; fill: #1F2937; }
+    .subtitle { font-size: 10px; fill: #6B7280; }
+    .stage-label { font-size: 9px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; fill: #6B7280; }
+    .connector { stroke: #9CA3AF; stroke-width: 1.5; fill: none; marker-end: url(#arr); }
+    .connector-green { stroke: #3DBA78; stroke-width: 1.5; fill: none; marker-end: url(#arr-g); }
+    .connector-dash { stroke: #9CA3AF; stroke-width: 1.5; fill: none; marker-end: url(#arr); stroke-dasharray: 4 3; }
+    .badge { font-size: 8px; font-weight: 600; letter-spacing: 0.3px; }
+    .note { font-size: 9.5px; fill: #6B7280; }
+  </style>
+
+  <defs>
+    <marker id="arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9CA3AF"/>
+    </marker>
+    <marker id="arr-g" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3DBA78"/>
+    </marker>
+  </defs>
+
+  <!-- TITLE -->
+  <text x="360" y="28" text-anchor="middle" style="font-size:16px;font-weight:700;fill:#1F2937">HORIZON Snapshot — Phase 0.5 Approach</text>
+  <text x="360" y="44" text-anchor="middle" class="subtitle">Two entry paths converging on the same review + generate + send workflow</text>
+
+  <!-- ENTRY PATH A: Automated (Phase 0.5) -->
+  <rect x="40" y="68" width="280" height="36" rx="4" fill="#D1FAE5" opacity="0.4"/>
+  <text x="180" y="82" text-anchor="middle" class="stage-label" fill="#065F46">PATH A: AUTOMATED (PHASE 0.5)</text>
+  <text x="180" y="96" text-anchor="middle" class="subtitle" fill="#065F46">Frontier pulls data from platform via GraphQL</text>
+
+  <rect x="40" y="112" width="130" height="52" class="box" fill="#D1FAE5" stroke="#3DBA78" stroke-width="1.5"/>
+  <text x="105" y="132" text-anchor="middle" class="title" fill="#065F46">Frontier</text>
+  <text x="105" y="146" text-anchor="middle" class="subtitle" fill="#065F46">Growth triggers via</text>
+  <text x="105" y="157" text-anchor="middle" class="subtitle" fill="#065F46">Actions menu</text>
+
+  <rect x="190" y="112" width="130" height="52" class="box" fill="#D1FAE5" stroke="#3DBA78" stroke-width="1.5"/>
+  <text x="255" y="132" text-anchor="middle" class="title" fill="#065F46">GraphQL API</text>
+  <text x="255" y="146" text-anchor="middle" class="subtitle" fill="#065F46">Pre-signed S3 URLs</text>
+  <text x="255" y="157" text-anchor="middle" class="subtitle" fill="#065F46">+ property data</text>
+
+  <line x1="170" y1="138" x2="188" y2="138" class="connector-green"/>
+
+  <!-- ENTRY PATH B: Upload ZIP -->
+  <rect x="400" y="68" width="280" height="36" rx="4" fill="#FEF3C7" opacity="0.4"/>
+  <text x="540" y="82" text-anchor="middle" class="stage-label" fill="#92400E">PATH B: UPLOAD ZIP (BACKLOG + TESTING)</text>
+  <text x="540" y="96" text-anchor="middle" class="subtitle" fill="#92400E">Manual upload for properties with existing model outputs</text>
+
+  <rect x="440" y="112" width="200" height="52" class="box" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="540" y="132" text-anchor="middle" class="title" fill="#92400E">Upload ZIP</text>
+  <text x="540" y="146" text-anchor="middle" class="subtitle" fill="#92400E">metadata.txt + maps + GeoJSON</text>
+  <text x="540" y="157" text-anchor="middle" class="subtitle" fill="#92400E">from model output folder</text>
+
+  <!-- Both paths converge -->
+  <path d="M 255 164 L 255 200 L 360 200" class="connector-green" fill="none" style="marker-end:none"/>
+  <path d="M 540 164 L 540 200 L 362 200" class="connector" fill="none" style="marker-end:none"/>
+  <circle cx="360" cy="200" r="4" fill="#3DBA78"/>
+
+  <line x1="360" y1="204" x2="360" y2="226" class="connector-green"/>
+
+  <!-- SNAPSHOT TOOL -->
+  <rect x="160" y="228" width="400" height="44" class="box" fill="#0F1A2E" stroke="#3DBA78" stroke-width="2"/>
+  <text x="360" y="248" text-anchor="middle" style="font-size:14px;font-weight:700;fill:#5CC184">Snapshot Tool</text>
+  <text x="360" y="264" text-anchor="middle" style="font-size:10px;fill:#8FA3B8">Pop-out browser tab · Canva template replicated pixel-faithful</text>
+
+  <!-- 3-STEP WORKFLOW -->
+  <line x1="360" y1="272" x2="360" y2="298" class="connector-green"/>
+
+  <!-- Step 1: Review -->
+  <rect x="60" y="300" width="180" height="80" class="box" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1.5"/>
+  <rect x="60" y="300" width="180" height="20" rx="6" fill="#3DBA78"/>
+  <text x="150" y="314" text-anchor="middle" style="font-size:10px;font-weight:600;fill:#fff">STEP 1: REVIEW DATA</text>
+  <text x="150" y="336" text-anchor="middle" class="subtitle">Property overview + maps</text>
+  <text x="150" y="350" text-anchor="middle" class="subtitle">ACCU calculations + soil data</text>
+  <text x="150" y="364" text-anchor="middle" class="subtitle">Zone breakdown</text>
+
+  <!-- Step 2: Edit -->
+  <rect x="270" y="300" width="180" height="80" class="box" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1.5"/>
+  <rect x="270" y="300" width="180" height="20" rx="6" fill="#3B82F6"/>
+  <text x="360" y="314" text-anchor="middle" style="font-size:10px;font-weight:600;fill:#fff">STEP 2: EDIT NARRATIVES</text>
+  <text x="360" y="336" text-anchor="middle" class="subtitle">AI-generated copy (Claude)</text>
+  <text x="360" y="350" text-anchor="middle" class="subtitle">Inline editing on pages 2 + 4</text>
+  <text x="360" y="364" text-anchor="middle" class="subtitle">Regenerate with guidance</text>
+
+  <!-- Step 3: Send -->
+  <rect x="480" y="300" width="180" height="80" class="box" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1.5"/>
+  <rect x="480" y="300" width="180" height="20" rx="6" fill="#8B5CF6"/>
+  <text x="570" y="314" text-anchor="middle" style="font-size:10px;font-weight:600;fill:#fff">STEP 3: EXPORT + SEND</text>
+  <text x="570" y="336" text-anchor="middle" class="subtitle">Export 12-page PDF</text>
+  <text x="570" y="350" text-anchor="middle" class="subtitle">Copy email draft</text>
+  <text x="570" y="364" text-anchor="middle" class="subtitle">Mark complete in HubSpot</text>
+
+  <line x1="240" y1="340" x2="268" y2="340" class="connector"/>
+  <line x1="450" y1="340" x2="478" y2="340" class="connector"/>
+
+  <!-- OUTPUTS -->
+  <line x1="360" y1="380" x2="360" y2="410" class="connector-green"/>
+
+  <rect x="120" y="412" width="160" height="44" class="box" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="200" y="432" text-anchor="middle" class="title" fill="#1E40AF">12-page PDF</text>
+  <text x="200" y="446" text-anchor="middle" class="subtitle" fill="#1E40AF">Canva template, automated</text>
+
+  <rect x="310" y="412" width="160" height="44" class="box" fill="#DBEAFE" stroke="#3B82F6" stroke-width="1"/>
+  <text x="390" y="432" text-anchor="middle" class="title" fill="#1E40AF">Email Draft</text>
+  <text x="390" y="446" text-anchor="middle" class="subtitle" fill="#1E40AF">Property-specific, ready to send</text>
+
+  <rect x="500" y="412" width="160" height="44" class="box" fill="#D1FAE5" stroke="#3DBA78" stroke-width="1"/>
+  <text x="580" y="432" text-anchor="middle" class="title" fill="#065F46">HubSpot Ticket</text>
+  <text x="580" y="446" text-anchor="middle" class="subtitle" fill="#065F46">→ "Complete & Sent"</text>
+
+  <!-- BOTTOM: What this replaces -->
+  <rect x="120" y="476" width="480" height="36" rx="4" fill="#FEE2E2" opacity="0.3" stroke="#EF4444" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="360" y="494" text-anchor="middle" style="font-size:11px;font-weight:500;fill:#991B1B">Replaces: manual Canva editing + copy-paste data + hand-written narratives (~45 min/property)</text>
+  <text x="360" y="508" text-anchor="middle" style="font-size:10px;fill:#991B1B">90 tickets in backlog · Target: ~5 min/property with automation</text>
+</svg>

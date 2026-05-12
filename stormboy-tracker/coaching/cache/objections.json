@@ -1,0 +1,105 @@
+{
+  "version": "a2.1",
+  "generated_at": "2026-05-08T04:30:00.000Z",
+  "data_window": "2025-08-01 to 2026-05-08",
+  "stage_index": [
+    {
+      "stage": "Strategy Call",
+      "loss_count_in_window": 47,
+      "objection_clusters": [
+        {
+          "cluster_name": "25/75 revenue split — \"25% is too high\"",
+          "typical_form": "Why does AgriProve take 25%? Can I keep more of the ACCU revenue?",
+          "frequency": 12,
+          "supporting_loss_deal_ids": [
+            "D-L-001"
+          ],
+          "what_won": "Won deals reframed the 25/75 split with absolute dollars, not percentages — showing the customer's 75% share over 25 years on their NRM region. Wagga-Hills (D-W-001) used a Riverina projection: customer share = $X over 25 years on Y hectares.",
+          "example_won_deal_id": "D-W-001",
+          "tactical_framing": "Let me show you what 75% looks like in actual dollars on your NRM region over 25 years — [project the regional revenue table from the case study]. The 25% covers methodology compliance, baseline sampling, and audit defence — without that, the project doesn't qualify for ACCUs.",
+          "confidence": "high"
+        },
+        {
+          "cluster_name": "Fee-for-service preference — \"I want to keep 100%\"",
+          "typical_form": "I've heard about a fee-for-service model — can I keep 100% of the ACCUs and pay you a fee instead?",
+          "frequency": 6,
+          "supporting_loss_deal_ids": [],
+          "what_won": "Won deals presented the fee-for-service option transparently and ran a back-of-envelope comparison showing where each model wins. Most customers self-selected the 25/75 split when shown the upfront-cash implications of fee-for-service.",
+          "example_won_deal_id": "D-W-002",
+          "tactical_framing": "Yes — fee-for-service is an option. Let's compare on your numbers. Fee-for-service requires $X upfront cash and $Y/year service fees. The 25/75 split has lower upfront cash and AgriProve carries the methodology risk. Which fits your cashflow better?",
+          "confidence": "moderate"
+        },
+        {
+          "cluster_name": "25-year timeframe — \"too long\"",
+          "typical_form": "Locking in for 25 years is a long time. What if the world changes? What if I sell?",
+          "frequency": 8,
+          "supporting_loss_deal_ids": [
+            "D-L-004"
+          ],
+          "what_won": "Won deals walked through the project-transfer disclosure: the project moves with title. Buyers consistently see the future ACCU revenue as an asset, not a liability. Showed the disclosure template upfront.",
+          "example_won_deal_id": "D-W-003",
+          "tactical_framing": "I get it — 25 years feels long. Two things: (1) the project transfers with title, so if you sell, the buyer inherits the future ACCU revenue — usually they see it as a value-add. (2) you only commit when you sign the SLA — let's walk through what year 5, 10, 25 actually look like before you decide.",
+          "confidence": "moderate"
+        }
+      ]
+    },
+    {
+      "stage": "SLA/KCT Mapping",
+      "loss_count_in_window": 31,
+      "objection_clusters": [
+        {
+          "cluster_name": "Implementation commitment gap — partner not engaged",
+          "typical_form": "\"Insufficient commitment to implement\" — often masks the partner / spouse / accountant not being on board.",
+          "frequency": 14,
+          "supporting_loss_deal_ids": [
+            "D-L-001"
+          ],
+          "what_won": "Bairnsdale Dairy (D-W-004) had a rep-led KCT walkthrough on a 30-min Teams call WITH the partner. KCT completed in one sitting; engagement scored higher post-call than pre.",
+          "example_won_deal_id": "D-W-004",
+          "tactical_framing": "Let's do the KCT together on a 30-min call — and let's have [partner/spouse] on too. Most customers find it easier to ask questions in real time, and getting alignment now saves a stall later.",
+          "confidence": "high"
+        },
+        {
+          "cluster_name": "Baseline cost surprise — \"too high upfront\"",
+          "typical_form": "I didn't realise the baseline-sampling costs would be this much upfront. Can I phase it?",
+          "frequency": 5,
+          "supporting_loss_deal_ids": [],
+          "what_won": "Won deals surfaced baseline-cost figures EARLY (Strategy Call, not SLA). Customers who saw the numbers upfront committed; customers surprised at SLA stalled.",
+          "example_won_deal_id": "D-W-002",
+          "tactical_framing": "Quick check — have we walked through the upfront baseline-sampling cost yet? Better to surface this now than at SLA. Here's the typical figure for a [size/region] property: $X. Most customers find it manageable when shown alongside the 25-year revenue projection.",
+          "confidence": "moderate"
+        }
+      ]
+    },
+    {
+      "stage": "Discovery Call",
+      "loss_count_in_window": 19,
+      "objection_clusters": [
+        {
+          "cluster_name": "DIY preference — \"Do it ourselves\"",
+          "typical_form": "We've got an agronomist on staff — couldn't we run our own carbon project?",
+          "frequency": 4,
+          "supporting_loss_deal_ids": [
+            "D-L-005"
+          ],
+          "what_won": "Won deals named the differentiator clearly: ERF methodology compliance, audit-defensible measurement, regulatory liability transfer. DIY teams typically underestimate the methodology + audit burden.",
+          "example_won_deal_id": "D-W-001",
+          "tactical_framing": "Honest answer — yes, technically. But running a soil carbon project means becoming an ERF-compliant project proponent. That's methodology compliance, baseline sampling rigour, and audit-defence under the Clean Energy Regulator. AgriProve carries that liability so your team doesn't have to. Want to walk through what we do that DIY teams typically underestimate?",
+          "confidence": "moderate"
+        },
+        {
+          "cluster_name": "\"Cold\" / silent attrition (HYPOTHESIS — needs distillate decoding)",
+          "typical_form": "Customer goes quiet after Discovery. No clear objection raised. Marked \"Cold\" 30+ days later.",
+          "frequency": 7,
+          "supporting_loss_deal_ids": [
+            "D-L-003"
+          ],
+          "what_won": "Won deals booked the Strategy Call slot WITHIN the Discovery Call itself. No round-trips. Customers who said \"I'll get back to you\" cooled at 36% rate.",
+          "example_won_deal_id": "D-W-001",
+          "tactical_framing": "Don't leave Discovery without a Strategy Call booked. If the customer says \"I'll get back to you\", offer 3 specific slot options before closing — the friction of finding time later is what most \"Cold\" losses trace back to.",
+          "confidence": "low"
+        }
+      ]
+    }
+  ]
+}

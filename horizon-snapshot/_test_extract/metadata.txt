@@ -1,0 +1,19 @@
+Classified Area Extraction Metadata
+========================================
+
+Project name: Dawlish Road
+
+Total input area:    39.16 ha
+Eligible area:       33.27 ha
+Eligible percentage: 85.0%
+
+Address: 3624 Arcadia Valley Rd, Arcadia Valley, QLD, 4454
+Production systems: grazing
+Rainfall: 1542 mm
+
+Additional Metadata
+========================================
+
+Soil classes in eligible area: Sodosol
+pH range in eligible area: 4.76 - 5.06
+Soil depth range in eligible area: 1.51 - 1.78 m

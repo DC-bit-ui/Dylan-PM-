@@ -1,0 +1,58 @@
+{
+  "version": "lc.1",
+  "generated_at": "2026-05-08T04:30:00.000Z",
+  "candidates": [
+    {
+      "id": "lc-2026-05-09-001",
+      "title": "Nurture re-engagement with HORIZON Snapshot converts at >40%",
+      "summary": "Across 12 closed_lost deals re-engaged with a fresh HORIZON Snapshot framed around platform changes, 5 progressed to active pipeline within 30 days. Pattern named by Ben Payne (2026-04-24 standup); confirmed via farm-visit distillate fv-2026-04-05 (Riverina mid-size).",
+      "category": "tactical_play",
+      "confidence": "high",
+      "proposed_destination": "memory/learnings/2026-05/2026-05-09-nurture-back-horizon-snapshot.md",
+      "evidence": [
+        "Standup transcript 2026-04-24 (Ben Payne quote)",
+        "Farm-visit distillate fv-2026-04-05",
+        "Active deal D-A-006 currently in nurture pipeline"
+      ],
+      "sources": [
+        "claudia_storm_boy_tool",
+        "standup_transcript",
+        "b1_pipeline"
+      ],
+      "candidate_at": "2026-05-08T04:30:00.000Z"
+    },
+    {
+      "id": "lc-2026-05-09-002",
+      "title": "On-farm framing \"Our 25% is what stops you carrying the methodology liability for 25 years\" lands repeatedly",
+      "summary": "Hobbs has used variants of this 25/75 reframe across 3 farm visits in the last 4 weeks (Riverina, Northern Tablelands). Lands every time per distillate sentiment. Highest-leverage transferable framing for the revenue-share objection.",
+      "category": "tactical_framing",
+      "confidence": "high",
+      "proposed_destination": "memory/learnings/2026-05/2026-05-09-hobbs-2575-methodology-liability-frame.md",
+      "evidence": [
+        "Farm-visit distillate fv-2026-04-12 (Riverina)",
+        "Farm-visit distillate fv-2026-04-19 (Northern Tablelands)",
+        "Implied by mock data — to verify against real transcripts"
+      ],
+      "sources": [
+        "claudia_storm_boy_tool/customer-transcripts"
+      ],
+      "candidate_at": "2026-05-08T04:30:00.000Z"
+    },
+    {
+      "id": "lc-2026-05-09-003",
+      "title": "LawrieCo channel deals close 3× more often (~45% vs ~15%) than direct",
+      "summary": "MCP-validated finding (2026-05-08 inspection of HubSpot closed_won_reason). Already documented in coaching/prompts/lawrieco-learnings.md as v2 build target. Promote to memory as a durable strategic finding so it persists beyond this dashboard.",
+      "category": "strategic_finding",
+      "confidence": "high",
+      "proposed_destination": "memory/business/strategy.md (channel section) + memory/learnings/2026-05/2026-05-09-lawrieco-3x-win-rate.md",
+      "evidence": [
+        "HubSpot MCP inspection 2026-05-08 (61 wins, 25 LawrieCo-attributed)",
+        "Mock weekly cache channel_comparison"
+      ],
+      "sources": [
+        "hubspot_mcp_inspection"
+      ],
+      "candidate_at": "2026-05-08T04:30:00.000Z"
+    }
+  ]
+}

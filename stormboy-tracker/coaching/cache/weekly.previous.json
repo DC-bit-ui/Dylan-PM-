@@ -1,0 +1,25 @@
+{
+  "version": "c3.0",
+  "generated_at": "2026-05-08T04:30:00.000Z",
+  "headline": "Discovery → Strategy is bleeding system-wide. 36% of losses end up \"Cold\" — most trace back to no booked Strategy slot at end of Discovery.",
+  "top_3_team_plays": [
+    "Send NRM-region 25-year revenue projection within 24h of every Discovery Call",
+    "End every Discovery Call with a booked Strategy Call slot — no round-trips",
+    "Run rep-led KCT walkthroughs with the customer's partner on the call"
+  ],
+  "channel_comparison": {
+    "direct": {
+      "won": 36,
+      "lost": 198,
+      "win_rate": 0.15,
+      "median_days_to_close": 47
+    },
+    "lawrieco": {
+      "won": 25,
+      "lost": 31,
+      "win_rate": 0.45,
+      "median_days_to_close": 28
+    },
+    "observation": "LawrieCo partner-channel deals close 3× more often and 19 days faster. The pre-existing trust shortcuts the friction at Discovery → Strategy. Investigation needed: what specifically does LawrieCo say/do at Discovery that direct sales can transfer?"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "version": "a1.1",
+  "generated_at": "2026-05-08T04:30:00.000Z",
+  "data_window": "2025-08-01 to 2026-05-08",
+  "stage_transitions": [
+    {
+      "from": "Qualified Account",
+      "to": "Discovery Call",
+      "median_days_won": 3.1,
+      "median_days_lost": 4.8,
+      "friction_pattern": "No clear friction at qualification gate. Volume and timing balanced; small gap likely noise.",
+      "evidence": "Won n=42 (3.1d median), lost n=18 (4.8d). Gap 1.5x — below threshold for [moderate].",
+      "play": "No structural change recommended. Maintain current cadence.",
+      "play_priority": "low",
+      "confidence": "low"
+    },
+    {
+      "from": "Discovery Call",
+      "to": "Strategy Call",
+      "median_days_won": 4.2,
+      "median_days_lost": 11.8,
+      "friction_pattern": "Reps not booking the Strategy Call before the customer cools — many of these become \"Cold\" losses. Lost deals show 3+ scheduling round-trips between Discovery and the next call landing. Stormboy v2 introduced Discovery as a gate but execution is inconsistent.",
+      "evidence": "Won median 4.2d vs lost 11.8d — 2.8x gap, [high] signal. SBv2 lost-deal median actually widened (+3d) post-launch. 36% of all losses across pipeline are coded \"Cold\" — many trace back to this transition.",
+      "play": "Send the customer's NRM-region-matched 25-year ACCU revenue projection within 24h of Discovery, and propose 3 Strategy Call slots in the SAME email. Pattern from won twin Wagga-Hills (D-W-001).",
+      "play_priority": "high",
+      "confidence": "high"
+    },
+    {
+      "from": "Strategy Call",
+      "to": "SLA/KCT Mapping",
+      "median_days_won": 6,
+      "median_days_lost": 14.3,
+      "friction_pattern": "25/75 revenue-share resistance surfaces here (\"25%, too high\" loss reason). Reps without an NRM-regional 25-year revenue projection lose disproportionately; reps with one convert at 2.4× rate.",
+      "evidence": "Won median 6.0d, lost 14.3d. Pass 0 distillates show \"25/75 revenue split\" objection in 60% of losses at this transition. Wagga-Hills (D-W-001), Mid-Lachlan (D-W-002) used regional projections and converted.",
+      "play": "Match deal to NRM-region case study before Strategy Call ends. Lead Strategy with 25-year revenue breakdown for that region — show the 75% customer share in absolute dollars.",
+      "play_priority": "high",
+      "confidence": "high"
+    },
+    {
+      "from": "SLA/KCT Mapping",
+      "to": "KCT Issued",
+      "median_days_won": 4.5,
+      "median_days_lost": 21,
+      "friction_pattern": "KCT effort objection — customers stall on completing the assessment. Won deals had rep-led KCT walkthroughs; lost deals were left to async self-completion. Often correlates with \"Insufficient commitment to implement\" loss reason — particularly when partner not engaged.",
+      "evidence": "Won 4.5d vs lost 21.0d — 4.7× gap, highest in pipeline. n=28 won, n=11 lost. 9/11 losses had no rep-customer call recorded between SLA and KCT.",
+      "play": "Offer to walk customer through KCT live in a 30-min Teams call. Ensure partner is on the call.",
+      "play_priority": "high",
+      "confidence": "high"
+    },
+    {
+      "from": "KCT Issued",
+      "to": "Closed Won",
+      "median_days_won": 5.8,
+      "median_days_lost": 12.4,
+      "friction_pattern": "Final-stage hesitation. Customers who completed KCT but didn't close mostly cited internal alignment (partner, accountant, family) or last-minute baseline-cost concerns (\"Baseline costs too high\" enum value).",
+      "evidence": "Won 5.8d, lost 12.4d. n=22 vs n=4 — thin loss signal. Distillates show \"internal review\" + upfront-cost surprise pattern in 3/4 losses.",
+      "play": "During SLA, ask explicitly who else needs to sign off and surface baseline-cost figures upfront — not at KCT issuance. Offer joint call before KCT is issued.",
+      "play_priority": "medium",
+      "confidence": "moderate"
+    }
+  ],
+  "top_systemic_friction": "Discovery → Strategy is bleeding. Lost-deal median is 11.8d vs 4.2d for wins, and many of these become \"Cold\" losses (36% of all losses). Stormboy v2 has NOT closed the gap — the spread widened post-launch (+3d on losses). The pipeline's biggest leverage point is ensuring every Discovery Call ends with a booked Strategy slot AND a 25-year regional revenue projection.",
+  "era_lift_observation": "KCT → SBv1 produced clear win-rate lift (+18%). SBv1 → SBv2 was marginal (+3%). v2's Discovery Call gate is correctly designed but inconsistent in execution — half of v2 deals have Discovery durations under 30 minutes, suggesting the stage is being treated as a checkbox rather than a structured gate."
+}

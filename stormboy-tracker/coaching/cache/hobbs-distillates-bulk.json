@@ -1,0 +1,425 @@
+{
+  "version": "p0fv.1",
+  "generated_at": "2026-05-12T00:00:00+02:00",
+  "source": "Hobbs Farm Visit Transcripts Dump 1.txt",
+  "extracted_visits": 6,
+  "extracted_distillates": 47,
+  "visits": [
+    {
+      "transcript_id": "visit-1-large-american-owned-nsw",
+      "visit_date": "unknown",
+      "region_nrm": "NSW Riverina (Albury cluster)",
+      "size_bucket": ">5000ha",
+      "topic_distillates": [
+        {
+          "topic_label": "Trust / track record + macro trend framing",
+          "customer_position": "Experienced manager of large American-owned mixed cattle/horse operation; receptive but exploring why carbon now and whether it's a real opportunity.",
+          "hobbs_response": "Framed natural-asset revenue as inevitable: 70 years of farmers absorbing the price spread between consumer and producer; carbon is the first mechanism that pays the farmer directly for stewardship instead of taxing them.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Farmers need to be rewarded for stewardship, and we got to figure out some sort of system that helps them do that. It's the only thing that goes straight to your bottom line — not a cost item on your balance sheet.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Methodology — ratchet mechanism",
+          "customer_position": "Asked what happens if a drought or bushfire destroys the soil carbon they've built.",
+          "hobbs_response": "Explained the ratchet: year-1 baseline, year-2 increase you get credited, year-3 drop no penalty, year-4 only credited if you beat the previous high. Loss years are absorbed, not punished.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "It works on a ratchet. Year one you baseline. Year two it goes up — boom, you get credited. Year three you lose something, no penalty. You only get credited when you beat the previous high.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Additionality / what we already do",
+          "customer_position": "Already running ground-cover-protective, low-flogging system; questioned whether good operators have headroom to actually increase carbon.",
+          "hobbs_response": "Acknowledged honestly — gave Queensland case-study example: rest-period extension + density gradient changes as eligible additionality. Didn't oversell.",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "",
+          "confidence": "moderate"
+        },
+        {
+          "topic_label": "Carbon tax vs carbon payment framing",
+          "customer_position": "Skeptical of climate schemes generally; emissions trading feels like accounting tricks.",
+          "hobbs_response": "Reframed as: if we don't find a system where the people who don't have land pay the people who do, it becomes a carbon tax on everyone including the farmer. Better that money flow to the farmer than to the Treasury.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "If we don't find a system that works like this, it's just going to become a carbon tax. So it's much better for the farmer to get paid for the good work, instead of taxing everybody, which includes the farmer.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Scope 3 / supply chain inevitability",
+          "customer_position": "Questioned where the demand for ACCUs really comes from longer-term.",
+          "hobbs_response": "Walked through Woolworths/Coles having to account for entire supply chain down to the farm; if farmers hold their ACCUs they become buyers at some point. So insetting is also a strategic option, not just selling.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Down the line when Woolworths and Coles have to account for their entire supply chain down to the farm — if you're sitting there holding those ACCUs, they'll have to buy them at some point.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Large American-owned operation; experienced manager moved from curiosity to genuine interest after ratchet + carbon-tax-vs-payment framing landed."
+      }
+    },
+    {
+      "transcript_id": "visit-2-mixed-cropping-elderly-multi-gen-hinty",
+      "visit_date": "unknown",
+      "region_nrm": "NSW (Hinty / Riverina western)",
+      "size_bucket": "1000-5000ha",
+      "topic_distillates": [
+        {
+          "topic_label": "ACCU revenue math grounded in their hectares",
+          "customer_position": "Older multi-generational mixed-farming couple, sons/sons-in-law involved; receptive but unfamiliar with the program.",
+          "hobbs_response": "Did the math live on a hectare estimate: ~3 ACCUs/ha × spot price × 75% share. Translated a roughly 2000-acre block into a low-mid 6-figure ACCU revenue scenario to make it tangible.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Upfront baseline cost — only outlay",
+          "customer_position": "Asked what it costs to get started. Expected tens of thousands escalating with hectares.",
+          "hobbs_response": "Capped expectation: the largest baseline sampling fee he'd seen for a 1000-ha project was ~$14k. Made clear that's the only outlay; all downstream costs sit with AgriProve.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "That's it. After that, you should — unless you decide to build an airport on your project — that's your only cost.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "DIY / regulatory complexity",
+          "customer_position": "Half-jokingly wondered if they could do it themselves.",
+          "hobbs_response": "Refused the comparison cleanly: 'if you want to do that, you might as well do your own taxes.' Positioned AgriProve as the audit/accounting machine, not optional.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I would not recommend it. It's like — if you want to do that, you might as well do your own taxes.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Revenue split / 25% framing",
+          "customer_position": "Wondered how AgriProve gets paid.",
+          "hobbs_response": "Reframed 25% as a success fee, not a tax: 'just play what you're taking 25% out of what you weren't going to get anything from before.' Made the alternative (zero) explicit.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "You're taking 25% out of what you weren't going to get anything from before.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "100% cropping — friction",
+          "customer_position": "Older male relative pushed back: had seen cropping field-day speakers say they can't move carbon, only maintain it. Crops always deplete.",
+          "hobbs_response": "Acknowledged the concern, offered to put them in touch with 100% cropping clients who have been awarded ACCUs. Didn't fight the point. Pivoted to the rotation/livestock-mix nature of this farm being an advantage.",
+          "landed_or_friction": "friction",
+          "quotable_phrasing": "",
+          "confidence": "moderate"
+        },
+        {
+          "topic_label": "25-year commitment + property sale",
+          "customer_position": "Worried about being trapped for 25 years; what if they sell the farm?",
+          "hobbs_response": "Reassured: the project goes with the property. Only a problem if a buyer wants out and wants to do something drastic that destroys the carbon. If they keep making credits, no buyer would walk away from a live revenue stream.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "It only becomes a problem if you've been making money doing it. If you've been making credits, why would they throw away a revenue stream?",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Additionality — eligible activity menu",
+          "customer_position": "Asked specifically what counts and whether they need to change what they're doing.",
+          "hobbs_response": "Pulled out an actual list mid-meeting: stocking rate, pasture renovation, acidic-soil remediation, reduced tillage, nutrient deficiency. Said they probably already tick most of those.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Lock-up-the-land misconception (cousin to disinformation)",
+          "customer_position": "Underlying confusion that carbon means destocking, tree-planting, surrendering productive use.",
+          "hobbs_response": "Directly: 'we don't do trees. It's nothing to do with trees. It's to do with your soil.' Stripped the conflation cleanly.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "We don't do trees. It's nothing to do with trees. It's to do with your soil.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Multi-generational mixed-cropping family with 100-cropping friction but warmed substantially on ratchet, '25% of what you'd get zero from', and the property-sale reassurance."
+      }
+    },
+    {
+      "transcript_id": "visit-3-containment-feeding-operator-field-day-host",
+      "visit_date": "unknown",
+      "region_nrm": "NSW Riverina (Holbrook/Albury cluster)",
+      "size_bucket": "1000-5000ha",
+      "topic_distillates": [
+        {
+          "topic_label": "Carbon as convergence point — productivity narrative",
+          "customer_position": "Operator already deeply invested in soil health, containment feeding, perennial pastures, ground-cover protection. Hosts 200-person field days. Sceptical that holistic/regen practitioners actually build carbon vs operators like them.",
+          "hobbs_response": "Reframed the whole pitch: if productivity, profitability and sustainability all rise together, carbon must be rising too. Carbon is a derivative of good management, not a separate project — it's a digital twin of what's happening below ground.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "If our management and our production and our profitability are all growing, then by definition our carbon should be growing as well. You can't decrease soil health for 30 years and expect everything to go up.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Disinformation — 'they think it's lock-up-the-land'",
+          "customer_position": "Cited neighbours who destocked, locked-up paddocks, and now have plateaued unproductive land — used as evidence carbon = bad outcome.",
+          "hobbs_response": "Validated the example, separated soil-carbon scheme from vegetation methods. Pointed at the asymmetry: those neighbours have plateaued, your numbers keep climbing — and you're the ones not getting rewarded.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "The people who figure out how to use the land the best will be the people who end up with all the land.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Provenance / future of beef branding",
+          "customer_position": "Asked how close the market is to paying a premium for good environmental management.",
+          "hobbs_response": "Predicted beef will go through what wine went through in the last 50 years: provenance by vineyard/year. Digital trail makes management auditable. Banks will use digital twins to assess bankability — operators with proven history become more bankable.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "The future of beef is going to look like the past 50 years of wine. Instead of just red or white, you'll want from this vineyard, this year.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "ACCU pricing + risk absorption",
+          "customer_position": "Asked about return timeline and what protects them in tough drought years.",
+          "hobbs_response": "2-5 years to first return. AgriProve absorbs the resampling cost on the success fee — incentive-aligned: 'we will only come out and do a round at our cost when we're confident there's an increase.'",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Methodology — split projects to protect upside",
+          "customer_position": "Concerned that mixed flat + hill country could net out to zero credits.",
+          "hobbs_response": "Explained AgriProve registers as two separate projects when terrain/soil varies. Doubles AgriProve's audit cost but protects the customer from a flat-up/hill-down net-zero outcome. Customer pays nothing extra.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Your flat country can go up and your hill country goes backwards. If they're in the one project, you went up by three, down by three — you get zero. So we register them as two projects. We pick up the cost.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Methodology — sampling design / dam exclusion",
+          "customer_position": "Granular question on whether they could pick where samples land (excluding bush blocks etc.).",
+          "hobbs_response": "Loved the question explicitly ('I love where your head's going'). Explained you can pick what's in the carbon estimation area, but within that, sampling is randomised. Used the AgriProve-baseline-with-dam audit story to show how thoroughly they've debugged the methodology.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "We're now the most audited company for soil carbon in Australia.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Trust / track record — most-audited",
+          "customer_position": "Implicit: how do we know AgriProve will still be here in year 25?",
+          "hobbs_response": "Positioned AgriProve as the most-audited soil carbon company in Australia; ISO 9001 certified; experienced auditors filling out the forms. Real value isn't software, it's the regulatory machine.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "We're the most audited company for soil carbon in Australia. ISO 9001 certification. There's nobody else sitting around the table with the forms and the audits.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "25-year commitment — agricultural-use covenant",
+          "customer_position": "Asked what they're actually signing for the 25 years.",
+          "hobbs_response": "Reduced contract to two clauses: 'make a commitment to be better, make a commitment to keep your land in the agricultural system for 25 years.' Subdivision-to-suburban is the trigger to pay back; almost nothing else is.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Our contract basically boils down to: make a commitment to be better, make a commitment to keep your land in the agricultural system for 25 years.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "High-conviction operator with field-day platform; convergence-point framing and split-project methodology landed; clear pathway into HORIZON Snapshot."
+      }
+    },
+    {
+      "transcript_id": "visit-4-seedstock-angus-aggregator-with-agronomist",
+      "visit_date": "unknown",
+      "region_nrm": "NSW (Tumut / Gundagai cluster)",
+      "size_bucket": ">5000ha",
+      "topic_distillates": [
+        {
+          "topic_label": "Trust via numbers — verify their own results",
+          "customer_position": "Long-time agronomist + seedstock operator showed Hobbs an independent soil-carbon report with very high readings; framed as 'we've been doing this 30 years and getting nothing for it'.",
+          "hobbs_response": "Used the moment: 'with these kind of numbers for 30 years, you should have been getting paid for that.' Reinforced AgriProve's role as the verification machine that turns existing good practice into paid revenue.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "With these kind of numbers for 30 years, haven't been getting paid for that. And you should have.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Agnostic-on-practices positioning",
+          "customer_position": "Long-tenured agronomist sceptical of one-size-fits-all programs (named a competitor product they'd been pitched).",
+          "hobbs_response": "Positioned AgriProve explicitly as agnostic: 'we let you guys farm the way you think you should farm.' Contrasted with competitors who require adopting their program.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "AgriProve is agnostic. We let you farm the way you think you should farm.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Queensland case study — real cheque",
+          "customer_position": "Wanted proof, not theory.",
+          "hobbs_response": "Used the [Queensland NRM region] case study: 14 separate projects, ~$60k all-in sampling, ~$450k ACCU return after four years. Specific, recent, scalable.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Land acquisition derivative",
+          "customer_position": "Agronomist (their genuine PM-thinking voice) — 'I have places that, if I could show I'd take over and add a carbon stream, would make way more sense to buy.'",
+          "hobbs_response": "Validated the insight as the right framing — soil carbon as a land-acquisition tool. Made the productivity-revenue derivative argument explicit. Hobbs ran with their framing rather than overlaying his own.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "It becomes interestingly enough like a land acquisition tool. A financial derivative of productivity.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Sale doubts / cynicism — 'why pay us for what we'd do anyway'",
+          "customer_position": "Direct cynic test: 'why would the customer in the market pay someone to do something they're already going to do?'",
+          "hobbs_response": "Held position: pricing is what makes activity legible to capital. Without price, nobody can pick which farmer's stewardship to fund. Acknowledged the question is sharp ('it's important you're poking the argument at its weakest point').",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "When you price something and you pay for it, that's when you know what's happening. Otherwise — how do you know if it's not priced?",
+          "confidence": "moderate"
+        },
+        {
+          "topic_label": "HORIZON Snapshot as wedge",
+          "customer_position": "Wanted to see something concrete on their actual properties.",
+          "hobbs_response": "Used a neighbour-property HORIZON map in real-time to show carbon estimation; offered to run it on each of their aggregated blocks. Made the next step zero-effort: 'just need addresses, then run the model.'",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Rapport — 'I'm just the grazier observing'",
+          "customer_position": "Operator-class customer skeptical of carbon-sector salespeople.",
+          "hobbs_response": "Repeatedly de-positioned himself as the closer: 'I'm just the Grazier who's come in and sort of observing from the outside.' Made the AgriProve back-office the protagonist, not himself.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Remember, I'm just the Grazier who's come in and sort of observing from the outside. They have a really well-oiled machine.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Invitation to speak at their conference (extension of trust)",
+          "customer_position": "Operator with own private agronomy conference invited Hobbs to present.",
+          "hobbs_response": "Accepted same-meeting; rebooked an existing commitment. Recognised the asymmetric value of speaking in front of pre-trusted operator clients.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "High-net-worth seedstock aggregator and tenured agronomist; agnostic positioning + Queensland case study + land-acquisition derivative landed; conference-speaking invite secured."
+      }
+    },
+    {
+      "transcript_id": "visit-5-monera-southwest-grazier-disinformation-pushback",
+      "visit_date": "unknown",
+      "region_nrm": "NSW Monaro (southwest)",
+      "size_bucket": "1000-5000ha",
+      "topic_distillates": [
+        {
+          "topic_label": "Disinformation / tree-planting confusion",
+          "customer_position": "Operator described 2M-hectare neighbouring forest area where carbon developers are buying farms on the edge to plant trees, displacing farming communities. Sees soil carbon as part of the same problem.",
+          "hobbs_response": "Separated soil carbon from vegetation methods cleanly. Acknowledged the legitimate community concern about tree-method land-locking but pointed out soil carbon doesn't require land-use change.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "The cool thing about the soil carbon element is that it doesn't require you to change the land use in that drastic way.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Sale doubts — 'we'd do it anyway'",
+          "customer_position": "Cynic position pressed: 'the productivity management changes I'd make would happen anyway — why pay for them?'",
+          "hobbs_response": "Held position: humans are now operating at every biogeochemical scale; pricing nature is how it becomes legible to capital. Acknowledged the cynicism honestly.",
+          "landed_or_friction": "friction",
+          "quotable_phrasing": "We've entered the stage where humans are touching every biogeochemical process. We don't really know how to price the natural world we are clearly operating now.",
+          "confidence": "moderate"
+        },
+        {
+          "topic_label": "Additionality conceptual gap",
+          "customer_position": "If they were going to improve practices anyway, what's the additionality?",
+          "hobbs_response": "Pointed at government additionality clauses as the policy guard against pure deadweight; acknowledged operator's question is the right one to poke at the scheme's weakest point.",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "It's super important what you're doing — to try to poke the argument at its weakest point. That's always a good idea.",
+          "confidence": "moderate"
+        },
+        {
+          "topic_label": "Polluter-pays moral framing",
+          "customer_position": "Skeptical that an airline can plant trees to offset and call it sustainability.",
+          "hobbs_response": "Agreed Qantas should also reduce; but absent a measurement system, no farmer ever gets paid for stewardship. The scheme is imperfect but creates the market that allows farmers to be paid.",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "",
+          "confidence": "moderate"
+        },
+        {
+          "topic_label": "Cropping zones — where the headroom is",
+          "customer_position": "Operator's own analysis: in grazing systems carbon fluctuates around a flat line; cropping zones converted to grazing show real movement.",
+          "hobbs_response": "Validated this completely — flagged that this farm (zero-input) might be a sweet spot. Didn't oversell, agreed properties like theirs are the right test case.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "neutral",
+        "one_line_summary": "Operator with sharp cynic-mode questions about additionality and 'we'd do it anyway' — Hobbs held ground on policy logic but couldn't fully convert; left as a thoughtful prospect, not a hot lead."
+      }
+    },
+    {
+      "transcript_id": "visit-6-older-couple-mixed-cropping-sheep-multi-property",
+      "visit_date": "unknown",
+      "region_nrm": "NSW Riverina (Federation/Berrigan area)",
+      "size_bucket": ">5000ha",
+      "topic_distillates": [
+        {
+          "topic_label": "Verification machine framing — what AgriProve actually is",
+          "customer_position": "Older couple who admitted upfront 'we never have time to get involved in any of these things' — limited prior carbon literacy.",
+          "hobbs_response": "Opened with a clear positioning statement: 'AgriProve is basically the verification machine. They're like the accountants for soil carbon.' Avoided jargon, set the mental model in one sentence.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "AgriProve is basically the verification machine. They're like the accountants kind of for soil carbon.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Risk buffer — what AgriProve absorbs",
+          "customer_position": "Cautious older operator, sensitive to downside.",
+          "hobbs_response": "Made the asymmetric risk explicit: customer pays only the upfront baseline cost; all downstream sampling, accounting, verification, auditing, regulator-handling sits with AgriProve. 'Functions as a risk buffer.'",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "AgriProve also functions as kind of a risk buffer. The only thing the farmer pays is the upfront sampling cost.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "HORIZON Snapshot — land-by-land grounding",
+          "customer_position": "Multi-property couple needed a way to make the abstract concrete.",
+          "hobbs_response": "Ran the math live for one of their properties: ~1400 ha total, ~900 ha eligible, ~3 ACCUs/ha at current spot = approaching 6-figure annual return scenario. Offered to run HORIZON on the other property too.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Methodology — satellite monitoring upgrade",
+          "customer_position": "Older operator unfamiliar with how soil carbon is measured.",
+          "hobbs_response": "Walked through monthly satellite scan triggering sampling when carbon appears to have risen — vs old 5-year recore cycle. 'You never leave any money on the table.'",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Now we can run the satellite over every month. The second we see carbon levels are up, that triggers sampling, so you never leave any money on the table.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Agnostic — won't tell you how to farm",
+          "customer_position": "Operator asked directly 'what would you advise to bring up the carbon?'",
+          "hobbs_response": "Refused to play agronomist: 'we let you guys farm the way you think you should farm. We are not an agronomy service.' Named LawrieCo as the partner for that. Stayed in lane.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "The beautiful thing about AgriProve is that we let you guys farm the way you think you should farm. We're not an agronomy service.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Two case-study cheques",
+          "customer_position": "Wanted to see numbers from real customers.",
+          "hobbs_response": "Used two specific cheques: an 83-ha project, ~$6k sampling → $45k cheque; a Queensland project, ~$60k sampling across ~9 projects → ~$500k cheque on the four that returned a surplus. Recent, real, returnable references.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Scope 1/2/3 — why demand exists",
+          "customer_position": "Polite question on why customers buy ACCUs at all — 'has the government got the economy to justify it?'",
+          "hobbs_response": "Walked Scope 1 → 3 progression: Woolworths/Coles eventually have to count their whole supply chain. Conceded he's still learning the regime ('I'm an American just trying to figure out what's going on here') — vulnerability worked.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "25-year ratchet — drought downside",
+          "customer_position": "What happens if a drought drops their carbon?",
+          "hobbs_response": "Re-explained the ratchet for this audience: 'works on a ratchet — you only have to beat the previous high. Nothing happens when you drop.' Reinforced that loss years don't trigger payback.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "It works on a ratchet. Nothing happens until you reach that previous high. So if next year you get eight, then you get paid for the two you increased on top of the original four.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Next step — HORIZON + land management call",
+          "customer_position": "Politely interested, wanted to know what's next without commitment.",
+          "hobbs_response": "Sequenced the funnel cleanly: report first, then ~1hr land-management call with Ben, then optional registration. Each step low-commitment; the regulator paperwork is fully insulated.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Then we kick off the excruciating process that you don't have to handle at all.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Older multi-property couple with low prior carbon literacy moved to interested-to-proceed-to-report after risk-buffer framing + live ACCU math + cheque case studies."
+      }
+    }
+  ]
+}

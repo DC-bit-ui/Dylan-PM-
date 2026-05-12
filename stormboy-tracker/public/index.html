@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Conversion Tracker</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/css/dashboard.css">
+<link rel="stylesheet" href="/css/coaching.css">
+</head>
+<body>
+<div class="hdr"><h1>Conversion Tracker</h1><span class="bdg">Live</span><span class="st" id="st"></span><button id="rb" onclick="go()">Refresh</button></div>
+<div class="tabs" id="tb"></div>
+<div class="mn" id="mn"><div class="ld"><div class="sp"></div><span id="lm">Loading...</span><div id="ll" style="margin-top:16px;text-align:left;max-width:600px;width:100%;max-height:180px;overflow-y:auto"></div></div></div>
+<script src="/js/dashboard.js"></script>
+<script src="/js/coaching-client.js"></script>
+<script src="/js/tabs/plays.js"></script>
+<script src="/js/tabs/patterns.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "_source": "HubSpot AP1 portal 24224559",
+  "_query": "companies WHERE landholder_total_issued_accus___company > 0",
+  "_fetched": "2026-05-07",
+  "_total": 24,
+  "_note": "Refreshed by re-running the HubSpot MCP search with the same filter.",
+  "companies": [
+    { "id": 21934789971, "name": "Rowan & Maddie Peart - Jones/Blewett CP", "accusIssued": 22611, "address": "4132 Arcadia Valley Road, Arcadia Valley Queensland 4702, Australia", "city": "Arcadia Valley", "state": "QLD", "zip": "4702" },
+    { "id": 19493227680, "name": "Adam & Tracy Gunthorpe - Howson CP", "accusIssued": 13449, "address": "3351 Barfield Road, Banana QLD 4702", "city": "Banana", "state": "QLD", "zip": "4702" },
+    { "id": 21915187773, "name": "Geoff & Donna Vivian - Barwick CP", "accusIssued": 7913, "address": "1004 Broughton Road, Kaniva Victoria 3419, Australia", "city": "Kaniva", "state": "VIC", "zip": "3419" },
+    { "id": 21914837599, "name": "Darren & Lynette Breust - Breust CPs", "accusIssued": 5497, "address": "Gummers Rd, Bectric NSW 2665", "city": "Bectric", "state": "NSW", "zip": "2665" },
+    { "id": 21932247341, "name": "Ian Clarke - Morrison CP", "accusIssued": 4990, "address": "125 Clarke Road, Karranadgin Western Australia 6460, Australia", "city": "Karranadgin", "state": "WA", "zip": "6460" },
+    { "id": 21515392864, "name": "Lance & Kylie Stephenson - Duncan CP", "accusIssued": 4691, "address": "1142 Blackmans Gap Road", "city": "Colosseum", "state": "QLD", "zip": "4677" },
+    { "id": 21932494718, "name": "Ben Cassidy - Lazzarini CP", "accusIssued": 4683, "address": "364 Gummers Road, Ariah Park NSW 2665", "city": "Ariah Park", "state": "NSW", "zip": "2665" },
+    { "id": 21914858010, "name": "Mark & Nathan Warnock - Swartz CP", "accusIssued": 4614, "address": "1882 Glenroy Road, Morinish Queensland 4702, Australia", "city": "Morinish", "state": "QLD", "zip": "4702" },
+    { "id": 21914856803, "name": "Geoffrey Fox - Watson/Beale/Cooper CP", "accusIssued": 4189, "address": "12 Spring Camp Road, Enmore New South Wales 2358, Australia", "city": "Enmore", "state": "NSW", "zip": "2358" },
+    { "id": 21934790790, "name": "Luke Felmingham - Fife/Ellison CP", "accusIssued": 4077, "address": "225 Kellys Road, Invergordon Victoria 3636, Australia", "city": "Invergordon", "state": "VIC", "zip": "3636" },
+    { "id": 21933993523, "name": "Justin Hoad - McClean CP", "accusIssued": 3707, "address": "91 Mihi Road, North Mihi NSW 2358", "city": "North Mihi", "state": "NSW", "zip": "2358" },
+    { "id": 21915587944, "name": "Leonie & David Doran - Ryan CP", "accusIssued": 3630, "address": "5364 Baldersleigh Road, Bundarra New South Wales 2359, Australia", "city": "Bundarra", "state": "NSW", "zip": "2359" },
+    { "id": 21933994603, "name": "Ryan Walker - Kelly CP", "accusIssued": 3336, "address": "43640 Bruce Highway, Colosseum QLD 4677", "city": "Colosseum", "state": "QLD", "zip": "4677" },
+    { "id": 21935620763, "name": "Karen Scanlan - Fysh CP", "accusIssued": 2670, "address": "1460 Fingerboard Road, Mount Tom QLD 4677", "city": "Mount Tom", "state": "QLD", "zip": "4677" },
+    { "id": 21936748671, "name": "Dane & Ben Farina", "accusIssued": 2496, "address": "Mukinbudin, Western Australia, Australia", "city": "Mukinbudin", "state": "WA", "zip": "6421" },
+    { "id": 21934791290, "name": "Niels Olsen - Grounds Keeping CP", "accusIssued": 2302, "address": "1635 Main S Rd, Hallora VIC 3818", "city": "Hallora", "state": "VIC", "zip": "3818" },
+    { "id": 21914837688, "name": "Jeff Bell - Viner CP", "accusIssued": 1882, "address": "245 Woods Road, Wooroolin Queensland 4608, Australia", "city": "Wooroolin", "state": "QLD", "zip": "4608" },
+    { "id": 21933992534, "name": "John Monaghan - McLachlan CP", "accusIssued": 1583, "address": "365 Marshdale Road, Dungog NSW 2420", "city": "Dungog", "state": "NSW", "zip": "2420" },
+    { "id": 21933994379, "name": "John Lawson - Killen CP", "accusIssued": 1284, "address": "376 Blakney Creek North Road, Blakney Creek New South Wales 2581, Australia", "city": "Blakney Creek", "state": "NSW", "zip": "2581" },
+    { "id": 21915587389, "name": "Sophie McInnerny - Smith CP", "accusIssued": 1022, "address": "30 Bellhaven Ln, Glenarbon QLD 4385", "city": "Glenarbon", "state": "QLD", "zip": "4385" },
+    { "id": 21933993744, "name": "Peter Ramsey - Lyne CP", "accusIssued": 836, "address": "Mosquito Creek Road, Inglewood QLD 4387", "city": "Inglewood", "state": "QLD", "zip": "4387" },
+    { "id": 21933993760, "name": "Derek Walter - Lynch CP", "accusIssued": 481, "address": "2581 Range Rd, Willow Creek SA 5211", "city": "Willow Creek", "state": "SA", "zip": "5211" },
+    { "id": 21914857218, "name": "Justin Costello - Mountain View/Truss/Page/Greenwood CP", "accusIssued": 343, "address": "11510 Murray River Road, TINTALDRA  VIC 3708", "city": "Tintaldra", "state": "VIC", "zip": "3708" },
+    { "id": 21932968211, "name": "K&F Felmingham - Hodges CP", "accusIssued": 218, "address": "567 Marungi Road, Invergordon Victoria 3636, Australia", "city": "Invergordon", "state": "VIC", "zip": "3636" }
+  ]
+}

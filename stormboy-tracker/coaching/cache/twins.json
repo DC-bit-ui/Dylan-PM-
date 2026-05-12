@@ -1,0 +1,266 @@
+{
+  "version": "b2.1",
+  "generated_at": "2026-05-08T04:30:00.000Z",
+  "deals": [
+    {
+      "active_deal": {
+        "id": "31711997037",
+        "name": "Daisy Bank + Bellevue - James Almond",
+        "current_stage": "KCT Issued",
+        "days_in_current_stage": 426,
+        "attribution": "direct"
+      },
+      "twins": [
+        {
+          "deal_id": "40789889068",
+          "deal_name": "Burnham Grazing - Dan Burnham",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Same stage (KCT Issued), direct channel; reached KCT Issued and stayed there for ~7 months before re-engaging and converting",
+          "what_happened": "Burnham Grazing was at KCT Issued for ~210 days before closing. Win reason recorded: \"Relationship and open minded to adapt to soil carbon project\". The unblock was relational, not procedural — a fresh HORIZON refresh framed around platform changes broke the inertia.",
+          "lesson": "Don't treat zombie KCT deals as terminal. A fresh HORIZON Snapshot + relationship-led re-engagement has converted twins much older than expected."
+        },
+        {
+          "deal_id": "147625095632",
+          "deal_name": "Mount Moon Pastoral - Edward Ohlrich",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct channel; spent extended time in pipeline before silent attrition",
+          "what_happened": "Mount Moon Pastoral went quiet after early engagement and was closed as \"Cold\" with no formal pushback. Same shape as Daisy Bank if no re-engagement happens.",
+          "lesson": "Without intervention this becomes a Cold loss within weeks. The clock is running."
+        },
+        {
+          "deal_id": "248596297166",
+          "deal_name": "Weatherall CP - Jonathan Harpley",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Same stage, direct channel; closed Won from KCT Issued",
+          "what_happened": "Weatherall CP progressed through all five stages and closed Won via a rep-led, partner-attended KCT walkthrough.",
+          "lesson": "A rep-led walkthrough with the customer's partner is the move that breaks KCT stalls."
+        }
+      ],
+      "synthesis": "Daisy Bank is 35× past the lost-median for this stage. The pattern across twins is binary: re-engage with HORIZON refresh + relationship-led conversation (Burnham path → Won), or it becomes Mount Moon (Cold loss). Status quo is not stable.",
+      "next_best_actions": [
+        {
+          "action": "Decision call THIS WEEK: generate fresh HORIZON Snapshot, attempt nurture-back outreach, or close lost.",
+          "rationale": "Burnham Grazing pattern converted at this exact age; Mount Moon Pastoral pattern lost. No middle ground after 426 days.",
+          "priority": "high"
+        },
+        {
+          "action": "If re-engaging: book Hobbs for an on-farm visit, snapshot in hand.",
+          "rationale": "On-farm + fresh report is the highest-leverage conversion event for stale deals.",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "active_deal": {
+        "id": "41104436568",
+        "name": "Bulgoo Pastoral - Jeremy Pockley",
+        "current_stage": "Strategy Call",
+        "days_in_current_stage": 271,
+        "attribution": "direct"
+      },
+      "twins": [
+        {
+          "deal_id": "40789889068",
+          "deal_name": "Burnham Grazing - Dan Burnham",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct channel; converted from extended Strategy-stall via relationship-led re-engagement",
+          "what_happened": "Burnham Grazing's win reason (\"Relationship and open minded to adapt\") shows the unblock pattern — not a tactical objection-handle, but a fresh framing of \"what's changed\".",
+          "lesson": "Bulgoo at day 271 needs the Burnham-style intervention, not another Strategy Call email."
+        },
+        {
+          "deal_id": "144047802829",
+          "deal_name": "Springfield Carbon Project - John Clayton",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct channel; comparable Strategy-stage stall closed Lost",
+          "what_happened": "Springfield Carbon Project drifted from Strategy without explicit re-engagement and closed as \"Insufficient commitment to implement\".",
+          "lesson": "Without intervention, Bulgoo follows Springfield."
+        },
+        {
+          "deal_id": "183751836130",
+          "deal_name": "Tumbledown Wagyu - Mick Lewis",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct channel; Strategy-stage stall closed Lost on same enum reason",
+          "what_happened": "Tumbledown Wagyu also stalled at Strategy and was lost as \"Insufficient commitment to implement\" — the same end-state Bulgoo is drifting toward.",
+          "lesson": "Same cohort; same loss pattern unless re-engaged."
+        }
+      ],
+      "synthesis": "Strategy-stage stalls from late 2025 split cleanly into two outcomes: Burnham-style HORIZON refresh + re-engagement → Won, or Springfield/Tumbledown drift → Lost. Bulgoo is 9× past lost-median.",
+      "next_best_actions": [
+        {
+          "action": "Run the Burnham-pattern re-engagement: HORIZON refresh + \"what's changed\" reframe + offer Hobbs on-farm.",
+          "rationale": "Burnham converted at this stall age; Springfield/Tumbledown did not get this and were lost.",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "active_deal": {
+        "id": "140345085389",
+        "name": "JA - John Atherton",
+        "current_stage": "Strategy Call",
+        "days_in_current_stage": 249,
+        "attribution": "direct"
+      },
+      "twins": [
+        {
+          "deal_id": "186050120174",
+          "deal_name": "Davidsons & Laen - Brendan Reinheimer",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct channel; progressed past Strategy and converted",
+          "what_happened": "Davidsons & Laen moved through Strategy and KCT and closed Won. Specific win driver not recorded but the deal progressed normally — the contrast with JA-Atherton's 249-day stall is instructive.",
+          "lesson": "The Davidsons pattern is normal-velocity. JA-Atherton is now 25× past that benchmark."
+        },
+        {
+          "deal_id": "147625095632",
+          "deal_name": "Mount Moon Pastoral - Edward Ohlrich",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct channel; comparable late-stage Cold loss",
+          "what_happened": "Mount Moon Pastoral was lost as \"Cold\" — quiet attrition, no explicit objection. Same pattern JA-Atherton is exhibiting now.",
+          "lesson": "Cold attrition is the default outcome for unattended Strategy-stalled deals."
+        }
+      ],
+      "synthesis": "Strategy-stage stall at 249 days. Without intervention this becomes Cold (Mount Moon). With a HORIZON refresh + explicit \"reconnect\" framing, there's still a path — but margins narrow weekly.",
+      "next_best_actions": [
+        {
+          "action": "Send the 25-year ACCU revenue projection by Friday with explicit \"let's reconnect\" framing.",
+          "rationale": "Davidsons & Laen pattern of explicit progression; lack of it = Mount Moon Cold loss.",
+          "priority": "high"
+        },
+        {
+          "action": "If no response in 7 days, move to closed-lost. Don't let it drift another quarter.",
+          "rationale": "Cold-attrition is the dominant outcome for unattended Strategy stalls; the decision matters more than further effort.",
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "active_deal": {
+        "id": "141507724737",
+        "name": "Brigalow and Mostowie - Rodger Jefferis",
+        "current_stage": "Strategy Call",
+        "days_in_current_stage": 245,
+        "attribution": "direct"
+      },
+      "twins": [
+        {
+          "deal_id": "40789889068",
+          "deal_name": "Burnham Grazing - Dan Burnham",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct channel; relationship-led conversion from comparable Strategy stall",
+          "what_happened": "Burnham Grazing was won via the relationship-led re-engagement pattern — fresh HORIZON, \"what's changed\" framing, soft commitment.",
+          "lesson": "This is the play for any Strategy-stalled direct deal in this age cohort."
+        },
+        {
+          "deal_id": "183751836130",
+          "deal_name": "Tumbledown Wagyu - Mick Lewis",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Same cohort, same stage, same likely outcome without action",
+          "what_happened": "Tumbledown Wagyu was closed lost as \"Insufficient commitment to implement\" after a similar Strategy stall.",
+          "lesson": "Tumbledown is the alternate timeline for Brigalow."
+        }
+      ],
+      "synthesis": "Brigalow sits in the late-2025 Strategy-stall cohort with JA-Atherton and Bulgoo. The pattern is binary: Burnham re-engagement (Won) or Tumbledown drift (Lost). Ben owns this — same owner pattern as the rest of the cohort.",
+      "next_best_actions": [
+        {
+          "action": "Run Ben's nurture-back tactic: fresh HORIZON Snapshot + \"what's changed\" frame.",
+          "rationale": "Burnham conversion pattern is the only one observed at this stall age.",
+          "priority": "high"
+        },
+        {
+          "action": "If positive response, escalate to Hobbs on-farm immediately.",
+          "rationale": "On-farm conversion is the soft-sell event for Stormboy + direct alike.",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "active_deal": {
+        "id": "167288289773",
+        "name": "Fenmore Farming - Bruce McLean",
+        "current_stage": "SLA/KCT Mapping",
+        "days_in_current_stage": 200,
+        "attribution": "direct"
+      },
+      "twins": [
+        {
+          "deal_id": "248596297166",
+          "deal_name": "Weatherall CP - Jonathan Harpley",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct channel; progressed from SLA/KCT Mapping to Won",
+          "what_happened": "Weatherall CP's SLA/KCT transition was clean — rep-led KCT walkthrough with partner attendance is the recorded driver in adjacent farm-visit distillates.",
+          "lesson": "The partner-attended live walkthrough is the unlock at this stage."
+        },
+        {
+          "deal_id": "186050120174",
+          "deal_name": "Davidsons & Laen - Brendan Reinheimer",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct channel; comparable SLA → Won progression",
+          "what_happened": "Davidsons & Laen progressed through SLA/KCT to Won without long stall — the velocity differs starkly from Fenmore.",
+          "lesson": "Velocity matters; 200-day SLA stalls don't recover without intervention."
+        },
+        {
+          "deal_id": "131569892814",
+          "deal_name": "Fisher Brothers - Craig Fisher",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct channel; SLA-stage stall closed Lost as \"Insufficient commitment\"",
+          "what_happened": "Fisher Brothers stalled at SLA/KCT and was coded \"Insufficient commitment to implement\" — often signals partner not engaged.",
+          "lesson": "Without partner engagement, Fenmore's end-state is Fisher Brothers."
+        }
+      ],
+      "synthesis": "SLA/KCT stalls at 200 days are almost always partner-disengagement. The diagnostic is asking who else needs to sign off, and offering to do KCT live with both partners. Refusal of that itself is the result.",
+      "next_best_actions": [
+        {
+          "action": "Schedule a 30-min Teams call this week to walk through KCT live with Bruce AND his partner.",
+          "rationale": "Weatherall CP and Davidsons & Laen both progressed this way; Fisher Brothers did not.",
+          "priority": "high"
+        },
+        {
+          "action": "If partner won't attend, that's the diagnosis — escalate or close-lost.",
+          "rationale": "Partner refusal at this stage is the strongest single predictor of Insufficient-commitment loss.",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "active_deal": {
+        "id": "183762813378",
+        "name": "Keynes Consulting Pty Ltd - Daniel Keynes",
+        "current_stage": "Qualified Account",
+        "days_in_current_stage": 181,
+        "attribution": "direct"
+      },
+      "twins": [
+        {
+          "deal_id": "40861198733",
+          "deal_name": "Georgina Kedzlie - Mitchell Grazing",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct channel; Qualified-stage stall closed lost as \"Insufficient commitment to implement\"",
+          "what_happened": "Georgina Kedzlie / Mitchell Grazing stalled at early stages and was eventually closed lost. Same profile as Keynes if not triaged.",
+          "lesson": "Qualified-stage stalls at 6+ months almost always end as Insufficient-commitment losses."
+        }
+      ],
+      "synthesis": "Keynes is a consulting entity, not a farmer-direct profile — the typical Stormboy motion may not apply. Treat as a one-call triage: assess + decide. Drifting further wastes pipeline capacity.",
+      "next_best_actions": [
+        {
+          "action": "One direct triage call THIS WEEK to decide: Hobbs visit, deferred with reason, or close-lost.",
+          "rationale": "Atypical entity profile + 181-day stall warrants explicit decision over default-progress.",
+          "priority": "high"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "version": "p0fv.1",
+  "generated_at": "2026-05-08T04:30:00.000Z",
+  "count": 1,
+  "records": {
+    "fv-real-large-american-owned-nsw": {
+      "version": "p0fv.1",
+      "transcript_id": "fv-real-large-american-owned-nsw",
+      "visit_date": "2026-04 approximate",
+      "region_nrm": "NSW (large-acreage, mixed grazing operation, American-owned)",
+      "size_bucket": ">5000ha",
+      "topic_distillates": [
+        {
+          "topic_label": "25-year commitment / land-use restrictions",
+          "customer_position": "Wanted to understand exactly what they're committing to over 25 years. Concerned about what restrictions land use would face.",
+          "hobbs_response": "Framed the contract as \"make a commitment to be better. Make a commitment to keep your land in the agricultural system for 25 years.\" Combined this with a humorous limit on the restriction: \"you agree to continue running this for 25 years as an agricultural enterprise, and agreed to not build a trailer park home.\" Made the commitment feel real but bounded.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "You agree to keep your land in the agricultural system for 25 years — agreed to not build a trailer park home.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "ACCU revenue scepticism — concrete dollar example",
+          "customer_position": "Wanted to know what the revenue actually looks like in real dollars.",
+          "hobbs_response": "Showed a concrete recent case: \"the guy had 83 hectares. It was one of the early projects. He paid 6000 to have it sampled, and he just got his check for 45,000.\" 6K-in / 45K-out is the lead anchor.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "83 hectares, $6K to sample, $45K cheque just paid out.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Annual crediting / satellite measurement model",
+          "customer_position": "Sceptical about timing — concerned credits wouldn't arrive for years.",
+          "hobbs_response": "\"AgriProve just came out with this soil carbon model. They partnered with this satellite company, and they go over every property every month, and so they can predict if your soil carbon has gone up or down. So the second that it goes up, you get credited. Boom, they'll take the measurements. You're not leaving money on the table, whereas it was unclear previous to this. So it can get you on basically an annual crediting cycle, as opposed to three years, four years, five years.\"",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "You're not leaving money on the table — annual crediting cycle, not three to five years.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Downside protection — ratchet mechanism",
+          "customer_position": "Asked: \"what happens if a drought drops carbon levels?\"",
+          "hobbs_response": "\"Nothing works on a ratchet. So let's say one year you capture four ACCUs per hectare, and boom, you get paid for that. Now the next year, you lose six per hectare. Nothing happens until you reach that previous high. So if the next year you get eight, then you get paid for the two that you've increased on top of that original four.\"",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Nothing works on a ratchet — you don't hand credits back unless you violate the conditions.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Disinformation reframe — \"lock up the land and plant trees\"",
+          "customer_position": "Carrying the common misconception that carbon projects require destocking and tree planting.",
+          "hobbs_response": "\"The to me, the thing that I've really learned in talking to a lot of land holders is that the impression in the carbon world is that people think you have to lock up your land, destock, and then plant trees, which is obviously not what the soil carbon scheme is all about.\" Then: \"the soil carbon element is that it doesn't require you to change the land use in that drastic way.\"",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Soil carbon doesn't require you to change the land use in that drastic way.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Additionality / \"doing it better\"",
+          "customer_position": "Asked about management criteria — \"what are the management criteria for that land if you go into such an arrangement?\"",
+          "hobbs_response": "Walked through additionality: \"you're agreeing to improve your practices in some way. If you take over this practice, take over this land, and you can show how it has been managed in the past, and how you're going to improve it, then we find the relevant criteria that the government says, Okay, this means you're doing it better. So we'll say perennial pastures will align it, and we'll put fertilizer on. Move your, you know, move your skull.\" Then: \"every year, you just have to have a 30-minute conversation with one of the agri food teams to fill out that form.\"",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Once a year you have a 30-minute conversation with an AgriProve team — that's it.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Risk framing — what's the actual downside?",
+          "customer_position": "Probing for worst-case: \"what are the risks?\"",
+          "hobbs_response": "\"Essentially, the only risk, as long as you don't violate any of the conditions, is that you don't get any carbon credits. But if you do increase your productivity, which you certainly will upon putting in inputs, then by definition, that means your carbon is going [somewhere].\" The \"downside is zero credits, not negative\" framing.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "The only risk is you don't get carbon credits — not that you lose money.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Large American-owned NSW operation; visit covered seven distinct topics; Hobbs landed every objection with concrete framings, dollar anchors, and humour. Customer asked for documentation: \"Can I get a copy of this in some form? Email it to me.\""
+      }
+    }
+  }
+}
