@@ -51,7 +51,10 @@
       "Bash(curl -s http://localhost:3401/api/coaching/active)",
       "Bash(curl -s http://localhost:3401/api/coaching/friction)",
       "Bash(mkdir -p \"C:\\\\Dylan PM\\\\shared-growth-memory\\\\patterns\" \"C:\\\\Dylan PM\\\\shared-growth-memory\\\\probe-outcomes\" \"C:\\\\Dylan PM\\\\shared-growth-memory\\\\deal-signals\" \"C:\\\\Dylan PM\\\\shared-growth-memory\\\\customer-positions\" \"C:\\\\Dylan PM\\\\shared-growth-memory\\\\schemas\")",
-      "Read(//c/Dylan PM/**)"
+      "Read(//c/Dylan PM/**)",
+      "mcp__claude_ai_Granola__query_granola_meetings",
+      "mcp__claude_ai_Atlassian_Rovo__search",
+      "mcp__claude_ai_Atlassian_Rovo__fetch"
     ]
   }
 }

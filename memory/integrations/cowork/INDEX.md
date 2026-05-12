@@ -24,4 +24,7 @@
 
 | Date | Output | Where |
 |---|---|---|
-| 2026-04-29 | Apex flow diagnostic (SKILL.md inspection, cron forensic, workspace mount check) | [`../../../inbox/cowork/2026-04-29-apex-flow-diagnostic.md`](../../../inbox/cowork/2026-04-29-apex-flow-d
+| 2026-04-29 | Apex flow diagnostic (SKILL.md inspection, cron forensic, workspace mount check) | [`../../../inbox/cowork/2026-04-29-apex-flow-diagnostic.md`](../../../inbox/cowork/2026-04-29-apex-flow-diagnostic.md) |
+| 2026-04-29 | Daily Briefing sample run output (degenerate — TBD instructions) | [`../../../inbox/cowork/2026-04-29-daily-briefing-sample.md`](../../../inbox/cowork/2026-04-29-daily-briefing-sample.md) |
+
+> Diagnostics live in `inbox/cowork/` rather than here because they're event-shaped (one-off captures), not durable artifacts.

@@ -34,4 +34,25 @@ _Prior strategy (inferred from epics, pre-pivot):_
 - Operationalise Stormboy — **promoted to top priority**
 
 ## Current OKRs
-**Sta
+**Status:** _Q OKRs are still being decided for the quarter (confirmed by Dylan, 2026-04-28). Until they land, `/okr-check` will return "OKRs pending — alignment lens unavailable; treat strategic priorities (above) as the proxy."_
+
+When OKRs are finalised, populate this section and update `/okr-check` to reactivate the alignment lens.
+
+### Objective 1: _(pending)_
+- **KR1.1:** _(measurable)_ — current: _(value)_ — target: _(value)_
+- **KR1.2:** …
+
+---
+
+## Where Dylan owns / contributes
+- **Owns (PM):** Frontier (AP-1963, AP-2009), Stormboy alignment
+- **Contributes (PM support):** HORIZON validation framework (AP-2116), KCT phase 1 (AP-1964), LawrieCo referrer view (AP-1965), T1 Offsets Report / Crediting Workflow Template (AP-2187)
+
+## Bets we're NOT making (this period)
+_(populate as Dylan articulates the say-no list)_
+
+## Recent strategic pivots
+
+| Date | Pivot | Source |
+|---|---|---|
+| 2026-05-12 | Two-priority focus (recruit + Schedule 2); all other platform dev paused; scrappy MVP delivery mode | SLT Short Form 12/05 (Confluence AO/567967745). Learning: `memory/learnings/2026-05/2026-05-12-slt-strategic-pivot-and-cash-discipline.md` |

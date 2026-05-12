@@ -300,4 +300,50 @@ Each of these should produce either a memory write or a deliberate "no — nothi
 - [ ] Test commit: a probe learning (see below) committed and pushed successfully
 
 ### Validation probes
-- [ ] **Read probe** — Apex Morning Briefing logs which `memory/` files it loaded and their byte coun
+- [ ] **Read probe** — Apex Morning Briefing logs which `memory/` files it loaded and their byte counts (confirms folder access works)
+- [ ] **Write probe** — Apex commits `memory/learnings/<month>/<date>-cowork-bootstrap-probe.md` containing one sentence, then pushes. Verify on GitHub.
+- [ ] **Tier 2 probe** — Apex opens a PR proposing a one-line edit to `working-style.md`. Dylan reviews and merges (or closes if no change needed). Validates the PR-gated path.
+
+---
+
+## 12. Meta — improving this contract
+
+This file is editable. If Cowork notices a routing rule that's wrong (something keeps landing in the wrong tier, or a Tier 3 file that should be Tier 2), **propose the change via Tier 2 PR**. The contract evolves.
+
+---
+
+## 13. Project Instructions — paste-ready
+
+The full Project Instructions live in **[`cowork/project-instructions.md`](cowork/project-instructions.md)** — that file is the canonical text Dylan pastes into **Cowork → Project → Settings → Project Instructions**. It's a separate file because:
+
+1. It evolves on its own cadence — when the contract reshapes, edit one file
+2. Source-controlled with the rest of the system
+3. Cowork itself can read it via the connected folder if needed
+
+The file is structured with explicit `=== BEGIN PROJECT INSTRUCTIONS ===` / `=== END ===` markers around the paste-ready block. Everything outside the markers is meta (how to update, companion file pointers).
+
+### Recommended Global Instructions (Settings → Cowork → Edit)
+
+Short and always-on across every Cowork session:
+
+```
+Default voice: direct, opinionated, no flattery. Cite sources.
+Match the active project's COWORK.md or CLAUDE.md if one is present.
+Use confidence markers ([high], [moderate], [low], [ASSUMPTION]).
+Distinguish live data (this session via MCP) from cached/snapshot data.
+```
+
+---
+
+## 12. Meta — improving this contract
+
+This file is editable. If Cowork notices a routing rule that's wrong (something keeps landing in the wrong tier, or a Tier 3 file that should be Tier 2), **propose the change via Tier 2 PR**. The contract evolves.
+
+---
+
+**See also**
+- `CLAUDE.md` — the symmetric contract for Claude Code
+- `memory/integrations/cowork.md` — the inbound side (what Cowork writes to Notion / Jira and surfaces to this repo via `inbox/cowork/`)
+- `memory/decisions/2026-04-28-integration-architecture.md` — the two-layer architecture (Cowork = execution; this repo = memory)
+- `memory/decisions/2026-04-28-notion-canonical-workstack.md` — Notion as the workstack source of truth
+- `memory/decisions/2026-04-28-cowork-bidirectional-contract.md` — the decision that produced this file

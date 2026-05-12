@@ -26,4 +26,10 @@
 ## Promoted → standing rules
 > Learnings that have been confirmed enough to live in `profile/` or `business/`. Linked here for traceability.
 
-| Original date | Title | Pr
+| Original date | Title | Promoted to |
+|---|---|---|
+| _(none yet)_ | | |
+
+## Monthly archives
+- `2026-05/`
+- `2026-04/`
