@@ -5,6 +5,7 @@
 ## Recent (last 30 days)
 | Date | Type | Title | File |
 |---|---|---|---|
+| 2026-05-12 | durable compliance fact | Letter of Offer (220615) key clauses — verbatim text for cl 13.1, 19, 20, 21; corrects 5 interpretation errors from original handoff; basis for career-portfolio 9 Rules | `2026-05/2026-05-12-letter-of-offer-key-clauses.md` |
 | 2026-05-12 | business-intelligence | SLT 12 May — strategic pivot (two priorities May–Jul: recruit + Sch 2), cash discipline rules, entity structure live issue | `2026-05/2026-05-12-slt-strategic-pivot-and-cash-discipline.md` |
 | 2026-05-11 | tooling / infrastructure | `git push` from this Claude Code session returns HTTP 403 (auth) — workaround via `mcp__github__push_files`; don't retry, reroute | `2026-05/2026-05-11-git-push-403-workaround.md` |
 | 2026-05-04 | correction + operational hazard | PR base-branch routing bug — legacy `claude/setup-claude-system-9cDDB` causes PRs to merge into a phantom (3 instances in 24h); fix is branch deletion + base verification gate | `2026-05/2026-05-04-pr-base-branch-routing-bug.md` |
