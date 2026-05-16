@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Frontier — Collective Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/v2/css/v2.css">
+</head>
+<body>
+
+<div class="v2-meta">
+  <strong>v2</strong>
+  <span>tightened scope, operational entry-point</span>
+  <a href="/v2/experiments/lawrieco.html">LawrieCo experiment</a>
+  <a href="/" class="back">&larr; Back to v1</a>
+</div>
+
+<header class="v2-header">
+  <div class="v2-brand">
+    <div class="v2-brand-name">Frontier</div>
+    <div class="v2-brand-sub">Collective Intelligence · 30k hectare conversion</div>
+  </div>
+  <div class="v2-scoreboard" id="scoreboard">
+    <div class="v2-score-loading">Loading scoreboard…</div>
+  </div>
+</header>
+
+<nav class="v2-tabs">
+  <a href="#ask"   class="v2-tab" data-tab="ask">ASK</a>
+  <a href="#work"  class="v2-tab" data-tab="work">WORK</a>
+  <a href="#brain" class="v2-tab" data-tab="brain">BRAIN</a>
+  <a href="#stats" class="v2-tab" data-tab="stats">STATS</a>
+  <a href="#messaging" class="v2-tab" data-tab="messaging">MESSAGING</a>
+</nav>
+
+<main class="v2-main">
+  <section id="tab-ask"   class="v2-section"></section>
+  <section id="tab-work"  class="v2-section"></section>
+  <section id="tab-brain" class="v2-section"></section>
+  <section id="tab-stats" class="v2-section"></section>
+  <section id="tab-messaging" class="v2-section"></section>
+</main>
+
+<script src="/v2/js/v2-shell.js"></script>
+<script src="/v2/js/v2-scoreboard.js"></script>
+<script src="/v2/js/v2-exemplar.js"></script>
+<script src="/v2/js/v2-work.js"></script>
+<script src="/v2/js/v2-brain.js"></script>
+<script src="/v2/js/v2-stats.js"></script>
+<script src="/v2/js/v2-ask.js"></script>
+<script src="/v2/js/v2-messaging.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    v2Shell.init();
+    v2Scoreboard.init();
+    // Tab modules register themselves with v2Shell and render on demand.
+  });
+</script>
+
+</body>
+</html>

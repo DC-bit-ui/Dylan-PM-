@@ -1,64 +1,64 @@
 {
   "version": "a1.1",
-  "generated_at": "2026-05-08T04:30:00.000Z",
-  "data_window": "2025-08-01 to 2026-05-08",
+  "generated_at": "2026-05-15T02:58:39.141Z",
+  "data_window": "live pipeline as of 2025-01-30",
   "stage_transitions": [
     {
       "from": "Qualified Account",
       "to": "Discovery Call",
-      "median_days_won": 3.1,
-      "median_days_lost": 4.8,
-      "friction_pattern": "No clear friction at qualification gate. Volume and timing balanced; small gap likely noise.",
-      "evidence": "Won n=42 (3.1d median), lost n=18 (4.8d). Gap 1.5x — below threshold for [moderate].",
-      "play": "No structural change recommended. Maintain current cadence.",
-      "play_priority": "low",
-      "confidence": "low"
-    },
-    {
-      "from": "Discovery Call",
-      "to": "Strategy Call",
-      "median_days_won": 4.2,
-      "median_days_lost": 11.8,
-      "friction_pattern": "Reps not booking the Strategy Call before the customer cools — many of these become \"Cold\" losses. Lost deals show 3+ scheduling round-trips between Discovery and the next call landing. Stormboy v2 introduced Discovery as a gate but execution is inconsistent.",
-      "evidence": "Won median 4.2d vs lost 11.8d — 2.8x gap, [high] signal. SBv2 lost-deal median actually widened (+3d) post-launch. 36% of all losses across pipeline are coded \"Cold\" — many trace back to this transition.",
-      "play": "Send the customer's NRM-region-matched 25-year ACCU revenue projection within 24h of Discovery, and propose 3 Strategy Call slots in the SAME email. Pattern from won twin Wagga-Hills (D-W-001).",
+      "median_days_won": 0,
+      "median_days_lost": 34,
+      "friction_pattern": "Qualified accounts sit uncontacted for ~34 days before being lost — pre-Discovery inertia is the dominant leak point across the entire funnel.",
+      "evidence": "140 losses at this stage, 0 wins recorded. Median 34 days to loss. 114 closed-lost as 'Cold' — the largest single reason in the dataset — almost certainly originate here before a Discovery Call is ever booked.",
+      "play": "Implement a 72-hour SLA from Qualified Account creation: auto-enrol in a 3-touch sequence (call attempt D1, SMS D2, personalised NRM-region ACCU estimate email D3). Flag any account >5 days uncontacted as a rep-level escalation in CRM.",
       "play_priority": "high",
       "confidence": "high"
     },
     {
+      "from": "Discovery Call",
+      "to": "Strategy Call",
+      "median_days_won": 0,
+      "median_days_lost": 0,
+      "friction_pattern": "No transition data available — stage may be collapsed in practice, bypassed, or not yet tracked with sufficient volume to produce signal.",
+      "evidence": "0 won, 0 lost, median days 0 for both sides. Cannot distinguish whether Discovery-to-Strategy is a same-session handoff or a data-capture gap in the CRM pipeline.",
+      "play": "Audit CRM stage usage for the last 90 days: confirm whether 'Discovery Call' is being logged as a discrete stage or merged into Strategy Call. If merged, separate them and instrument a 48-hour Strategy Call booking rate KPI from Discovery completion.",
+      "play_priority": "medium",
+      "confidence": "low"
+    },
+    {
       "from": "Strategy Call",
       "to": "SLA/KCT Mapping",
-      "median_days_won": 6,
-      "median_days_lost": 14.3,
-      "friction_pattern": "25/75 revenue-share resistance surfaces here (\"25%, too high\" loss reason). Reps without an NRM-regional 25-year revenue projection lose disproportionately; reps with one convert at 2.4× rate.",
-      "evidence": "Won median 6.0d, lost 14.3d. Pass 0 distillates show \"25/75 revenue split\" objection in 60% of losses at this transition. Wagga-Hills (D-W-001), Mid-Lachlan (D-W-002) used regional projections and converted.",
-      "play": "Match deal to NRM-region case study before Strategy Call ends. Lead Strategy with 25-year revenue breakdown for that region — show the 75% customer share in absolute dollars.",
+      "median_days_won": 3,
+      "median_days_lost": 36.07,
+      "friction_pattern": "Landholder intent collapses rapidly after Strategy Call — won deals advance in 3 days while lost deals drift 36 days before dying, indicating a failure to capture commitment or create urgency at call close.",
+      "evidence": "34 won vs 57 lost. Won median 3 days, lost median 36 days — a 12x gap. 45 losses coded 'Not for at least 6 months' and 9 coded '25 years, too long' likely crystallise here as the 25-year ERF commitment is first presented in detail.",
+      "play": "On every Strategy Call, close with a live screen-share of a property-matched 25-year ACCU projection using NRM region and land area. Send the PDF within 2 hours post-call with a calendar link for SLA/KCT Mapping booked within 7 days. No projection sent = no progression.",
       "play_priority": "high",
       "confidence": "high"
     },
     {
       "from": "SLA/KCT Mapping",
       "to": "KCT Issued",
-      "median_days_won": 4.5,
-      "median_days_lost": 21,
-      "friction_pattern": "KCT effort objection — customers stall on completing the assessment. Won deals had rep-led KCT walkthroughs; lost deals were left to async self-completion. Often correlates with \"Insufficient commitment to implement\" loss reason — particularly when partner not engaged.",
-      "evidence": "Won 4.5d vs lost 21.0d — 4.7× gap, highest in pipeline. n=28 won, n=11 lost. 9/11 losses had no rep-customer call recorded between SLA and KCT.",
-      "play": "Offer to walk customer through KCT live in a 30-min Teams call. Ensure partner is on the call.",
+      "median_days_won": 41,
+      "median_days_lost": 64,
+      "friction_pattern": "Baseline sampling cost and implementation burden stall deals during mapping — slower velocity to loss (~23 extra days) suggests progressive disengagement rather than a hard stop, pointing to cost objection or agronomic complexity.",
+      "evidence": "23 won vs 30 lost. Won median 41 days, lost median 64 days — 1.56x gap. 'Baseline costs too high' (5) and 'No agronomy expertise' (6) surface as specific loss reasons consistent with friction at the mapping/KCT design stage.",
+      "play": "At SLA/KCT Mapping initiation, send a one-page 'Baseline Cost vs Projected ACCU Revenue' payback calculator pre-populated with the property's NRM region and hectarage. Flag any deal >45 days in mapping for a proactive agronomy-support call to address implementation barriers before KCT is drafted.",
       "play_priority": "high",
-      "confidence": "high"
+      "confidence": "moderate"
     },
     {
       "from": "KCT Issued",
       "to": "Closed Won",
-      "median_days_won": 5.8,
-      "median_days_lost": 12.4,
-      "friction_pattern": "Final-stage hesitation. Customers who completed KCT but didn't close mostly cited internal alignment (partner, accountant, family) or last-minute baseline-cost concerns (\"Baseline costs too high\" enum value).",
-      "evidence": "Won 5.8d, lost 12.4d. n=22 vs n=4 — thin loss signal. Distillates show \"internal review\" + upfront-cost surprise pattern in 3/4 losses.",
-      "play": "During SLA, ask explicitly who else needs to sign off and surface baseline-cost figures upfront — not at KCT issuance. Offer joint call before KCT is issued.",
-      "play_priority": "medium",
+      "median_days_won": 17.07,
+      "median_days_lost": 126.16,
+      "friction_pattern": "KCT expiry or landholder cold-feet post-issuance causes protracted losses — won deals close in 17 days while lost deals drag 126 days, suggesting KCTs are being issued to insufficiently committed landholders or follow-up cadence drops off.",
+      "evidence": "23 won vs 15 lost. Won median 17 days, lost median 126 days — a 7.4x gap. 'Insufficient commitment to implement' (29 total) likely concentrates here. Competitor losses (7) may also manifest at contract-review stage.",
+      "play": "Set a hard 30-day KCT acceptance window: at issuance, send a countersigned cover letter stating the KCT terms are valid for 30 days, with a day-10 and day-20 rep call. Any KCT unaccepted at day-30 triggers a 'commit or close' call before the deal is marked lost — not after 126 days of drift.",
+      "play_priority": "high",
       "confidence": "moderate"
     }
   ],
-  "top_systemic_friction": "Discovery → Strategy is bleeding. Lost-deal median is 11.8d vs 4.2d for wins, and many of these become \"Cold\" losses (36% of all losses). Stormboy v2 has NOT closed the gap — the spread widened post-launch (+3d on losses). The pipeline's biggest leverage point is ensuring every Discovery Call ends with a booked Strategy slot AND a 25-year regional revenue projection.",
-  "era_lift_observation": "KCT → SBv1 produced clear win-rate lift (+18%). SBv1 → SBv2 was marginal (+3%). v2's Discovery Call gate is correctly designed but inconsistent in execution — half of v2 deals have Discovery durations under 30 minutes, suggesting the stage is being treated as a checkbox rather than a structured gate."
+  "top_systemic_friction": "Pre-Discovery inertia is the single largest revenue leak: 140 accounts lost before a Discovery Call is ever completed, with 'Cold' accounting for 114 closed-lost reasons overall. Fixing the Qualified Account → Discovery Call SLA and contact cadence will have more pipeline impact than optimising any downstream stage.",
+  "era_lift_observation": "Legacy era accounts for 268 of 351 total records (76%), dominating all conversion benchmarks. KCT Process era (44 records) represents the cleanest signal for current-state performance analysis. Stormboy v2 (11 records) is too thin for reliable pattern detection — prioritise KCT Process cohort for playbook validation."
 }

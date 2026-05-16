@@ -1,0 +1,84 @@
+{
+  "generated_at": "2026-05-14",
+  "subject": {
+    "name": "Bill Hyem",
+    "full_name": "William Hyem",
+    "agriprove_email": "william@agriprove.io",
+    "current_email": "bill.hyem@cerestag.com",
+    "mobile": "0428 431 732",
+    "primary_role_at_ap": "Key Account Manager",
+    "earlier_role_at_ap": "Soil Carbon Operations Officer",
+    "current_role": "National Sales Manager, Ceres Tag",
+    "base": "Brisbane, QLD",
+    "tenure_inferred": "Mar 2024 – May 2025 (active in AgriProve outbound), confirmed departed by Dec 2025 ('Scott, Stuart and Bill unfortunately no longer work with AgriProve')"
+  },
+  "hubspot_contacts": [
+    {"id":"118163008068","email":"william@agriprove.io","role":"Key Account Manager","note":"AgriProve identity record, currently owned by owner_id 76812243 (Ben)"},
+    {"id":"173614124530","email":"bill.hyem@cerestag.com","role":"National Sales Manager","note":"Ceres Tag identity"},
+    {"id":"85114502421","email":"admin@kibah.com.au","note":"James Hyem — likely family (Kibah)"}
+  ],
+  "hubspot_deals_tagged_bill_hyem": [
+    {"id":"18117967175","name":"T4T -ALAN DEEN, Bill Hyem,","stage":"163986347","close":"2025-07-23","note":"Bulk closedate suggests batch migration when Bill departed"},
+    {"id":"18117953717","name":"T4T -Fred Bryant, Bill Hyem,","stage":"163986347","close":"2025-07-23"},
+    {"id":"18117677957","name":"T4T -Jack Groat, Bill Hyem,","stage":"163986347","close":"2025-07-23"},
+    {"id":"18106767386","name":"T4T -Dejuan Boyle, Bill Hyem,","stage":"163986347","close":"2025-07-23"},
+    {"id":"18025326217","name":"T4T -Peter Berlyn, Bill Hyem,","stage":"163986347","close":"2025-07-23"},
+    {"id":"18021547788","name":"T4T -Anthony (Tony) Dingle, Bill Hyem,","stage":"163986347","close":"2025-07-23"},
+    {"id":"18021291606","name":"T4T -Adam Gunthorpe, Bill Hyem,","stage":"163986347","close":"2024-07-26"}
+  ],
+  "outlook_sent_signal": {
+    "as_william_at_agriprove": [
+      {"date":"2024-03-21","subject":"RE: AgriProve - Tags for Tonnes and Skye Demonstration site opportunity","signature_role":"Soil Carbon Operations Officer"},
+      {"date":"2024-03-25","subject":"AgriProve - Tags for Tonnes and Skye Demonstration site opportunity","note":"Brings prospect 'up to speed across T4T and the demonstration site discussion'"},
+      {"date":"2024-03-28","subject":"RE: Update; Meril 3 Stage 3 Round 2 grant application Re: Next steps Re: Digitally enhanced grazing management implementation deck and Future Feed meeting notes","note":"Long substantive follow-up referencing T4T, Skye, grant work"},
+      {"date":"2024-04-01","subject":"FW: Next steps Re: Digitally enhanced grazing management demonstration site","note":"Loops Dylan back into chains he was dropped from"},
+      {"date":"2024-04-05","subject":"AgriProve - Digitally Enhanced Grazing Management Landscape","note":"Vision pitch following Easter long weekend — substantive long-form"},
+      {"date":"2024-04-08","subject":"Future Feeds Information Deck","note":"Follow-up to Matthew's prior call, info deck attached"},
+      {"date":"2024-04-11","subject":"FW: Pardoo Beef Corporation Soil Carbon Scoping Study Questions","signature_role":"Soil Carbon Operations Officer"},
+      {"date":"2024-04-19","subject":"Carbon Ready Report for review","note":"Contributes to product — 'develop out a Carbon Ready Report that will give clarity to the landholder on what their project looks like'"},
+      {"date":"2024-04-19","subject":"RE: Carbon Ready Report for review","quote":"Please use this version. SharePoint is killing me."},
+      {"date":"2024-04-24","subject":"AgriProve - Responses to Pardoo Beef Corporation Soil Carbon Scoping Study Questions","note":"Substantive 'thank you for your patience' response with attached scoping study answers — strategic-account artifact"},
+      {"date":"2024-05-04","subject":"Are you heading to Beef Week? Visit AgriProve at site T24 in the Tech Yards and Innovation Hub","note":"HubSpot marketing send via Bill's identity"},
+      {"date":"2024-05-30","subject":"Re: Introduction to Bill our QLD expert","quote":"Thank you for the introduction Dylan. Hi Jeff, Great to be in touch and I look forward to reviewing your properties opportunity with you, and answering any questions you have."},
+      {"date":"2024-05-30","subject":"RE: AgriProve webinar - getting you carbon ready","quote":"Nice work!! I'll get to it this arvo."},
+      {"date":"2024-06-13","subject":"FW: AgriProve information - discover your soil carbon opportunity","quote":"Got a really interested bloke here. Tom Webster, 6000Ha at Bathurst. Had a fantastic hour-long chat and his enquiry was sparked by tags."},
+      {"date":"2024-06-14","subject":"Tags for tonnes information","quote":"Great question! It sounds like it would be worth a further conversation to understand how AgriProve maximises the value of Ceres Tags on farm for our producers."},
+      {"date":"2024-06-19","subject":"RE: Introducing Bill Hyem - soil carbon project expert","quote":"Thanks for the flattering introduction, Dylan. Hi Derek, Great to be introduced, I am looking forward to catching up and continuing discussions."},
+      {"date":"2024-08-06","subject":"RE: Real or Unreal projects - reconciling the numbers","note":"Analytical contribution to data-quality review"},
+      {"date":"2024-08-24","subject":"Enquiries outside of Growth remit","quote":"The below is another example of an enquiry outside of Growth's core function. It would be great to have a course of action for enquiries of this nature so that AgriProve...","note":"Process-improvement push for systematic intake routing"},
+      {"date":"2024-10-15","subject":"Tags for Tonnes pricing update","note":"Circulates updated T4T pricing to internal Growth team"},
+      {"date":"2024-12-10","subject":"Reef Credits - Grazing Land Management Method","quote":"Following up from our messages yesterday and your conversation with Dylan, I wanted to let you know a little bit more about the Reef Credit methodology - Grazing Land..."},
+      {"date":"2025-04-15","subject":"Accepted: Ready Graze and Ceres Tag training","note":"Still on AP calendar post-tenure-shift — possibly transition period"},
+      {"date":"2025-05-30","subject":"AgriProve team introduction for CERES TAG purchase discussion","note":"Refers inbound AP enquiry to Ceres Tag — uses old AP email"}
+    ],
+    "as_bill_at_cerestag": [
+      {"date":"2025-06-23","subject":"RE: Ceres Tag connection to Ready Graze","note":"Coordinating tag-connection on his dad's property + Jean's"},
+      {"date":"2025-06-26","subject":"AgriProve Introduction","note":"Refers Rod (landholder) to AgriProve — 'I can confirm the ability to geolocated occurs only with each data packet (approx. every 6hrs)'"},
+      {"date":"2025-08-05","subject":"Insights using AgriProve Platform","quote":"Check out some of the insights coming through. Happy to do some collabs with AP, just say the word."}
+    ]
+  },
+  "confluence_hits": [
+    {"id":"327680001","title":"25Q4 - Method Stacking Pilot - EOI Tracking & Onboarding Flow","note":"Substantive 2025-12 page that references Bill Hyem — context: AgriProve+Verterra Carbon Method Stacking pilot"},
+    {"note":"3 other hits are Ben Payne Aircall transcripts where 'william@agriprove' surfaces as metadata only"}
+  ],
+  "external_signal": {
+    "still_referring_post_departure": [
+      {"context":"Rod (June 2025)","note":"Bill at Ceres Tag connected Rod to AgriProve — Bill's network keeps producing referrals for AP even after he left"},
+      {"context":"Monica @ Pardoo Wagyu (Aug 2025)","note":"Bill cc'd into AP intro with Monica — historical relationship reactivated"},
+      {"context":"Mark (May 2025)","note":"'Thank you for calling through to AgriProve just now, it was great to chat' — Bill at AP fielding inbound + routing to team"}
+    ]
+  },
+  "explicit_position_in_team": {
+    "exit_acknowledgement":"Dylan email 2025-12-08: 'Scott, Stuart, and Bill unfortunately no longer work with AgriProve'",
+    "current_relationship":"Ceres Tag partner — Ceres Tag x AgriProve recurring meeting series, Bill is the Ceres Tag relationship lead",
+    "intro_framing_used_by_dylan":"'soil carbon project expert' / 'our QLD expert'"
+  },
+  "limits_of_this_corpus": [
+    "HubSpot deal engagement notes (per-deal call/note timelines) not yet pulled — that would surface specific call recordings + dial cadences",
+    "Teams channel history (Operation Stormboy + other channels) where Bill posted — not yet pulled",
+    "Aircall recordings: Bill predates the Confluence-Aircall sync (which routes to Bens/Hobbs's mailbox), so no transcripts on file",
+    "Granola: he left before Granola adoption, no direct meeting transcripts",
+    "HubSpot owner history: his old owner_id was reassigned (now points to other reps), so old deal ownerships are not recoverable through owner_id",
+    "Brisbane operations / QLD account list: a fuller list of deals he carried before T4T-tagging would require historical HubSpot reports outside MCP scope"
+  ]
+}

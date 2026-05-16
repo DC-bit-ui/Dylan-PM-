@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LawrieCo learnings — experiment</title>
+<style>
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; color:#222; background:#fafaf6; }
+  .banner { background:#fff4e0; border-bottom:1px solid #e8d8b8; padding:6px 14px; font-size:12px; color:#705a30; display:flex; align-items:center; gap:10px; }
+  .banner strong { font-weight:700; }
+  .banner a { margin-left:auto; color:#3a6b3a; text-decoration:none; font-weight:600; }
+  .wrap { max-width:1100px; margin:0 auto; padding:24px; }
+  h1 { font-size:24px; margin:0 0 4px; }
+  .sub { color:#666; font-size:13px; margin-bottom:24px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+  .card { background:#fff; border:1px solid #e0e0d4; border-radius:6px; padding:16px; }
+  .card h2 { font-size:14px; margin:0 0 12px; text-transform:uppercase; letter-spacing:0.5px; color:#555; }
+  .stat { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #f0f0e8; font-size:14px; }
+  .stat:last-child { border-bottom:none; }
+  .stat .label { color:#666; }
+  .stat .value { font-weight:600; font-family:'SF Mono',Menlo,monospace; }
+  .delta-card { background:linear-gradient(180deg,#f7fcf7 0%,#fff 100%); border-left:4px solid #3a6b3a; }
+  .delta-card .stat .value { color:#3a6b3a; }
+  .stage-bar { display:flex; height:24px; border-radius:3px; overflow:hidden; margin-top:8px; background:#f0f0e8; font-size:11px; }
+  .stage-seg { display:flex; align-items:center; justify-content:center; color:#fff; min-width:1px; }
+  .stage-legend { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; font-size:11px; color:#666; }
+  .stage-legend span { display:inline-flex; align-items:center; gap:4px; }
+  .stage-legend .dot { width:8px; height:8px; border-radius:50%; }
+  .narrative { background:#fff; border:1px solid #e0e0d4; border-radius:6px; padding:16px 20px; margin-bottom:24px; line-height:1.55; font-size:14px; }
+  .narrative h2 { font-size:14px; margin:0 0 12px; text-transform:uppercase; letter-spacing:0.5px; color:#555; }
+  .narrative p { margin:8px 0; }
+  .narrative ul { margin:6px 0 12px 0; padding-left:20px; }
+  .narrative li { margin:4px 0; }
+  .narrative .q { background:#fffbe8; padding:10px 14px; border-radius:4px; border-left:3px solid #d4a82a; margin:12px 0; font-style:italic; }
+  .loading { text-align:center; padding:40px; color:#888; }
+  .err { background:#fef2f0; border:1px solid #f8c8c0; color:#8a3024; padding:12px 16px; border-radius:6px; }
+  .ftn { font-size:11px; color:#999; margin-top:24px; }
+</style>
+</head>
+<body>
+<div class="banner"><strong>v2 · experiment</strong><span>LawrieCo learnings — partner vs direct comparison</span><a href="/v2">&larr; v2 home</a></div>
+<div class="wrap">
+  <h1>LawrieCo learnings</h1>
+  <div class="sub">Live HubSpot. <span id="gen">…</span></div>
+
+  <div id="content"><div class="loading">Pulling live HubSpot data… this takes a few seconds.</div></div>
+
+  <div class="ftn">
+    Direct cohort = all deals with no <code>partner</code> property set. Includes Stormboy outreach, legacy, and inbound.
+    Win rate (terminal) = closed_won / (closed_won + closed_lost); ignores in-flight deals.
+    Win rate (total) = closed_won / total.
+  </div>
+</div>
+
+<script>
+const STAGE_COLOURS = {
+  '64066367':   '#c6d4c4',
+  '2929183214': '#b6c8b4',
+  '64066368':   '#a0b89e',
+  '64066369':   '#84a382',
+  '1026535686': '#5e8a5c',
+  '231921676':  '#3a6b3a',
+  'closedlost': '#a64545',
+};
+
+async function load() {
+  try {
+    const res = await fetch('/api/experiments/lawrieco');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    render(data);
+  } catch (e) {
+    document.getElementById('content').innerHTML =
+      '<div class="err">Experiment endpoint failed: ' + e.message + '</div>';
+  }
+}
+
+function fmtPct(x, digits) {
+  if (x === null || x === undefined) return '—';
+  return (x * 100).toFixed(digits === undefined ? 1 : digits) + '%';
+}
+function fmtPp(x) {
+  if (x === null || x === undefined) return '—';
+  return (x > 0 ? '+' : '') + x.toFixed(1) + ' pp';
+}
+function fmtDays(x) {
+  if (x === null || x === undefined) return '—';
+  return Math.round(x) + ' days';
+}
+function fmtDayDelta(x) {
+  if (x === null || x === undefined) return '—';
+  return (x > 0 ? '+' : '') + Math.round(x) + ' days';
+}
+
+function stageBar(stages, total) {
+  if (!total) return '';
+  const segs = stages.filter(s => s.count > 0).map(s => {
+    const w = (s.count / total) * 100;
+    return '<div class="stage-seg" style="width:' + w + '%;background:' + STAGE_COLOURS[s.stage_id] + '" title="' + s.stage_name + ': ' + s.count + ' (' + (w).toFixed(1) + '%)">' + (w > 6 ? s.count : '') + '</div>';
+  }).join('');
+  return '<div class="stage-bar">' + segs + '</div>';
+}
+
+function legend(stages) {
+  return '<div class="stage-legend">' + stages.filter(s => s.count > 0).map(s =>
+    '<span><span class="dot" style="background:' + STAGE_COLOURS[s.stage_id] + '"></span>' + s.stage_name + ' (' + s.count + ')</span>'
+  ).join('') + '</div>';
+}
+
+function cohortCard(label, c) {
+  return `
+    <div class="card">
+      <h2>${label}</h2>
+      <div class="stat"><span class="label">Total deals</span><span class="value">${c.total}</span></div>
+      <div class="stat"><span class="label">Closed Won</span><span class="value">${c.closed_won}</span></div>
+      <div class="stat"><span class="label">Closed Lost</span><span class="value">${c.closed_lost}</span></div>
+      <div class="stat"><span class="label">In flight</span><span class="value">${c.in_flight}</span></div>
+      <div class="stat"><span class="label">Win rate (terminal)</span><span class="value">${fmtPct(c.win_rate_terminal)}</span></div>
+      <div class="stat"><span class="label">Win rate (total)</span><span class="value">${fmtPct(c.win_rate_total)}</span></div>
+      <div class="stat"><span class="label">Median time to close</span><span class="value">${fmtDays(c.time_to_close_days.median)} <span style="color:#888;font-weight:400">(n=${c.time_to_close_days.n})</span></span></div>
+      ${stageBar(c.stage_distribution, c.total)}
+      ${legend(c.stage_distribution)}
+    </div>`;
+}
+
+function render(d) {
+  document.getElementById('gen').textContent =
+    'Generated ' + new Date(d.generated_at).toLocaleString() + '.';
+
+  const lawrie = d.cohorts.lawrieco;
+  const direct = d.cohorts.direct;
+  const dlt = d.deltas;
+
+  const wrTermMult = direct.win_rate_terminal ? (lawrie.win_rate_terminal / direct.win_rate_terminal) : null;
+  const ttcMult = direct.time_to_close_days.median ? (lawrie.time_to_close_days.median / direct.time_to_close_days.median) : null;
+
+  document.getElementById('content').innerHTML = `
+    <div class="grid">
+      ${cohortCard(lawrie.label, lawrie)}
+      ${cohortCard(direct.label, direct)}
+    </div>
+
+    <div class="card delta-card">
+      <h2>Deltas (LawrieCo minus Direct)</h2>
+      <div class="stat"><span class="label">Win rate (terminal)</span><span class="value">${fmtPp(dlt.win_rate_terminal_pp)}${wrTermMult ? '  ·  ' + wrTermMult.toFixed(1) + '× direct' : ''}</span></div>
+      <div class="stat"><span class="label">Win rate (total)</span><span class="value">${fmtPp(dlt.win_rate_total_pp)}</span></div>
+      <div class="stat"><span class="label">Median time to close</span><span class="value">${fmtDayDelta(dlt.time_to_close_median_days_delta)}${ttcMult ? '  ·  ' + ttcMult.toFixed(2) + '× direct' : ''}</span></div>
+    </div>
+
+    <div class="narrative">
+      <h2>What the deltas suggest</h2>
+      <p><strong>The partner channel converts at roughly ${wrTermMult ? wrTermMult.toFixed(1) + '×' : '5×'} the rate of direct, and closes in roughly ${ttcMult ? ttcMult.toFixed(2) + '×' : '~0.4×'} the time.</strong> That is a much larger gap than the "3× win rate" reference figure. Two explanations are worth pulling apart before treating the gap as a transferable advantage:</p>
+
+      <ul>
+        <li><strong>Pre-qualification:</strong> Harry at LawrieCo only sends deals he has already warmed. Direct outreach (Stormboy) starts cold. Comparing terminal win rates across these two flows partly compares "qualified prospects" to "the universe."</li>
+        <li><strong>Pipeline hygiene:</strong> ${Math.round((direct.in_flight / direct.total) * 100)}% of direct deals are sitting in-flight. LawrieCo deals reach a terminal state much faster. Some of that gap is real conversion speed; some is direct deals not being marked Closed Lost when they should be.</li>
+      </ul>
+
+      <p>To make the comparison fair, the next pass should constrain the direct cohort to Stormboy-tagged contacts only (excluding legacy + inbound), and look only at deals that reached a Discovery Call or later (matching where LawrieCo deals enter the pipeline).</p>
+
+      <div class="q">The question this surfaces: <strong>what is the qualification step Harry does before sending a deal that, if reproduced inside the Stormboy motion, would lift the direct win rate?</strong> The answer is probably interview-shaped, not data-shaped: ask Will and Harry directly.</div>
+
+      <h2 style="margin-top:20px">What to ask in the next session with Harry / Will</h2>
+      <ul>
+        <li>What does a deal look like at the moment Harry decides to send it? What information does Harry have about the landholder before pitching AgriProve to them?</li>
+        <li>How long does the relationship between Harry and a LawrieCo landholder typically pre-date the AgriProve introduction?</li>
+        <li>Of the 3 LawrieCo deals that closed lost, what went wrong? Is the pattern different from the 222 direct closed-lost deals?</li>
+        <li>What does Will say differently in a LawrieCo conversation than in a Stormboy conversation? Same person, same product — what shifts?</li>
+      </ul>
+    </div>
+  `;
+}
+
+load();
+</script>
+</body>
+</html>

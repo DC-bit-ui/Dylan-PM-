@@ -1,8 +1,13 @@
 /**
  * Shared Growth Memory bus client.
  *
- * Reads + writes to C:\Dylan PM\shared-growth-memory\ — the substrate
+ * Reads + writes to the shared-growth-memory/ folder — the substrate
  * both this dashboard and Claudia's Claude Code tool consume.
+ *
+ * Storage topology: the folder is intended to live in a SharePoint location
+ * that OneDrive syncs to both Dylan's and Claudia's machines, so writes by
+ * one tool become readable by the other. Set BUS_PATH in .env to point at
+ * the synced location; falls back to the local dev path if unset.
  *
  * Contract: shared-growth-memory/README.md
  * Schemas:  shared-growth-memory/schemas/*.md
@@ -13,7 +18,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BUS_ROOT = path.join('C:', 'Dylan PM', 'shared-growth-memory');
+const BUS_ROOT = process.env.BUS_PATH || path.join('C:', 'Dylan PM', 'shared-growth-memory');
 const PATTERNS_DIR = path.join(BUS_ROOT, 'patterns');
 const PROBE_OUTCOMES_DIR = path.join(BUS_ROOT, 'probe-outcomes');
 const DEAL_SIGNALS_DIR = path.join(BUS_ROOT, 'deal-signals');

@@ -1,0 +1,93 @@
+{
+  "264733101515": {
+    "cached_for_closedate": "2026-05-12T05:11:24.173Z",
+    "analysis": {
+      "one_line_why": "Georgie Millard became the engaged point of contact after initial outreach, and a structured two-step process (Land Management Strategy call followed by Carbon Project Plan call) moved them from exploratory to commercial terms in 4 weeks.",
+      "replicable_pattern": [
+        "Identify and activate a responsive secondary contact (Georgie) when primary contact (Will) is less immediately available — she answered inbound calls and became the engagement driver.",
+        "Use a sequenced call strategy: first call focuses on land/farm understanding and intent (April 15 Land Management Strategy call), second call (May 8) closes on commercial terms and project specifics — this creates natural progression from discovery to decision.",
+        "Maintain persistent but low-friction contact: two call attempts on April 8, successful connection on April 15, then structured meetings on April 15, 16 to gather details and proposals before final commercial call on May 8."
+      ],
+      "key_moment": "The April 15 Land Management Strategy call with Georgie Millard appears to be the pivot — it was the first successful structured conversation where AgriProve moved from initial outreach to documented farm/strategy assessment, enabling the proposal work (April 15–16) that preceded the commercial close call.",
+      "confidence": "moderate — the timeline shows a clear engagement progression and closure, but doesn't explicitly reveal what was said or why they decided to close on May 8. The sequence itself (responsive contact + structured discovery + proposal + commercial terms) is replicable, but the actual conversion drivers (pricing, terms, farm fit, soil carbon potential) aren't visible in the records.",
+      "generated_at": "2026-05-14T09:54:26.722Z",
+      "n_engagements_used": 8
+    }
+  },
+  "247673490884": {
+    "cached_for_closedate": "2026-05-06T23:46:41.662Z",
+    "analysis": {
+      "one_line_why": "Timeline is too sparse to identify the actual closing mechanism — we see a soil test dependency in March and one unanswered outbound call days before close, but no engagement record showing how the deal moved from waiting on results to signed.",
+      "replicable_pattern": [
+        "Soil testing appears to be a gate in the enrollment process — ensure test results are tracked and triggered as a follow-up trigger",
+        "LawrieCo is the channel; leverage this relationship for next similar prospects in the region",
+        "Outbound calling (Dylan Jones to Bruce Ohlmeyer) occurred in final week — consider whether this was a closure call, but the 'unanswered' status is ambiguous"
+      ],
+      "key_moment": "No clear inflection visible; the gap between the March soil-test waiting period and the May 5 unanswered call obscures what actually moved the deal forward.",
+      "confidence": "low",
+      "generated_at": "2026-05-14T09:54:34.508Z",
+      "n_engagements_used": 2
+    }
+  },
+  "186050120174": {
+    "cached_for_closedate": "2026-05-05T00:01:44.076Z",
+    "analysis": {
+      "one_line_why": "Brendan's specific soil knowledge (boron deficiency identification) and decades of agronomic experience managing the region's farms created confidence in the project viability, combined with LawrieCo's trusted intermediary role allowing proper pacing through a complex multi-property consolidation.",
+      "replicable_pattern": [
+        "Leverage trusted channel partners (LawrieCo) to manage complex deals where the landowner is time-constrained; let them set the communication cadence rather than pushing directly",
+        "Identify and validate landowner's existing agronomic expertise and soil knowledge early — this builds internal conviction and reduces perceived risk in project design",
+        "Structure follow-ups around specific, actionable contract modifications (100-year term request) rather than generic check-ins; show responsiveness to their stated needs",
+        "Sequence title/ownership clarity conversations before final enrollment — Brendan's three properties and title transfer timelines required explicit documentation to move forward"
+      ],
+      "key_moment": "2024-10-28 note from Harry Clark (LawrieCo) advising AgriProve to step back and let LawrieCo manage the relationship while Brendan was busy — this enabled trust-building without pressure fatigue.",
+      "confidence": "moderate — the timeline shows strong signals (trusted intermediary, agronomic credibility, contract customization) but lacks explicit closing conversations. The final 2+ months before close (post-March 2026 call) are undocumented, so the immediate closing catalyst is unclear.",
+      "generated_at": "2026-05-14T09:54:41.469Z",
+      "n_engagements_used": 8
+    }
+  },
+  "248596297166": {
+    "cached_for_closedate": "2026-04-20T00:23:59.756Z",
+    "analysis": {
+      "one_line_why": "Persistent outbound calling by Ben Payne (March through April) re-engaged Jonathan Harpley, culminating in a structured playbook submission (Apr 15-16) and final approval call (Apr 20).",
+      "replicable_pattern": [
+        "Multiple touch attempts over 5+ weeks via the same rep (Ben Payne) — not one-off contact",
+        "Escalation from calls to structured data collection (playbook with operator/landowner details) forcing commitment to specifics",
+        "Final approval meeting scheduled immediately after playbook completion, creating momentum into close"
+      ],
+      "key_moment": "April 14-15 cluster of calls and playbook completion — after 5 weeks of dormancy since the March 10 call, Ben Payne made 3 calls in 48 hours and Jonathan submitted the required project proposal playbook, signaling readiness to formalize.",
+      "confidence": "moderate — the timeline shows clear rep persistence and structured process escalation, but contains no explicit conversation content or blocker resolution notes. The playbook entries (Apr 15-16) suggest internal qualification work rather than client-facing breakthroughs. No email exchanges or objection handling visible.",
+      "generated_at": "2026-05-14T09:54:47.817Z",
+      "n_engagements_used": 8
+    }
+  },
+  "173409589736": {
+    "cached_for_closedate": "2026-03-31T06:58:17.038Z",
+    "analysis": {
+      "one_line_why": "Insufficient timeline data — only deal creation and a single initial proposal meeting from day one are recorded; the 151-day closure process is entirely undocumented.",
+      "replicable_pattern": [
+        "Cannot identify replicable pattern — no engagement activities logged between initial meeting (2025-10-31) and close (2026-03-31)",
+        "No follow-up calls, emails, objection handling, or milestone progression visible in timeline",
+        "No indication of what happened during the 5-month gap between proposal and registration"
+      ],
+      "key_moment": "no clear inflection visible — the single recorded meeting on day one references a proposal playbook touchpoint but provides no insight into what drove eventual closure",
+      "confidence": "low — the timeline is functionally a dead end. The deal was created, a proposal meeting occurred on day one, and then nothing is logged until closure 151 days later. Either the CRM wasn't used to track this deal's progression, or critical engagement records are missing. Cannot responsibly identify why D&R Marciano closed without the middle 5 months of activity.",
+      "generated_at": "2026-05-14T09:54:53.141Z",
+      "n_engagements_used": 4
+    }
+  },
+  "186974841297": {
+    "cached_for_closedate": "2026-03-27T01:22:24.779Z",
+    "analysis": {
+      "one_line_why": "Cannot determine from timeline — no engagement events recorded after deal creation.",
+      "replicable_pattern": [
+        "No actionable pattern available — timeline contains only empty note placeholders with no body text or engagement details",
+        "Deal was sourced via LawrieCo channel, suggesting referral/partner channel may warrant investigation separately",
+        "130-day sales cycle and full 440 ha enrollment suggest deal was viable, but mechanism is not visible in this record"
+      ],
+      "key_moment": "no clear inflection visible",
+      "confidence": "low",
+      "generated_at": "2026-05-14T10:14:09.068Z",
+      "n_engagements_used": 5
+    }
+  }
+}

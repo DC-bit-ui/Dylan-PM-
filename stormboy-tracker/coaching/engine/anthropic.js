@@ -19,12 +19,16 @@ const MODELS = {
  * Call Claude with a prompt; expect strict JSON back.
  * @param {object} opts
  * @param {string} opts.model — 'haiku' | 'sonnet' | 'opus'
- * @param {string} opts.system — system prompt (the contract / role)
- * @param {string} opts.user — user message (the data + task)
+ * @param {string|Array} opts.system — system prompt. String OR array of content blocks
+ *                                     (use array form to set cache_control: { type: 'ephemeral' }
+ *                                      on large reusable context blocks for prompt caching).
+ * @param {string} [opts.user] — single user message (if messages not provided)
+ * @param {Array}  [opts.messages] — full conversation: [{role:'user'|'assistant', content:'...'}]
+ *                                   takes precedence over `user` when present.
  * @param {number} [opts.maxTokens=4096]
  * @returns {Promise<object>} parsed JSON
  */
-async function callJson({ model, system, user, maxTokens = 4096 }) {
+async function callJson({ model, system, user, messages, maxTokens = 4096 }) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY not configured');
   const modelId = MODELS[model] || model;
@@ -33,7 +37,7 @@ async function callJson({ model, system, user, maxTokens = 4096 }) {
     model: modelId,
     max_tokens: maxTokens,
     system,
-    messages: [{ role: 'user', content: user }]
+    messages: messages || [{ role: 'user', content: user }]
   };
 
   const resp = await fetch(ANTHROPIC_URL, {
@@ -55,13 +59,47 @@ async function callJson({ model, system, user, maxTokens = 4096 }) {
   const text = data.content && data.content[0] ? data.content[0].text : '';
 
   // Strip Markdown code-block fences if the model wraps JSON in ```json
-  const cleaned = text.trim().replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
+  let cleaned = text.trim().replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
 
+  // Try strict parse first
   try {
     return JSON.parse(cleaned);
-  } catch (e) {
-    throw new Error(`Failed to parse JSON response: ${e.message}\nResponse: ${cleaned.slice(0, 500)}`);
+  } catch (_) {
+    // Fall through to extraction
   }
+
+  // Extract the first balanced JSON object from the text. Handles models that
+  // append prose after the JSON block (common with stricter instruction sets).
+  const start = cleaned.indexOf('{');
+  if (start === -1) {
+    throw new Error(`Failed to parse JSON response: no '{' found.\nResponse: ${cleaned.slice(0, 500)}`);
+  }
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  for (let i = start; i < cleaned.length; i++) {
+    const ch = cleaned[i];
+    if (inString) {
+      if (escape) { escape = false; continue; }
+      if (ch === '\\') { escape = true; continue; }
+      if (ch === '"') { inString = false; continue; }
+    } else {
+      if (ch === '"') { inString = true; continue; }
+      if (ch === '{') depth++;
+      else if (ch === '}') {
+        depth--;
+        if (depth === 0) {
+          const block = cleaned.slice(start, i + 1);
+          try {
+            return JSON.parse(block);
+          } catch (e) {
+            throw new Error(`Failed to parse JSON response: ${e.message}\nExtracted: ${block.slice(0, 500)}`);
+          }
+        }
+      }
+    }
+  }
+  throw new Error(`Failed to parse JSON response: unbalanced braces.\nResponse: ${cleaned.slice(0, 500)}`);
 }
 
 /**

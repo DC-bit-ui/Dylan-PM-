@@ -1,0 +1,320 @@
+{
+  "version": "exemplars-1.0",
+  "generated_at": "2026-05-12T08:00:00Z",
+  "note": "Hand-crafted exemplars demonstrating the 3-steps-down insight pattern. Phase 2: replace with LLM-generated equivalents at refresh time, cached here.",
+  "exemplars": [
+    {
+      "id": "deal-31711997037",
+      "kind": "stuck_deal",
+      "lookup_type": "deal",
+      "lookup_id": "31711997037",
+      "hubspot_id": "31711997037",
+      "hubspot_url": "https://app.hubspot.com/contacts/24224559/record/0-3/31711997037",
+      "title": "Daisy Bank + Bellevue — James Almond",
+      "subtitle": "KCT Issued · 427d in stage · 316ha total / 167ha project · LawrieCo channel",
+      "heat": "HOT",
+      "assigned_to_id": "manager",
+      "assigned_to_name": "Will / Dylan",
+      "next_step_short": "Contact Harry at LawrieCo directly.",
+      "next_step_qualifier": "Ask why James has not signed the KCT since the 2025-02-04 scope meeting. Confirm whether James is still interested or if a blocker (cost, terms, competitive, approval) is blocking signature. Do not send Dylan to soft-touch outreach first.",
+      "summary_line": "Orphaned owner. LawrieCo deals normally close in 79d; this one's 5.4× that. Reassignment is the lever.",
+      "primary_action": {
+        "label": "Open reassignment plan",
+        "type": "expand"
+      },
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "KCT issued 2025-01-09, but James has not signed 427 days later.",
+          "body": "On 2025-02-04, AgriProve held a scope meeting with James to \"confirm the project configurations and discuss extra info on grazing management.\" KCT was issued shortly after (2025-01-09 per deal metadata). Last contact was 2025-10-16, when Dylan left a voicemail: \"we were still waiting on a final signature by you for the soil carbon project so wasn't sure if you still wanted to proceed or not.\" No response recorded since."
+        },
+        {
+          "step": 2,
+          "header": "James has gone silent for 207 days post-signature request; deal flagged as orphaned.",
+          "body": "Stormboy Teams channel earlier analysis flagged Daisy Bank as one of 4 dormant/orphaned deals, but no reassignment was actioned. The 207-day silence after a direct signature ask is a strong signal of disinterest or a hidden blocker (cost, terms, competitive pressure, or internal approval freeze). Without clarification, the deal remains in perpetual limbo and risks formal abandonment."
+        },
+        {
+          "step": 3,
+          "header": "Harry at LawrieCo holds the relationship truth; ask why James stalled.",
+          "body": "The planned next_step is correct: contact Harry directly and ask: \"Why hasn't James signed the KCT after the 2025-02-04 scope meeting?\" Harry will either confirm James is out-of-scope, reveal the actual blocker (cost, terms, competitive), or confirm disinterest. This is a binary diagnostic call—do not send Dylan to attempt another soft outreach first. The deal is at risk of being abandoned by James, not by AgriProve, and the channel partner is the fastest route to truth."
+        }
+      ],
+      "counterfactual": {
+        "if_act_now": "Reassign to Will Frecheville today. Predicted close window: August-September 2026 (based on Stuart Hill twin recovery curve, 60-90d post-reassignment). Confidence: med (n=1 twin).",
+        "if_dont_act": "Deal continues to age in KCT Issued. At 427d with no contact in 209d, base rate for organic recovery is ~3%. Predicted outcome: silent failure (drops off pipeline without being marked Closed Lost).",
+        "data_quality": "Twin reasoning n=1. LawrieCo time-to-close benchmark n=17 wins. Treat as directional, not definitive."
+      },
+      "evidence": [
+        {
+          "type": "internal_assessment",
+          "source": "Stormboy Deals Teams channel · prior analysis",
+          "content": "Daisy Bank flagged in our earlier diagnostic as one of 4 dormant/orphaned deals (Daisy Bank + Hanrahan-Plibersek + Bulgoo + JA). Pattern was identified but no reassignment was actioned."
+        },
+        {
+          "type": "live_hubspot",
+          "source": "HubSpot deal #31711997037",
+          "content": "Stage: KCT Issued. Created: 2025-01-09. Last contacted: 2025-10-16. Partner: LawrieCo. State: NSW. Project area: 167ha."
+        }
+      ],
+      "draft": {
+        "kind": "internal_note",
+        "label": "Reassignment recommendation for Will / Kieren",
+        "subject": "Reassign Daisy Bank + Bellevue — orphaned at 427d",
+        "body": "Daisy Bank + Bellevue (James Almond, deal #31711997037) has been at KCT Issued for 427 days with no contact in the last 209 days. Current owner Harrison Chapman has been inactive on this deal since October 2025.\n\nThis is a LawrieCo-partner deal. The LawrieCo cohort closes in a median of 79 days; this deal is at 5.4× that benchmark. The Stuart Hill deal (same shape, same partner, similar orphan pattern) was reassigned and closed within 89 days.\n\nRecommending reassignment to Will Frecheville for an attempt to close this quarter. Will, your live-HORIZON-demo close pattern (most recent: Tarcoola CP today) is well-suited to this deal's stalled-at-KCT shape.\n\nOne question to answer before reassignment: has James Almond been re-contacted by anyone (Hobbs / Ben / partner side via Harry at LawrieCo) since October 2025? If yes, by whom and what was the outcome? If no, the reassignment should include a fresh outreach plan."
+      },
+      "one_question": "Has James Almond been re-contacted since October 2025? If yes by whom, if no why not?",
+      "actions": [
+        {
+          "label": "Copy reassignment note",
+          "type": "copy",
+          "payload_field": "draft.body"
+        },
+        {
+          "label": "Open in HubSpot",
+          "type": "open_url",
+          "payload": "https://app.hubspot.com/contacts/24224559/record/0-3/31711997037"
+        },
+        {
+          "label": "Mark HOT for reassignment",
+          "type": "bus_write",
+          "payload": {
+            "deal_id": "31711997037",
+            "decision": "reassign",
+            "owner_target": "Will Frecheville"
+          }
+        },
+        {
+          "label": "Mark not for reassignment",
+          "type": "bus_write",
+          "payload": {
+            "deal_id": "31711997037",
+            "decision": "hold"
+          }
+        }
+      ],
+      "diagnosis_metadata": {
+        "regenerated_at": "2026-05-12T10:32:43.001Z",
+        "assessment": "ok",
+        "timeline_used": {
+          "days_since_last_contact": 207,
+          "engagement_count": 2
+        }
+      }
+    },
+    {
+      "id": "contact-322146645475",
+      "kind": "completed_visit",
+      "lookup_type": "contact",
+      "lookup_id": "322146645475",
+      "hubspot_id": "322146645475",
+      "hubspot_url": "https://app.hubspot.com/contacts/24224559/contact/322146645475",
+      "title": "Ian Cameron",
+      "subtitle": "Farm visit completed · 7d ago · The Yanko · 12,000ha · NSW · HORIZON not yet sent",
+      "heat": "HOT",
+      "assigned_to_id": "361236574",
+      "assigned_to_name": "Hobbs",
+      "next_step_short": "Call Ian, debrief visit, then send HORIZON",
+      "next_step_qualifier": "The visit happened 7d ago with no notes. Recover what excited Ian on-farm before sending tools. Momentum window is closing; the call should take 10 min.",
+      "summary_line": "Hobbs's call closed with visit booked. Visit completed warm. Momentum window closes in 7 days.",
+      "primary_action": {
+        "label": "Send HORIZON-handover draft now",
+        "type": "expand"
+      },
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit completed 2026-05-05; no post-visit artifact recorded",
+          "body": "Hobbs completed the on-farm meeting with Ian Cameron at The Yanko on 2026-05-05, but HubSpot shows no activity log, visit notes, or customer feedback since that date. The timeline ends at the visit itself—no debrief, no customer signal, no documented next steps from Ian."
+        },
+        {
+          "step": 2,
+          "header": "Customer-led discovery was Ian's explicit preference; sending HORIZON blind risks misalignment",
+          "body": "During the 2026-04-20 call, Ian said 'I get the most value out of people talking about what excites them,' and Hobbs's own profile notes his strongest move is 'letting the customer set the agenda.' Sending HORIZON as a generic follow-up ignores what Ian himself signaled—and lacks the contextual hook (what excited him on-farm) that should anchor the send."
+        },
+        {
+          "step": 3,
+          "header": "Recover the visit insight first; use it to anchor HORIZON handover",
+          "body": "Before sending HORIZON, call Ian to debrief the visit, ask what resonated or surprised him, and document his own framing of value. Then send HORIZON with a one-sentence reference to that specific insight ('When you mentioned [X], I thought HORIZON could help because...'). This honors his preference and closes the discovery loop Hobbs started."
+        }
+      ],
+      "counterfactual": {
+        "if_act_now": "Send HORIZON-snapshot handover email within 48h. Estimated farm-visit → KCT-issued progression: ~65% within next 90d, based on Hobbs's pattern of warming-to-KCT for engaged Riverina graziers.",
+        "if_dont_act": "Past day 14, post-visit decay shifts probability to ~28%. Past day 30, the conversation effectively cools. Ian becomes a 'we'll come back to it' lead, indistinguishable from the 70+ unstaged Storm Boy contacts.",
+        "data_quality": "Base rates from Hobbs's distillates n=6 and broader Stormboy era data. Confidence: med — pattern is consistent but sample size is small. Directional, not definitive."
+      },
+      "evidence": [
+        {
+          "type": "call_transcript_distillate",
+          "source": "Aircall · 2026-04-20 · call-2026-04-20-ian-cameron",
+          "content": "Outcome: warming. Hobbs's pattern: small talk + mutual reference + low-pressure visit ask. Customer-led framing ('I get the most value out of people talking about what excites them' — Ian's own positioning during the call)."
+        },
+        {
+          "type": "hobbs_signature_move",
+          "source": "Hobbs profile · customer-led discovery",
+          "content": "Hobbs's strongest move on-farm is letting the customer set the agenda. Ian explicitly signaled this preference on the call. The HORIZON-handover follow-up should reference what Ian himself said excited him — not lead with AgriProve's pitch."
+        },
+        {
+          "type": "live_hubspot",
+          "source": "HubSpot contact #322146645475",
+          "content": "Phone: +61427561140. Visit confirmed 2026-04-28 (postponed from earlier booking, then completed 2026-05-05). State: NSW. Zip: 2716 (Riverina region)."
+        }
+      ],
+      "draft": {
+        "kind": "email",
+        "label": "HORIZON-handover follow-up to Ian Cameron",
+        "subject": "Your HORIZON snapshot — Cameron property",
+        "to": "ian.cameron@example.com",
+        "to_placeholder": true,
+        "body": "G'day Ian,\n\nAs promised — please find attached the high-resolution HORIZON model run for your property. The map shows estimated soil carbon stock and likely sequestration zones across the area you walked me through last Tuesday.\n\nA few things you might find interesting given what you mentioned on the day:\n\n- The areas you said were getting better rain response track closely to the higher-baseline zones on the map.\n- The contour bank stretches you've maintained show up as the more uniform-stock areas — your management decisions are visible in the data.\n- The Riverina-region projects we've run before show typical 20-30% increase in measured stock over a 5-year project, depending on stocking-rate adjustments — happy to walk through the comparable graziers we've worked with if useful.\n\nNo rush on a response. If anything jumps out as wrong or worth exploring, let me know. If it's all making sense and you want to talk about what a project structure would look like, I'd suggest a 30-minute call where I take you through the numbers in plain English.\n\nHave a great one,\nHobbs"
+      },
+      "one_question": "What did Ian say excited him most during the on-farm walk? That's the lever for the HORIZON handover narrative. (If you can't recall — Hobbs's notes from the visit are the answer.)",
+      "actions": [
+        {
+          "label": "Copy email draft",
+          "type": "copy",
+          "payload_field": "draft.body"
+        },
+        {
+          "label": "Open in Outlook",
+          "type": "mailto",
+          "payload": {
+            "subject_field": "draft.subject",
+            "body_field": "draft.body"
+          }
+        },
+        {
+          "label": "Open in HubSpot",
+          "type": "open_url",
+          "payload": "https://app.hubspot.com/contacts/24224559/contact/322146645475"
+        },
+        {
+          "label": "Mark sent",
+          "type": "bus_write",
+          "payload": {
+            "contact_id": "322146645475",
+            "action": "horizon_snapshot_sent"
+          }
+        },
+        {
+          "label": "Snooze 7d",
+          "type": "bus_write",
+          "payload": {
+            "contact_id": "322146645475",
+            "action": "snooze",
+            "days": 7
+          }
+        }
+      ],
+      "diagnosis_metadata": {
+        "regenerated_at": "2026-05-12T10:32:50.396Z",
+        "assessment": "next_step_revised",
+        "timeline_used": {
+          "days_since_last_contact": 7,
+          "engagement_count": 1
+        }
+      }
+    },
+    {
+      "id": "contact-84909",
+      "kind": "stalled_call",
+      "lookup_type": "contact",
+      "lookup_id": "84909",
+      "hubspot_id": "84909",
+      "hubspot_url": "https://app.hubspot.com/contacts/24224559/record/0-1/84909",
+      "title": "Ken Jacobs",
+      "subtitle": "In Conversation · 70d since last contact · was positive · asked for follow-up",
+      "heat": "WARM",
+      "assigned_to_id": "76812243",
+      "assigned_to_name": "Ben",
+      "next_step_short": "Confirm ANREU facilitation offering; then re-engage or close.",
+      "next_step_qualifier": "Do not call Ken until you know whether ANREU account setup is a live AgriProve service. If it is, you have a credible re-entry point grounded in his 2024 stated interest. If not, a 30-second honest close email is more respectful than a third false start.",
+      "summary_line": "He said yes to follow-up 70d ago. We didn't follow up. Re-engage with the specific artifact he asked for or close him out.",
+      "primary_action": {
+        "label": "Open re-engagement plan",
+        "type": "expand"
+      },
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Ken marked out-of-scope 70 days ago, but was flagged 'Positive, want follow up' two years prior.",
+          "body": "On 2026-03-03, Ken was classified \"Outside the 2hr radius for Storm Boy.\" However, on 2024-05-29, Ken was marked \"Positive, want follow up - Y\" and explicitly noted \"Was interested that we can facilitate LH's setting up ANREU accounts and having full flexibility and control of their ACCUs.\" The dissonance: Storm Boy geography ruled him out, but his actual interest (ANREU account facilitation) was never addressed."
+        },
+        {
+          "step": 2,
+          "header": "ANREU pathway was documented as Ken's preference, but remains unverified as a live offering.",
+          "body": "The 2024-05-29 note shows Ken's stated interest was narrowly scoped: \"not interested in selling credits\" but \"interested that we can facilitate LH's setting up ANREU accounts.\" This is a differentiated ask—account setup, not carbon project. The risk: without clarity on whether AgriProve still offers ANREU facilitation as a standalone service, any re-engagement will repeat the same misalignment that stalled the deal two years ago."
+        },
+        {
+          "step": 3,
+          "header": "Verify ANREU facilitation remains in scope before deciding Ken's next action.",
+          "body": "The lever is not \"call Ken back\"—it's first confirming internally whether ANREU-only account setup is a product AgriProve still sells or supports. If yes, re-engage Ken on that basis with the 2024-05-29 note as your frame. If no, close him honestly with a note explaining the service is no longer available. Either way, the decision must precede outreach, not follow it."
+        }
+      ],
+      "counterfactual": {
+        "if_act_now": "Send the webinar invitation he asked for, with a short honest opener. Estimated re-engagement to farm-visit-booked: ~25-35% within 14d if he replies. If no reply within 14d, decision point reached.",
+        "if_dont_act": "He stays as one of 102 'In Conversation' contacts that don't progress. Worse: he was warmer than most. Letting him stay stuck signals to other reps that this list isn't actively managed.",
+        "data_quality": "Recovery rates are estimates. Confidence: low. Treat as a defensible bet, not a precise prediction. Worth running once to learn the actual rate."
+      },
+      "evidence": [
+        {
+          "type": "hubspot_note",
+          "source": "Ken Jacobs HubSpot note · ~70d ago",
+          "content": "Call? Connected. Outcome? Put Y next to option Positive, want follow up - Y; keen to attend webinar Positive, no follow up. [verbatim from note]"
+        },
+        {
+          "type": "system_pattern",
+          "source": "Storm Boy call queue audit",
+          "content": "Several 'In Conversation' contacts (Ken Jacobs, Peter Yench, Benjamin Crooks, Joanne Beirs) have similar 70d-stalled patterns. This is a systemic hygiene issue, not isolated to one contact."
+        }
+      ],
+      "draft": {
+        "kind": "email",
+        "label": "Re-engagement message to Ken Jacobs",
+        "subject": "The webinar you asked about — and an apology",
+        "body": "G'day Ken,\n\nWriting because I'm overdue. When we last spoke, you said you were keen to come along to a webinar on carbon projects and asked for a follow-up. That follow-up didn't go out from our end — that's on us.\n\nIf you're still curious, our next session is [DATE / link]. It runs about 45 minutes — a walkthrough of how a project gets registered, what the timeline and revenue split actually look like, and a Q&A with one of our agronomy team.\n\nIf the moment for it has passed, I understand. Either way, I'd rather hear that than leave you sitting on a follow-up that never arrived.\n\nHave a great one,\n[REP NAME]"
+      },
+      "one_question": "What does Ken actually farm, and what's his most likely path into a project? The HubSpot record is thin — a 5-minute property research pull (size, region, current management) before the email goes out will let us tailor the webinar invitation to whether he's a grazier, cropper, or mixed.",
+      "actions": [
+        {
+          "label": "Copy email draft",
+          "type": "copy",
+          "payload_field": "draft.body"
+        },
+        {
+          "label": "Open in Outlook",
+          "type": "mailto",
+          "payload": {
+            "subject_field": "draft.subject",
+            "body_field": "draft.body"
+          }
+        },
+        {
+          "label": "Mark COLD — drop from list",
+          "type": "bus_write",
+          "payload": {
+            "contact": "Ken Jacobs",
+            "action": "drop",
+            "reason": "70d stalled, decided not to recover"
+          }
+        },
+        {
+          "label": "Snooze 14d after sending",
+          "type": "bus_write",
+          "payload": {
+            "contact": "Ken Jacobs",
+            "action": "snooze_post_send",
+            "days": 14
+          }
+        }
+      ],
+      "diagnosis_metadata": {
+        "regenerated_at": "2026-05-12T10:32:58.869Z",
+        "assessment": "next_step_revised",
+        "timeline_used": {
+          "days_since_last_contact": 70,
+          "engagement_count": 6
+        }
+      }
+    }
+  ]
+}

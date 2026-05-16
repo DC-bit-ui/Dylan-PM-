@@ -1,263 +1,902 @@
 {
   "version": "b2.1",
-  "generated_at": "2026-05-08T04:30:00.000Z",
+  "generated_at": "2026-05-15T02:57:59.407Z",
   "deals": [
     {
+      "version": "b2.1",
       "active_deal": {
         "id": "31711997037",
         "name": "Daisy Bank + Bellevue - James Almond",
         "current_stage": "KCT Issued",
-        "days_in_current_stage": 426,
-        "attribution": "direct"
+        "days_in_current_stage": 430
       },
       "twins": [
         {
-          "deal_id": "40789889068",
-          "deal_name": "Burnham Grazing - Dan Burnham",
+          "deal_id": "31711995442",
+          "deal_name": "Cooeeanna - Nick Pearce",
           "outcome": "won",
           "attribution": "direct",
-          "similarity_basis": "Same stage (KCT Issued), direct channel; reached KCT Issued and stayed there for ~7 months before re-engaging and converting",
-          "what_happened": "Burnham Grazing was at KCT Issued for ~210 days before closing. Win reason recorded: \"Relationship and open minded to adapt to soil carbon project\". The unblock was relational, not procedural — a fresh HORIZON refresh framed around platform changes broke the inertia.",
-          "lesson": "Don't treat zombie KCT deals as terminal. A fresh HORIZON Snapshot + relationship-led re-engagement has converted twins much older than expected."
+          "similarity_basis": "Direct-attribution KCT Process deal; same stage progression to Closed Won.",
+          "what_happened": "Moved KCT Issued → Closed Won in <75 total days. No extended hold-up post-issuance; landholder signed without drift.",
+          "lesson": "Won twins close in weeks, not months. At 430 days in KCT Issued, Daisy Bank + Bellevue has drifted past all won benchmarks—landholder commitment is suspect."
         },
         {
-          "deal_id": "147625095632",
-          "deal_name": "Mount Moon Pastoral - Edward Ohlrich",
+          "deal_id": "37165900308",
+          "deal_name": "Claverley - Jon Gatacre",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct-attribution KCT Process deal; same stage progression to Closed Won.",
+          "what_happened": "KCT Issued → Closed Won in 43 days total. Fastest twin. Landholder was ready pre-issuance; no post-KCT hesitation.",
+          "lesson": "Claverley shows the ideal velocity. Your active deal's 430-day tenure signals KCT was issued to an unprepared or uncommitted party."
+        },
+        {
+          "deal_id": "186974841297",
+          "deal_name": "Windy Ridge Farm - Robert Johnson",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct-attribution KCT Process deal; stage path matches.",
+          "what_happened": "Took 130 days total, longest won twin. Still closed. Slower than Cooeeanna/Claverley but landholder ultimately committed.",
+          "lesson": "Even at 130 days, Windy Ridge won. At 430 days, Daisy Bank + Bellevue is 3.3× beyond the slowest winner—escalation required now."
+        },
+        {
+          "deal_id": "31303293354",
+          "deal_name": "Mallawa - Brenton Sewell",
           "outcome": "lost",
           "attribution": "direct",
-          "similarity_basis": "Direct channel; spent extended time in pipeline before silent attrition",
-          "what_happened": "Mount Moon Pastoral went quiet after early engagement and was closed as \"Cold\" with no formal pushback. Same shape as Daisy Bank if no re-engagement happens.",
-          "lesson": "Without intervention this becomes a Cold loss within weeks. The clock is running."
+          "similarity_basis": "Direct-attribution KCT Process; stalled post-issuance until loss.",
+          "what_happened": "Reached KCT Issued but landholder deferred: 'Not for at least 6 months.' Loss was formalized at 180 days.",
+          "lesson": "Mallawa lost due to timing mismatch, but the loss was confirmed quickly (180 days). Daisy Bank + Bellevue's 430-day drift exceeds even the lost-deal timeline, suggesting no clear 'commit or close' conversation has occurred."
         },
         {
-          "deal_id": "248596297166",
-          "deal_name": "Weatherall CP - Jonathan Harpley",
-          "outcome": "won",
+          "deal_id": "146092130783",
+          "deal_name": "Colorado Cattle - Amanda Mahy",
+          "outcome": "lost",
           "attribution": "direct",
-          "similarity_basis": "Same stage, direct channel; closed Won from KCT Issued",
-          "what_happened": "Weatherall CP progressed through all five stages and closed Won via a rep-led, partner-attended KCT walkthrough.",
-          "lesson": "A rep-led walkthrough with the customer's partner is the move that breaks KCT stalls."
+          "similarity_basis": "Direct-attribution KCT Process; lost to 'Insufficient commitment to implement.'",
+          "what_happened": "Issued KCT but landholder never committed. Loss reason recorded at 238 days. Represents classic post-issuance cold-feet scenario.",
+          "lesson": "Colorado Cattle mirrors Daisy Bank + Bellevue's risk: KCT in hand but no acceptance. Colorado's loss was confirmed at 238 days; yours is at 430—act before further drift."
         }
       ],
-      "synthesis": "Daisy Bank is 35× past the lost-median for this stage. The pattern across twins is binary: re-engage with HORIZON refresh + relationship-led conversation (Burnham path → Won), or it becomes Mount Moon (Cold loss). Status quo is not stable.",
+      "synthesis": "Won deals (Cooeeanna, Claverley, Windy Ridge) closed within 130 days of KCT issuance. Lost deals (Mallawa, Colorado Cattle) either deferred formally or showed insufficient commitment, but both were resolved by day 238. Your active deal is at day 430—beyond all benchmarks. The pattern is clear: either Daisy Bank + Bellevue's landholder is cold and the deal should have been marked lost, or a 'commit or close' intervention was never made. Immediate escalation call is overdue.",
       "next_best_actions": [
         {
-          "action": "Decision call THIS WEEK: generate fresh HORIZON Snapshot, attempt nurture-back outreach, or close lost.",
-          "rationale": "Burnham Grazing pattern converted at this exact age; Mount Moon Pastoral pattern lost. No middle ground after 426 days.",
+          "action": "Schedule a 'commit or close' call with James Almond and the landholder within 48 hours. Agenda: confirm KCT acceptance, resolve blockers, or formally close the deal.",
+          "rationale": "Colorado Cattle (146092130783) lost due to unresolved commitment; it was confirmed lost at 238 days. Daisy Bank + Bellevue is at 430 days with no closure. A direct, time-boxed conversation is the only path forward.",
           "priority": "high"
         },
         {
-          "action": "If re-engaging: book Hobbs for an on-farm visit, snapshot in hand.",
-          "rationale": "On-farm + fresh report is the highest-leverage conversion event for stale deals.",
-          "priority": "high"
-        }
-      ]
-    },
-    {
-      "active_deal": {
-        "id": "41104436568",
-        "name": "Bulgoo Pastoral - Jeremy Pockley",
-        "current_stage": "Strategy Call",
-        "days_in_current_stage": 271,
-        "attribution": "direct"
-      },
-      "twins": [
-        {
-          "deal_id": "40789889068",
-          "deal_name": "Burnham Grazing - Dan Burnham",
-          "outcome": "won",
-          "attribution": "direct",
-          "similarity_basis": "Direct channel; converted from extended Strategy-stall via relationship-led re-engagement",
-          "what_happened": "Burnham Grazing's win reason (\"Relationship and open minded to adapt\") shows the unblock pattern — not a tactical objection-handle, but a fresh framing of \"what's changed\".",
-          "lesson": "Bulgoo at day 271 needs the Burnham-style intervention, not another Strategy Call email."
-        },
-        {
-          "deal_id": "144047802829",
-          "deal_name": "Springfield Carbon Project - John Clayton",
-          "outcome": "lost",
-          "attribution": "direct",
-          "similarity_basis": "Direct channel; comparable Strategy-stage stall closed Lost",
-          "what_happened": "Springfield Carbon Project drifted from Strategy without explicit re-engagement and closed as \"Insufficient commitment to implement\".",
-          "lesson": "Without intervention, Bulgoo follows Springfield."
-        },
-        {
-          "deal_id": "183751836130",
-          "deal_name": "Tumbledown Wagyu - Mick Lewis",
-          "outcome": "lost",
-          "attribution": "direct",
-          "similarity_basis": "Direct channel; Strategy-stage stall closed Lost on same enum reason",
-          "what_happened": "Tumbledown Wagyu also stalled at Strategy and was lost as \"Insufficient commitment to implement\" — the same end-state Bulgoo is drifting toward.",
-          "lesson": "Same cohort; same loss pattern unless re-engaged."
-        }
-      ],
-      "synthesis": "Strategy-stage stalls from late 2025 split cleanly into two outcomes: Burnham-style HORIZON refresh + re-engagement → Won, or Springfield/Tumbledown drift → Lost. Bulgoo is 9× past lost-median.",
-      "next_best_actions": [
-        {
-          "action": "Run the Burnham-pattern re-engagement: HORIZON refresh + \"what's changed\" reframe + offer Hobbs on-farm.",
-          "rationale": "Burnham converted at this stall age; Springfield/Tumbledown did not get this and were lost.",
-          "priority": "high"
-        }
-      ]
-    },
-    {
-      "active_deal": {
-        "id": "140345085389",
-        "name": "JA - John Atherton",
-        "current_stage": "Strategy Call",
-        "days_in_current_stage": 249,
-        "attribution": "direct"
-      },
-      "twins": [
-        {
-          "deal_id": "186050120174",
-          "deal_name": "Davidsons & Laen - Brendan Reinheimer",
-          "outcome": "won",
-          "attribution": "direct",
-          "similarity_basis": "Direct channel; progressed past Strategy and converted",
-          "what_happened": "Davidsons & Laen moved through Strategy and KCT and closed Won. Specific win driver not recorded but the deal progressed normally — the contrast with JA-Atherton's 249-day stall is instructive.",
-          "lesson": "The Davidsons pattern is normal-velocity. JA-Atherton is now 25× past that benchmark."
-        },
-        {
-          "deal_id": "147625095632",
-          "deal_name": "Mount Moon Pastoral - Edward Ohlrich",
-          "outcome": "lost",
-          "attribution": "direct",
-          "similarity_basis": "Direct channel; comparable late-stage Cold loss",
-          "what_happened": "Mount Moon Pastoral was lost as \"Cold\" — quiet attrition, no explicit objection. Same pattern JA-Atherton is exhibiting now.",
-          "lesson": "Cold attrition is the default outcome for unattended Strategy-stalled deals."
-        }
-      ],
-      "synthesis": "Strategy-stage stall at 249 days. Without intervention this becomes Cold (Mount Moon). With a HORIZON refresh + explicit \"reconnect\" framing, there's still a path — but margins narrow weekly.",
-      "next_best_actions": [
-        {
-          "action": "Send the 25-year ACCU revenue projection by Friday with explicit \"let's reconnect\" framing.",
-          "rationale": "Davidsons & Laen pattern of explicit progression; lack of it = Mount Moon Cold loss.",
+          "action": "If the landholder accepts, send a countersigned KCT cover letter with a hard 30-day acceptance window (day 10 and day 20 follow-up calls built in). If they defer, formally close the deal as 'Insufficient commitment to implement.'",
+          "rationale": "Windy Ridge Farm (186974841297) won at 130 days; Mallawa (31303293354) deferred and lost at 180. The friction analysis shows won deals close in ~17 days post-issuance. A 30-day window with structured follow-up prevents future 430-day drifts.",
           "priority": "high"
         },
         {
-          "action": "If no response in 7 days, move to closed-lost. Don't let it drift another quarter.",
-          "rationale": "Cold-attrition is the dominant outcome for unattended Strategy stalls; the decision matters more than further effort.",
+          "action": "If deal remains open, log the specific commitment blocker (e.g., finance, property boundary, environmental concern) and assign a weekly check-in with James Almond until resolution or loss.",
+          "rationale": "Claverley (37165900308) and Cooeeanna (31711995442) had no blockers; they closed in 43–75 days. Identifying the specific friction will reveal whether Daisy Bank + Bellevue is salvageable or terminal.",
           "priority": "medium"
         }
       ]
     },
     {
+      "version": "b2.1",
       "active_deal": {
-        "id": "141507724737",
-        "name": "Brigalow and Mostowie - Rodger Jefferis",
-        "current_stage": "Strategy Call",
-        "days_in_current_stage": 245,
-        "attribution": "direct"
+        "id": "40200094299",
+        "name": "Rosebank - Will McLachlan",
+        "current_stage": "KCT Issued",
+        "days_in_current_stage": 291
       },
       "twins": [
         {
-          "deal_id": "40789889068",
-          "deal_name": "Burnham Grazing - Dan Burnham",
+          "deal_id": "40735788180",
+          "deal_name": "PS Nottle & Son - Shaun Nottle",
           "outcome": "won",
           "attribution": "direct",
-          "similarity_basis": "Direct channel; relationship-led conversion from comparable Strategy stall",
-          "what_happened": "Burnham Grazing was won via the relationship-led re-engagement pattern — fresh HORIZON, \"what's changed\" framing, soft commitment.",
-          "lesson": "This is the play for any Strategy-stalled direct deal in this age cohort."
-        },
-        {
-          "deal_id": "183751836130",
-          "deal_name": "Tumbledown Wagyu - Mick Lewis",
-          "outcome": "lost",
-          "attribution": "direct",
-          "similarity_basis": "Same cohort, same stage, same likely outcome without action",
-          "what_happened": "Tumbledown Wagyu was closed lost as \"Insufficient commitment to implement\" after a similar Strategy stall.",
-          "lesson": "Tumbledown is the alternate timeline for Brigalow."
-        }
-      ],
-      "synthesis": "Brigalow sits in the late-2025 Strategy-stall cohort with JA-Atherton and Bulgoo. The pattern is binary: Burnham re-engagement (Won) or Tumbledown drift (Lost). Ben owns this — same owner pattern as the rest of the cohort.",
-      "next_best_actions": [
-        {
-          "action": "Run Ben's nurture-back tactic: fresh HORIZON Snapshot + \"what's changed\" frame.",
-          "rationale": "Burnham conversion pattern is the only one observed at this stall age.",
-          "priority": "high"
-        },
-        {
-          "action": "If positive response, escalate to Hobbs on-farm immediately.",
-          "rationale": "On-farm conversion is the soft-sell event for Stormboy + direct alike.",
-          "priority": "high"
-        }
-      ]
-    },
-    {
-      "active_deal": {
-        "id": "167288289773",
-        "name": "Fenmore Farming - Bruce McLean",
-        "current_stage": "SLA/KCT Mapping",
-        "days_in_current_stage": 200,
-        "attribution": "direct"
-      },
-      "twins": [
-        {
-          "deal_id": "248596297166",
-          "deal_name": "Weatherall CP - Jonathan Harpley",
-          "outcome": "won",
-          "attribution": "direct",
-          "similarity_basis": "Direct channel; progressed from SLA/KCT Mapping to Won",
-          "what_happened": "Weatherall CP's SLA/KCT transition was clean — rep-led KCT walkthrough with partner attendance is the recorded driver in adjacent farm-visit distillates.",
-          "lesson": "The partner-attended live walkthrough is the unlock at this stage."
+          "similarity_basis": "Direct attribution, KCT Process era, same stage path. Won in 91 days total.",
+          "what_happened": "Landholder moved from KCT Issued to signed contract rapidly. No documented stall post-issuance. Commitment sustained through to execution.",
+          "lesson": "Won twins close KCT acceptance within 3 weeks of issuance. Rosebank at 291 days suggests Will McLachlan's commitment has eroded or no structured follow-up cadence was enforced."
         },
         {
           "deal_id": "186050120174",
           "deal_name": "Davidsons & Laen - Brendan Reinheimer",
           "outcome": "won",
           "attribution": "direct",
-          "similarity_basis": "Direct channel; comparable SLA → Won progression",
-          "what_happened": "Davidsons & Laen progressed through SLA/KCT to Won without long stall — the velocity differs starkly from Fenmore.",
-          "lesson": "Velocity matters; 200-day SLA stalls don't recover without intervention."
+          "similarity_basis": "Direct attribution, KCT Process era, same stage path. Won in 169 days total.",
+          "what_happened": "Longer total cycle but still closed to won from KCT Issued in <17 days (implied by median). Landholder engaged through KCT review and signature without cold-feet drift.",
+          "lesson": "Even longer-cycle won deals (169 days) avoid the 126+ day post-KCT limbo. Structured acceptance window and cadence prevented stall."
         },
         {
-          "deal_id": "131569892814",
-          "deal_name": "Fisher Brothers - Craig Fisher",
+          "deal_id": "39359914140",
+          "deal_name": "Nullwarra - David Harrison",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, same stage path. Won in 88 days total. Explicitly cited 'Process and relationship with team'.",
+          "what_happened": "Fast KCT Issued-to-Won close (likely ~2 weeks). Relationship and structured process kept landholder engaged post-issuance. No friction noted.",
+          "lesson": "Won deal explicitly credits team relationship + process discipline. Rosebank needs re-engagement on relationship + day-10 and day-20 acceptance calls to restart momentum."
+        },
+        {
+          "deal_id": "31303293354",
+          "deal_name": "Mallawa - Brenton Sewell",
           "outcome": "lost",
           "attribution": "direct",
-          "similarity_basis": "Direct channel; SLA-stage stall closed Lost as \"Insufficient commitment\"",
-          "what_happened": "Fisher Brothers stalled at SLA/KCT and was coded \"Insufficient commitment to implement\" — often signals partner not engaged.",
-          "lesson": "Without partner engagement, Fenmore's end-state is Fisher Brothers."
+          "similarity_basis": "Direct attribution, KCT Process era. Lost with reason 'Not for at least 6 months'. Stalled 180 days in KCT Issued stage before close-lost.",
+          "what_happened": "KCT issued but landholder signaled low near-term commitment (6-month hold). Deal drifted 180 days, then formally closed lost. No hard acceptance deadline or commit-or-close cadence was applied.",
+          "lesson": "Mallawa's 'not for 6 months' signal should have triggered immediate 'commit or close' call, not 180-day drift. Rosebank at 291 days likely shows same absence of structured decision-forcing."
+        },
+        {
+          "deal_id": "146092130783",
+          "deal_name": "Colorado Cattle - Amanda Mahy",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era. Lost with reason 'Insufficient commitment to implement'. Stalled 238 days in KCT Issued stage before close-lost.",
+          "what_happened": "KCT issued but landholder lacked conviction on implementation. Deal extended 238 days without structured re-commitment checkpoints. Eventually closed lost, not because of external blocker but internal hesitation.",
+          "lesson": "Colorado Cattle's loss to insufficient commitment confirms that post-KCT issuance, reps must enforce day-10 and day-20 check-in calls to surface and address commitment doubts before they calcify into 238-day drift."
         }
       ],
-      "synthesis": "SLA/KCT stalls at 200 days are almost always partner-disengagement. The diagnostic is asking who else needs to sign off, and offering to do KCT live with both partners. Refusal of that itself is the result.",
+      "synthesis": "Won twins (40735788180, 186050120174, 39359914140) closed from KCT Issued in median 17 days. Lost twins (31303293354, 146092130783) drifted 180–238 days without closure, citing insufficient commitment or timing hesitation. Rosebank at 291 days mirrors the lost pattern. Root cause: no structured 30-day acceptance window with day-10 and day-20 cadence calls post-issuance. Won deals had implicit relationship rigor; lost deals had none.",
       "next_best_actions": [
         {
-          "action": "Schedule a 30-min Teams call this week to walk through KCT live with Bruce AND his partner.",
-          "rationale": "Weatherall CP and Davidsons & Laen both progressed this way; Fisher Brothers did not.",
+          "action": "Send Will McLachlan a countersigned KCT cover letter today stating 30-day acceptance window (expires [date+30]). Include rep contact & purpose: confirm commitment to 25-year implementation timeline.",
+          "rationale": "Won twins (40735788180, 39359914140) closed rapidly post-issuance when relationship cadence was maintained. 30-day window forces binary decision, preventing 291-day drift seen in lost twins (31303293354: 180 days, 146092130783: 238 days).",
           "priority": "high"
         },
         {
-          "action": "If partner won't attend, that's the diagnosis — escalate or close-lost.",
-          "rationale": "Partner refusal at this stage is the strongest single predictor of Insufficient-commitment loss.",
+          "action": "Block a Strategy Call with Will McLachlan for day 10 post-cover letter. Agenda: KCT terms clarity, implementation timeline, any blocking concerns. Document outcome in CRM as commitment check.",
+          "rationale": "Won deal 39359914140 (Nullwarra) closed won partly due to 'Process and relationship with team.' Day-10 call mirrors the cadence that prevented cold-feet drift in 40735788180 and 186050120174. Lost deals had no such call.",
+          "priority": "high"
+        },
+        {
+          "action": "Book day-20 follow-up call. If KCT not yet accepted, frame as 'final commitment conversation' — move to close-lost if Will will not commit within the 30-day window.",
+          "rationale": "Lost twins (31303293354, 146092130783) cited 'not for 6 months' and 'insufficient commitment.' Day-20 call forces explicit yes/no before day-30 expiry, preventing re-entry into lost limbo. Aligns with A1 play: 'commit or close' before 126-day drift.",
+          "priority": "high"
+        },
+        {
+          "action": "If Will indicates hesitation on day-10 or day-20 call, probe implementation barriers (financing, compliance, timing) and offer 1x KCT extension (to day 45) conditional on a scheduled on-farm SLA confirmation call within 7 days.",
+          "rationale": "Colorado Cattle (146092130783) was lost to 'insufficient commitment' after 238-day drift. Rosebank can break the pattern by surfacing barriers early (day-10) and offering a bounded re-engagement path, not open-ended delay.",
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "version": "b2.1",
+      "active_deal": {
+        "id": "16873339790",
+        "name": "Hanrahan - Plibersek",
+        "current_stage": "KCT Issued",
+        "days_in_current_stage": 288
+      },
+      "twins": [
+        {
+          "deal_id": "186050120174",
+          "deal_name": "Davidsons & Laen - Brendan Reinheimer",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, same stage path. Won in 169 total days.",
+          "what_happened": "Closed within 17 days of KCT issuance. Landholder commitment remained strong post-issuance; no drift or renegotiation.",
+          "lesson": "Your deal is at day-288 in KCT Issued — 17x longer than this twin's closure. Either commitment has cooled or follow-up cadence has lapsed. Immediate re-engagement required."
+        },
+        {
+          "deal_id": "40735788180",
+          "deal_name": "PS Nottle & Son - Shaun Nottle",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, identical stage path. Fastest closure: 91 total days.",
+          "what_happened": "Closed within 17 days of KCT issuance. Fast decision-making and execution post-KCT suggests high landholder confidence and clear next-step visibility.",
+          "lesson": "This twin closed the full pipeline in 91 days; your deal has been stalled at KCT Issued alone for 288 days. Landholder likely awaiting clarity on implementation timeline or contract terms."
+        },
+        {
+          "deal_id": "37406371673",
+          "deal_name": "Toweran park - Reinke",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, stage path match. Won in 134 total days.",
+          "what_happened": "Closed within 17 days of KCT issuance. Steady progression from Qualified to Won indicates sustained landholder engagement and no post-issuance hesitation.",
+          "lesson": "All three won twins closed KCT Issued → Won in ≤17 days. Your 288-day stall is a hard warning: landholder commitment or rep touch frequency has deteriorated."
+        },
+        {
+          "deal_id": "38227395156",
+          "deal_name": "La Trobe Station - Donald & Wendy Brown",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, stalled at KCT Issued. Lost to competitor.",
+          "what_happened": "Competitor intercepted during KCT Issued stage after 154 days in pipeline. Landholder had not yet signed/accepted the KCT when competitor presented alternative terms.",
+          "lesson": "Competitor losses at KCT Issued stage suggest unaccepted KCTs create a window of vulnerability. Hanrahan–Plibersek must accept or reject — not drift indefinitely."
+        },
+        {
+          "deal_id": "20931086473",
+          "deal_name": "Leconfield Farm Pty Limited",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, stalled at KCT Issued. Cold loss after 141 days.",
+          "what_happened": "Landholder went cold post-issuance. Likely causes: insufficient commitment to implement (friction data), unclear next steps, or unresolved contract concerns that were never revisited.",
+          "lesson": "Cold losses at KCT Issued correlate with 126-day median drag — same as your current stall. A hard 30-day acceptance window with day-10/day-20 calls prevents this decay."
+        }
+      ],
+      "synthesis": "All three won twins closed KCT Issued → Won in ≤17 days; your deal is at day-288. The two lost twins remained stalled at KCT Issued and were lost to competitor or cold-feet. The friction pattern is clear: unaccepted KCTs under-commit landholders and leave deals vulnerable to competitive poaching or drift. Hanrahan–Plibersek must move to acceptance or explicit rejection within the next 30 days or risk joining the lost cohort.",
+      "next_best_actions": [
+        {
+          "action": "Schedule a 'KCT Acceptance & Implementation' call with Hanrahan–Plibersek within 3 days. Confirm blockers: contract terms, soil baseline questions, or timeline misalignment. Establish a day-30 hard acceptance deadline.",
+          "rationale": "Won twins (#186050120174, #40735788180, #37406371673) all accepted and closed within 17 days post-issuance. Lost twins (#38227395156, #20931086473) stalled at KCT Issued. Current stall at day-288 is a leading indicator of cold-feet or competitor risk.",
+          "priority": "high"
+        },
+        {
+          "action": "Send a countersigned KCT cover letter restating acceptance terms and a 30-day validity window (expires day-30 from today). Confirm the next implementation milestone and handoff to AgriProve's on-farm team post-acceptance.",
+          "rationale": "Friction data recommends a hard 30-day window with day-10 and day-20 check-ins. This creates urgency without abandonment. Hanrahan–Plibersek has drifted 288 days — structure removes ambiguity that killed lost twin #20931086473.",
+          "priority": "high"
+        },
+        {
+          "action": "On day-10 of the new 30-day window, make a check-in call to gauge landholder sentiment and address any emerging concerns. Do not wait for landholder to contact you.",
+          "rationale": "Won twins saw rapid acceptance post-KCT because follow-up cadence was tight. Leconfield (#20931086473) went cold after issuance — proactive day-10 contact prevents silence from becoming loss.",
+          "priority": "high"
+        },
+        {
+          "action": "If day-20 check-in surfaces hesitation, escalate to SLA/KCT Mapping owner to revisit soil baseline or contract language. Do not permit renegotiation after day-30; trigger the 'commit or close' call instead.",
+          "rationale": "Lost twin #38227395156 (competitor) and #20931086473 (cold) both lingered unresolved. Clarity on SLA terms before day-30 prevents post-deadline re-trading that extends the deal into lost-deal territory (126-day median).",
           "priority": "high"
         }
       ]
     },
     {
+      "version": "b2.1",
+      "active_deal": {
+        "id": "41514329442",
+        "name": "Hanrahan - Griffin",
+        "current_stage": "KCT Issued",
+        "days_in_current_stage": 281
+      },
+      "twins": [
+        {
+          "deal_id": "37165900308",
+          "deal_name": "Claverley - Jon Gatacre",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, same stage path. Fastest closure in cohort.",
+          "what_happened": "KCT Issued to Closed Won in 43 days total. Landholder executed contract swiftly post-issuance with no drift.",
+          "lesson": "Won twins (43, 75, 130 days total) all close within 17 days of KCT issuance. Hanrahan-Griffin is at 281 days in-stage — 16.5× the median won velocity. Immediate commitment signal required."
+        },
+        {
+          "deal_id": "31711995442",
+          "deal_name": "Cooeeanna - Nick Pearce",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, identical stage path.",
+          "what_happened": "75-day total deal. KCT Issued stage compression suggests rep cadence and landholder readiness were aligned before issuance.",
+          "lesson": "Hanrahan-Griffin's 281 days in current stage signals either insufficient pre-issuance commitment screening or rep follow-up has ceased. Compare rep contact frequency vs. Cooeeanna cadence."
+        },
+        {
+          "deal_id": "31712053823",
+          "deal_name": "Gumbowie - David Makin",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, same stage path to issuance.",
+          "what_happened": "306 days to closure marked 'Cold'. Deal stalled post-KCT issuance with no acceptance or rejection — radio silence typical of lost cohort (median 126 days in-stage).",
+          "lesson": "Hanrahan-Griffin mirrors Gumbowie's trajectory: extended drift post-issuance. Without a hard acceptance window and day-10/day-20 rep calls, this deal will be marked 'Cold' lost by day-365."
+        },
+        {
+          "deal_id": "23216367979",
+          "deal_name": "Dale Mulholland, NSW",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, stalled at KCT Issued.",
+          "what_happened": "393-day drift before loss recorded. Reason: 'Cold'. Internal note references good onboarding but no follow-through post-KCT. Landholder commitment evaporated.",
+          "lesson": "Longest lost deal in cohort. Demonstrates post-issuance cold-feet and zero re-engagement protocol. Hanrahan-Griffin at 281 days is 71% of Dale Mulholland's expiry — intervention window is closing."
+        }
+      ],
+      "synthesis": "Won deals (31711995442, 37165900308, 186974841297) close within 17 days of KCT issuance; lost deals (31712053823, 23216367979) drift 300+ days post-issuance. Hanrahan-Griffin's 281-day stall mirrors lost cohort. Root cause: no hard acceptance deadline or structured rep re-engagement post-issuance. Without action within 7 days, deal will trend toward 'Cold' loss by day-297.",
+      "next_best_actions": [
+        {
+          "action": "Issue countersigned KCT cover letter to Hanrahan-Griffin with explicit 30-day acceptance window and expiry date. Reference terms: contract valid to [date +30], no extensions without rep call.",
+          "rationale": "Won twins (37165900308, 31711995442) showed commitment clarity pre-issuance. 281-day stall indicates KCT may lack acceptance urgency. Hard deadline prevents drift seen in 31712053823 (306 days) and 23216367979 (393 days).",
+          "priority": "high"
+        },
+        {
+          "action": "Schedule rep call with landholder for day 10 post-cover-letter: confirm receipt, address contract questions, restate value of 25-year project. Log outcome (accept, revise, decline).",
+          "rationale": "Lost twins stalled because no mid-cycle touchpoint existed. 37165900308 (43-day close) likely had rep contact within KCT issuance window. Day-10 call prevents silent rejection.",
+          "priority": "high"
+        },
+        {
+          "action": "Schedule final rep call for day 20: if KCT unaccepted, move to 'commit or close' frame — confirm go/no-go and document decision (not left to drift to day-126).",
+          "rationale": "31712053823 and 23216367979 both marked 'Cold' after 300+ days. Early close (day 20) on declined deals prevents extended zombie status. Won twins all resolved within day 17 post-issuance.",
+          "priority": "high"
+        },
+        {
+          "action": "Audit Hanrahan-Griffin rep activity log: if no contact in last 60 days, escalate to owner 76812243. Re-engagement required regardless of landholder state.",
+          "rationale": "281-day in-stage silence suggests rep disengagement. Compare rep call frequency to 37165900308 (75-day baseline). Activity audit identifies if deal is abandoned or stalled by landholder.",
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "version": "b2.1",
+      "active_deal": {
+        "id": "41104436568",
+        "name": "Bulgoo Pastoral - Jeremy Pockley",
+        "current_stage": "Strategy Call",
+        "days_in_current_stage": 275
+      },
+      "twins": [
+        {
+          "deal_id": "20181887651",
+          "deal_name": "Deon Attard, Mackay - QLD",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, Legacy era, same stage path. Moved Qualified → Won in 62 days.",
+          "what_happened": "Landholder saw upside potential in run-down block. Strategy Call led to rapid SLA/KCT Mapping progression. Commitment crystallised around tangible land value narrative.",
+          "lesson": "Jeremy's intent likely stalled because no concrete ACCU/revenue projection was anchored post-call. Deon moved fast because motivation (land improvement upside) was already present; projection would have accelerated SLA/KCT Mapping booking."
+        },
+        {
+          "deal_id": "21522499356",
+          "deal_name": "Emma Maudsley, QLD",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, Legacy era, same stage path. Moved Qualified → Won in 40 days—fastest.",
+          "what_happened": "Succession planning context gave Emma clear incentive to act. Strategy Call led to SLA/KCT Mapping within days. Urgency came from external time pressure.",
+          "lesson": "If Jeremy has no succession or land transition driver, you must create urgency via live ACCU projection showing 25-year cash flow. Without it, Strategy Call becomes a passive information exchange."
+        },
+        {
+          "deal_id": "146092019144",
+          "deal_name": "Threadgold Farms - Craig Threadgold",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, Legacy era. Closed Won same day as Strategy Call (0 days in stage).",
+          "what_happened": "Land & Expand narrative shows Craig was pre-sold on value expansion. Strategy Call was confirmation, not discovery. No SLA/KCT Mapping stage recorded—likely collapsed to Won.",
+          "lesson": "Jeremy may have similar expansion intent but Strategy Call didn't surface it. Projection + immediate SLA/KCT Mapping booking would have tested whether he shares Threadgold's growth mindset."
+        },
+        {
+          "deal_id": "18664962333",
+          "deal_name": "James Douglas-Menzies, NSW",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, Legacy era. Stalled at Strategy Call for 74 days before lost.",
+          "what_happened": "Closed 'Insufficient commitment to implement'. Never progressed to SLA/KCT Mapping. Strategy Call did not convert intent into action plan.",
+          "lesson": "Bulgoo is now at 275 days in Strategy Call—10x longer than James's drift. James failed because no binding next step was booked. Projection + calendar hold for SLA/KCT Mapping within 7 days is your circuit breaker."
+        },
+        {
+          "deal_id": "17425497980",
+          "deal_name": "Andrew Smith - willie smith cider, Tas",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, Legacy era. Stalled at Strategy Call for 119 days before lost.",
+          "what_happened": "Closed 'Cold'. Never left Strategy Call. No urgency mechanism existed to move to SLA/KCT Mapping.",
+          "lesson": "Andrew's 119-day drift mirrors Bulgoo's 275 days. 'Cold' = landholder heard the 25-year commitment without seeing modelled returns. PDF projection + booked SLA/KCT Mapping date would have surfaced rejection 36 days earlier (median lost behaviour)."
+        }
+      ],
+      "synthesis": "All three won twins exited Strategy Call rapidly (0–62 days) because motivation was pre-loaded (land upside, succession, expansion) or confirmed within the call. The two lost twins never left Strategy Call, drifting 74–119 days before explicit loss. Bulgoo at 275 days signals commitment collapsed post-call and was never re-anchored. The 12x gap between won (3 days) and lost (36 days) median progression shows lost deals don't fail immediately—they bleed out over 5 weeks. Your intervention window is 7 days post-Strategy Call.",
+      "next_best_actions": [
+        {
+          "action": "Within 2 hours: Send Jeremy a property-matched 25-year ACCU projection PDF (NRM region + Bulgoo land area). Include modelled annual carbon credit revenue under 25/75 split.",
+          "rationale": "Won twins (20181887651, 21522499356, 146092019144) all moved because motivation was concrete and visible. Lost twins (18664962333, 17425497980) drifted because projection was never sent post-call. The high-confidence play explicitly requires PDF within 2 hours.",
+          "priority": "high"
+        },
+        {
+          "action": "In the same email, embed a calendar link to book SLA/KCT Mapping within 7 days. Propose 2–3 specific time slots for the next 5 days.",
+          "rationale": "Won twins moved from Strategy Call → SLA/KCT Mapping in median 3 days. James Douglas-Menzies (18664962333) and Andrew Smith (17425497980) never booked the next step and lost within 74–119 days. Explicit calendar lock prevents drift.",
+          "priority": "high"
+        },
+        {
+          "action": "If Jeremy does not confirm SLA/KCT Mapping within 7 days of projection send, schedule a 15-min call to surface objections: '25-year commitment concerns' or 'implementation timeline mismatch'.",
+          "rationale": "Lost median of 36 days shows rejection takes 5 weeks to crystallise. Friction pattern notes '25 years, too long' crystallises post-Strategy Call. Early re-engagement at day 7 (vs. day 36) gives you time to reframe or escalate.",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "version": "b2.1",
+      "active_deal": {
+        "id": "140345085389",
+        "name": "JA - John Atherton",
+        "current_stage": "Strategy Call",
+        "days_in_current_stage": 253
+      },
+      "twins": [
+        {
+          "deal_id": "20181887651",
+          "deal_name": "Deon Attard, Mackay - QLD",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, Legacy era, progressed Strategy Call → SLA/KCT Mapping → Won in 62 days.",
+          "what_happened": "Deon and Jacquie saw upside potential in their rundown block. Strategy Call led to immediate SLA/KCT Mapping booking and rapid close. The 25-year ACCU projection validated their acquisition thesis.",
+          "lesson": "Won deals move SLA/KCT Mapping within 3 days of Strategy Call. John has been stuck 253 days — no projection or next-step commitment was captured at close."
+        },
+        {
+          "deal_id": "21522499356",
+          "deal_name": "Emma Maudsley, QLD",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, Legacy era, Strategy Call → SLA/KCT Mapping → Won in 40 days.",
+          "what_happened": "Succession context created urgency and clarity of intent. Strategy Call triggered immediate commitment to map SLA/KCT. Deal closed in 40 days total.",
+          "lesson": "Emotional drivers (succession, land improvement, expansion) must be surfaced and tied to the 25-year ERF timeline during Strategy Call. If John hasn't articulated his intent driver, the commitment gap widens."
+        },
+        {
+          "deal_id": "146092019144",
+          "deal_name": "Threadgold Farms - Craig Threadgold",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, Legacy era, strategy-to-close in 0 days — fastest path.",
+          "what_happened": "Land & Expand opportunity meant Craig was pre-committed to action. No drift between stages; SLA/KCT Mapping implicit in urgency. Closed immediately post-Strategy Call.",
+          "lesson": "No time to waste. If John's intent is genuine, he must book SLA/KCT Mapping *on the call* or within 48 hours. 253 days = lost intent signal."
+        },
+        {
+          "deal_id": "18664962333",
+          "deal_name": "James Douglas-Menzies, NSW",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, Legacy era, stalled at Strategy Call with 74 days drift.",
+          "what_happened": "Strategy Call did not translate commitment into action. James coded 'Insufficient commitment to implement' — he agreed to explore but never agreed to the 25-year commitment. No SLA/KCT Mapping booked.",
+          "lesson": "Strategy Call must close with explicit commitment: 'Will you join an SLA/KCT Mapping session by [date]?' Silence or vague agreement = pending loss. John's 253 days mirrors this pattern."
+        },
+        {
+          "deal_id": "17425497980",
+          "deal_name": "Andrew Smith - willie smith cider, Tas",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, Legacy era, Strategy Call → 119 days drift → Lost 'Cold'.",
+          "what_happened": "Strategy Call occurred but no projection or urgency mechanism deployed. Contact grew cold over 119 days. No next meeting booked. Andrew likely never saw a property-matched ACCU projection.",
+          "lesson": "Without a live projection screen-share and SLA/KCT Mapping calendar link sent within 2 hours post-call, landholder intent evaporates. John needs both delivered now to break the drift."
+        }
+      ],
+      "synthesis": "John is at critical inflection. 253 days in Strategy Call mirrors lost twins (18664962333: 74 days drift → lost; 17425497980: 119 days drift → lost). Won twins moved SLA/KCT Mapping within 3 days. The friction pattern confirms: landholder intent collapses without (1) live ACCU projection on-call, (2) PDF sent same-day, and (3) SLA/KCT Mapping calendar link for a 7-day booking window. John has had neither.",
+      "next_best_actions": [
+        {
+          "action": "Schedule a 15-min urgent callback with John within 48 hours. On-call, screen-share a property-matched 25-year ACCU projection using his NRM region and land area. Close with 'Can we lock in SLA/KCT Mapping for [specific date, 5–7 days out]?'",
+          "rationale": "Won twins (20181887651, 21522499356, 146092019144) all moved to SLA/KCT Mapping within 3 days post-Strategy Call. A live projection re-engages intent. Lost twin 17425497980 had no projection — went cold over 119 days. John must see numbers and commit to next stage on the call.",
+          "priority": "high"
+        },
+        {
+          "action": "If John commits to SLA/KCT Mapping date on callback, email the ACCU projection PDF + calendar invite within 2 hours. Subject: 'Your 25-Year Soil Carbon Plan – [property name], [NRM region].' No projection email = no progression.",
+          "rationale": "Friction play and won twins show that same-day delivery of projection + booking link is the commitment trigger. Andrew Smith (17425497980, lost) received neither — intent evaporated. Deon Attard (20181887651, won) moved from call to booking within 3 days.",
+          "priority": "high"
+        },
+        {
+          "action": "If John declines callback or does not commit to SLA/KCT Mapping within 7 days of any contact, code as 'Not for at least 6 months' or '25 years, too long' (per friction evidence) and move to 6-month re-engagement cadence. Do not leave deal open in Strategy Call indefinitely.",
+          "rationale": "Lost twin 18664962333 (James Douglas-Menzies) coded 'Insufficient commitment to implement' after lingering 74 days without SLA/KCT Mapping booking. 253 days of drift signals John has already made a soft 'no' — clarify intent or close the loop cleanly.",
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "version": "b2.1",
+      "active_deal": {
+        "id": "141507724737",
+        "name": "Brigalow and Mostowie - RODGER JEFFERIS",
+        "current_stage": "Strategy Call",
+        "days_in_current_stage": 249
+      },
+      "twins": [
+        {
+          "deal_id": "20181887651",
+          "deal_name": "Deon Attard, Mackay - QLD",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct-attributed Legacy era, QLD region, landholder with expansion intent.",
+          "what_happened": "Moved Strategy Call → SLA/KCT Mapping → Won in 62 days total. Deon and Jacquie saw upside potential in their run-down block; conviction crystallised early.",
+          "lesson": "Won deal advanced within 3 days post-Strategy Call (median). Rodger has been in Strategy for 249 days—commitment window has closed. Re-engage with live ACCU projection to resurrect intent."
+        },
+        {
+          "deal_id": "21522499356",
+          "deal_name": "Emma Maudsley, QLD",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct-attributed Legacy era, QLD region, succession-driven landholder.",
+          "what_happened": "Moved Strategy Call → SLA/KCT Mapping → Won in 40 days total. Succession context triggered urgency; decision made fast.",
+          "lesson": "Succession or asset-transition conversations unlock speed. Explore if Rodger has family/succession dynamics that can be repositioned as decision-driver."
+        },
+        {
+          "deal_id": "146092019144",
+          "deal_name": "Threadgold Farms - Craig Threadgold",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct-attributed Legacy era, rapid closure pattern.",
+          "what_happened": "Won on same day as Strategy Call or immediately after (0 days in next stage). Land & Expand context—existing trust.",
+          "lesson": "No drift when landholder already understands AgriProve or has existing relationship. Rodger may need trust-rebuild, not just re-pitch."
+        },
+        {
+          "deal_id": "18664962333",
+          "deal_name": "James Douglas-Menzies, NSW",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct-attributed Legacy era, NSW region, stalled at Strategy Call.",
+          "what_happened": "Stayed in Strategy Call for 74 days, then closed lost: 'Insufficient commitment to implement'. No SLA/KCT Mapping scheduled.",
+          "lesson": "249 days in Strategy Call mirrors James's stall pattern. Without live projection and booked SLA/KCT Mapping within 7 days, Rodger's intent will collapse into 'insufficient commitment' narrative."
+        },
+        {
+          "deal_id": "17425497980",
+          "deal_name": "Andrew Smith - willie smith cider, Tas",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct-attributed Legacy era, stalled at Strategy Call.",
+          "what_happened": "Drifted 119 days in Strategy Call, closed lost as 'Cold'. No follow-up with concrete next step.",
+          "lesson": "Extended Strategy Call stage without SLA/KCT Mapping booking = slow fade to 'Cold'. Rodger at 249 days is critical risk. Immediate action required to inject urgency."
+        }
+      ],
+      "synthesis": "Rodger is 8x beyond the won median (3 days) and approaching the lost median drift (36 days baseline, but extended losses like #18664962333 and #17425497980 show 70–120 day decay). The three won twins (#20181887651, #21522499356, #146092019144) all progressed within 62 days or less—all moved to SLA/KCT Mapping within a week. The two lost twins stalled in Strategy Call without a concrete next step and a property-specific ACCU projection. Rodger needs immediate re-engagement with live screen-share ACCU calculation and a booked SLA/KCT Mapping slot to reverse the decay pattern.",
+      "next_best_actions": [
+        {
+          "action": "Schedule urgent re-engagement call with Rodger within 2 days. On the call, screen-share a live NRM region + land-area-matched 25-year ACCU projection. Do not end without booking SLA/KCT Mapping within 7 days.",
+          "rationale": "Won twins #20181887651 and #21522499356 progressed within 3 days post-Strategy Call because projection was live and next step was locked. Lost twins #18664962333 and #17425497980 drifted 70–120 days without this. Rodger at 249 days is in decay; live projection + booked mapping restarts momentum.",
+          "priority": "high"
+        },
+        {
+          "action": "Send ACCU projection PDF within 2 hours of re-engagement call, titled '[Property Name] — 25-Year ACCU Forecast'. Include calendar link for SLA/KCT Mapping. No PDF = no progression.",
+          "rationale": "Friction play identifies projection + 7-day booking window as the inflection. Threadgold (#146092019144) closed same-day because next step was obvious and trust was pre-built. Rebuild Rodger's confidence and urgency with a concrete, personalised document.",
+          "priority": "high"
+        },
+        {
+          "action": "If Rodger does not engage on re-contact, uncover the unstated objection: 25-year commitment, cash-flow timing, or family alignment. Map to succession or expansion narrative (leverage Emma Maudsley #21522499356 or Deon Attard #20181887651 models).",
+          "rationale": "Lost deals coded 'Not for at least 6 months' and '25 years, too long' crystallise at Strategy Call. Rodger's 249-day silence suggests objection is unresolved, not forgotten. Surface and reframe.",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "version": "b2.1",
+      "active_deal": {
+        "id": "130260276728",
+        "name": "Glen Keith - Callum Lloyd",
+        "current_stage": "KCT Issued",
+        "days_in_current_stage": 228
+      },
+      "twins": [
+        {
+          "deal_id": "31711995442",
+          "deal_name": "Cooeeanna - Nick Pearce",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, identical stage path to close.",
+          "what_happened": "Moved KCT Issued → Closed Won in ~75 total days. Clean progression with no extended drift post-issuance.",
+          "lesson": "Won deals close within 75 days of qualification. Glen Keith at 228 days in KCT Issued is 3x the typical won-deal timeline — landholder commitment may be eroding."
+        },
+        {
+          "deal_id": "37165900308",
+          "deal_name": "Claverley - Jon Gatacre",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, identical stage path to close.",
+          "what_happened": "Fastest progression: qualification → close in 43 days. KCT Issued stage executed with urgency and no follow-up delays.",
+          "lesson": "Post-KCT issuance, won deals do not stall. If Glen Keith lingers past 30 days without signed acceptance, intervention is required before deal slips to lost-deal median (126 days)."
+        },
+        {
+          "deal_id": "186974841297",
+          "deal_name": "Windy Ridge Farm - Robert Johnson",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, identical stage path to close.",
+          "what_happened": "Slower won deal at 130 total days, but still closed. Suggests multi-step SLA/KCT Mapping did not cascade into post-issuance stall — acceptance occurred within acceptable window.",
+          "lesson": "Even slower-moving won deals (130 days) convert once KCT is issued. Glen Keith's 228-day stall signals acceptance has stalled, not just delayed."
+        },
+        {
+          "deal_id": "31303293354",
+          "deal_name": "Mallawa - Brenton Sewell",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, same stage path through KCT Issued.",
+          "what_happened": "Reached KCT Issued, then lost at day 180 with reason 'Not for at least 6 months.' Extended drift from issuance allowed landholder commitment to evaporate.",
+          "lesson": "KCT issuance alone does not secure the deal. Mallawa shows that post-issuance silence = cold feet. Glen Keith mirrors this pattern at 228 days — immediate contact required to confirm or close."
+        },
+        {
+          "deal_id": "146092130783",
+          "deal_name": "Colorado Cattle - Amanda Mahy",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, same stage path through KCT Issued.",
+          "what_happened": "Lost at day 238 with 'Insufficient commitment to implement.' KCT sat unaccepted for months, signaling the landholder never intended to move forward post-mapping.",
+          "lesson": "Colorado Cattle and Glen Keith both exceed 200 days in KCT Issued. Both signal insufficient commitment. A hard 30-day acceptance window and day-10/day-20 calls would have surfaced this earlier, avoiding 238-day waste."
+        }
+      ],
+      "synthesis": "Won deals close within 17 days of KCT issuance (median); lost deals drag 126+ days. Glen Keith at 228 days mirrors lost-deal patterns (Mallawa 180d, Colorado Cattle 238d), both citing cold feet or insufficient commitment. Three won twins (Cooeeanna, Claverley, Windy Ridge) show clean post-issuance execution. The friction is post-issuance drift: without a countersigned 30-day expiry and scheduled check-ins (day 10, day 20), KCTs issued to borderline-committed landholders slip into silent loss.",
+      "next_best_actions": [
+        {
+          "action": "Call Callum Lloyd today. Confirm KCT signed acceptance status. If unsigned, present a countersigned cover letter stating KCT is valid for 30 days from today (not from original issuance date). Set explicit callback for day 10.",
+          "rationale": "Glen Keith's 228 days mirrors lost-deal median 126+ days. Mallawa (31303293354) and Colorado Cattle (146092130783) both drifted 180–238 days before marking lost. Won twins closed in 17–75 days post-issuance with active follow-up. Restart the clock with a hard commitment window.",
+          "priority": "high"
+        },
+        {
+          "action": "Schedule day-10 rep call (5 days from initial contact). Agenda: landholder implementation readiness, any SLA/regulatory blockers, timeline to sign. Document outcome.",
+          "rationale": "Won deals (37165900308 Claverley, 31711995442 Cooeeanna) show no multi-week gaps in KCT Issued. Scheduled cadence prevents drift. Lost deals (146092130783 Colorado Cattle) had silent drift → cold feet at day 180+.",
+          "priority": "high"
+        },
+        {
+          "action": "If KCT remains unsigned at day-20 callback, run a 'commit or close' conversation: clarify whether landholder will sign within 10 days or the deal closes. Document commitment level in CRM.",
+          "rationale": "Friction analysis shows 7.4x gap between won (17d median) and lost (126d median). Mallawa's loss reason 'Not for at least 6 months' and Colorado Cattle's 'Insufficient commitment' both appeared after extended post-issuance silence. This call surfaces intent early, aligning with the play.",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "version": "b2.1",
+      "active_deal": {
+        "id": "133180075466",
+        "name": "Daniel Gazzola - Calca Block",
+        "current_stage": "KCT Issued",
+        "days_in_current_stage": 211
+      },
+      "twins": [
+        {
+          "deal_id": "39359914140",
+          "deal_name": "Nullwarra - David Harrison",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, similar landholder profile.",
+          "what_happened": "Moved KCT Issued → Closed Won in 88 total days. Won on 'Process and relationship with team'—rep maintained cadence and landholder saw AgriProve as trustworthy partner, not transactional.",
+          "lesson": "Won deal credited relationship continuity. Calca Block at 211 days in KCT Issued suggests rep contact frequency has likely dropped; re-engage Daniel with a relationship-focused touchpoint, not a closing push."
+        },
+        {
+          "deal_id": "40735788180",
+          "deal_name": "PS Nottle & Son - Shaun Nottle",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, direct landholder contact.",
+          "what_happened": "Closed Won in 91 days total. No friction documented; clean progression through SLA/KCT Mapping → KCT Issued → Won.",
+          "lesson": "Fastest-path twins (88–91 days) show no stage bottleneck. Calca Block's 211 days signals something stalled post-issuance—likely commitment wavering or rep disengagement, not process design."
+        },
+        {
+          "deal_id": "186050120174",
+          "deal_name": "Davidsons & Laen - Brendan Reinheimer",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, larger/complex landholder operation.",
+          "what_happened": "Took 169 days total but still closed Won. Outlier among won twins but shows even slower moves can win if commitment is solid and rep maintains structured check-ins.",
+          "lesson": "This twin proves 169 days post-issuance doesn't guarantee loss if landholder intent is confirmed in writing (SLA/KCT acceptance signature). Calca Block needs written reconfirmation of Daniel's 30-day acceptance intent now."
+        },
+        {
+          "deal_id": "31303293354",
+          "deal_name": "Mallawa - Brenton Sewell",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, stalled at KCT Issued after 180 days.",
+          "what_happened": "Lost on 'Not for at least 6 months'—landholder issued KCT but flagged timing risk. Rep did not resurface timing concerns at day-10/day-20 post-issuance, so deal drifted until losing reason was formalised.",
+          "lesson": "Brenton's 'Not for 6 months' was a signal, not a close. Daniel may have similar hidden hesitations. Schedule a structured check-in within 5 days to surface timing/implementation blockers before they calcify."
+        },
+        {
+          "deal_id": "146092130783",
+          "deal_name": "Colorado Cattle - Amanda Mahy",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct attribution, KCT Process era, lost on insufficient commitment after 238 days in pipeline.",
+          "what_happened": "Stalled at KCT Issued for ~180+ days post-issuance (238 total − earlier stages). Closed Lost on 'Insufficient commitment to implement'—landholder accepted KCT but never committed to act. Rep did not trigger commitment gate at day-30.",
+          "lesson": "Amanda's loss mirrors the friction pattern exactly: KCT issued to under-committed landholder, no hard 30-day acceptance window, rep went silent, lost on commitment 126+ days later. Calca Block is 211 days in KCT Issued—apply the 30-day gate immediately."
+        }
+      ],
+      "synthesis": "Won twins (39359914140, 40735788180, 186050120174) closed in 88–169 days total and succeeded via relationship continuity and early landholder commitment lock-in. Lost twins (31303293354, 146092130783) both stalled post-KCT Issuance (180–238 days total) because rep contact dropped and landholder commitment was never formally validated. Calca Block at 211 days in KCT Issued matches the lost pattern precisely. The inflection point is now: within 5 days, book a hard KCT acceptance call with Daniel and establish a 30-day countersigned commitment window, mirroring the play that prevented Amanda (146092130783) and Brenton (31303293354) losses.",
+      "next_best_actions": [
+        {
+          "action": "Within 5 days, send Daniel Gazzola a dated cover letter restating KCT terms valid for 30 days. Schedule day-10 and day-20 rep calls to confirm commitment to implement and resolve any implementation blockers.",
+          "rationale": "Won twins (39359914140, 40735788180) maintained structured cadence post-issuance. Lost twin 146092130783 (Amanda Mahy) had no acceptance deadline and drifted 238 days before 'insufficient commitment' closed it. Hard 30-day gate prevents silent drift.",
+          "priority": "high"
+        },
+        {
+          "action": "On the day-10 call with Daniel, probe for timing, financing, or land-use blockers. Document his commitment to SLA signature + KCT implementation within the 30-day window in the deal record.",
+          "rationale": "Lost twin 31303293354 (Brenton Sewell) signalled timing risk ('Not for 6 months') but rep never surfaced it post-issuance. Amanda (146092130783) had hidden implementation doubts. Daniel's objections now are cheaper than his silence later.",
+          "priority": "high"
+        },
+        {
+          "action": "If Daniel does not commit in writing by day-30, escalate to 'commit or close' call before day-35. Document outcome. Do not let deal drift beyond day-30 without formal commitment or loss reason.",
+          "rationale": "Median lost deal at this stage runs 126 days (vs. won median 17 days). Calca Block is already 211 days in stage. Twin losses (31303293354, 146092130783) both breached 180+ days because there was no exit gate. Lock the decision by day-30.",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "version": "b2.1",
+      "active_deal": {
+        "id": "167288289773",
+        "name": "Fenmore Farming - Bruce McLean",
+        "current_stage": "SLA/KCT Mapping",
+        "days_in_current_stage": 204
+      },
+      "twins": [
+        {
+          "deal_id": "20181887651",
+          "deal_name": "Deon Attard, Mackay - QLD",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct legacy attribution, same stage path, property upside motivation",
+          "what_happened": "Progressed through SLA/KCT Mapping swiftly within a 62-day total cycle. Deon and Jacquie's recognition of block potential kept momentum high; no cost or agronomic objections surfaced.",
+          "lesson": "Won deals at this stage move fast when the farmer sees clear upside. Fenmore at 204 days suggests cost or implementation uncertainty is eroding engagement. Urgent intervention needed."
+        },
+        {
+          "deal_id": "21522499356",
+          "deal_name": "Emma Maudsley, QLD",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct legacy attribution, same stage path, succession driver",
+          "what_happened": "Closed in 40 days total. Succession planning created natural alignment around long-term land stewardship and cashflow. No friction on mapping stage.",
+          "lesson": "Succession and estate planning are acceleration catalysts. Fenmore at 204 days: uncover whether Bruce has succession or succession anxiety driving delay, not just cost."
+        },
+        {
+          "deal_id": "17876140382",
+          "deal_name": "McPhee Bros, Albury NSW",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct legacy attribution, same stage path, trial mindset",
+          "what_happened": "Took 282 days total, but outcome was won. Bros approached it as a trial with bounded scope ('no more than Hone'). Scoped expectation prevented mapping scope creep.",
+          "lesson": "Trial-first framing can justify longer timelines. If Fenmore is stuck on baseline cost or implementation scale, propose a pilot KCT design covering a smaller area to validate payback."
+        },
+        {
+          "deal_id": "18393227881",
+          "deal_name": "GARY WEHR, NSW",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct legacy attribution, lost early, timing objection",
+          "what_happened": "Stalled at Strategy Call after 202 days with 'Not for at least 6 months.' Long engagement pre-mapping with no forward motion suggests misaligned readiness or competing priorities.",
+          "lesson": "Fenmore at 204 days in mapping (not just qualified) is already deeper than Gary's loss point. Risk is progressive disengagement. Requalify urgency and decision timeline now."
+        },
+        {
+          "deal_id": "16032931388",
+          "deal_name": "Scott",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct legacy attribution, lost on baseline cost objection",
+          "what_happened": "Exited at Strategy Call within 14 days on 'Baseline costs too high.' No mapping attempt. Hard stop, not slow bleed.",
+          "lesson": "Scott lost fast on cost transparency. Fenmore has been in mapping 204 days—if baseline cost is the friction, it has festered into doubt. Pre-populate payback calculator now to unblock."
+        }
+      ],
+      "synthesis": "Three won twins (Deon, Emma, McPhee) exited SLA/KCT Mapping in 40–282 days; Fenmore at 204 days is in the danger zone of the McPhee timeline but without that trial-scoped clarity. Gary and Scott lost on timing misalignment and cost objection respectively. Fenmore's extended mapping stage suggests baseline cost or agronomic implementation burden is unresolved and eroding engagement—classic slow-bleed loss pattern. Intervention: surface the cost/payback math and probe implementation readiness (or propose pilot scope) within 5 days to prevent loss.",
+      "next_best_actions": [
+        {
+          "action": "Send Bruce a pre-populated 'Baseline Cost vs Projected ACCU Revenue' payback calculator within 2 days, populated with Fenmore's NRM region and estimated hectarage. Reference McPhee Bros (#17876140382) trial approach if Bruce is hesitant on full-scale baseline.",
+          "rationale": "Scott (#16032931388) lost on cost objection early; Fenmore has festered 204 days in mapping. McPhee (#17876140382) won by scoping implementation as a trial. Pre-empt loss by making cost payback transparent and offering a bounded first phase.",
+          "priority": "high"
+        },
+        {
+          "action": "Schedule an agronomy-support call with Bruce within 5 days to confirm baseline sampling plan, implementation timeline, and agronomic fit. Frame as 'SLA/KCT Mapping finalization' not re-qualification.",
+          "rationale": "Friction analysis flags 'No agronomy expertise' (reason 6) and 'Baseline costs too high' (reason 5) as mapping-stage stalls. McPhee (#17876140382) moved fast by narrowing scope; Emma (#21522499356) moved fast by clarifying succession impact. Fenmore needs clarity on agronomic complexity or scope to unblock KCT issuance.",
+          "priority": "high"
+        },
+        {
+          "action": "Probe Bruce on decision timeline and competing priorities in the agronomy call. If any indication he is waiting (like Gary #18393227881 with 'not for 6 months'), reset mutual expectations or pause to an agreed restart date.",
+          "rationale": "Gary (#18393227881) lost after 202 days with a timing objection; Fenmore at 204 days in mapping mirrors that risk. Deon (#20181887651) won fast because of clear upside recognition. Requalify Bruce's commitment now, do not drift further.",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "version": "b2.1",
       "active_deal": {
         "id": "183762813378",
         "name": "Keynes Consulting Pty Ltd - Daniel Keynes",
         "current_stage": "Qualified Account",
-        "days_in_current_stage": 181,
-        "attribution": "direct"
+        "days_in_current_stage": 185
       },
       "twins": [
         {
-          "deal_id": "40861198733",
-          "deal_name": "Georgina Kedzlie - Mitchell Grazing",
+          "deal_id": "13165246485",
+          "deal_name": "Britton",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct-attributed Legacy Qualified Account that advanced to SLA/KCT Mapping and closed won.",
+          "what_happened": "Account moved from Qualified directly to SLA/KCT Mapping stage, bypassing Discovery Call entirely. Closed won in 538 total days. Outcome: AgriProve won against competing carbon methodologies.",
+          "lesson": "Winning path skips Discovery Call when account is pre-qualified; move immediately to SLA/KCT Mapping to activate landowner commitment and lock in project parameters."
+        },
+        {
+          "deal_id": "13703369560",
+          "deal_name": "Groat",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct-attributed Legacy Qualified Account that advanced to SLA/KCT Mapping and closed won.",
+          "what_happened": "Beat CarbonLink and others by delivering superior model and value for project delivery. Moved to SLA/KCT Mapping and won in 470 days. Won on operational and financial differentiation.",
+          "lesson": "Move to SLA/KCT Mapping fast to demonstrate AgriProve's project delivery advantage and value model before competitor engagement escalates."
+        },
+        {
+          "deal_id": "16149552245",
+          "deal_name": "Hollis",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Direct-attributed Legacy Qualified Account that advanced to SLA/KCT Mapping and closed won.",
+          "what_happened": "Progressed from Qualified Account to SLA/KCT Mapping and closed won in 331 days. Fastest winning twin in cohort.",
+          "lesson": "Faster SLA/KCT Mapping entry correlates with shorter sales cycle; Keynes at 185 days is critical trigger point for immediate mapping engagement."
+        },
+        {
+          "deal_id": "13063618691",
+          "deal_name": "Mulcahy",
           "outcome": "lost",
           "attribution": "direct",
-          "similarity_basis": "Direct channel; Qualified-stage stall closed lost as \"Insufficient commitment to implement\"",
-          "what_happened": "Georgina Kedzlie / Mitchell Grazing stalled at early stages and was eventually closed lost. Same profile as Keynes if not triaged.",
-          "lesson": "Qualified-stage stalls at 6+ months almost always end as Insufficient-commitment losses."
+          "similarity_basis": "Direct-attributed Legacy account that remained in Qualified Account stage and lost as 'Cold'.",
+          "what_happened": "Stalled in Qualified Account for 111 days with zero forward momentum. Lost as 'Cold'—no contact sequence executed, no SLA/KCT Mapping initiated.",
+          "lesson": "Inaction in Qualified Account stage is terminal. Mulcahy is the pattern: silence for ~3.5 months → loss. Keynes is now at 185 days—6 weeks past Mulcahy's loss point."
+        },
+        {
+          "deal_id": "13076873091",
+          "deal_name": "Bauer",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Direct-attributed Legacy account that remained in Qualified Account stage and lost as 'Cold'.",
+          "what_happened": "Lost in 13 days as 'Cold'—immediate abandonment. No discovery, no mapping, no engagement sequence executed.",
+          "lesson": "Early 'Cold' loss (Bauer) and mid-cycle 'Cold' loss (Mulcahy) share one cause: no 72-hour activation SLA. Keynes needs immediate 3-touch sequence before day 190."
         }
       ],
-      "synthesis": "Keynes is a consulting entity, not a farmer-direct profile — the typical Stormboy motion may not apply. Treat as a one-call triage: assess + decide. Drifting further wastes pipeline capacity.",
+      "synthesis": "All three winning twins skipped Discovery Call and moved directly from Qualified Account to SLA/KCT Mapping, closing in 331–538 days. Both losing twins stalled in Qualified Account without forward motion and were marked 'Cold'. Keynes at 185 days is past the median loss point (34 days) and approaching Mulcahy's fatal threshold (111 days). The winning playbook is immediate SLA/KCT Mapping engagement; the losing playbook is silence. Keynes needs activation within 5 days.",
       "next_best_actions": [
         {
-          "action": "One direct triage call THIS WEEK to decide: Hobbs visit, deferred with reason, or close-lost.",
-          "rationale": "Atypical entity profile + 181-day stall warrants explicit decision over default-progress.",
+          "action": "Book SLA/KCT Mapping call with Daniel Keynes within 5 days. Lead with NRM-region ACCU yield estimate and 25-year cash-flow model tailored to property type.",
+          "rationale": "Britton (13165246485), Groat (13703369560), and Hollis (16149552245) all won by moving directly to SLA/KCT Mapping from Qualified Account. Skipping Discovery Call is the winning pattern in this cohort.",
+          "priority": "high"
+        },
+        {
+          "action": "Execute 3-touch sequence today: (1) Call attempt with SLA/KCT Mapping value prop, (2) SMS follow-up same day, (3) Personalised ACCU estimate email by tomorrow morning.",
+          "rationale": "Mulcahy (13063618691) lost after 111 days of silence; Bauer (13076873091) lost in 13 days. Zero-touch Qualified Accounts default to 'Cold' loss. Friction analysis shows 140 losses, 0 wins at this stage before first contact.",
+          "priority": "high"
+        },
+        {
+          "action": "If no response by day 5, escalate to sales director for territory review. Do not allow to exceed 190 days in Qualified Account stage.",
+          "rationale": "Keynes is already at 185 days. Mulcahy lost at 111 days; median loss in cohort is 34 days. Day 190 is the red-line: beyond this, account is statistically lost before SLA/KCT Mapping can be booked.",
+          "priority": "high"
+        },
+        {
+          "action": "In SLA/KCT Mapping call, position AgriProve's project delivery model and financial value explicitly vs. CarbonLink. Reference Groat win (13703369560) if relevant to property type.",
+          "rationale": "Groat won by beating CarbonLink on model and delivery value. Keynes is likely aware of competitors; demonstrate differentiation during SLA/KCT Mapping, not after.",
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "version": "b2.1",
+      "active_deal": {
+        "id": "183759934939",
+        "name": "Tom Rummery",
+        "current_stage": "Qualified Account",
+        "days_in_current_stage": 185
+      },
+      "twins": [
+        {
+          "deal_id": "13165246485",
+          "deal_name": "Britton",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Legacy direct attribution, Qualified Account entry point",
+          "what_happened": "Moved directly from Qualified Account to SLA/KCT Mapping (no Discovery Call recorded in path). Won after 538 days total.",
+          "lesson": "Won twins skip Discovery and jump to SLA/KCT Mapping immediately. Tom Rummery at 185 days in Qualified is dangerously stalled — needs SLA/KCT Mapping booking now, not a Discovery Call first."
+        },
+        {
+          "deal_id": "13703369560",
+          "deal_name": "Groat",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Legacy direct attribution, Qualified Account entry point",
+          "what_happened": "Progressed Qualified → SLA/KCT Mapping → Won in 470 days. Won on model/value and beat CarbonLink in competitive context.",
+          "lesson": "Fast-track to SLA/KCT Mapping is the winning pattern. Groat won by demonstrating superior ACCU delivery model early — Tom needs SLA/KCT Mapping booked to surface the same competitive advantage."
+        },
+        {
+          "deal_id": "16149552245",
+          "deal_name": "Hollis",
+          "outcome": "won",
+          "attribution": "direct",
+          "similarity_basis": "Legacy direct attribution, Qualified Account entry point",
+          "what_happened": "Qualified → SLA/KCT Mapping → Won in 331 days. Fastest won twin.",
+          "lesson": "Shortest cycle in the won cohort. Immediate SLA/KCT Mapping transition is the accelerant. Tom is 185 days in Qualified; Hollis won in 331 total — Tom is running out of runway."
+        },
+        {
+          "deal_id": "13063618691",
+          "deal_name": "Mulcahy",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Legacy direct attribution, Qualified Account stage",
+          "what_happened": "Stayed in Qualified Account for 111 days, then closed Cold. Never progressed to SLA/KCT Mapping or beyond.",
+          "lesson": "Lost twin mirrors the exact inertia pattern — stuck in Qualified, no forward motion, cold-lost. Tom at 185 days is 74 days past Mulcahy's failure point."
+        },
+        {
+          "deal_id": "13076873091",
+          "deal_name": "Bauer",
+          "outcome": "lost",
+          "attribution": "direct",
+          "similarity_basis": "Legacy direct attribution, Qualified Account stage",
+          "what_happened": "Closed Cold after only 13 days in Qualified Account. No Discovery, no SLA/KCT Mapping, no engagement.",
+          "lesson": "Fast cold-loss is also possible. Bauer was never contacted. Tom must receive immediate contact + SLA/KCT Mapping proposal within 72 hours or risk the same outcome."
+        }
+      ],
+      "synthesis": "All three won twins (Britton, Groat, Hollis) bypassed Discovery entirely and moved directly from Qualified Account to SLA/KCT Mapping. Both lost twins (Mulcahy, Bauer) never left Qualified Account. Tom Rummery at 185 days in Qualified is exhibiting the lost-deal pattern. The inflection is SLA/KCT Mapping booking — it is the gateway; sitting in Qualified Account uncontacted is terminal. Won cycle time was 331–538 days; all movement happened post-SLA/KCT Mapping.",
+      "next_best_actions": [
+        {
+          "action": "Book SLA/KCT Mapping call with Tom within 5 calendar days. Prepare NRM-region ACCU estimate and 25-year revenue model (75% landowner take) as collateral.",
+          "rationale": "All three won twins (13165246485, 13703369560, 16149552245) transitioned Qualified → SLA/KCT Mapping with no Discovery step. Tom is 185 days in Qualified — past both lost twins' failure windows (111 and 13 days). SLA/KCT Mapping is the activation gate.",
+          "priority": "high"
+        },
+        {
+          "action": "If SLA/KCT Mapping cannot be booked by day 5, execute 3-touch auto-sequence: call attempt (day 1), SMS with project link (day 2), email with personalised ACCU estimate (day 3).",
+          "rationale": "Friction analysis shows 140 losses at Qualified stage with 34-day median to cold-loss; 114 attributed to 'Cold' reason. Pre-contact inertia is the dominant leak. Groat (13703369560) won by moving fast; Mulcahy (13063618691) lost after 111 days of silence.",
+          "priority": "high"
+        },
+        {
+          "action": "Escalate to rep-level CRM flag if Tom remains uncontacted beyond day 5 in Qualified Account. Flag as at-risk for cold-loss.",
+          "rationale": "Bauer (13076873091) was cold-lost in 13 days; Mulcahy (13063618691) in 111 days. Both never received initial contact. Tom is now at 185 days — intervention required to prevent same outcome as Mulcahy.",
           "priority": "high"
         }
       ]

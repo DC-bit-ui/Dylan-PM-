@@ -1,0 +1,420 @@
+{
+  "generated_at": "2026-05-15T09:15:44.500Z",
+  "label_count": 110,
+  "label_key": "110:Trust / track record + macro trend framing|Methodology — ratchet mechanism|Carbo",
+  "labels": [
+    "Trust / track record + macro trend framing",
+    "Methodology — ratchet mechanism",
+    "Carbon tax vs carbon payment framing",
+    "Scope 3 / supply chain inevitability",
+    "ACCU revenue math grounded in their hectares",
+    "Upfront baseline cost — only outlay",
+    "DIY / regulatory complexity",
+    "Revenue split / 25% framing",
+    "25-year commitment + property sale",
+    "Additionality — eligible activity menu",
+    "Lock-up-the-land misconception (cousin to disinformation)",
+    "Carbon as convergence point — productivity narrative",
+    "Disinformation — 'they think it's lock-up-the-land'",
+    "Provenance / future of beef branding",
+    "ACCU pricing + risk absorption",
+    "Methodology — split projects to protect upside",
+    "Methodology — sampling design / dam exclusion",
+    "Trust / track record — most-audited",
+    "25-year commitment — agricultural-use covenant",
+    "Trust via numbers — verify their own results",
+    "Agnostic-on-practices positioning",
+    "Queensland case study — real cheque",
+    "Land acquisition derivative",
+    "HORIZON Snapshot as wedge",
+    "Rapport — 'I'm just the grazier observing'",
+    "Invitation to speak at their conference (extension of trust)",
+    "Disinformation / tree-planting confusion",
+    "Cropping zones — where the headroom is",
+    "Verification machine framing — what AgriProve actually is",
+    "Risk buffer — what AgriProve absorbs",
+    "HORIZON Snapshot — land-by-land grounding",
+    "Methodology — satellite monitoring upgrade",
+    "Agnostic — won't tell you how to farm",
+    "Two case-study cheques",
+    "Scope 1/2/3 — why demand exists",
+    "25-year ratchet — drought downside",
+    "Next step — HORIZON + land management call",
+    "Cold re-introduction — 'Hobbs the American'",
+    "De-positioning when asked 'what was your interest?'",
+    "Booking the visit — flexible, low-friction",
+    "Cold-open as established familiar",
+    "Rapport via travel-and-family small talk",
+    "Visit-purpose framing — 'what excites you'",
+    "Cold-open as 'your favorite American'",
+    "Carbon-satellite report as soft re-entry",
+    "Macro-uncertainty bonding move",
+    "Cold-open — 'a farmer from America' + 'caught you at a good time?'",
+    "Government-overreach / privacy concern (deep customer territory)",
+    "Cold-open — station-first, name-second",
+    "Fellowship + 'cool stuff' framing",
+    "Cold-open — full transparency including how he got the number",
+    "Pre-empting rejection / not-now handling",
+    "Credibility through volume + specificity",
+    "Cold-open — first-name + 'Ben from AgriProof' on warm contact",
+    "Rapport — golf, geography, family",
+    "What Ben sets up — sequenced post-KCT close",
+    "Cold-open — names AgriProve + Albury geography immediately",
+    "The Hobbs intro — 'gentleman from The US, paddock conversation'",
+    "Visit booked — same call, specific slot",
+    "Self-deprecating cold-list transparency",
+    "Cold-open — AgriProve + Albury + fellowship frame",
+    "Skeptic disarm — 'Your information is very dodgy'",
+    "Defer-and-book — circle back on the 21st",
+    "Cold-open — Ben names AgriProve + Albury",
+    "Value-prop creep — 'soil health, specifically carbon development'",
+    "Hobbs intro — slightly tweaked from Riverina script",
+    "Follow-up — email path, partner consultation",
+    "Cold-open — minimal, warm contact",
+    "Cold-open — info-pack follow-up",
+    "Visit booking — Hobbs introduced + 'lovely guy'",
+    "Value-prop hint — ACCU credits aside",
+    "Cold-open — weather + neighbour rapport",
+    "Value-prop deployment — co-benefits framing",
+    "Two-birds-one-stone visit booking",
+    "Cold-open — warm-callback for website inquiry",
+    "Succession framing for project sizing",
+    "Visit + HORIZON Snapshot sequenced close",
+    "Cold-open + course-correction on inquiry",
+    "Bridge from virtual-fence interest to soil carbon eligibility",
+    "Snapshot offer + eligibility framing on phone",
+    "Two-property reporting + threshold framing",
+    "Climate-skeptic disarm",
+    "Counter-disinformation — 'doesn't work up north'",
+    "Defer to partner — graceful exit",
+    "Cold-open — public holiday callback",
+    "Threshold framing — minimum size",
+    "Eligibility + 11 practices framing",
+    "Snapshot offer + lot-and-plan ask",
+    "Cold-open — re-engagement on prior objections",
+    "Horizon innovation pitch on phone (substantial)",
+    "25/75 revenue split — clean deployment",
+    "Restriction objection (recurring concern)",
+    "Snapshot close + address capture",
+    "Additionality / what we already do",
+    "100% cropping — friction",
+    "Sale doubts / cynicism — 'why pay us for what we'd do anyway'",
+    "Sale doubts — 'we'd do it anyway'",
+    "Additionality conceptual gap",
+    "Polluter-pays moral framing",
+    "Sponsor/representation deflection — suspicion handling",
+    "Geographic mis-match surfaces in rapport",
+    "Value-prop drift — biodiversity / Verterra mention",
+    "Trust + 25-year commitment objection (high-friction)",
+    "Government risk + ACCU price (high-friction)",
+    "25% revenue split objection",
+    "Methodology / ratchet (Ben deploys it correctly)",
+    "Close — defer to think, no push",
+    "Data-limited record — full transcript exceeded read cap",
+    "Methodology pitch on phone — eligible practices + material difference",
+    "Misrouted into Bens Calls — IT support not sales"
+  ],
+  "clusters": [
+    {
+      "theme": "Track record and operator credibility",
+      "member_indices": [
+        0,
+        17,
+        19,
+        25,
+        52
+      ]
+    },
+    {
+      "theme": "Revenue math grounded in their land",
+      "member_indices": [
+        4,
+        7,
+        90
+      ]
+    },
+    {
+      "theme": "ACCU pricing and AgriProve's risk absorption",
+      "member_indices": [
+        14,
+        29
+      ]
+    },
+    {
+      "theme": "Methodology: ratchet and sampling design",
+      "member_indices": [
+        1,
+        16,
+        35,
+        105
+      ]
+    },
+    {
+      "theme": "Eligible practices and material difference",
+      "member_indices": [
+        9,
+        27,
+        86,
+        108
+      ]
+    },
+    {
+      "theme": "Verification and monitoring capability",
+      "member_indices": [
+        28,
+        31
+      ]
+    },
+    {
+      "theme": "HORIZON Snapshot as entry wedge",
+      "member_indices": [
+        23,
+        30,
+        76,
+        87,
+        92
+      ]
+    },
+    {
+      "theme": "Soil carbon as productivity convergence",
+      "member_indices": [
+        11,
+        64,
+        70,
+        72
+      ]
+    },
+    {
+      "theme": "Supply chain and Scope 3 inevitability",
+      "member_indices": [
+        3,
+        34
+      ]
+    },
+    {
+      "theme": "Brand provenance and beef future",
+      "member_indices": [
+        13
+      ]
+    },
+    {
+      "theme": "Upfront baseline cost is only outlay",
+      "member_indices": [
+        5
+      ]
+    },
+    {
+      "theme": "25-year commitment: agricultural covenant",
+      "member_indices": [
+        8,
+        18
+      ]
+    },
+    {
+      "theme": "Land-use restriction misunderstanding",
+      "member_indices": [
+        10,
+        12
+      ]
+    },
+    {
+      "theme": "Disinformation: tree-planting confusion",
+      "member_indices": [
+        26
+      ]
+    },
+    {
+      "theme": "Counter-argument: doesn't work up north",
+      "member_indices": [
+        82
+      ]
+    },
+    {
+      "theme": "Objection: we'd do this anyway",
+      "member_indices": [
+        93,
+        95,
+        96
+      ]
+    },
+    {
+      "theme": "Objection: additionality conceptual gap",
+      "member_indices": [
+        97
+      ]
+    },
+    {
+      "theme": "Objection: 25-year commitment friction",
+      "member_indices": [
+        102
+      ]
+    },
+    {
+      "theme": "Objection: government risk and ACCU price",
+      "member_indices": [
+        103
+      ]
+    },
+    {
+      "theme": "Objection: revenue split skepticism",
+      "member_indices": [
+        104
+      ]
+    },
+    {
+      "theme": "Objection: land-use restriction concern",
+      "member_indices": [
+        91
+      ]
+    },
+    {
+      "theme": "Cold open: name, geography, fellowship",
+      "member_indices": [
+        37,
+        40,
+        43,
+        46,
+        48,
+        50,
+        53,
+        56,
+        60,
+        63,
+        67
+      ]
+    },
+    {
+      "theme": "Cold open: rapport via personal connection",
+      "member_indices": [
+        41,
+        54,
+        71
+      ]
+    },
+    {
+      "theme": "Cold open: skeptic disarm and transparency",
+      "member_indices": [
+        59,
+        61,
+        81
+      ]
+    },
+    {
+      "theme": "Cold open: re-engagement and callback",
+      "member_indices": [
+        44,
+        74,
+        77,
+        84,
+        88
+      ]
+    },
+    {
+      "theme": "Visit framing and booking mechanics",
+      "member_indices": [
+        39,
+        42,
+        49,
+        55,
+        58,
+        62,
+        69,
+        73
+      ]
+    },
+    {
+      "theme": "Eligibility screening and threshold sizing",
+      "member_indices": [
+        75,
+        79,
+        80,
+        85
+      ]
+    },
+    {
+      "theme": "Bridge from adjacent interest to carbon",
+      "member_indices": [
+        78
+      ]
+    },
+    {
+      "theme": "Objection handling and graceful exit",
+      "member_indices": [
+        51,
+        66,
+        83,
+        106
+      ]
+    },
+    {
+      "theme": "Objection: geographic mismatch",
+      "member_indices": [
+        100
+      ]
+    },
+    {
+      "theme": "Objection: value-prop drift and clarity",
+      "member_indices": [
+        101
+      ]
+    },
+    {
+      "theme": "Objection: government overreach and privacy",
+      "member_indices": [
+        47
+      ]
+    },
+    {
+      "theme": "Objection: 100% cropping friction",
+      "member_indices": [
+        94
+      ]
+    },
+    {
+      "theme": "Objection: sponsor suspicion and deflection",
+      "member_indices": [
+        99
+      ]
+    },
+    {
+      "theme": "Case study: real cheque and proof",
+      "member_indices": [
+        21,
+        33
+      ]
+    },
+    {
+      "theme": "Regulatory complexity and DIY positioning",
+      "member_indices": [
+        6,
+        20,
+        32
+      ]
+    },
+    {
+      "theme": "Carbon tax versus carbon payment framing",
+      "member_indices": [
+        2
+      ]
+    },
+    {
+      "theme": "Polluter-pays moral framing",
+      "member_indices": [
+        98
+      ]
+    },
+    {
+      "theme": "Land acquisition derivative positioning",
+      "member_indices": [
+        22
+      ]
+    },
+    {
+      "theme": "Data or routing error (non-sales)",
+      "member_indices": [
+        107,
+        109
+      ]
+    }
+  ]
+}

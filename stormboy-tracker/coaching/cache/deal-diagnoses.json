@@ -1,0 +1,413 @@
+{
+  "generated_at": "2026-05-15T03:17:11.763Z",
+  "deals": {
+    "31711997037": {
+      "deal_id": "31711997037",
+      "deal_name": "Daisy Bank + Bellevue - James Almond",
+      "risk_class": "red",
+      "risk_score": 100,
+      "current_stage": "KCT Issued",
+      "days_in_current_stage": 430,
+      "attribution": "direct",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "James went silent 210 days ago after Dylan's voicemail.",
+          "body": "On 2025-10-16, Dylan called with no answer and left a text: \"just checking in as it's been a while since speaking. We were still waiting on a final signature by you.\" That is the last contact on record. No reply, no follow-up engagement for 210 days."
+        },
+        {
+          "step": 2,
+          "header": "430d in KCT Issued is 25× median win time; silence after signature request is a hard stop signal.",
+          "body": "Median close from this stage is 17d for wins and 126d for losses. At 430d with zero inbound and no outbound reply, this deal has crossed into abandonment territory. The July 28 KCT email and May 5 \"I'll make those changes\" from James suggest negotiation stalled on terms—Dylan promised edits after a 2-week NZ trip and either didn't send them or James disagreed and disengaged."
+        },
+        {
+          "step": 3,
+          "header": "One diagnostic call to confirm deal status; if James is unresponsive or uncommitted, mark lost.",
+          "body": "A 'commit or close' call is correct in intent but wrong in framing: James has already chosen by silence. Call to surface whether the blocker is: (a) unresolved KCT terms Dylan promised on 2025-05-05 and never revisited, (b) landholder cold feet, or (c) James moved on. Accept that 210d silence post-signature-request is not a warm lead—it's a test of whether James will even take the call."
+        }
+      ],
+      "next_step_short": "Call James to confirm deal is live or close it.",
+      "next_step_qualifier": "Do not lead with 'commit or close'—lead with 'I owe you an apology for dropping off after May 5.' Surface the actual blocker (KCT terms? landholder? intent?). If James does not pick up or is vague, log as lost and move on.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 210,
+        "engagement_count": 6
+      },
+      "regenerated_at": "2026-05-15T03:09:01.611Z"
+    },
+    "40200094299": {
+      "deal_id": "40200094299",
+      "deal_name": "Rosebank - Will McLachlan",
+      "risk_class": "red",
+      "risk_score": 100,
+      "current_stage": "KCT Issued",
+      "days_in_current_stage": 291,
+      "attribution": "direct",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "KCT issued July 2025, last substantive contact March 2026 paddock edit.",
+          "body": "On 2025-07-28, Harry at LawrieCo sent paddock maps. On 2026-03-23—52 days ago—Dylan replied \"I've cut out the Golf, Little Golf and Pine paddocks from that project. Let me know if that aligns with Will's intentions, and I'll redraft the CPP for that project before he signs anything.\" No response or confirmation from Will since that message; the deal has sat unsigned for 291 days post-KCT issuance."
+        },
+        {
+          "step": 2,
+          "header": "Paddock scope ambiguity is the blocker, not commitment willingness.",
+          "body": "The December 2025 pricing deadline email landed before scope was locked—Will never confirmed whether Dylan's paddock cuts \"align with [his] intentions.\" Unlike Mallawa/Colorado (lost to radio silence), this deal stalled because a prerequisite (paddock alignment) was left open. At 291d in stage, the risk class is red, but the root cause is unresolved scope, not abandoned interest."
+        },
+        {
+          "step": 3,
+          "header": "Confirm paddock scope in writing before resetting acceptance timeline.",
+          "body": "Send Will a one-sentence email referencing Dylan's 2026-03-23 message: \"The three paddocks (Golf, Little Golf, Pine) remain excluded—is that correct?\" Only after written confirmation should a countersigned KCT with fresh 30-day accept window be sent. A unilateral deadline letter without scope closure will likely be ignored, as it was in November 2025 when Will said he \"just needs a day in the office to sort out the KCT.\""
+        }
+      ],
+      "next_step_short": "Confirm paddock scope with Will via email today.",
+      "next_step_qualifier": "The March paddock edit was never confirmed by Will. Lock scope first, then reset the KCT acceptance clock—not the reverse.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 52,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:09:45.339Z"
+    },
+    "16873339790": {
+      "deal_id": "16873339790",
+      "deal_name": "Hanrahan - Plibersek",
+      "risk_class": "red",
+      "risk_score": 100,
+      "current_stage": "KCT Issued",
+      "days_in_current_stage": 288,
+      "attribution": "direct",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Last contact 154 days ago; KCT issued but no acceptance signal since May 2024.",
+          "body": "On 2025-12-11, Ben Payne made an outbound call to Judy Hanrahan (67s, answered). Before that, the most substantive engagement was 2024-05-30, when Wayne Hanrahan received \"a welcome on board intro\" and \"said he has had great experience with Bek and Bill over the last 12 months.\" Between May 2024 and December 2025, there is no recorded KCT acceptance, signature, or implementation milestone—only a 2024-10-11 voicemail \"requesting meeting to finalise mapping\" with no logged response."
+        },
+        {
+          "step": 2,
+          "header": "288-day KCT-Issued dwell is 17× the median close time; lost comps show identical 126-day drag pattern.",
+          "body": "Hanrahan–Plibersek has been stuck in KCT Issued for 288 days. Your twins (Davidsons & Laen, PS Nottle & Son, Toweran Park) all closed in ≤17 days. Your lost comps (La Trobe Station, Leconfield Farm) both stalled at ~126 days in this stage before dropping. At 288 days, this deal is 2.3× the lost baseline and shows no behavioral movement since the December call: no acceptance email, no implementation scheduling, no follow-up meeting confirmed."
+        },
+        {
+          "step": 3,
+          "header": "Break the silence with a direct, time-bound acceptance requirement—not a meeting request.",
+          "body": "The planned next step asks for a \"KCT Acceptance & Implementation call,\" but Wayne and Judy have had 7+ months to request or schedule one. The lever is not another call offer—it is a binary choice: confirm acceptance in writing by a hard date (e.g., 14 days), or escalate to deal review. The lost comps show that soft follow-up at 126+ days converts zero deals; the won comps show acceptance happens fast or not at all."
+        }
+      ],
+      "next_step_short": "Email Judy Hanrahan: KCT acceptance required within 14 days or review.",
+      "next_step_qualifier": "A meeting request repeats the 154-day silence pattern. Demand a written commitment (yes/no) with a 14-day deadline. If no response, escalate to deal review and mark lost.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 154,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:10:29.811Z"
+    },
+    "41514329442": {
+      "deal_id": "41514329442",
+      "deal_name": "Hanrahan - Griffin",
+      "risk_class": "red",
+      "risk_score": 100,
+      "current_stage": "KCT Issued",
+      "days_in_current_stage": 281,
+      "attribution": "direct",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Last contact was 162 days ago; pricing deadline has passed.",
+          "body": "On 2025-12-03, Harrison sent \"Action Required: Pricing increase December 31st 2025\" stating \"All current agreements will now expire on December 31st, 2025\" and \"All unsigned agreements will be re-issued in January.\" No reply or follow-up contact is recorded in the 162 days since that email. The hard deadline referenced in that message (Dec 31, 2025) is now in the past."
+        },
+        {
+          "step": 2,
+          "header": "281 days in stage is 16× the won baseline; deal is functionally expired.",
+          "body": "Won deals at this stage close in 17 days median; lost deals linger 126 days. At 281 days, this deal has crossed the lost-deal threshold by 155 days and far exceeded any reasonable hold window. The Dec 31 pricing lock expired without signature, triggering automatic re-issue in January per the email. No KCT cover letter will resurrect a deal that has been silent for 5+ months past its own contractual deadline."
+        },
+        {
+          "step": 3,
+          "header": "Verify whether Hanrahan-Griffin has signed a new agreement post-January.",
+          "body": "The next step is not to issue a cover letter to an expired contract, but to confirm current status: has the deal been re-issued at new January pricing and signed, or is it genuinely dormant? A single clarifying call to Andrew (the last named contact) will establish whether the deal is lost, re-qualified, or legitimately on hold. Sending a cover letter on the old KCT without that clarity risks confusing the buyer and burning credibility."
+        }
+      ],
+      "next_step_short": "Call Andrew to confirm post-January contract status",
+      "next_step_qualifier": "Deal is 162d past last contact and 281d in stage—well past lost baseline. Confirm whether a new agreement was issued in January and current intent before any document issuance.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 162,
+        "engagement_count": 1
+      },
+      "regenerated_at": "2026-05-15T03:11:15.926Z"
+    },
+    "41104436568": {
+      "deal_id": "41104436568",
+      "deal_name": "Bulgoo Pastoral  - Jeremy  Pockley",
+      "risk_class": "red",
+      "risk_score": 100,
+      "current_stage": "Strategy Call",
+      "days_in_current_stage": 275,
+      "attribution": "direct",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Jeremy answered on 2026-05-14 after 5 months of radio silence.",
+          "body": "On 2025-11-26, Ben made three calls to Jeremy (4s, 38s, 40s durations—all answered briefly). On 2025-12-17, a 449s call occurred. Then nothing until 2026-05-14, when the note reads \"Missed call on Ben Payne - Call back Jeremy Pockley.\" The contact pattern shows Jeremy is reachable but the conversation never moved past tactical land-use questions (tree thinning exclusions, paddock planning on 2025-11-19)."
+        },
+        {
+          "step": 2,
+          "header": "275 days in Strategy Call is 76x the median win dwell (3d) and 7.6x the lost-deal baseline (36d).",
+          "body": "Jeremy has never seen a live projection, deal structure, or economics—only webinar links and land-mapping logistics. The planned next step assumes sending a PDF will unlock urgency, but the timeline shows Ben sent HORIZON webinar link on 2025-12-22 with zero follow-up conversation recorded. Without a live walk-through and a locked next meeting, Jeremy stays in planning-mode indefinitely."
+        },
+        {
+          "step": 3,
+          "header": "The lever is a synchronous conversation anchored to a specific date and outcome.",
+          "body": "Send the ACCU projection *during* a scheduled call (not as attachment), walk Jeremy through the carbon yield, annual cash flow, and required enrollment actions in real time, then lock a farm visit or decision date before hanging up. The wins (Deon, Emma, Craig) all moved when the projection was tied to an immediate next step—not because of the PDF, but because the call created a commitment."
+        }
+      ],
+      "next_step_short": "Call Jeremy; walk projection; lock farm visit date.",
+      "next_step_qualifier": "Sending a PDF repeats the failed webinar pattern. Jeremy answers the phone but needs a synchronous conversation tied to a calendar commitment to exit strategy stage.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 0,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:12:01.254Z"
+    },
+    "140345085389": {
+      "deal_id": "140345085389",
+      "deal_name": "JA - John Atherton",
+      "risk_class": "red",
+      "risk_score": 100,
+      "current_stage": "Strategy Call",
+      "days_in_current_stage": 253,
+      "attribution": "direct",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Deal in Strategy Call with zero recorded engagement for 253 days.",
+          "body": "HubSpot shows \"No engagement timeline available\" and \"(no engagements found)\" despite the deal being assigned and in Strategy Call stage. The deal has drifted 253 days with no call notes, emails, or activity logged—this is not a stalled negotiation, it is an orphaned record with no evidence of recent contact."
+        },
+        {
+          "step": 2,
+          "header": "253-day dwell is 70× the won baseline and 7× the lost baseline.",
+          "body": "Median time-to-close for won deals at this stage is 3 days; for lost deals, 36.07 days. At 253 days with zero engagement, this deal has crossed into administrative dead weight. The planned qualifier itself notes that James Douglas-Menzies and Andrew Smith followed similar drift patterns and were lost; Deon and Emma moved to SLA/KCT in 3 days by locking a specific next date and sending a projection same-day."
+        },
+        {
+          "step": 3,
+          "header": "Recover the deal by surfacing the actual state and re-anchoring to a hard commitment.",
+          "body": "Before scheduling a callback, verify whether John is still a prospect (check CRM for out-of-scope flag, company exit, or role change). If still valid, the lever is not urgency—it is transparency: acknowledge the gap (\"I notice we haven't connected since [last touch date if available], want to see if this is still a fit\"), get a specific next-date commitment in the call, and send a dated projection or scope doc same-day to prevent re-drift."
+        }
+      ],
+      "next_step_short": "Verify John is in-scope, then call to restart with hard date lock.",
+      "next_step_qualifier": "Zero engagement in 253 days means the deal is administratively stalled, not warm. A callback alone will not move it; you need to reset the relationship and anchor to a specific next action with follow-up collateral sent same-day.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": null,
+        "engagement_count": 0
+      },
+      "regenerated_at": "2026-05-15T03:12:44.178Z"
+    },
+    "141507724737": {
+      "deal_id": "141507724737",
+      "deal_name": "Brigalow and Mostowie - RODGER JEFFERIS",
+      "risk_class": "red",
+      "risk_score": 100,
+      "current_stage": "Strategy Call",
+      "days_in_current_stage": 249,
+      "attribution": "direct",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Last contact was 171 days ago; deal has stalled at Strategy Call stage.",
+          "body": "On 2025-11-24, Ben sent an email to Rodger outlining eligible practices, beginning \"Hi Rodger, Thanks again for the chat earlier today. I just wanted to reiterate where we are at with everything...\" This is the final logged touchpoint. No contact has occurred since, meaning 171 days of radio silence in a deal that entered Strategy Call 249 days ago."
+        },
+        {
+          "step": 2,
+          "header": "249-day dwell vastly exceeds baseline; pattern mirrors prior cold conversions.",
+          "body": "Median time-to-close for Strategy Call stage is 3 days (won) or 36 days (lost). At 249 days, Rodger is 6.9× the lost baseline and sits in the red risk class (100). The qualifier notes James Douglas-Menzies and Andrew Smith followed the same pattern before going cold, suggesting this stall is a conversion signal, not a dormant warm lead."
+        },
+        {
+          "step": 3,
+          "header": "The barrier is structural objection, not information gap or timing.",
+          "body": "On 2025-10-15, after the initial call, Rodger said he was \"a bit concerned about the 'cell grazing' side of it as 'it's not them'.\" Ben's 2025-11-24 email attempted to reframe (\"we don't have to go down the avenue of rotational cell grazing whatsoever\"), but Rodger never engaged after. The re-engagement call must surface whether the objection is negotiable or disqualifying—not resend collateral or re-pitch practices."
+        }
+      ],
+      "next_step_short": "Call Rodger to confirm disqualification or unblock objection.",
+      "next_step_qualifier": "171 days without response after a structural concern signals likely cold. The call must test whether cell grazing objection is dealbreaker or addressable. If it remains hard no, close the lead honestly rather than restart the loop.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 171,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:13:27.946Z"
+    },
+    "167288289773": {
+      "deal_id": "167288289773",
+      "deal_name": "Fenmore Farming - Bruce McLean",
+      "risk_class": "red",
+      "risk_score": 100,
+      "current_stage": "SLA/KCT Mapping",
+      "days_in_current_stage": 204,
+      "attribution": "direct",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "No engagement record exists for 204-day mapping phase.",
+          "body": "HubSpot shows zero engagements logged for Fenmore Farming / Bruce McLean despite deal sitting in SLA/KCT Mapping for 204 days. The qualifier references Deon Attard, Emma Maudsley, and Scott as comparators, but none of those names appear in any timeline artifact for this deal. We have no record of calls, emails, or visits to ground the assumption that Bruce's friction is 'cost or scale uncertainty.'"
+        },
+        {
+          "step": 2,
+          "header": "Silent 204 days is not the same as engaged-but-slow.",
+          "body": "Median time-to-close at SLA/KCT Mapping is 41d (won) or 64d (lost); Fenmore is at 204d with zero logged contact. This pattern is more consistent with deal abandonment or admin stall than with a buyer slowly evaluating payback math. Sending a payback calculator to a contact you have not spoken to in months risks exposing that you have disengaged, not that Bruce has objections worth solving."
+        },
+        {
+          "step": 3,
+          "header": "Establish whether Bruce is still interested before sending collateral.",
+          "body": "The lever is real contact and a direct question: Is Fenmore still evaluating? If yes, what has changed since SLA/KCT kickoff? Only after confirming active intent should you surface payback mechanics. If Bruce does not respond or declines, mark the deal honestly out-of-scope and free capacity for warm leads."
+        }
+      ],
+      "next_step_short": "Call Bruce to confirm deal status.",
+      "next_step_qualifier": "Zero engagement in 204 days suggests lost, not stalled. Verify intent before sending payback calc.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": null,
+        "engagement_count": 0
+      },
+      "regenerated_at": "2026-05-15T03:14:12.037Z"
+    },
+    "130260276728": {
+      "deal_id": "130260276728",
+      "deal_name": "Glen Keith - Callum Lloyd",
+      "risk_class": "red",
+      "risk_score": 98,
+      "current_stage": "KCT Issued",
+      "days_in_current_stage": 228,
+      "attribution": "direct",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Contact chain broke; wrong person was being reached.",
+          "body": "On 2025-12-03, Harry Clark replied to a pricing-increase email stating \"Guy Lloyd is the one heading it up currently for the Glenkeith Raeburn project\" and provided lloyd.guy1@gmail.com. The email had been sent to \"Callum\" but Harry clarified the decision-maker is Guy, not Callum. No contact with Guy appears in the timeline after that date (162 days ago)."
+        },
+        {
+          "step": 2,
+          "header": "KCT approval status unknown; contact window may have closed.",
+          "body": "Harry wrote on 2025-12-03: \"I couldn't click anywhere on this KCT to approve it so not sure what to do, or if it has gone directly to the customer.\" The pricing deadline was December 31st, 2025—53 days away at that time. No confirmation of signed acceptance exists in the record, and silence for 162 days post-deadline strongly suggests the deal lapsed or was rejected."
+        },
+        {
+          "step": 3,
+          "header": "Verify deal status with Guy Lloyd; may already be dead.",
+          "body": "Call Guy Lloyd (lloyd.guy1@gmail.com, last responsive on 2025-09-04) to confirm whether the KCT was signed before Dec 31, 2025, or whether Glen Keith chose not to proceed. If unsigned post-deadline, the deal should be closed honestly rather than resurrected; if signed, re-engage on next steps. Do not assume Callum is the decision-maker."
+        }
+      ],
+      "next_step_short": "Call Guy Lloyd; confirm KCT signed status.",
+      "next_step_qualifier": "Harry identified Guy as the actual decision-maker on 2025-12-03. 162 days of silence post-pricing deadline (Dec 31, 2025) suggests deal may have lapsed. Verify before re-engaging.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 162,
+        "engagement_count": 6
+      },
+      "regenerated_at": "2026-05-15T03:14:54.711Z"
+    },
+    "133180075466": {
+      "deal_id": "133180075466",
+      "deal_name": "Daniel Gazzola - Calca Block",
+      "risk_class": "red",
+      "risk_score": 97,
+      "current_stage": "KCT Issued",
+      "days_in_current_stage": 211,
+      "attribution": "direct",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Daniel went silent 73 days after KCT issuance.",
+          "body": "Last contact was 2026-03-02, when Ben sent HORIZON Snapshot with property analysis. Before that, 2026-02-17 email introduced revised Key Commercial Terms framework. Daniel has not replied, called back, or engaged since March 2."
+        },
+        {
+          "step": 2,
+          "header": "211 days in KCT Issued exceeds loss baseline by 68%.",
+          "body": "Stage median time-to-close for lost deals is 126.16d; Daniel is at 211d, placing him in the red-flag cohort (risk class 97). The pricing deadline of 2025-12-31 passed without signature, and the Feb-17 reframe of terms appears to have triggered disengagement rather than reset momentum."
+        },
+        {
+          "step": 3,
+          "header": "Reassurance letter will not break silence; direct voice contact required.",
+          "body": "A cover letter restating KCT terms repeats the Feb-17 and Mar-02 approach—both emails went unanswered. Daniel answered three calls in Oct-Nov 2025 (Oct-17, Oct-13, Sep-24), indicating he is reachable by phone. A call to diagnose the actual blocker (terms concern, budget, competing option, or deprioritization) must precede any written restatement."
+        }
+      ],
+      "next_step_short": "Call Daniel to diagnose silence.",
+      "next_step_qualifier": "Three prior calls in Sep–Nov 2025 show he engages by voice. Email alone has failed 73 days. Confirm whether terms, timing, or competing project is the real friction.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 73,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:15:37.911Z"
+    },
+    "183762813378": {
+      "deal_id": "183762813378",
+      "deal_name": "Keynes Consulting Pty Ltd - Daniel Keynes",
+      "risk_class": "amber",
+      "risk_score": 50,
+      "current_stage": "Qualified Account",
+      "days_in_current_stage": 185,
+      "attribution": "direct",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Ben delivered HORIZON snapshot on 2026-03-11, then silence for 36 days.",
+          "body": "On 2026-03-11, Ben sent Daniel the HORIZON Snapshot with the message: \"I've attached your HORIZON Snapshot... and wanted to walk you through what it shows and what it means for your property. What the analysis found: HORIZON has identified 142.94 hect[ares]\". Last contact was a 43-second call on 2026-04-08 (\"Call back Daniel Keynes\"), followed by zero engagement for 36 days. The deal has been sitting at 185 days—well past the 34-day loss baseline."
+        },
+        {
+          "step": 2,
+          "header": "Silent walkthrough handoff + no follow-up pattern predicts abandonment.",
+          "body": "Daniel received a technical artifact (HORIZON Snapshot) without a scheduled followup call or clear next step. The three calls in March (2026-03-11, 2026-03-18, 2026-03-31) appear to be pursuit attempts after the email went silent; the April 8 call was a callback—suggesting Daniel may have disengaged after March 11 delivery. At 185 days with 36 days of radio silence post-last-contact, the deal is 5.4× the loss baseline and trending toward write-off."
+        },
+        {
+          "step": 3,
+          "header": "Restart with explicit walkthrough offer and permission-to-proceed gate.",
+          "body": "The snapshot was delivered but never walked through live. Daniel needs a concrete, time-bound invitation: \"I want to walk you through the 142.94 hectares finding on [specific day/time]—do Tuesday or Thursday work?\" This resets the engagement clock and forces a yes/no rather than assumed interest. If Daniel declines or doesn't respond within 48 hours, mark the deal lost and prospect for a new contact at Keynes Consulting."
+        }
+      ],
+      "next_step_short": "Call Daniel with specific walkthrough timeslot offer.",
+      "next_step_qualifier": "One call with a calendar invite embedded (not a 3-touch spray). If no response in 48h, escalate to a new stakeholder at Keynes Consulting or close the deal.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 36,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:16:27.279Z"
+    },
+    "183759934939": {
+      "deal_id": "183759934939",
+      "deal_name": "- Tom  Rummery",
+      "risk_class": "amber",
+      "risk_score": 50,
+      "current_stage": "Qualified Account",
+      "days_in_current_stage": 185,
+      "attribution": "direct",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Last contact was 51 days ago; three rapid calls on 2026-03-25 went unanswered or dropped.",
+          "body": "On 2026-03-25, Ben Payne made two outbound calls (60s and 3s) and received one missed inbound call from Tom—all logged the same day. No contact since 2026-03-25 (51 days). The pattern is not silence; it's failed connection attempts, not silence post-agreement."
+        },
+        {
+          "step": 2,
+          "header": "185 days in Qualified is 5.4x the median lost-deal duration (34d) and 185d past any baseline.",
+          "body": "Tom has dwell-cycled into amber risk (50). Stage baseline shows won deals exit in 0d and lost deals exit in 34d—Tom is in zombie territory. The 2026-02-09 email confirms qualification was completed (\"based on our discussion, I wanted to confirm\"), yet no progression to SLA/KCT Mapping has occurred in ~6 weeks since qualification."
+        },
+        {
+          "step": 3,
+          "header": "Reconnect on a real question, not a meeting reschedule; verify Tom is still in-scope.",
+          "body": "The planned next step assumes Tom wants SLA/KCT Mapping. But 51 days of silence after a qualification call suggests either Tom deprioritized or Ben never locked commitment. Before booking, find out whether Tom is still engaged: \"Hi Tom, following up on our February conversation about the carbon program—I want to make sure it still fits your priorities this quarter before we move forward.\" If no response in 5 days, mark out-of-scope."
+        }
+      ],
+      "next_step_short": "Call Tom; verify he's still engaged before rebooking.",
+      "next_step_qualifier": "51 days silence after qualification is re-engagement, not meeting rescheduling. Confirm scope fit first or close honestly.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 51,
+        "engagement_count": 7
+      },
+      "regenerated_at": "2026-05-15T03:17:11.763Z"
+    }
+  }
+}

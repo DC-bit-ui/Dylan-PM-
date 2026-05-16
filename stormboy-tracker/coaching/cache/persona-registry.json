@@ -1,0 +1,147 @@
+{
+  "_comment": "Registry of personas the persona-builder maintains. Each entry: slug (URL-safe ID), name (display), email (HubSpot search predicate / engagement filter), owner_id (active reps), seed (fallback when email-search scope unavailable: contact + deal IDs to traverse from).",
+  "_last_refreshed": "2026-05-15T03:40:52.240Z",
+  "personas": [
+    {
+      "slug": "bill-hyem",
+      "name": "Bill Hyem",
+      "email": "william@agriprove.io",
+      "owner_id": null,
+      "status": "historical",
+      "seed": {
+        "contacts": [
+          "118163008068"
+        ],
+        "deals": [
+          "18117967175",
+          "18117953717",
+          "18117677957",
+          "18106767386",
+          "18025326217",
+          "18021547788",
+          "18021291606"
+        ]
+      },
+      "notes": "Ex-AP Key Account Manager. Owner_id archived. Email-search scope blocks deep email pull — uses seed traversal.",
+      "last_refreshed": "2026-05-14T11:49:30.346Z",
+      "last_result": {
+        "ok": true,
+        "discovery": {
+          "sent_emails_count": 0,
+          "unique_contacts": 1,
+          "unique_deals": 7,
+          "top_n_contacts_pulled": 1,
+          "top_n_deals_pulled": 7
+        },
+        "error": null
+      }
+    },
+    {
+      "slug": "ben",
+      "name": "Ben Payne",
+      "email": "ben@agriprove.io",
+      "owner_id": "76812243",
+      "status": "active",
+      "seed": null,
+      "notes": "Active Storm Boy team — should query by owner_id once email-search scope is added.",
+      "last_refreshed": "2026-05-15T09:09:20.758Z",
+      "last_result": {
+        "ok": true,
+        "discovery": {
+          "sent_emails_count": 1000,
+          "unique_contacts": 40,
+          "unique_deals": 39,
+          "top_n_contacts_pulled": 40,
+          "top_n_deals_pulled": 39
+        },
+        "error": null
+      }
+    },
+    {
+      "slug": "claudia",
+      "name": "Claudia Bryant",
+      "email": "claudia@agriprove.io",
+      "owner_id": "78272376",
+      "status": "active",
+      "seed": null
+    },
+    {
+      "slug": "hobbs",
+      "name": "Hobbs Magret",
+      "email": "hobbs.magaret@gmail.com",
+      "owner_id": "361236574",
+      "status": "active",
+      "seed": null,
+      "notes": "External contractor (Salt and Fire) — primary email is Gmail, not @agriprove.io. HubSpot email-search returns 0; persona builds from supplements only. Auto-builder falls back to seed-traversal when no emails.",
+      "confluence_sources": [
+        {
+          "label": "Hobbs' Raw transcripts (folder)",
+          "id": "577011728",
+          "type": "folder",
+          "url": "https://agriprove.atlassian.net/wiki/spaces/AG/folder/577011728",
+          "status": "404-not-found",
+          "verified": "2026-05-16",
+          "description": "STALE — returns 404 from Confluence API as of 2026-05-16. Either deleted, moved, or never created as a page. Intended as the folder where individual visit transcripts would be uploaded going forward. Pipeline should skip until ID is corrected."
+        },
+        {
+          "label": "Hobbs Raw Transcripts (database index)",
+          "id": "576192562",
+          "type": "database",
+          "url": "https://agriprove.atlassian.net/wiki/x/MgBYIg",
+          "status": "404-not-found",
+          "verified": "2026-05-16",
+          "description": "STALE — returns 404 from Confluence API as of 2026-05-16. Was intended as structured database with visit metadata. Pipeline should skip until ID is corrected."
+        },
+        {
+          "label": "Hobbs Farm Visits — Transcript Dump 1 (historical)",
+          "id": "569049089",
+          "type": "page",
+          "status": "active",
+          "verified": "2026-05-16",
+          "url": "https://agriprove.atlassian.net/wiki/spaces/AG/pages/569049089",
+          "description": "Bulk-dump page (327KB, 6607 lines, migrated 2026-05-12). Multiple visits concatenated. Already cached at coaching/cache/hobbs-distillates-bulk.json. Being decomposed into individual confluence-farmvisit-* files."
+        }
+      ],
+      "last_refreshed": "2026-05-15T09:00:02.799Z",
+      "last_result": {
+        "ok": false,
+        "discovery": null,
+        "error": "no emails sent by this address found in HubSpot"
+      }
+    },
+    {
+      "slug": "will",
+      "name": "Will Donovan",
+      "role": "Head of Operations",
+      "is_sales_rep": false,
+      "email": "will@agriprove.io",
+      "owner_id": "361823546",
+      "status": "active",
+      "seed": null,
+      "notes": "NOT a sales rep — Head of Operations. His HubSpot footprint reflects oversight + escalation work, not direct outbound. Should NOT be counted in the call-volume team-target fair-share denominator. Persona-builder synthesis should frame him as a leadership/operations profile, not a sales-rep profile."
+    },
+    {
+      "slug": "kieren",
+      "name": "Kieren Whittock",
+      "role": "CPO-equivalent / Leadership stakeholder",
+      "is_sales_rep": false,
+      "email": "kieren@agriprove.io",
+      "owner_id": "356223926",
+      "status": "active",
+      "seed": null,
+      "notes": "Leadership profile, NOT sales. Per memory/people/roster.md — cares about product strategy, delivery progress, team unblocking. Persona synthesis should frame as leadership/decision-maker patterns: what he weighs in, what he escalates, his decision lattice. The team uses this profile to know HOW to bring something to him (format, framing, urgency cues), not to copy his outreach. Exclude from sales-rep aggregates.",
+      "last_refreshed": "2026-05-15T11:50:30.940Z",
+      "last_result": {
+        "ok": true,
+        "discovery": {
+          "sent_emails_count": 155,
+          "unique_contacts": 40,
+          "unique_deals": 40,
+          "top_n_contacts_pulled": 40,
+          "top_n_deals_pulled": 40
+        },
+        "error": null
+      }
+    }
+  ]
+}

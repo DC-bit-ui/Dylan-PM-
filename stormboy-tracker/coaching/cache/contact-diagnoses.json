@@ -1,0 +1,1349 @@
+{
+  "generated_at": "2026-05-15T03:35:13.334Z",
+  "contacts": {
+    "84909": {
+      "contact_id": "84909",
+      "name": "Ken Jacobs",
+      "stage": "In Conversation",
+      "heat": "COLD",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Ken explicitly stated disinterest in selling credits on 2024-05-29.",
+          "body": "On 2024-05-29, the note records Ken's feedback: \"Doing some sustainable actions, but not interested in selling credits.\" Despite this clarity, Ben sent four consecutive emails between 2025-12-05 and 2025-12-12 pitching ACCU revenue and carbon credit potential, culminating in a call on 2026-03-03 where Ken cited geography as the reason: \"Outside the 2hr radius for Storm Boy.\""
+        },
+        {
+          "step": 2,
+          "header": "Ignoring stated objection for 18 months created false warm signal.",
+          "body": "Ken's core objection—not wanting to monetize carbon—was documented but overridden by a nurture campaign that treated him as a prospect to convert. The 2026-03-03 call cited logistics, not the underlying lack of appetite, masking the real issue: Ken was never a fit for AgriProve's core revenue model. Continuing contact after a documented \"no\" to credits burns credibility and wastes cycles on a prospect whose incentive structure differs from the rest of the portfolio."
+        },
+        {
+          "step": 3,
+          "header": "Acknowledge his stated position and exit cleanly, not tentatively.",
+          "body": "Ken told you on 2024-05-29 he is \"not interested in selling credits.\" A \"one last attempt\" contradicts that boundary and risks him feeling pestered. The lever is honesty: confirm his preference hasn't changed, respect it if it hasn't, and move on. This preserves relationship equity if his situation changes later, rather than leaving him frustrated."
+        }
+      ],
+      "next_step_short": "Call Ken, confirm no-credits stance, close lead honestly",
+      "next_step_qualifier": "Ken explicitly declined credit sales on 2024-05-29. One transparent call to confirm that's still his position, then mark closed. Don't nurture or defer—respect his boundary.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 72,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:20:02.552Z"
+    },
+    "87901": {
+      "contact_id": "87901",
+      "name": "Bill Wearn",
+      "stage": "Farm Visit completed",
+      "heat": "HOT",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit occurred 2d ago; no documented outcome captured.",
+          "body": "On 2026-05-13, a 'MEETING — Hobbs/AgriProve Farm Visit' was scheduled and logged with property details (5500 hectares, Mulgoa Pastoral, NSW 2644), but no call notes, visit report, or outcome statement appears in the timeline. The last *documented* contact before the visit was 2026-05-07, when Hobbs Magaret conducted a 261-second call with Bill Wearn; no follow-up note or debrief exists after 2026-05-13."
+        },
+        {
+          "step": 2,
+          "header": "Missing visit outcome creates false momentum assumption.",
+          "body": "The planned next_step assumes 'momentum' from a completed visit, but the timeline contains no evidence of what was discussed, agreed, or blocked during the farm visit itself. Without a visit debrief, sending a contract or KCT is a blind move—Bill may have raised objections, timeline concerns, or soil/compliance issues that a contract would ignore. The 48-hour 'window' heuristic relies on assumed positive signals that are not documented."
+        },
+        {
+          "step": 3,
+          "header": "Retrieve and document the actual visit outcome first.",
+          "body": "Before any KCT or contract draft is sent, the rep or Hobbs Magaret must provide a written visit debrief: what was Bill's response to the AgriProve model, did he commit to an enrolment timeline, what objections or questions surfaced, and what did he explicitly ask for next? Only then can the send-collateral decision be calibrated—not on elapsed time, but on Bill's stated readiness."
+        }
+      ],
+      "next_step_short": "Retrieve visit debrief from Hobbs, document Bill's outcome.",
+      "next_step_qualifier": "The visit log contains no outcome notes. Contact the farm visitor (Hobbs Magaret) immediately to capture what Bill said, asked for, or committed to on 2026-05-13, so the next step is based on actual feedback, not time elapsed.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 1,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:12:52.107Z"
+    },
+    "587901": {
+      "contact_id": "587901",
+      "name": "Peter Yench",
+      "stage": "In Conversation",
+      "heat": "COLD",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Geographic disqualification stated on 2026-03-03",
+          "body": "On 2026-03-03, the call note reads \"Not in the Storm Boy catchment.\" This is a hard geographic boundary, not a soft objection. Ben Payne's subsequent unanswered outbound call on the same date to \"Call back Peter Yench\" suggests the rep was unaware of or did not act on the catchment rejection before attempting follow-up."
+        },
+        {
+          "step": 2,
+          "header": "Out-of-scope leads waste velocity on re-engagement",
+          "body": "Peter has been contacted 6 times across 21 months (2024-03-27 through 2026-03-03) without a single positive signal. The catchment disqualification on 2026-03-03 should have ended the thread, but instead it sits \"stalled\" for 72 days with a plan to \"one last attempt.\" Each re-contact (Ben's July 2025 email series, Bill's 2024 outreach) resets effort on a lead AgriProve cannot serve."
+        },
+        {
+          "step": 3,
+          "header": "Close the lead with documented geographic reason",
+          "body": "Record the disqualification reason (\"Not in Storm Boy catchment\") in the lead record with closed/lost status and reason code, then remove from active list. This prevents future rep cycles and clarifies the account as permanently ineligible, not dormant. No re-engagement or 30-day deferral is justified."
+        }
+      ],
+      "next_step_short": "Close lead, mark ineligible catchment",
+      "next_step_qualifier": "Peter is outside the Storm Boy catchment per 2026-03-03 call note. This is a geographic boundary, not a sales objection. Closing prevents waste on future re-contact cycles.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 72,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:20:47.649Z"
+    },
+    "1200308": {
+      "contact_id": "1200308",
+      "name": "Joanne Beirs",
+      "stage": "In Conversation",
+      "heat": "COLD",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Last contact was a failed call on 2026-03-03, not an email.",
+          "body": "On 2026-03-03, a call attempt was logged with status \"No number\"—meaning the call did not connect. The last *successful* contact was 2025-12-12, when Ben sent an email saying \"Final time I'll personally reach out (promise).\" That promise was broken; the call attempt 82 days later violated the stated boundary."
+        },
+        {
+          "step": 2,
+          "header": "Seven emails in five months with zero response signals hard no, not stall.",
+          "body": "Between 2025-12-05 and 2025-12-12, Ben sent four emails in one week. On 2025-07-22, Ben had already sent one. Zero replies, zero meeting books, zero engagement. Joanne has had seven clear opportunities to opt in and has chosen silence each time. A \"stall\" implies passive delay; this is active non-response after repeated personal commitments."
+        },
+        {
+          "step": 3,
+          "header": "One final touch must reset the frame, not repeat the pitch.",
+          "body": "A seventh email or call attempt will reinforce the pattern Joanne has already rejected. Instead, a single message must explicitly acknowledge the silence (\"I've reached out six times since July, and I respect that the timing may not be right\"), apologize for the boundary break (the 2026-03-03 call after the \"final\" 2025-12-12 email), and give a clear off-ramp: \"I'll stop here unless you ask otherwise.\" This preserves the relationship and removes the pressure that has already failed."
+        }
+      ],
+      "next_step_short": "Send reset email, then remove from active list",
+      "next_step_qualifier": "One permission-based message that names the silence, apologizes for the broken boundary, and explicitly stops outreach unless Joanne replies. No pitch, no meeting link, no follow-up scheduled.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 72,
+        "engagement_count": 6
+      },
+      "regenerated_at": "2026-05-15T03:21:31.057Z"
+    },
+    "1200406": {
+      "contact_id": "1200406",
+      "name": "Maddy Batinich",
+      "stage": "In Conversation",
+      "heat": "COLD",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Ben sent a final outreach on 2025-12-12, then went silent for 72 days.",
+          "body": "On 2025-12-12, Ben wrote \"Final time I'll personally reach out (promise)\" in an email about a Riverina farmer case study. The last recorded contact is 2026-03-03—a 3-second outbound call with no logged outcome. No follow-up email, no discovery call, no documented response from Maddy since December."
+        },
+        {
+          "step": 2,
+          "header": "The 'final outreach' promise was kept but the lead was abandoned immediately after.",
+          "body": "Ben set an explicit commitment boundary (\"Final time\") and then violated it by going silent. Maddy is geographically disqualified—noted on 2026-02-24 as \"Based in Young - Outside of Stormboy radius\"—but that note came *after* three warm emails in December, suggesting scope creep or poor account qualification upfront. A 72-day gap after a \"final\" promise signals either dropped context or a lead that was never actually qualified."
+        },
+        {
+          "step": 3,
+          "header": "Clarify whether Young, NSW is in or out of scope before any further outreach.",
+          "body": "The 2026-02-24 note disqualifies her, but Ben's December emails positioned her as viable. Either the scope rules changed, or the initial qualification was sloppy. If she is genuinely out of scope, drop her—don't attempt a \"last call.\" If she *could* be served, one final call is earned, but only after confirming service area and getting a yes/no on interest before Dec 2025."
+        }
+      ],
+      "next_step_short": "Confirm Young is out-of-scope, then drop.",
+      "next_step_qualifier": "The 2026-02-24 note already disqualifies her. Honor that boundary instead of a guilt-driven final call. A 72-day silence after a \"final promise\" is already a soft close.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 72,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:22:14.254Z"
+    },
+    "1201004": {
+      "contact_id": "1201004",
+      "name": "Ita Milthorpe",
+      "stage": "In Conversation",
+      "heat": "COLD",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "No response to cold email; contact marked out-of-scope.",
+          "body": "On 2025-07-14, Ben sent an initial cold email: \"Hi Ita, I hope this finds you well. We haven't met before, my name is Ben...Would you be open to a 20-minute chat?\" No reply followed. On 2026-03-03 (233d later), a note was added: \"Outside the Storm Boy catchment\"—indicating geographic disqualification, not disengagement."
+        },
+        {
+          "step": 2,
+          "header": "Lead was never qualified; catchment exclusion predates any real conversation.",
+          "body": "The 305d gap reflects no stall—it reflects a cold outreach that landed in an out-of-scope geography. The \"in conversation\" status is a misclassification: Ita never replied to Ben's email, and the project footprint rules her out entirely. Reopening this lead wastes a final touch on a disqualified prospect."
+        },
+        {
+          "step": 3,
+          "header": "Remove from active list based on geography, not effort.",
+          "body": "The lever is prospect qualification, not persistence. A catchment boundary is a binary gate—one more email does not change it. Confirm the Storm Boy catchment boundary is current, then close the record with reason \"out of territory\" rather than \"no response.\""
+        }
+      ],
+      "next_step_short": "Remove from active list; confirm catchment boundary.",
+      "next_step_qualifier": "Do not send one last email. Ita is geographically disqualified per the 2026-03-03 note. Verify the boundary is still in force, then mark closed as out-of-territory.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 72,
+        "engagement_count": 2
+      },
+      "regenerated_at": "2026-05-15T03:22:57.651Z"
+    },
+    "1201505": {
+      "contact_id": "1201505",
+      "name": "Richard Page",
+      "stage": "In Conversation",
+      "heat": "COLD",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Ben sent five emails over 7 days, then silence for 153 days.",
+          "body": "On 2025-12-05 through 2025-12-12, Ben executed a rapid sequence: \"Riverina soils might be worth more than you think\" (Dec 5), the same subject again (Dec 6), \"Riverina soils might be worth more than you think\" (Dec 11), and \"How a Riverina farmer is are forecasting success\" (Dec 12). The last contact note on 2026-03-03 reads \"Outside the Storm Boy catchment\"—a disqualifier, not a next step. No response from Richard across any channel."
+        },
+        {
+          "step": 2,
+          "header": "The catchment note signals Richard was removed from scope, not stalled.",
+          "body": "The 2026-03-03 note \"Outside the Storm Boy catchment\" is not a follow-up; it is a qualification fact that retroactively explains why engagement stopped. AgriProve projects are catchment-bound (Storm Boy is one such geography). Richard's farm geography moved him out of scope—this is not a sales stall, it is a data-driven exclusion. Treating this as a \"warm deal\" that needs \"one last attempt\" conflicts with the documented geographic boundary."
+        },
+        {
+          "step": 3,
+          "header": "Verify catchment status before committing to further outreach.",
+          "body": "If Richard's farm is indeed outside Storm Boy catchment or any active AgriProve project zone, remove him from the active list and mark reason as \"out of scope—geography.\" If the catchment status was a clerical note and Richard's location is actually eligible, a single reframe email citing the catchment clarification and a specific farm-level carbon snapshot (not another general pitch) could reset the conversation. Current plan treats a disqualified lead as warm."
+        }
+      ],
+      "next_step_short": "Verify Richard's farm catchment status first",
+      "next_step_qualifier": "Check whether Storm Boy catchment note is a geographic disqualifier or a misclassification. If out of scope, remove cleanly. If in scope, send one targeted email with site-specific ACCU estimate.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 72,
+        "engagement_count": 6
+      },
+      "regenerated_at": "2026-05-15T03:23:41.112Z"
+    },
+    "1201605": {
+      "contact_id": "1201605",
+      "name": "Ian Cameron",
+      "stage": "In Conversation",
+      "heat": "COLD",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Last contact was a failed call attempt, not engagement.",
+          "body": "On 2026-02-25, the record shows \"CALL — Call with Ian Cameron\" with note \"No phone number\"—this was not a completed conversation but a failed dial. Before that, the last actual engagement was 2025-12-12, when Ben sent \"Final time I'll personally reach out (promise)\" via email. Ian never responded to any of the four emails sent between 2025-12-05 and 2025-12-12."
+        },
+        {
+          "step": 2,
+          "header": "78 days of silence after a 'final' outreach signals hard no, not dormancy.",
+          "body": "Ben explicitly framed 2025-12-12 as \"Final time I'll personally reach out (promise),\" then radio silence for 78 days suggests Ian either deleted, ignored, or deprioritized all messaging. The failed call on 2026-02-25 (no number on file) confirms Ian did not facilitate a way to be reached. Reactivating now risks compounding the broken commitment and damaging trust further."
+        },
+        {
+          "step": 3,
+          "header": "The lever is a reset from a different person, not persistence from Ben.",
+          "body": "One more call or email from Ben violates the \"final\" promise and deepens the ignore pattern. If Ian is genuinely warm (as the Aircall note hints at a \"warming\" operator in the same orbit), a peer-to-peer intro from that warm contact—not Ben—would be the only credible reentry. Otherwise, Ian should be archived as out-of-scope until he opts back in via another channel."
+        }
+      ],
+      "next_step_short": "Identify warm Riverina peer to introduce Ian, or archive.",
+      "next_step_qualifier": "Ben's \"final outreach\" on 2025-12-12 is now 78d old with no response. Direct contact violates that boundary. Warm peer intro resets the frame; no peer contact = archive.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 78,
+        "engagement_count": 6
+      },
+      "regenerated_at": "2026-05-15T03:24:24.745Z"
+    },
+    "1202110": {
+      "contact_id": "1202110",
+      "name": "Peter Sykes",
+      "stage": "In Conversation",
+      "heat": "COLD",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Email sequence ended 2025-12-12 with explicit closure signal.",
+          "body": "On 2025-12-12, Ben sent \"Final time I'll personally reach out (promise)\" — a hard stop marker, not an open loop. The prior four emails (2025-12-05 through 2025-12-12) compressed into a single week with no response, then silence for 153 days. This is not a stalled warm lead; it's a closed-out prospect."
+        },
+        {
+          "step": 2,
+          "header": "\"One last attempt\" contradicts the actual sequence already executed.",
+          "body": "Ben already made the last attempt on 2025-12-12 with explicit promise not to re-contact. A sixth touch would violate the boundary he set and signal either that AgriProve doesn't track its own commitments or that the rep is willing to override stated intent. The Aircall evidence (2026-04-13) shows a *different prospect* (Peter Lawson, not Peter Sykes) warming up; that success proves the playbook works elsewhere, not that this contact deserves another cycle."
+        },
+        {
+          "step": 3,
+          "header": "Honor the stated boundary and clean up the record honestly.",
+          "body": "Peter Sykes received a complete narrative arc: soil-type fit, regional proof-of-concept (31 projects, 8,800 hectares, $500k+), a specific free-tool offer, and a calendar link. He declined all four exposures in a single week. The lever is accepting that non-response after a promised final touch *is the answer* — not a reason to re-engage. Mark as out-of-scope with reason \"Declined after final contact per 2025-12-12 commitment.\""
+        }
+      ],
+      "next_step_short": "Close lead, mark out-of-scope, document reason.",
+      "next_step_qualifier": "Peter received a complete, multi-touch sequence ending with a stated final contact. Re-reaching after that boundary breaks trust and wastes capacity on a dead prospect.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 153,
+        "engagement_count": 5
+      },
+      "regenerated_at": "2026-05-15T03:25:10.193Z"
+    },
+    "1202256": {
+      "contact_id": "1202256",
+      "name": "Renee Nicholls",
+      "stage": "In Conversation",
+      "heat": "COLD",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Ben sent four emails in nine days, then silence for 72 days.",
+          "body": "On 2025-12-05, Ben opened with \"G'Day Renee, Ben from AgriProve here.\" On 2025-12-06 he followed with Riverina track record data. On 2025-12-11 he reintroduced the company itself. On 2025-12-12 he sent \"Final time I'll personally reach out (promise).\" Last contact 2026-03-03 was a one-line note: \"Outside the Storm Boy catchement\"—a categorical reason, not a scheduling gap."
+        },
+        {
+          "step": 2,
+          "header": "The note reveals disqualification, not dormancy.",
+          "body": "The 2026-03-03 note \"Outside the Storm Boy catchement\" is not a stall; it is explicit out-of-scope reasoning. Ben had already signaled finality on 2025-12-12 (\"Final time I'll personally reach out\"), and the follow-up note documents why further outreach is wasted: Renee's farm geography does not fit AgriProve's project boundaries. Continuing to contact her after this discovery contradicts the discovery itself."
+        },
+        {
+          "step": 3,
+          "header": "Honor the disqualification; remove from active pipeline.",
+          "body": "The planned next step (\"one last attempt, then drop\") assumes Renee is a warm lead waiting for the right touch. The artifact shows she is geographically out of scope. Sending another email would violate Ben's own triage and waste both parties' time. The correct lever is acceptance of the disqualification, not persistence."
+        }
+      ],
+      "next_step_short": "Remove from active list, mark out-of-scope.",
+      "next_step_qualifier": "The 2026-03-03 note documents geographic disqualification (outside catchment). No further outreach adds value; close the record honestly.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 72,
+        "engagement_count": 6
+      },
+      "regenerated_at": "2026-05-15T03:25:52.704Z"
+    },
+    "318874470864": {
+      "contact_id": "318874470864",
+      "name": "Glenn Canny",
+      "stage": "Farm Visit completed",
+      "heat": "WARM",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Glenn went radio-silent after saying he'd reconvene in 2–3 weeks.",
+          "body": "On 2026-04-13, Glenn told Ben Payne: \"once he has some time to discuss (likely 2-3 weeks) he'd like to under next steps. Seemed happy with HORZION outcomes.\" On 2026-05-07 (24 days later), Ben made an outbound call but no outcome is recorded. The gap between the 2–3 week expectation and the 5-day silence post-call suggests Glenn deprioritized or forgot the conversation."
+        },
+        {
+          "step": 2,
+          "header": "Silence after positive sentiment is a lost-deal signal without a forcing event.",
+          "body": "Glenn expressed satisfaction with the HORIZON results but attached no urgency or next-meeting date. Without a concrete trigger (e.g., \"I'll send you the neighbour comparison on Tuesday\"), warm leads drift into administrative debt. At 55 days post-visit, the visit report and findings have lost recency; a generic \"checking in\" message will land flat."
+        },
+        {
+          "step": 3,
+          "header": "Send a specific artifact tied to his farm and property size to re-anchor.",
+          "body": "Glenn operates a family enterprise on 850 hectares at Killawarra Park, VIC. A HORIZON snapshot comparing his soil carbon baseline to a peer farm of similar size in North East Victoria—or a specific breakdown of his payment potential—gives him a concrete reason to schedule the 20-minute next-steps call he deferred. The artifact must arrive within 2 days to reset the 2–3 week window he mentioned."
+        }
+      ],
+      "next_step_short": "Send Glenn HORIZON snapshot + neighbour comp.",
+      "next_step_qualifier": "Use the 850-hectare farm size and North East VIC region to build a peer comparison. Attach a specific artifact—not a check-in—to force a calendar decision within 48 hours.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 5,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-12T11:07:14.774Z"
+    },
+    "292638308838": {
+      "contact_id": "292638308838",
+      "name": "Geoff Roberts",
+      "stage": "Farm Visit completed",
+      "heat": "WARM",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Ben left voicemail on 2026-05-14 with no callback yet.",
+          "body": "On 2026-05-14 at 14:54, Ben called Geoff and left a voicemail: \"Asked Geoff for a callback on 0483921562 to check how everything is sitting on his end.\" Geoff has not called back in the 0 days since that voicemail. The call followed a detailed email from 2026-05-08 where Ben addressed Geoff's concern that soil carbon is \"wholly and solely reliant on rainfall.\""
+        },
+        {
+          "step": 2,
+          "header": "Geoff is objection-aware but engagement is now voicemail-dependent.",
+          "body": "Geoff initiated contact on 2026-05-05 and had a 22-minute inbound call on 2026-05-06 (1319s), signaling genuine interest. Ben sent a substantive email on 2026-05-08 directly addressing Geoff's rainfall skepticism—a real technical barrier. However, the last move (2026-05-14 voicemail) is passive; Geoff has now heard a request to call back but chosen not to respond, risking the deal to silence rather than explicit objection."
+        },
+        {
+          "step": 3,
+          "header": "Send a specific, non-voicemail artifact that proves rainfall-viability claim.",
+          "body": "Ben's email started the rebuttal (\"We have seen projects...\") but was cut off in the record and may not have landed decisively. Send a concrete artifact—neighbor comparison, HORIZON snapshot, or rainfall-adjusted yield model—that directly answers the skepticism Geoff raised on 2026-05-06 call. This shifts from a voicemail ask to a reason-to-open and reply."
+        }
+      ],
+      "next_step_short": "Send rainfall-viability evidence snapshot, no call ask.",
+      "next_step_qualifier": "Geoff's objection is technical, not reluctance. A voicemail follow-up won't resolve it. A specific artifact (neighbor data, model output) answers the question and invites reply without further calls.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 0,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:14:18.822Z"
+    },
+    "121780398906": {
+      "contact_id": "121780398906",
+      "name": "Andy Taylor",
+      "stage": "Farm Visit completed",
+      "heat": "HOT",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Nine days of silence after Andy committed to send land titles",
+          "body": "On 2026-04-14, Andy said \"going to send through the land titles this week so we can get more of an accurate HORIZION snapshot to him.\" No follow-up contact until 2026-05-06, when Ben noted \"Just needs LT's to get a more accurate snapshot over to him. His wife needs to pull the rate notices out and get those numbers.\" The commitment was made 23 days prior and has not been fulfilled or tracked."
+        },
+        {
+          "step": 2,
+          "header": "Farmer accountability gap: commitment without retrieval mechanism",
+          "body": "Andy's wife is the bottleneck (she holds the rate notices), but neither Ben nor the rep has a scheduled callback or document-receipt checkpoint. The 9-day silence after 2026-05-06 signals the lead is now drifting in Andy's task queue, not AgriProve's. Without a firm date and owner assignment on the farmer's side, the likelihood of unsolicited submission drops materially—especially in busy harvest/spray season."
+        },
+        {
+          "step": 3,
+          "header": "Set a hard callback date tied to document delivery, not sending drafts",
+          "body": "Sending KCT or contract now is premature; Andy has not yet returned the land titles and rate notices required to produce an accurate HORIZON snapshot. The lever is to call Andy on a specific date (e.g., 2026-05-15) with a clear ask: \"Have you and your wife pulled those rate notices? If so, email them today and we'll have the snapshot to you by [date].\" Only after receipt should a draft follow."
+        }
+      ],
+      "next_step_short": "Call Andy on 2026-05-15 re: land titles status",
+      "next_step_qualifier": "He committed 23 days ago but wife hasn't retrieved rate notices yet. Set a firm callback and document-receipt deadline to unblock the HORIZON snapshot build.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 9,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:09:55.176Z"
+    },
+    "322146645475": {
+      "contact_id": "322146645475",
+      "name": "Ian Cameron",
+      "stage": "Farm Visit completed",
+      "heat": "WARM",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit completed 7 days ago with zero follow-up artifact",
+          "body": "On 2026-05-05, Hobbs and AgriProve conducted a farm visit at \"1063 Kidman Way\" (12,000 hectares, The Yanko operation). HubSpot shows only the scheduled meeting entry; no post-visit notes, photos, soil data, or conversation summary exist in the timeline. Last contact is the visit date itself."
+        },
+        {
+          "step": 2,
+          "header": "Seven-day silence after warm entry signals decay in momentum",
+          "body": "Ian was pre-warmed on 2026-04-20 via Aircall—described as already warm, booked with \"zero objection handling required\" and mutual ease. A 7-day gap after the actual visit, with no artifact or follow-up, typically erodes trust and allows competing priorities to resurface. The absence of a tangible next-step artifact (HORIZON snapshot, soil comparison, custom proposal) forces Ian to carry the burden of re-engagement."
+        },
+        {
+          "step": 3,
+          "header": "Inject specific, visit-derived artifact tied to farm data within 48 hours",
+          "body": "The lever is not a check-in but a reason to reply: send a HORIZON snapshot, neighbour yield/carbon comparison, or soil-health snapshot keyed to The Yanko's 12,000 hectares and observed soil condition from the visit. Specificity (not generality) rekindles the momentum from 2026-04-20 and signals follow-through."
+        }
+      ],
+      "next_step_short": "Send HORIZON snapshot for The Yanko today",
+      "next_step_qualifier": "Tie it to the farm visit (2026-05-05) and soil data observed. Do not send a generic check-in—Ian was warm 7d ago and needs a concrete reason to reply.",
+      "diagnosis_assessment": "ok",
+      "timeline_used": {
+        "days_since_last_contact": 7,
+        "engagement_count": 1
+      },
+      "regenerated_at": "2026-05-12T11:09:24.218Z"
+    },
+    "322387154419": {
+      "contact_id": "322387154419",
+      "name": "Rod Frohling",
+      "stage": "Farm Visit completed",
+      "heat": "HOT",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit was scheduled, not completed.",
+          "body": "On 2026-05-08, a MEETING record shows \"Hobbs/AgriProve Farm Visit scheduled\" at the Frohling property address. The HubSpot stage label \"Farm Visit completed\" is a record classification, not evidence that a visit occurred. The timeline contains only two phone calls on 2026-05-07 (a voicemail at 15:05 and Rod's callback at 15:33) confirming Rod answered and the stud details—no visit summary, outcomes, or follow-up notes from an in-person meeting."
+        },
+        {
+          "step": 2,
+          "header": "Sending contract now assumes a visit happened and alignment was reached.",
+          "body": "The planned next_step prescribes sending \"KCT or contract draft within 48h\" based on \"momentum\" from a farm visit. If no visit occurred, sending contract material is premature and signals either misalignment in the pipeline or a rep making assumptions without evidence. The last documented interaction is Rod answering a callback call on 2026-05-07 at 15:33—no outcomes, questions answered, or commitment stated in the transcript."
+        },
+        {
+          "step": 3,
+          "header": "Clarify whether the farm visit actually happened and what Rod's next step is.",
+          "body": "Contact Rod directly to confirm: (a) did the scheduled visit on or after 2026-05-08 take place; (b) if yes, what were the key outcomes and objections; (c) if no, what is blocking the visit and when can it be rescheduled. Only after that call should a contract or KCT be drafted. Sending materials blind will waste credibility and invite a \"not ready\" rejection."
+        }
+      ],
+      "next_step_short": "Call Rod to confirm visit status.",
+      "next_step_qualifier": "The 2026-05-08 meeting is marked 'scheduled,' not completed. Clarify what happened and Rod's readiness before sending any contract material.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 6,
+        "engagement_count": 5
+      },
+      "regenerated_at": "2026-05-15T03:10:40.213Z"
+    },
+    "318875246026": {
+      "contact_id": "318875246026",
+      "name": "DJ Castine",
+      "stage": "Farm Visit completed",
+      "heat": "COLD",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit completed 56 days ago with no documented outcome.",
+          "body": "On 2026-03-16, a farm visit was scheduled at \"3 Lower Tarcutta Road, Tarcutta, NSW, Australia\" (Toonga Station, 4000 hectares). No notes, follow-up activity, or objection record exist in the timeline after that visit date. The last prior contact was a 134-second call on 2026-03-13 with \"Storm253 Boy\" at +61408849427."
+        },
+        {
+          "step": 2,
+          "header": "Missing post-visit artifact creates ambiguity about actual farm readiness.",
+          "body": "A completed farm visit without documented next steps (outcome, timeline, conditions, objections) is a red flag for either lost deal clarity or incomplete rep documentation. Without knowing whether the farmer said \"interested, follow up in Q4\" or \"not now,\" we cannot distinguish a genuine cooling cycle from a documented-but-dormant opportunity. The 56-day silence alone is not conclusive."
+        },
+        {
+          "step": 3,
+          "header": "Retrieve the actual visit notes before disengaging.",
+          "body": "The lever is visibility: check Hobbs' calendar notes, email thread, or internal comments from 2026-03-16 to establish whether DJ Castine / Toonga Station has a documented reason for silence or was left hanging. If notes show \"waiting on soil test results Q4\" or \"owner away until April,\" warm re-engagement is warranted. If notes are blank or say \"not interested,\" disengage is correct."
+        }
+      ],
+      "next_step_short": "Check visit notes from 2026-03-16 first.",
+      "next_step_qualifier": "Retrieve Hobbs' post-visit documentation before deciding to disengage. The absence of follow-up notes, not the 56-day silence alone, determines next action.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 56,
+        "engagement_count": 2
+      },
+      "regenerated_at": "2026-05-12T11:10:50.925Z"
+    },
+    "121781015962": {
+      "contact_id": "121781015962",
+      "name": "Kelly Male",
+      "stage": "Farm Visit completed",
+      "heat": "COLD",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit completed 2026-03-12; no follow-up contact for 49 days.",
+          "body": "On 2026-03-12, AgriProve completed a scheduled farm visit at 691 Pleasant Hills Rd, Munyabla NSW (1600 hectares, Kland Holdings). The last contact was 2026-03-18—a call where Ben Payne \"Call back Kelly Male +61400670710.\" No contact recorded since 2026-03-18 (55 days ago)."
+        },
+        {
+          "step": 2,
+          "header": "Silent post-visit interval suggests visit outcome was negative or undocumented.",
+          "body": "Kelly showed \"real interest in carbon credits\" on 2026-02-11 and confirmed a 1pm meeting for 2026-03-12. The farm visit occurred, but there is no note of outcome, findings, or next commitment. The 2026-03-18 call is a brief callback record with no substance logged. Forty-nine days of silence after a farm visit is a hard stop, not a cooling signal—it indicates either a rejection not documented or a dropped thread."
+        },
+        {
+          "step": 3,
+          "header": "Uncover the visit outcome before disengaging; clarify whether Kelly rejected or rep abandoned.",
+          "body": "The planned next step assumes disengagement is correct, but there is no artifact (note, email, call summary) explaining *why* Kelly went silent post-visit. Ben Payne must retrieve the farm visit notes or listen to the 2026-03-18 call to confirm whether Kelly declined, raised an objection, or whether the rep simply did not follow up. Disengagement without this clarity risks losing a qualified lead due to internal failure, not customer rejection."
+        }
+      ],
+      "next_step_short": "Listen to 2026-03-18 call; retrieve farm visit notes.",
+      "next_step_qualifier": "Before disengaging, confirm whether the visit produced a clear 'no' or an internal drop. If outcome is missing, one diagnostic call is warranted.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 55,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-12T11:11:34.497Z"
+    },
+    "178624176588": {
+      "contact_id": "178624176588",
+      "name": "Brandon Sykes",
+      "stage": "Farm Visit completed",
+      "heat": "COLD",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Last meaningful contact was a 60-second call on 2026-03-18.",
+          "body": "Ben Payne's outbound call on 2026-03-18 lasted only 60 seconds—too brief to convey value or capture objection. The prior call on 2026-02-24 ran 335 seconds, suggesting a substantive conversation; the March call suggests either a quick rejection, a brush-off, or a failed connection attempt. No follow-up artifact (email, note, or callback) appears after that 60-second call."
+        },
+        {
+          "step": 2,
+          "header": "A 60-second call is not a farm visit conclusion; it's a blocked conversation.",
+          "body": "The timeline shows four calls over six months, but no documented farm visit outcome—no notes on soil status, budget, timeline, or objection. The 60-second March call suggests Brandon either declined to engage or the rep couldn't hold the line. Without a recorded reason for silence, disengagement assumes failure rather than diagnosing whether Brandon is actually out-of-scope or simply waiting for the right moment to re-engage."
+        },
+        {
+          "step": 3,
+          "header": "One clarifying call to confirm scope, not a polite exit.",
+          "body": "Before disengaging, confirm whether Brandon is a real prospect (willing to discuss soil carbon) or a wrong-fit farm. A single, well-framed call asking 'Is this still the right time to talk about soil carbon on Kellys Rd?' will close the loop faster than a goodbye message and free up the rep's time honestly—either into a real conversation or a clean hand-off."
+        }
+      ],
+      "next_step_short": "Call Brandon once to confirm scope.",
+      "next_step_qualifier": "If he confirms interest, schedule a brief call to recap soil carbon fit. If he's not ready or declines, disengage. Either way, you'll know why.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 56,
+        "engagement_count": 5
+      },
+      "regenerated_at": "2026-05-14T03:07:51.729Z"
+    },
+    "319216416241": {
+      "contact_id": "319216416241",
+      "name": "The Rock Angus",
+      "stage": "Farm Visit completed",
+      "heat": "COLD",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit occurred 30 days ago with zero documented follow-up.",
+          "body": "A completed farm visit at The Rock Angus occurred 30 days ago, but no engagement timeline is available and no contacts have been logged since. The absence of any HubSpot record—including post-visit notes, follow-up calls, or emails—indicates either the visit was never documented or contact ceased entirely after the visit."
+        },
+        {
+          "step": 2,
+          "header": "Unknown outcome and missing decision point creates avoidable churn risk.",
+          "body": "Without documented post-visit touchpoints, we cannot distinguish between a farm that is evaluating internally, a farm that rejected the offer, or a farm where the rep simply did not follow up. Disengaging now without understanding which it is risks losing a prospect who may be ready to move forward, especially given that farm visits are high-intent signals."
+        },
+        {
+          "step": 3,
+          "header": "One diagnostic call needed to clarify farm intent before any exit decision.",
+          "body": "A single direct call to the farm contact—referencing the visit 30 days ago and asking explicitly whether they are still evaluating, have decided against AgriProve, or are waiting for additional information—will answer whether to nurture, pivot, or disengage. This takes 10 minutes and removes guesswork."
+        }
+      ],
+      "next_step_short": "Call farm contact; confirm status.",
+      "next_step_qualifier": "A 30d-old farm visit with zero follow-up is a missing signal, not a cooling lead. One call clarifies intent before any disengagement.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": null,
+        "engagement_count": 0
+      },
+      "regenerated_at": "2026-05-15T03:15:43.278Z"
+    },
+    "319278384626": {
+      "contact_id": "319278384626",
+      "name": "Pavey Angus",
+      "stage": "Farm Visit completed",
+      "heat": "COLD",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Last contact was a 42-second outbound call on 2026-04-15.",
+          "body": "The timeline shows only a \"Call back Pavey Angus\" entry dated 2026-04-15, recorded as a 42-second outbound call. No farm visit artifact, notes, or follow-up action appear in the record. The subtitle claims \"farm visit completed\" but the HubSpot log contains no visit documentation, outcome, or next-step note from that date."
+        },
+        {
+          "step": 2,
+          "header": "Missing visit record means no diagnosis of actual farm readiness or objection.",
+          "body": "Without a documented farm visit, we cannot distinguish between: (a) the call was a callback attempt that failed or was rescheduled, (b) a visit occurred but was not logged, or (c) the prospect actively declined. A 42-second call typically signals either a missed connection or a quick \"not now.\" Disengaging on assumption alone risks losing a prospect who may still be interested but needs a proper re-entry point."
+        },
+        {
+          "step": 3,
+          "header": "Verify whether a farm visit actually took place and what was said.",
+          "body": "Before disengaging, confirm the visit status with Hobbs Magaret (the call handler) or Pavey Angus directly. If a visit did occur 30d ago, retrieve the outcome and any blocking reason. If the 42-second call was a no-answer or reschedule, a single re-outreach with a specific time offer is lower-cost than writing off the lead entirely."
+        }
+      ],
+      "next_step_short": "Confirm visit happened, retrieve outcome notes.",
+      "next_step_qualifier": "The HubSpot record shows only a 42-second call on 2026-04-15; no farm visit artifact exists. Clarify status with Hobbs Magaret before deciding to disengage.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 30,
+        "engagement_count": 1
+      },
+      "regenerated_at": "2026-05-15T03:16:26.203Z"
+    },
+    "292637160903": {
+      "contact_id": "292637160903",
+      "name": "Peter Lawson",
+      "stage": "Farm Visit completed",
+      "heat": "COLD",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Multiple calls on 2026-04-13, then silence for 22 days.",
+          "body": "On 2026-04-13, Hobbs Magaret made three separate calls to Peter Lawson (336s, 89s, 45s) plus a 232s call to \"Storm108 Boy\" at the same property. Aircall notes the outcome as \"warming\" with a \"gatekeeper warmed quickly\" and \"volunteered son-in-law's phone number as the decision-maker.\" No contact has occurred since 2026-04-13—22 days of zero follow-up after a warm handoff was promised."
+        },
+        {
+          "step": 2,
+          "header": "Handoff was never executed; decision-maker contact info collected but unused.",
+          "body": "The son-in-law's phone number was volunteered as the path forward, but no record exists of any call, email, or outreach to that contact. The 22-day gap suggests either the number was lost, the handoff was forgotten, or internal process failed. This is not a cooling lead—it is an abandoned follow-up after a warm introduction was secured."
+        },
+        {
+          "step": 3,
+          "header": "Retrieve and call the son-in-law contact; restart from warm introduction.",
+          "body": "The Aircall note confirms a willing gatekeeper and a named decision-maker. Disengaging now wastes that asset. Instead, locate the son-in-law's phone number from the 2026-04-13 Aircall recording or call notes, frame the outreach as a continuation of Peter's referral, and reconnect to the actual decision-maker before the handoff attribution stales further."
+        }
+      ],
+      "next_step_short": "Retrieve son-in-law contact; call with Peter's referral.",
+      "next_step_qualifier": "The warm handoff was secured but never executed. The decision-maker phone number exists in Aircall notes—pull it and re-engage within 2 days to honor Peter's warm intro before it loses credibility.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 32,
+        "engagement_count": 5
+      },
+      "regenerated_at": "2026-05-15T03:17:10.576Z"
+    },
+    "319022324155": {
+      "contact_id": "319022324155",
+      "name": "Peter Lawson",
+      "stage": "Farm Visit completed",
+      "heat": "COLD",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit occurred 22 days ago with no follow-up contact.",
+          "body": "On 2026-04-23, a farm visit to \"351 Trewalla Rd\" was scheduled and completed. The last contact in the timeline is that same date. No call, email, or note has been logged in the 22 days since."
+        },
+        {
+          "step": 2,
+          "header": "The visit outcome is unknown; silence after a scheduled farm visit is not neutral.",
+          "body": "On 2026-04-13, Fiona Lawson \"volunteered son-in-law's phone number as the decision-maker — no objections, full handoff to next step.\" A visit was then scheduled for 22d ago, but the HubSpot record contains no post-visit note, outcome, or next-step commitment. This is a data gap, not a signal of disengagement; the rep may have simply failed to log the visit outcome."
+        },
+        {
+          "step": 3,
+          "header": "Recover the visit outcome before disengaging; it will determine whether to follow up or close.",
+          "body": "The decision to disengage should rest on whether the visit itself revealed a \"no\" or whether it exposed a logistics/follow-up failure. Contact the visit owner (Hobbs/Margaret) or check Aircall/CRM for a post-visit debrief. If the visit surfaced a real objection or timing barrier, disengagement is warranted. If the rep simply did not log the outcome, a single follow-up email referencing the visit is the correct move."
+        }
+      ],
+      "next_step_short": "Retrieve farm visit debrief notes from Hobbs",
+      "next_step_qualifier": "The 22d silence is data absence, not disengagement. Confirm visit outcome (go/no-go/pause) before sending any message to Peter.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 22,
+        "engagement_count": 2
+      },
+      "regenerated_at": "2026-05-15T03:17:53.355Z"
+    },
+    "319286243813": {
+      "contact_id": "319286243813",
+      "name": "Wunnamurra Farming",
+      "stage": "In Conversation",
+      "heat": "COLD",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit scheduled, then abandoned without explicit close.",
+          "body": "On 2026-03-24, a farm visit with Hobbs was \"scheduled\" at 2797 Berrigan Rd. But on 2026-03-06, Andrew said he \"tentatively pencilled in 25th March\" and \"was probably going to move it back.\" No record of the visit occurring, rescheduling, or cancellation. Last contact is 2026-04-14—a note titled \"Call to Reschedule\"—with no outcome recorded."
+        },
+        {
+          "step": 2,
+          "header": "Prospect explicitly stated disinterest in carbon, visit was the only lever.",
+          "body": "On 2026-03-06, Andrew said \"he is not really interested in carbon project\" but \"did seem curious\" about Hobbs inspecting grazing. The farm visit was positioned as a grazing consultation, not a carbon pitch. When the visit evaporated without resolution, the sole mechanism for re-engagement dissolved."
+        },
+        {
+          "step": 3,
+          "header": "Clarify whether visit was cancelled or rescheduled; reset if abandoned.",
+          "body": "Call Andrew at 0429660584 to establish: Did the 25 March visit happen? If not, was it cancelled or just deferred? If cancelled, confirm whether Hobbs's grazing feedback could still be offered remotely. If truly out of scope, close honestly rather than cycle."
+        }
+      ],
+      "next_step_short": "Call Andrew: did Hobbs visit happen?",
+      "next_step_qualifier": "Confirm visit status and whether grazing feedback can still be delivered. If visit was cancelled and Andrew remains uninterested in carbon, close the lead.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 30,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:18:35.840Z"
+    },
+    "320031100369": {
+      "contact_id": "320031100369",
+      "name": "Ian Cameron",
+      "stage": "In Conversation",
+      "heat": "COLD",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit was booked but never executed or documented.",
+          "body": "On 2026-04-20, Hobbs Magaret called Ian Cameron and confirmed \"Farm visit booked: Tuesday 2026-04-28 13:30 at The Yanko.\" A note on 2025-04-22 again logged \"Farm visit confirmed. Tue 28 Apr 2026 at 1:30 PM.\" However, the next logged contact is 2026-04-27 (one day before the scheduled visit), an inbound call with no transcript or outcome recorded—only a raw Aircall receipt. There is no visit report, debrief, or follow-up artifact after 2026-04-28."
+        },
+        {
+          "step": 2,
+          "header": "Silence after a booked visit suggests either no-show or lost context, not cold disengagement.",
+          "body": "The 2026-04-20 call transcript shows Ian was actively engaged—he volunteered his preferred visit shape (\"drive around the property a couple of hours\"), provided a specific landmark (\"type ANCO into Google Maps\"), and the sentiment was marked \"Interested / casual.\" The 17-day gap is not a sign of Ian cooling; it is a sign that the visit either did not happen, or happened and was not closed/documented. Without a visit outcome, the rep has no signal to act on."
+        },
+        {
+          "step": 3,
+          "header": "Recover the visit outcome before deciding to drop the lead.",
+          "body": "The next step must establish whether the 2026-04-28 visit occurred and what happened. If it occurred, there should be a debrief note, photos, or a follow-up offer waiting to be sent. If it did not occur, Ian's silence after a confirmed appointment is material and requires a direct, honest reconnect—not a perfunctory \"one last attempt.\" Either way, the current plan to drop is premature."
+        }
+      ],
+      "next_step_short": "Call Ian to confirm if visit happened April 28.",
+      "next_step_qualifier": "Before dropping, establish whether the booked farm visit occurred and what the outcome was. The 17-day silence is unexplained, not evidence of cold disengagement.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 17,
+        "engagement_count": 3
+      },
+      "regenerated_at": "2026-05-15T03:19:19.256Z"
+    },
+    "9588711491": {
+      "contact_id": "9588711491",
+      "name": "Benjamin Crooks",
+      "stage": "In Conversation",
+      "heat": "COLD",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Last meaningful contact was a 75-second call on 2026-03-03, 72 days ago.",
+          "body": "Ben Payne made an outbound call to Benjamin that lasted 75 seconds on 2026-03-03 with instruction to \"Call back Benjamin Crooks.\" No call report, no follow-up email, and no notes document what was said or promised. The prior call (2024-07-03, 33 seconds, Bill Hyem) followed the same pattern: brief, no recorded outcome."
+        },
+        {
+          "step": 2,
+          "header": "Two short calls with no documented outcome signal either rejection or rep failure to close.",
+          "body": "Benjamin had been warm enough to answer two separate outbound calls (33s in Jul 2024, 75s in Mar 2026) and received four thoughtful emails in Oct–Dec 2025 about Riverina soil carbon opportunity and the regional conference. The absence of a call note, follow-up action, or reason for the 72-day silence makes it impossible to know if he declined, asked for space, or was simply abandoned after a weak close attempt."
+        },
+        {
+          "step": 3,
+          "header": "A single phone call with a clear outcome question closes this loop honestly.",
+          "body": "Before dropping, call Benjamin directly and ask: \"Benjamin, last time we spoke in March I said I'd follow up—I didn't. Are you still interested in exploring soil carbon for your farm, or should I take you off the list?\" A 60-second honest conversation replaces guessing and either restarts the deal or confirms disqualification with evidence."
+        }
+      ],
+      "next_step_short": "Call Benjamin, ask directly if interested",
+      "next_step_qualifier": "No call note exists from Mar 2026 call. One honest conversation answers whether he declined or was dropped, then decide keep/remove.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 72,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:26:36.080Z"
+    },
+    "318835594705": {
+      "contact_id": "318835594705",
+      "name": "X Burton",
+      "stage": "Farm Visit booked",
+      "heat": "WARM",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit confirmed for 2026-04-29 with Xavier Burton.",
+          "body": "On 2026-04-28, a meeting was \"scheduled\" at \"233 Embling road Glenrowan west\" for Glen West Sheep Studs. The 2026-04-08 call transcript shows Xavier was \"open straight away\" and \"Farm visit booked: Wednesday 2026-04-29.\" The visit is locked; last contact was 16 days ago on 2026-04-28."
+        },
+        {
+          "step": 2,
+          "header": "No blocking issue or objection is present in the record.",
+          "body": "Xavier expressed curiosity about \"timing + what the visitor's looking for\" but raised no resistance. The note flags him as \"Owner-operated\" with two merged studs (Coledale + Glen West), suggesting scale and stability. A booked farm visit 16 days out is a committed signal, not a stalled lead requiring diagnosis."
+        },
+        {
+          "step": 3,
+          "header": "Pre-visit prep, not diagnosis, is the correct lever here.",
+          "body": "The rep should confirm logistics (address, access, key contacts), brief Hobbs on Xavier's background (dual-stud operation, recent Coledale acquisition), and align on the grazing/soil-health conversation frame. Manual review adds no value; execution prep does."
+        }
+      ],
+      "next_step_short": "Confirm visit logistics with Xavier Burton",
+      "next_step_qualifier": "Call or SMS +61437134712 to confirm 2026-04-29 time, access details, and farm tour scope. Brief Hobbs on dual-stud setup and recent acquisition.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 16,
+        "engagement_count": 4
+      },
+      "regenerated_at": "2026-05-15T03:27:17.700Z"
+    },
+    "319022234093": {
+      "contact_id": "319022234093",
+      "name": "Alex Sloane",
+      "stage": "Farm Visit booked",
+      "heat": "COLD",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Visit booked tomorrow (2026-04-29) after warm reengagement call.",
+          "body": "On 2026-04-28, Hobbs called Alex Sloane at Savernake Station. Alex initially said his \"calendar tight this week (3 big commitments); next week Wed/Thurs (May 6 or 7) free,\" but Hobbs negotiated \"tomorrow (2026-04-29 Wednesday)\" as the farm visit time. The call outcome was logged as \"warming\" and the visit is confirmed for 12:00 PM at 2341 Savernake Rd."
+        },
+        {
+          "step": 2,
+          "header": "Stale lead re-warmed with zero friction; visit is imminent.",
+          "body": "This property (1000 hectares, 6th-generation grazing operation) was dormant for months—last substantive contact before 2026-04-28 was 2026-01-15 (over 3 months prior). Alex agreed to visit within 24 hours despite his stated tight schedule, signaling genuine interest. The risk is execution: a farm visit booked this tightly is fragile and depends on rep preparation and on-time arrival to lock the relationship."
+        },
+        {
+          "step": 3,
+          "header": "Prepare visit materials and confirm attendance 2–4 hours before.",
+          "body": "The lever is readiness. Hobbs needs to prepare a Savernake-specific soil or grazing-carbon snapshot today (2026-05-03 or 2026-04-29 morning at latest) and send it to Alex or print it for the visit. A soft confirmation call or SMS to Alex 2–4 hours before 12:00 PM on 2026-04-29 will catch any calendar conflicts early and signal professionalism."
+        }
+      ],
+      "next_step_short": "Prepare visit brief; soft-confirm 2 hours prior",
+      "next_step_qualifier": "Farm visit is tomorrow at noon. Rep must have soil/carbon snapshot ready and confirm attendance via SMS/call 2–4 hours before to prevent no-show or rescheduling.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 11,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:35:13.334Z"
+    },
+    "292637193708": {
+      "contact_id": "292637193708",
+      "name": "Graham Wilson",
+      "stage": "Farm Visit booked",
+      "heat": "WARM",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit scheduled for 2026-05-08, but last contact was 17 days ago with no confirmation.",
+          "body": "On 2026-04-27, a 104-second call with \"Storm8 Boy\" was logged, but the timeline shows a visit was \"booked — Fri 1 May 2026 at 9:30 AM\" on 2025-04-29 (per HubSpot note). The scheduled visit date in the system is 2026-05-08, which is 7 days after the stated booking date, creating a date discrepancy. No confirmation, reminder, or pre-visit communication is documented since the last call 17 days ago."
+        },
+        {
+          "step": 2,
+          "header": "Unconfirmed visit 10 days out carries high no-show risk without pre-flight contact.",
+          "body": "Farm visits in rural Australia (Howlong NSW, ~40 min from Albury per research note) have inherent travel cost and scheduling friction. Graham Wilson, as an owner-operator of a major sheep stud, is time-constrained; the April vacation note signals competing priorities. Without a confirmation touch in the last 17 days, the likelihood of a no-show or cancellation without notice increases materially—wasting rep travel and momentum."
+        },
+        {
+          "step": 3,
+          "header": "Confirm the correct visit date and Graham's availability before travel day.",
+          "body": "Call or text Graham at the mobile number on file (0428 265 215, per research note) to verify whether the visit is 2026-05-01 or 2026-05-08, confirm his availability, and lock logistics (site access, parking, duration). A 2–3 minute confirmation call now avoids a wasted 2-hour farm visit and re-boards the rep for an on-farm conversation."
+        }
+      ],
+      "next_step_short": "Confirm visit date and availability with Graham",
+      "next_step_qualifier": "Call 0428 265 215 to verify 2026-05-01 or 2026-05-08, confirm attendance, and lock logistics. No confirmation in 17 days; do this within 2 days.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 17,
+        "engagement_count": 5
+      },
+      "regenerated_at": "2026-05-15T03:28:00.806Z"
+    },
+    "322389283276": {
+      "contact_id": "322389283276",
+      "name": "David and Tara Brewer",
+      "stage": "Farm Visit completed",
+      "heat": "HOT",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit completed 2026-05-14, no outcome recorded.",
+          "body": "HubSpot shows a scheduled meeting on 2026-05-14 at \"401 Soldier Settlers Rd, Tallangatta Valley VIC\" for \"Brewer Beef / Koetong Angus\" (556 hectares), but the timeline contains only the meeting title \"MEETING — Hobbs/AgriProve Farm Visit scheduled\" with property metadata—no notes, outcome, or farmer signal captured. The visit happened, but what David and Tara said or committed to is absent from the record."
+        },
+        {
+          "step": 2,
+          "header": "Missing outcome data blocks diagnosis of real interest or objection.",
+          "body": "Without a visit summary or farmer statement, sending a KCT or contract draft assumes positive intent; if the Brewers flagged concerns, budget constraints, or competing options during the visit, a blind send wastes the momentum window and may trigger avoidance. The planned next_step conflates visit completion with readiness to advance—a heuristic that breaks when farm visit notes are absent."
+        },
+        {
+          "step": 3,
+          "header": "Retrieve visit notes to confirm farmer signal before sending paper.",
+          "body": "The lever is clarity: a 2-minute call or follow-up to Tara or David (0419275686) to confirm what was discussed, what they need next, and whether they're ready for a KCT should precede any document. If notes exist in a separate system (Hobbs field report, rep notes), pull them now; if the visit happened unrecorded, that's the real problem to solve first."
+        }
+      ],
+      "next_step_short": "Call Tara/David to confirm visit outcome",
+      "next_step_qualifier": "The visit occurred 1d ago but no outcome was logged. A 2-minute call confirming interest level and next step prevents a blind KCT send that may waste momentum or trigger avoidance.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": 1,
+        "engagement_count": 1
+      },
+      "regenerated_at": "2026-05-15T03:13:35.545Z"
+    },
+    "322387192307": {
+      "contact_id": "322387192307",
+      "name": "Bill Wearn",
+      "stage": "Farm Visit booked",
+      "heat": "WARM",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Visit tentatively agreed for 13 May; no confirmation since",
+          "body": "On 2026-05-07, Bill \"tentatively agreed: Wednesday afternoon 13 May for a farm visit\" but stated he'd be \"busy with two trucks of cattle, going to Sydney tomorrow (8/5), back Saturday; week of 17th he's on a push bike ride around Parkes/Falls for 3 days.\" The note dated 2026-05-12 (0 days ago) contains no follow-up confirmation, cancellation, or rescheduling—only the transcript of that initial call."
+        },
+        {
+          "step": 2,
+          "header": "Tentative agreement without confirmation is at high risk of no-show",
+          "body": "A \"tentative\" commitment from a busy operator (juggling cattle logistics, hotel ownership, and multi-day personal travel) requires explicit confirmation 24–48 hours before. Bill has not been contacted since the call; there is no record of a confirmation text, email, or call-back. Without re-engagement, the 13 May slot is likely to slip or be forgotten entirely."
+        },
+        {
+          "step": 3,
+          "header": "Confirm visit by phone or SMS within 24 hours of the 13th",
+          "body": "Bill is \"busy\" and has shown he values clarity on logistics (he volunteered his travel constraints). A single, direct touch—\"Hi Bill, confirming we're still on for Wednesday afternoon 13th at Mulgoa Pastoral?\"—removes ambiguity, signals respect for his calendar, and gives him an easy out or reschedule path. This is the only lever that converts tentative → firm or reveals conflict before wasted travel."
+        }
+      ],
+      "next_step_short": "Call Bill to confirm 13 May visit",
+      "next_step_qualifier": "Tentative agreement made 2026-05-07; no confirmation since. Re-engage 24 hours before the slot to lock it or reschedule.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 0,
+        "engagement_count": 2
+      },
+      "regenerated_at": "2026-05-13T03:50:27.547Z"
+    },
+    "322387362281": {
+      "contact_id": "322387362281",
+      "name": "Matthew Martin",
+      "stage": "Farm Visit booked",
+      "heat": "WARM",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit confirmed for 2026-05-15 at 11:00 with Matthew Martin.",
+          "body": "On 2026-05-06, Ben Payne reached Matthew Martin at Old Cobran Poll Merino Stud and \"Farm visit booked: Friday 2026-05-15 at 11:00.\" The meeting details were captured: \"13759 Hume Highway, Mullengandra, NSW, 2644\" and \"Total Property Hectares: 300.\" No objections or contingencies noted in the call transcript."
+        },
+        {
+          "step": 2,
+          "header": "Visit is 9 days out; only administrative prep remains before execution.",
+          "body": "The call outcome was marked \"no_change\" with sentiment \"Interested\" on 2026-05-06, and Matthew answered a direct outbound call and agreed immediately—low friction. The gap between booking (2026-05-06) and visit (2026-05-15) leaves only pre-visit logistics: confirm attendees, send agenda, verify Hobbs's contact was passed, and check Matthew received the meeting request."
+        },
+        {
+          "step": 3,
+          "header": "Manual review adds no decision-making value; execute pre-visit checklist instead.",
+          "body": "\"Review manually\" assumes there is ambiguity or risk requiring judgment—there is none. The visit is booked, Matthew is in target geography (Holbrook corridor, Mullengandra), property size and livestock type align with AgriProve scope, and sentiment is positive. The rep should confirm logistics (Hobbs attending, directions confirmed, Matthew has meeting link/agenda) and move to visit prep."
+        }
+      ],
+      "next_step_short": "Confirm visit logistics with Matthew and Hobbs.",
+      "next_step_qualifier": "Verify Matthew received meeting request, confirm Hobbs's attendance, send agenda. No discovery call needed.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 0,
+        "engagement_count": 4
+      },
+      "regenerated_at": "2026-05-15T03:28:44.125Z"
+    },
+    "322387410369": {
+      "contact_id": "322387410369",
+      "name": "Bev and John McIntyre",
+      "stage": "Farm Visit booked",
+      "heat": "WARM",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Visit confirmed Monday 18 May at 1:30pm with Bev McIntyre",
+          "body": "On 2026-05-07, Hobbs called Chateau Limousins and \"Bev confirmed someone would be available the week of the 17th — booked Monday afternoon 18 May at 1:30pm for a visit.\" The visit is 4 days away and locked in with a specific time and address (1090 Wangaratta-Eldorado Road, NSW 3678)."
+        },
+        {
+          "step": 2,
+          "header": "Farm visit is imminent; pre-visit prep determines meeting quality and follow-up",
+          "body": "A 500-hectare Limousin cattle stud with 40+ years operating history and multi-state genetics export represents significant scale and sophistication. The 4-day window before the visit is critical for Hobbs to prepare talking points, understand Chateau Limousins' current challenges (soil health, carbon accounting, compliance), and build credibility as a US farmer in Albury—not just a visitor."
+        },
+        {
+          "step": 3,
+          "header": "Hobbs must prepare for the visit with farm-specific context and use case",
+          "body": "Generic farm-visit readiness is insufficient. Hobbs should research Chateau Limousins' cattle genetics export model, pastoral practices, and potential soil carbon exposure (e.g., rotational grazing impact on soil quality, export compliance pressures). This prep transforms a courtesy visit into a diagnostic conversation that uncovers whether AgriProve's carbon-offset model aligns with their scale and export footprint."
+        }
+      ],
+      "next_step_short": "Prepare visit brief for Chateau Limousins call",
+      "next_step_qualifier": "Hobbs needs farm-specific research (export markets, grazing practices, carbon/compliance risks) before 18 May to uncover real need, not just courtesy. Contact rep to confirm prep checklist.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": -4,
+        "engagement_count": 4
+      },
+      "regenerated_at": "2026-05-15T03:29:26.567Z"
+    },
+    "236098757104": {
+      "contact_id": "236098757104",
+      "name": "Peter Brunt",
+      "stage": "Farm Visit booked",
+      "heat": "WARM",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit confirmed 5 days ago; no pre-visit prep recorded.",
+          "body": "On 2026-05-05, Ben Payne booked a farm visit with Peter Brunt for \"Tuesday 2026-05-19 at 2pm\" at \"123 James Lane, Finley New South Wales 2713.\" The call transcript shows Peter explicitly requested Hobbs to \"come visit + do a little video together.\" No notes, prep materials, or confirmation follow-up appear between booking (2026-05-05) and the scheduled date (2026-05-19)."
+        },
+        {
+          "step": 2,
+          "header": "Peter is a dual-role prospect: machinery supplier and regenerative farmer.",
+          "body": "Peter runs \"Eagle I Machinery\" (irrigation supplier) but is also farming \"regenerative ag on his own block\" and is \"looking for a consultant more than anything.\" This dual interest creates ambiguity about whether AgriProve is pitching carbon-credit uptake, consulting, or equipment integration. The farm visit is 5 days out with no clarity on which Peter we're visiting—the farmer or the machinery buyer—and no agenda sent."
+        },
+        {
+          "step": 3,
+          "header": "Confirm visit logistics and align on scope before day-of arrival.",
+          "body": "Send Peter a pre-visit message confirming time, location, and who is attending from AgriProve (Hobbs). Clarify whether the visit focuses on his own regenerative farm, his equipment business, or both—and whether the video component is a content/testimonial play or exploratory. This removes friction and signals professionalism; without it, Hobbs arrives with no shared agenda."
+        }
+      ],
+      "next_step_short": "Confirm visit logistics and scope with Peter.",
+      "next_step_qualifier": "Send calendar confirmation, attendee list, and a 1-sentence agenda (farm assessment vs. equipment integration vs. both) to avoid day-of misalignment.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": -5,
+        "engagement_count": 4
+      },
+      "regenerated_at": "2026-05-15T03:30:09.106Z"
+    },
+    "322387363258": {
+      "contact_id": "322387363258",
+      "name": "Daniel Hooper",
+      "stage": "Farm Visit booked",
+      "heat": "WARM",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit confirmed 2026-05-20 after inbound callback same day.",
+          "body": "On 2026-05-12, Ben Payne left a voicemail pitching the regional Albury program and Hobbs' fence-line approach. Daniel returned the call at 15:12 the same day. Call transcript shows: \"Daniel agreed to a farm visit from Hobbs — booked Wed 20 May ~11:30.\" The visit is now 5 days out (scheduled 2026-05-20, last contact 2d ago = 2026-05-18)."
+        },
+        {
+          "step": 2,
+          "header": "No discovery friction evident; property and contact logistics are mapped.",
+          "body": "The property is documented: \"1093 Benalla-Yarrawonga Road, Goorambat State/Region: VIC Postal code: 3725 Total Property Hectares: 75.\" Daniel's sentiment was positive enough to commit on the call; backup contact Imogen (0439864477) and Margaret Rodwells (0428 822154) are logged. The only risk is pre-visit no-show or last-minute reschedule if rep prep (Hobbs' talking points, property context, US-genetics angle) is incomplete."
+        },
+        {
+          "step": 3,
+          "header": "Confirm visit logistics and brief Hobbs on property fit and opener.",
+          "body": "\"Review manually\" is passive and too late for a 5-day window. Instead: verify Daniel's attendance (ping 48h before via 0402028056 or Imogen's backup), brief Hobbs on the dual-breed stud, US-genetics angle mentioned in the pitch (2026-05-12: \"Daniel's place came up via the US-genetics angle on his website\"), and clarify hectare footprint (75 Ha) and soil-carbon relevance for the region. This moves friction from day-of to day-before."
+        }
+      ],
+      "next_step_short": "Confirm visit with Daniel, brief Hobbs.",
+      "next_step_qualifier": "Contact Daniel 48h before 2026-05-20 to lock attendance. Share property brief (75 Ha dual-breed stud, US-genetics angle) and Hobbs' talking points same day.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": -5,
+        "engagement_count": 7
+      },
+      "regenerated_at": "2026-05-15T03:31:34.222Z"
+    },
+    "319319870966": {
+      "contact_id": "319319870966",
+      "name": "Ben Bickley",
+      "stage": "Farm Visit booked",
+      "heat": "WARM",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit scheduled 9 days in future; no pre-call prep documented",
+          "body": "On 2026-05-21, a farm visit with Ben Bickley was \"scheduled\" at \"338 Joyces Bridge Road, Muskerry Victoria\" for 2pm. The prior call on 2026-05-12 notes Ben was \"in the middle of sowing so still pretty flat out,\" and the visit was framed as \"~40 min paddock chat; carbon-side optional.\" No pre-visit call, pre-visit email confirmation, or prep agenda has been logged since the 2026-04-16 HORIZON snapshot email."
+        },
+        {
+          "step": 2,
+          "header": "Silent 9-day gap before a farm visit in busy season raises execution risk",
+          "body": "Ben explicitly stated he was time-constrained mid-sow on 2026-05-12, yet there is no documented re-confirmation, agenda share, or logistics huddle in the 9 days before arrival. No SMS received confirming attendance or flagging changes (he said he'd \"SMS if anything changes\"), and the rep has no record of pre-call prep—a critical step before walking into a 40-minute paddock discussion during peak farm ops."
+        },
+        {
+          "step": 3,
+          "header": "Send pre-visit confirmation and single-page agenda to unblock attendance and prep",
+          "body": "Contact Ben by phone or SMS 24–48 hours before 2026-05-21 to confirm he's still available (re-confirm time, gate code, vehicle type if needed) and send a one-page agenda noting the paddock focus, HORIZON snapshot talking points, and optional carbon discussion. This closes the 9-day silence, confirms he has not deprioritized due to sow pressure, and ensures the rep arrives with a clear frame, not a vague \"40 min chat.\""
+        }
+      ],
+      "next_step_short": "Call Ben to confirm and send agenda.",
+      "next_step_qualifier": "Ben was time-constrained on 2026-05-12 mid-sow. No re-confirmation in 9 days before visit. A same-day or prior-day call + agenda email closes execution risk.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": -7,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:32:19.405Z"
+    },
+    "322388659678": {
+      "contact_id": "322388659678",
+      "name": "Bradley Boldiston",
+      "stage": "Farm Visit completed",
+      "heat": "HOT",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit completed 2026-05-12; follow-up call hit voicemail 2026-05-13.",
+          "body": "On 2026-05-12, Hobbs conducted a farm visit at Bradley's 500-hectare property (Coleambally, NSW). On 2026-05-13 at 16:40, Ben Payne made an outbound call that \"reached Brad's voicemail.\" The voicemail note states Ben had \"sent an email yesterday with next steps\" and asked Bradley to \"send lot/plan or land titles\" so AgriProve could generate a \"free feasibility report.\" No callback received yet."
+        },
+        {
+          "step": 2,
+          "header": "Information request was made but Bradley has not yet returned lot/plan data.",
+          "body": "The 2026-05-12 email from Ben explicitly asks for \"Lot and Plan numbers from your rate notices for each of the three properties\" and \"Paddock Maps for property boundaries.\" Without these inputs, AgriProve cannot proceed to feasibility report generation—the stated prerequisite. The ball is in Bradley's court; silence does not indicate cooling, but rather a blocking dependency unmet. Sending a contract or KCT draft now without lot/plan data would be premature and likely ignored."
+        },
+        {
+          "step": 3,
+          "header": "Next move must unblock the data request, not accelerate contract paperwork.",
+          "body": "The lever is confirmation of receipt and a low-friction path to data submission. Bradley may not have seen the voicemail (reached at 16:40 on 2026-05-13, 1d ago) or may have misplaced the email requirement. A short, specific follow-up text or call asking \"Did you get my email on 12th about lot/plan numbers?\" and offering a digital form or phone capture removes friction and surfaces the true blocker. Once data arrives, feasibility report generation is the next step—not contract paperwork."
+        }
+      ],
+      "next_step_short": "Text Bradley confirmation + data submission link",
+      "next_step_qualifier": "Voicemail was left 1d ago; Bradley likely has not yet submitted lot/plan data. Remove friction by offering a direct digital or phone capture path, then proceed to feasibility report—not contract.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 1,
+        "engagement_count": 8
+      },
+      "regenerated_at": "2026-05-15T03:11:24.688Z"
+    },
+    "323917036009": {
+      "contact_id": "323917036009",
+      "name": "Adam Boag",
+      "stage": "Farm Visit completed",
+      "heat": "HOT",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Ben sent incomplete follow-up email same day as visit.",
+          "body": "On 2026-05-12, Ben emailed Adam: \"What I need from you: Lot and Plan numbers from your rate notices for each of the three properties. Paddock Maps for property boundaries...\" The email cuts off mid-sentence and does not contain a KCT, contract draft, or clear close date. No document was attached or referenced."
+        },
+        {
+          "step": 2,
+          "header": "Adam is a secondary prospect riding Brad's coattails.",
+          "body": "The 2026-05-05 call transcript states Adam \"jumping on the back\" of Brad's already-booked visit—he was not an independent lead, and the farm visit was primarily Brad's. The email asks Adam for data (lot numbers, paddock maps) rather than presenting terms, signaling AgriProve has not yet qualified Adam's readiness or internal process."
+        },
+        {
+          "step": 3,
+          "header": "Ben must complete and send the actual document, not assume momentum.",
+          "body": "The 2026-05-12 follow-up is a data-request email, not a close attempt. Before sending a KCT or contract, Ben needs to (1) confirm Adam has the three data fields, (2) map paddocks internally, and (3) only then send a draft—likely 5–7 days out, not within 48h. Sending a contract now without the boundary data will stall, not accelerate."
+        }
+      ],
+      "next_step_short": "Complete and send KCT with paddock map summary.",
+      "next_step_qualifier": "Only after Adam returns lot/plan numbers and paddock maps. Do not send contract before mapping is verified internally; silence after an incomplete request kills conversion faster than a one-week proper close.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": 2,
+        "engagement_count": 5
+      },
+      "regenerated_at": "2026-05-15T03:12:08.134Z"
+    },
+    "324031758803": {
+      "contact_id": "324031758803",
+      "name": "Ian Cameron",
+      "stage": "Farm Visit completed",
+      "heat": "WARM",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit completed 10 days ago; no follow-up contact since.",
+          "body": "On 2026-05-05, the \"MEETING — Hobbs/AgriProve Farm Visit\" was logged at The Yanko (1063 Kidman Way, NSW 2716). Last contact was 2026-05-05—nine days ago. No note, email, or call recorded after the visit itself."
+        },
+        {
+          "step": 2,
+          "header": "Post-visit silence kills momentum on warm, easy-entry farm leads.",
+          "body": "The 2026-04-20 call transcript shows Ian was \"Interested / casual\" and \"offered a couple-hour driving tour\"—a customer-led visit frame with zero objection. Post-farm-visit silence (especially >7 days) typically converts warm rural operators to cold, because they assume the vendor isn't serious or will circle back generically. The Yanko runs 6,000 Merino ewes on 12,000–13,000 ha (research note 2025-05-06)—a scale and cash-flow profile where soil-carbon sequestration and residual-income stacking matter, but only if re-engaged with specificity, not goodwill."
+        },
+        {
+          "step": 3,
+          "header": "Unlock re-engagement with a peer-comparable or property-specific carbon snapshot.",
+          "body": "Send a HORIZON snapshot, neighbour-comparison map, or Merino-stud-specific soil baseline (e.g., comparing The Yanko's Riverina soil type to a reference property Ian might know). This gives Ian a concrete reason to open, reply, or call back—not a check-in asking \"what did you think?\" Generic follow-up will land in the void; artifact-led re-entry will provoke either a yes, a no, or a clarifying question."
+        }
+      ],
+      "next_step_short": "Send HORIZON snapshot with Merino-stud carbon comparison.",
+      "next_step_qualifier": "Use The Yanko's 12,000 ha and 6,000 Merino ewes as the frame. Reference a peer property if available. Make it reply-worthy, not a check-in.",
+      "diagnosis_assessment": "ok",
+      "timeline_used": {
+        "days_since_last_contact": 9,
+        "engagement_count": 3
+      },
+      "regenerated_at": "2026-05-15T03:15:02.269Z"
+    },
+    "322387087847": {
+      "contact_id": "322387087847",
+      "name": "Paul Guy",
+      "stage": "Farm Visit booked",
+      "heat": "WARM",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit scheduled 6 days ago with zero post-visit follow-up",
+          "body": "On 2026-05-20, a farm visit was \"scheduled\" at Te Mooi Speckle Park (66 Londrigan-Tarrawingee Road, VIC 3678), but the timeline shows no meeting notes, photos, soil samples, or outcome recorded after that date. Last contact is now 6 days in the past with no artifact of what actually happened during the visit."
+        },
+        {
+          "step": 2,
+          "header": "Absence of visit outcome means unknown deal state and no next action clarity",
+          "body": "Without documentation of whether Paul attended, what was discussed, what commitments were made, or what blockers emerged, the deal is opaque. The rep cannot know whether to follow up on a soil test, close a contract gap, or re-engage after objection—and leadership cannot forecast pipeline value. This is a data integrity and momentum loss risk."
+        },
+        {
+          "step": 3,
+          "header": "Rep must document the actual visit outcome to unlock next lever",
+          "body": "The rep needs to record whether the visit happened, what Paul committed to (sampling timeline, follow-up conversation, decision date), and any barriers discovered. Only after that artifact exists can the correct next step—sample scheduling, proposal review, or re-qualification—be determined."
+        }
+      ],
+      "next_step_short": "Contact Paul, confirm visit outcome, document findings",
+      "next_step_qualifier": "The planned \"Review manually\" is a placeholder. The rep must first establish whether the 2026-05-20 visit occurred and capture the result in HubSpot before any diagnosis can be made.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": -6,
+        "engagement_count": 2
+      },
+      "regenerated_at": "2026-05-15T03:30:51.024Z"
+    },
+    "323918548455": {
+      "contact_id": "323918548455",
+      "name": "Bryce Harpley",
+      "stage": "Farm Visit booked",
+      "heat": "WARM",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Visit scheduled for 2026-05-22, but rep owns name mismatch.",
+          "body": "The farm visit booked on 2026-05-22 is listed under \"Bryce Shaw\" in the meeting record, but the rep has been calling and engaging \"Bryce Harpley\" throughout 2026-05-14. The call transcript from 2026-05-14 13:26 states \"Outbound from Ben — Facebook-ad inquiry follow-up. Bryce had clicked through an ad\" and confirms the visit, but the contact name in the scheduled meeting does not match the contact name in the call log."
+        },
+        {
+          "step": 2,
+          "header": "Name discrepancy creates risk of miscommunication or wrong person on visit day.",
+          "body": "If Bryce Harpley and Bryce Shaw are the same person, the rep has a data quality issue that could cause confusion on visit day (wrong property address, wrong phone number, or duplicate record). If they are different people, the rep has booked a visit with an unvetted contact and lost Bryce Harpley's momentum after a warm Facebook-ad inquiry."
+        },
+        {
+          "step": 3,
+          "header": "Verify contact identity before visit using phone number and property details.",
+          "body": "Call +61418409267 (the number used in both call records and the meeting invite) on or before 2026-05-21 and confirm the contact name, property address (187 Olympic Highway, Kapooka, 2650), and hectares (141) match. If they do, update the HubSpot record to use a single consistent name; if they do not, confirm which Bryce is the correct contact for the farm visit."
+        }
+      ],
+      "next_step_short": "Call +61418409267, confirm contact name and property.",
+      "next_step_qualifier": "Name mismatch (Bryce Harpley vs. Bryce Shaw) on visit record must be resolved before 2026-05-22 to ensure rep arrives at the correct farm and correct person.",
+      "diagnosis_assessment": "heuristic_was_wrong",
+      "timeline_used": {
+        "days_since_last_contact": -7,
+        "engagement_count": 5
+      },
+      "regenerated_at": "2026-05-15T03:33:01.862Z"
+    },
+    "322387362257": {
+      "contact_id": "322387362257",
+      "name": "Tim Lubke",
+      "stage": "Farm Visit booked",
+      "heat": "WARM",
+      "owner_id": "76812243",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit confirmed 9 days ago; no prep or pre-call executed.",
+          "body": "On 2026-05-13, Tim agreed to a farm visit and Ben booked it for \"Friday 22 May 2026, 12:30pm\" at Strathview Maternal Genetics. The last contact entry is dated 2026-05-22 (the visit date itself), but the note trail ends at 2026-05-13 with no follow-up calls, property research updates, or visit prep documented in the 9 days between confirmation and the scheduled visit."
+        },
+        {
+          "step": 2,
+          "header": "Visit happens in 7 days; without pre-work, rep enters cold despite warm call.",
+          "body": "The 2026-05-13 call transcript shows Tim was receptive (\"agreed to a farm visit\"), but no pre-visit positioning or property intel has been sent since. The cross-source note from 2026-04-14 indicates a prior warm contact and a carbon-satellite snapshot that \"might already have sent,\" but no evidence it was actually dispatched to Tim before this visit. Entering a farm visit without a pre-call or asset delivery erodes the warm signal and forces cold rapport-building on-farm."
+        },
+        {
+          "step": 3,
+          "header": "Send tailored pre-visit asset and confirm logistics within 48 hours.",
+          "body": "A carbon-satellite snapshot or Albury regional carbon-market brief should be emailed to timlubke@gmail.com by 2026-05-21 (2–3 days before the visit), with a brief phone check-in to confirm logistics and position Hobbs as a peer operator with relevant cattle-genetics context. This re-anchors Tim to AgriProve before the visit and gives Hobbs a warm entry point."
+        }
+      ],
+      "next_step_short": "Send carbon snapshot to Tim; confirm visit logistics.",
+      "next_step_qualifier": "The visit is 7 days out and no pre-work has been executed since the 2026-05-13 confirmation. A pre-visit asset delivery and logistics check will maintain the warm signal and set Hobbs up for a higher-intent conversation on-farm.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": -7,
+        "engagement_count": 4
+      },
+      "regenerated_at": "2026-05-15T03:33:46.773Z"
+    },
+    "323954363834": {
+      "contact_id": "323954363834",
+      "name": "Jenny Delaforce",
+      "stage": "Farm Visit booked",
+      "heat": "WARM",
+      "owner_id": "361236574",
+      "diagnosis": [
+        {
+          "step": 1,
+          "header": "Farm visit scheduled 10 days ago, no pre-visit prep logged",
+          "body": "On 2026-05-25, a farm visit was \"scheduled\" at \"233 O'Halloran Rd\" for \"Timberlane Pastoral\" (400 hectares, VIC 3722), but no call notes, email chain, or discovery summary appears in the timeline before or after that date. The entry is a calendar artifact only."
+        },
+        {
+          "step": 2,
+          "header": "Pre-visit prep absence signals execution risk on farm visit day",
+          "body": "AgriProve farm visits require soil baseline data, acreage confirmation, and operator intent-to-enroll clarity to be productive. A 10-day gap with zero touchpoints between scheduling and visit indicates no pre-call brief, no confirmation of attendees, and no soil sampling kit coordination—standard failure modes before on-farm meetings."
+        },
+        {
+          "step": 3,
+          "header": "Confirm visit is still happening and brief the rep with discovery",
+          "body": "Call Jenny Delaforce at +61438577528 to confirm the 2026-05-25 visit is still live, capture her role, acreage under her control, and soil/rotation history. Brief the assigned rep on findings so the visit moves beyond calendar placeholder to outcome (enrollment intent, soil sample, or honest close)."
+        }
+      ],
+      "next_step_short": "Call Jenny Delaforce at +61438577528 today",
+      "next_step_qualifier": "Confirm visit is still live and capture pre-visit discovery (role, acreage, soil history) to brief rep before farm meeting.",
+      "diagnosis_assessment": "next_step_revised",
+      "timeline_used": {
+        "days_since_last_contact": -10,
+        "engagement_count": 1
+      },
+      "regenerated_at": "2026-05-15T03:34:28.717Z"
+    }
+  }
+}

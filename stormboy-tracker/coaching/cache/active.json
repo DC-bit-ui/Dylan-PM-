@@ -1,6 +1,6 @@
 {
   "version": "b1.1",
-  "generated_at": "2026-05-08T04:30:00.000Z",
+  "generated_at": "2026-05-15T02:57:59.407Z",
   "deals": [
     {
       "deal_id": "31711997037",
@@ -8,104 +8,169 @@
       "attribution": "direct",
       "current_stage": "KCT Issued",
       "current_stage_friction_from": "KCT Issued",
-      "days_in_current_stage": 426,
-      "median_won_at_stage": 6,
-      "median_lost_at_stage": 12,
-      "risk_class": "amber",
-      "risk_score": 65,
-      "signals": {
-        "stage": {
-          "health": "red",
-          "value": "426d at KCT Issued · 35× past lost-median",
-          "confidence": "high",
-          "note": "Stale by stage timing alone."
-        },
-        "behavioral": {
-          "health": "amber",
-          "value": "Last meaningful contact 23d ago · slowing reply latency",
-          "confidence": "moderate",
-          "note": "Some recent activity. Not ghosted — but engagement is dropping.",
-          "last_meaningful_contact": "2026-04-18",
-          "contact_velocity_30d": 2,
-          "reply_latency_trend": "slowing"
-        },
-        "content": {
-          "health": "green",
-          "value": "Last customer email was warm; mentioned wife on board",
-          "confidence": "moderate",
-          "note": "Content trajectory is positive. The stall isn't cold — it's partner-alignment.",
-          "latest_customer_position": "Thanks for the update Ben — the wife and I are talking it through over Easter. I'll get back to you in early May.",
-          "latest_customer_position_at": "2026-04-18",
-          "sentiment_trajectory": "neutral_warm",
-          "unresolved_objections": [
-            "25-year commitment — partner needs to agree"
-          ]
-        }
-      },
-      "coaching_mode": "stuck_but_live",
-      "what_we_dont_know": [
-        "No phone call logged for this deal in 60+ days — partner's actual position is inferred, not confirmed",
-        "No HubSpot note since 2026-03-12 — rep's read on this deal isn't captured",
-        "James mentioned \"early May\" — that window starts today; no follow-up sent yet"
-      ],
-      "probe": {
-        "recommended": true,
-        "probe_type": "low_pressure_checkin_email",
-        "rationale": "Customer named an \"early May\" timeframe. Today is mid-May. Low-pressure follow-up will reveal whether partner-alignment landed or stalled.",
-        "predicted_outcomes": [
-          {
-            "signal": "reply <24h with positive sentiment",
-            "interpretation": "Partner aligned — push toward SLA Mapping booking this week."
-          },
-          {
-            "signal": "reply 3-7d, neutral or non-committal",
-            "interpretation": "Partner still hesitating — offer joint 30-min call with both partners on."
-          },
-          {
-            "signal": "no reply 14d",
-            "interpretation": "Partner-alignment fell through — move to Closed Lost cleanly."
-          }
-        ]
-      },
-      "coaching_message": "Daisy Bank reads RED by stage but the signal mix tells a more nuanced story — engagement is amber (last contact 23d ago, slowing but not ghosted) and content is green (last email mentioned the wife is on board; James named \"early May\" as his deadline). This is stuck-but-live, not Cold-loss-imminent. The right move is a low-pressure check-in this week — predict warm reply if partner-alignment landed, or no-reply if it didn't. Either way you get a clean signal in days, not months.",
-      "primary_action": "Send the low-pressure check-in probe this week (draft below). Read the response time + tone — that disambiguates whether to push toward SLA Mapping or close-lost cleanly.",
+      "days_in_current_stage": 430,
+      "median_won_at_stage": 17.07,
+      "median_lost_at_stage": 126.16,
+      "risk_class": "red",
+      "risk_score": 100,
+      "coaching_message": "James, you're 430 days in KCT Issued on Daisy Bank + Bellevue—that's 25× longer than Cooeeanna (won in 17) and 3.3× past Windy Ridge Farm (won at 130). Your twins signal the landholder either hit a blocker or lost momentum post-issuance. You need a hard 'commit or close' conversation within 48 hours. Pick up the phone, confirm acceptance or surface the real friction, and either move to countersign or formally close it. No more drift.",
+      "primary_action": "Schedule a 'commit or close' call with James Almond and the landholder within 48 hours. Agenda: confirm KCT acceptance, resolve blockers, or formally close the deal.",
       "supporting_twin_ids": [
-        "40789889068",
-        "147625095632"
+        "31711995442",
+        "37165900308",
+        "186974841297"
       ],
       "enablement": {
         "inline_draft": {
           "type": "email",
-          "subject": "Daisy Bank — checking in on early May",
-          "body": "Hi James,\n\nHope Easter was good. You mentioned early May to come back to me on Daisy Bank — just checking in to see where you and the wife landed.\n\nNo pressure to commit either way today. If you've decided to move forward, I can have the SLA mapping conversation booked for this week. If it's not the right time, that's also a useful signal and we can park it cleanly.\n\nOne thing worth mentioning — the autumn soil scan came back stronger than last year. Happy to send the updated HORIZON Snapshot if you'd like to see the current numbers before deciding.\n\nLet me know either way.\n\nBen",
-          "length_words": 135,
-          "tone": "low-pressure check-in, names customer's own timeframe back to them, gives explicit \"no is okay\" framing — designed as a probe, not a push"
+          "subject": "Daisy Bank + Bellevue KCT — Next Steps (30-Day Window)",
+          "body": "Hi James,\n\nWe've issued the KCT for Daisy Bank + Bellevue and now need to lock in acceptance to move forward. I'm keen to get the landholder over the line, but I want to make sure there's no friction we haven't surfaced yet.\n\nCan you and the landholder jump on a call with me in the next 48 hours? Nothing formal—just a 20-minute chat to confirm they're ready to sign the countersigned KCT cover letter, or to dig into anything that's holding them back (finance, boundaries, environmental queries, whatever it is).\n\nOnce we confirm, I'll send the countersigned cover letter with a hard 30-day acceptance window. We'll do check-in calls on day 10 and day 20 to keep momentum.\n\nIf the landholder isn't ready to move, we need to know that now so we can either resolve it or close the deal cleanly on our side.\n\nCan you confirm a time slot by EOD tomorrow?\n\nCheers,\nBen",
+          "length_words": 165,
+          "tone": "Direct, unambiguous, customer-facing but with clear internal logic—gives James agency to either unlock or formally kill the deal."
         },
         "cowork_task": {
-          "type": "generate_horizon_snapshot",
-          "description": "Generate a fresh HORIZON Snapshot for Daisy Bank with annotated comparison to the baseline 14 months ago — what's changed in the model + what's changed in James's property's modelled carbon. Attach to a draft email ready for Ben to send if the probe response is warm.",
-          "estimated_minutes_saved": 45,
-          "delivery": "Ben's Outlook drafts (PDF attached to draft email)"
+          "type": "prepare_call_brief",
+          "description": "Prepare a 1-page call brief for James: landholder history timeline, KCT issuance date, known blockers (if any), twin-deal velocity context, and 3 scripted outcomes (accept → countersign path; blocker → resolution plan; no commitment → formal close). Deliver to Teams DM.",
+          "estimated_minutes_saved": 12,
+          "delivery": "Teams DM to rep (text + PDF attachment)"
+        }
+      }
+    },
+    {
+      "deal_id": "40200094299",
+      "deal_name": "Rosebank - Will McLachlan",
+      "attribution": "direct",
+      "current_stage": "KCT Issued",
+      "current_stage_friction_from": "KCT Issued",
+      "days_in_current_stage": 291,
+      "median_won_at_stage": 17.07,
+      "median_lost_at_stage": 126.16,
+      "risk_class": "red",
+      "risk_score": 100,
+      "coaching_message": "Will's been parked 291 days post-KCT—that's the Mallawa/Colorado Cattle pattern right before they went lost. Nottle and Reinheimer both locked acceptance within 3 weeks by running structured day-10 and day-20 cadence. You need to reset commitment today with a 30-day window letter, then force the conversation on day 10. Start there.",
+      "primary_action": "Send Will McLachlan a countersigned KCT cover letter today stating 30-day acceptance window (expires [date+30]). Include rep contact & purpose: confirm commitment to 25-year implementation timeline.",
+      "supporting_twin_ids": [
+        "40735788180",
+        "186050120174",
+        "39359914140"
+      ],
+      "enablement": {
+        "inline_draft": {
+          "type": "email",
+          "subject": "Rosebank KCT – Next Steps & Your 30-Day Acceptance Window",
+          "body": "Hi Will,\n\nJust wanted to touch base on the KCT that came through for Rosebank. AgriProve's issued it, and we're keen to get this locked in with you so we can move into the implementation phase.\n\nI'm sending the countersigned cover letter separately—it outlines the 30-day acceptance window, which closes [DATE+30]. This is our standard timeline to confirm you're ready to move forward with the 25-year carbon project.\n\nNo surprises here—just making sure we're on the same page on timing and what happens next. Once you've had a read through, I'll give you a call on [DATE+10] to walk through any questions on the terms or the implementation side. We want to make sure there's nothing blocking you before we roll forward.\n\nIf anything's unclear or if there's a better time to chat before then, just let me know.\n\nCheers,\nBen",
+          "length_words": 165,
+          "tone": "Direct, peer-to-peer, customer-agency-focused, Australian vernacular, urgency without pressure."
+        },
+        "cowork_task": {
+          "type": "prepare_call_brief",
+          "description": "Prepare day-10 strategy call brief for Will McLachlan: KCT terms clarity talking points, implementation timeline walk-through, blocking-concern probe script. Flag commitment-check outcome field in CRM template so rep documents 'commit' vs 'hesitation' signal before day-20 call.",
+          "estimated_minutes_saved": 12,
+          "delivery": "Teams chat + CRM call-template link"
+        }
+      }
+    },
+    {
+      "deal_id": "16873339790",
+      "deal_name": "Hanrahan - Plibersek",
+      "attribution": "direct",
+      "current_stage": "KCT Issued",
+      "current_stage_friction_from": "KCT Issued",
+      "days_in_current_stage": 288,
+      "median_won_at_stage": 17.07,
+      "median_lost_at_stage": 126.16,
+      "risk_class": "red",
+      "risk_score": 100,
+      "coaching_message": "You're 288 days into KCT Issued on Hanrahan–Plibersek; your twins (Davidsons & Laen, PS Nottle & Son, Toweran park) all closed in ≤17 days. Your lost comps (La Trobe Station, Leconfield Farm) show the same 126-day drag pattern—cold KCTs kill deals. You need a hard 30-day acceptance window with day-10 and day-20 check-ins, starting now. Call them in the next 3 days to confirm blockers and reset the deadline.",
+      "primary_action": "Schedule a 'KCT Acceptance & Implementation' call with Hanrahan–Plibersek within 3 days. Confirm blockers: contract terms, soil baseline questions, or timeline misalignment. Establish a day-30 hard acceptance deadline.",
+      "supporting_twin_ids": [
+        "186050120174",
+        "40735788180",
+        "37406371673"
+      ],
+      "enablement": {
+        "inline_draft": {
+          "type": "email",
+          "subject": "KCT Acceptance & Next Steps – Hanrahan–Plibersek",
+          "body": "Hi Plibersek,\n\nJust checking in on your KCT—we issued it a while back and want to make sure there are no blockers on your end before we move forward together.\n\nA few quick things: Are there any questions about the contract terms, the soil baseline, or the implementation timeline that are holding things up? Sometimes it's a simple clarification that gets everything unstuck.\n\nHere's what I'm thinking—let's lock in a call this week (say, Wednesday or Thursday) so we can run through any concerns and confirm next steps. If we're all aligned, we'd like to settle the KCT by end of month so AgriProve's on-farm team can get moving on the baseline work.\n\nWhat works for you? Just reply or give me a call on [number].\n\nCheers,\nBen",
+          "length_words": 145,
+          "tone": "Direct, unrushed, customer agency—flags potential friction without pressure, sets a soft deadline."
+        },
+        "cowork_task": {
+          "type": "prepare_call_brief",
+          "description": "Prepare a one-page call brief for Hanrahan–Plibersek KCT acceptance call: (1) three things to confirm (contract clarity, soil baseline Q&A, implementation timeline), (2) 30-day acceptance window + day-10/day-20 check-in schedule, (3) next-step handoff to AgriProve on-farm team post-acceptance. Deliver to Teams drafts.",
+          "estimated_minutes_saved": 12,
+          "delivery": "Teams drafts channel"
+        }
+      }
+    },
+    {
+      "deal_id": "41514329442",
+      "deal_name": "Hanrahan - Griffin",
+      "attribution": "direct",
+      "current_stage": "KCT Issued",
+      "current_stage_friction_from": "KCT Issued",
+      "days_in_current_stage": 281,
+      "median_won_at_stage": 17.07,
+      "median_lost_at_stage": 126.16,
+      "risk_class": "red",
+      "risk_score": 100,
+      "coaching_message": "Hanrahan-Griffin is 281 days in-stage post-KCT — that's 16× slower than your won twins (Claverley, Cooeeanna both closed within 17 days). You're at 71% of Dale Mulholland's expiry clock; without a hard commitment call in the next 10 days, this drifts to lost. Issue the KCT cover letter with a 30-day acceptance window today, then lock in day-10 and day-20 calls. One action: send the cover letter with expiry date.",
+      "primary_action": "Issue countersigned KCT cover letter to Hanrahan-Griffin with explicit 30-day acceptance window and expiry date. Reference terms: contract valid to [date +30], no extensions without rep call.",
+      "supporting_twin_ids": [
+        "37165900308",
+        "31711995442",
+        "31712053823"
+      ],
+      "enablement": {
+        "inline_draft": {
+          "type": "email",
+          "subject": "Your KCT – Next Steps & Acceptance Deadline",
+          "body": "Hi Griffin,\n\nThanks for getting through to the on-farm visit and HORIZON work with us. We're really pleased with where things sit.\n\nYour Kernel Carbon Tranche (KCT) is now issued and attached — this is the formal contract that locks in your 25-year soil carbon project with AgriProve. We've countersigned it, so it's ready for your signature.\n\nHere's what happens next:\n\n**Action:** Sign and return the KCT by [date +30]. This gives you a full month to review with your accountant or lawyer if you'd like.\n\n**Timing:** Once we have your signature, AgriProve moves to project setup — baseline audit, monitoring plan, and your first carbon revenue forecast. Most landholders see revenue within 90 days of KCT acceptance.\n\n**Questions:** I'll call you on [day 10 from today] just to make sure everything's clear and answer anything that's come up. No pressure — just a check-in.\n\nThe contract is straightforward, but if anything's unclear, give me a ring on [your mobile] before then.\n\nLooking forward to getting this across the line.\n\nCheers,\nBen",
+          "length_words": 165,
+          "tone": "Direct, peer-to-peer Australian, customer agency — no pressure but clear deadline and rep presence."
+        },
+        "cowork_task": {
+          "type": "prepare_call_brief",
+          "description": "Generate day-10 and day-20 call brief for rep: talking points, likely objections (contract clarity, revenue timeline, land commitment), and day-20 'commit or close' decision frame. Include sample KCT checklist.",
+          "estimated_minutes_saved": 12,
+          "delivery": "Teams message to rep + PDF in AgriProve rep portal"
         }
       }
     },
     {
       "deal_id": "41104436568",
-      "deal_name": "Bulgoo Pastoral - Jeremy Pockley",
+      "deal_name": "Bulgoo Pastoral  - Jeremy  Pockley",
       "attribution": "direct",
       "current_stage": "Strategy Call",
       "current_stage_friction_from": "Strategy Call",
-      "days_in_current_stage": 271,
-      "median_won_at_stage": 10,
-      "median_lost_at_stage": 30,
+      "days_in_current_stage": 275,
+      "median_won_at_stage": 3,
+      "median_lost_at_stage": 36.07,
       "risk_class": "red",
-      "risk_score": 97,
-      "coaching_message": "Day 271 at Strategy Call — 9× past lost-median. This deal stalled at Strategy nearly a year ago. Springfield Carbon Project (#144047802829) followed the same trajectory and closed lost as \"Insufficient commitment\". Burnham Grazing (#40789889068) at this exact age was re-engaged with a HORIZON refresh and converted. Pick a path THIS WEEK.",
-      "primary_action": "Either run the nurture-back play (HORIZON Snapshot + \"what's changed\" reframe → Hobbs on-farm) or close-lost. Don't let this drift further.",
+      "risk_score": 100,
+      "coaching_message": "Jeremy's been in Strategy Call for 275 days—10x longer than your wins. Your twins (Deon, Emma, Craig) all moved when you anchored a live revenue projection *post-call*, then booked the next step same week. James and Andrew drifted because no projection + no locked date = no urgency. Send Jeremy a property-matched 25-year ACCU projection with calendar link to SLA/KCT Mapping within 7 days. If he doesn't book, you'll surface the real objection in a quick call instead of waiting another 36 days.",
+      "primary_action": "Within 2 hours: Send Jeremy a property-matched 25-year ACCU projection PDF (NRM region + Bulgoo land area). Include modelled annual carbon credit revenue under 25/75 split. In the same email, embed a calendar link to book SLA/KCT Mapping within 7 days. Propose 2–3 specific time slots for the next 5 days.",
       "supporting_twin_ids": [
-        "40789889068",
-        "144047802829"
-      ]
+        "20181887651",
+        "21522499356",
+        "146092019144"
+      ],
+      "enablement": {
+        "inline_draft": {
+          "type": "email",
+          "subject": "Your Bulgoo 25-year carbon projection + next step",
+          "body": "G'day Jeremy,\n\nFollowing up from our strategy call—I've modelled your property's potential under the ERF 25-year scheme.\n\nAttached is your Bulgoo Pastoral projection. Based on your land area and NRM region, you're looking at a realistic annual ACCU revenue stream under AgriProve's 25/75 split. The key upside: carbon credits compound over 25 years, and your land tenure isn't affected.\n\nTo move this from projection to reality, we need to lock in your SLA/KCT Mapping—that's where Hobbs (our grazier-in-residence) gets boots on the ground, validates the soil baseline, and we build your HORIZON Snapshot. That's the final gate before soft conversion.\n\nI've blocked three slots below. Can you confirm one in the next 5 days? If none work, let me know what does—but I want to pin this before end of week so we're not pushing into Q2.\n\nIf anything in the projection doesn't land right, let's talk it through on a quick call first.\n\nCheers,\nBen",
+          "length_words": 165,
+          "tone": "Direct, peer-to-peer, gives Jeremy agency, urgency anchored to next step not pressure"
+        },
+        "cowork_task": {
+          "type": "generate_horizon_snapshot",
+          "description": "Generate property-matched 25-year ACCU projection PDF for Bulgoo Pastoral (Jeremy Pockley) including NRM region carbon baseline, annual credit modelling under 25/75 split, and 5-year/10-year/25-year cumulative return scenarios. Deliver to Outlook drafts as attachment-ready.",
+          "estimated_minutes_saved": 18,
+          "delivery": "Outlook drafts (PDF ready to attach to email)"
+        }
+      }
     },
     {
       "deal_id": "140345085389",
@@ -113,35 +178,135 @@
       "attribution": "direct",
       "current_stage": "Strategy Call",
       "current_stage_friction_from": "Strategy Call",
-      "days_in_current_stage": 249,
-      "median_won_at_stage": 10,
-      "median_lost_at_stage": 30,
+      "days_in_current_stage": 253,
+      "median_won_at_stage": 3,
+      "median_lost_at_stage": 36.07,
       "risk_class": "red",
-      "risk_score": 95,
-      "coaching_message": "Day 249 at Strategy Call. Strategy-stage stalls coded \"Cold\" account for 36% of losses — Mount Moon Pastoral (#147625095632) is a textbook example: cordial Strategy, no follow-up, closed Cold 60 days later. Davidsons & Laen (#186050120174) at this stage was re-engaged proactively and won. Send the 25-year ACCU projection this week or accept this is Cold.",
-      "primary_action": "Send the 25-year ACCU revenue projection by Friday with explicit \"let's reconnect\" framing. If no response in 7 days, move to closed-lost.",
+      "risk_score": 100,
+      "coaching_message": "John's been in Strategy Call 253 days — that's a drift pattern we see in James Douglas-Menzies and Andrew Smith (both lost). Deon and Emma moved to SLA/KCT within 3 days because they locked a specific next date on the call and got a projection in their inbox same day. John hasn't committed to a mapping date or seen his 25-year numbers live. Call him back within 48 hours, screen-share his ACCU projection, and close with a hard ask: 'Can we lock SLA/KCT Mapping for [date]?' If he commits, email the PDF + calendar link within 2 hours. If he won't commit in 7 days, move him to 6-month re-engage and free up your pipeline.",
+      "primary_action": "Schedule a 15-min urgent callback with John within 48 hours. On-call, screen-share a property-matched 25-year ACCU projection using his NRM region and land area. Close with 'Can we lock in SLA/KCT Mapping for [specific date, 5–7 days out]?'",
       "supporting_twin_ids": [
-        "186050120174",
-        "147625095632"
-      ]
+        "20181887651",
+        "21522499356",
+        "146092019144"
+      ],
+      "enablement": {
+        "inline_draft": {
+          "type": "email",
+          "subject": "John – Your 25-Year Soil Carbon Plan (let's lock it in)",
+          "body": "Hi John,\n\nI've had your property details on my desk and wanted to run something quick past you. We've pulled together a 25-year ACCU projection for your country based on soil type and rainfall — it's the same snapshot our other graziers get, and honestly, it's the best way to see whether this pencils for your place.\n\nI'm free for a 15-minute call [specific day/time, e.g. Thursday 2 pm] to walk you through it on screen. Takes two minutes to explain, and you'll have actual numbers to sit with instead of guessing.\n\nThe next step after that is our on-farm mapping visit with Hobbs — no obligation, just a walk around your paddocks so we can lock in the baseline. If the numbers look right, we can schedule that for [specific date, 5–7 days after call], and we're genuinely moving.\n\nCan you do Thursday at 2? Let me know and I'll send the calendar invite.\n\nCheers,\nBen",
+          "length_words": 165,
+          "tone": "Direct, peer-to-peer, gives customer agency and clear next step, Australian vernacular ('pencils', 'genuinely moving')"
+        },
+        "cowork_task": {
+          "type": "generate_horizon_snapshot",
+          "description": "Generate property-matched 25-year ACCU projection for John Atherton (#140345085389) using NRM region and land area; deliver as PDF ready to screen-share + email. Include revenue split (25/75) and timeline to first payment.",
+          "estimated_minutes_saved": 18,
+          "delivery": "Outlook drafts + Teams; flagged for 48-hour callback prep"
+        }
+      }
     },
     {
       "deal_id": "141507724737",
-      "deal_name": "Brigalow and Mostowie - Rodger Jefferis",
+      "deal_name": "Brigalow and Mostowie - RODGER JEFFERIS",
       "attribution": "direct",
       "current_stage": "Strategy Call",
       "current_stage_friction_from": "Strategy Call",
-      "days_in_current_stage": 245,
-      "median_won_at_stage": 10,
-      "median_lost_at_stage": 30,
+      "days_in_current_stage": 249,
+      "median_won_at_stage": 3,
+      "median_lost_at_stage": 36.07,
       "risk_class": "red",
-      "risk_score": 94,
-      "coaching_message": "Day 245 at Strategy — Ben's deal. Same age cohort as JA-Atherton and Bulgoo Pastoral. The pattern is clear: Strategy-stalled deals from late 2025 are all sitting in zombie state. Tumbledown Wagyu (#183751836130) was in this cohort and closed lost as \"Insufficient commitment\". Burnham Grazing (#40789889068) was re-engaged via HORIZON refresh and converted. Decision time.",
-      "primary_action": "Run Ben's nurture-back tactic: fresh HORIZON Snapshot + \"what's changed\" frame. If positive response, escalate to Hobbs on-farm.",
+      "risk_score": 100,
+      "coaching_message": "Rodger's been in Strategy Call for 249 days—same stall pattern as James Douglas-Menzies and Andrew Smith before they went cold. Your twins (Deon #20181887651, Emma #21522499356) both moved within 3 days post-call because they got a live ACCU projection and a booked SLA/KCT Mapping within 7 days. Rodger's commitment window is closing. Re-engage with a live projection screen-share and book the on-farm visit inside 7 days, or walk away from this one.",
+      "primary_action": "Schedule urgent re-engagement call with Rodger within 2 days. On the call, screen-share a live NRM region + land-area-matched 25-year ACCU projection. Do not end without booking SLA/KCT Mapping within 7 days.",
       "supporting_twin_ids": [
-        "40789889068",
-        "183751836130"
-      ]
+        "20181887651",
+        "21522499356",
+        "146092019144"
+      ],
+      "enablement": {
+        "inline_draft": {
+          "type": "email",
+          "subject": "Brigalow & Mostowie – Your 25-Year ACCU Forecast (Live Numbers)",
+          "body": "Hi Rodger,\n\nIt's been a while since we chatted about the Brigalow and Mostowie country. I've been looking at the numbers for your property against the latest NRM data, and I reckon it's worth a quick call to walk you through what the land could generate over 25 years under the ERF.\n\nI'll screen-share your ACCU projection live—no guesswork, just your property, your region, your soils. Once you see the numbers, we can lock in a visit with Hobbs (our grazier-in-residence) to do a proper on-farm snapshot. That's usually where landholder's see the real picture.\n\nAre you free for a 20-minute call this week—Thursday or Friday suit you better? I'll send through a calendar link and we'll walk through it together.\n\nCheers,\nBen",
+          "length_words": 140,
+          "tone": "Direct, assumes goodwill, gives Rodger agency, urgency baked in with specific timeframe"
+        },
+        "cowork_task": {
+          "type": "generate_horizon_snapshot",
+          "description": "Generate live ACCU projection for Brigalow & Mostowie (Rodger Jefferis, #141507724737) using current NRM region + known land area; output as branded one-pager PDF ready to screen-share. Include 25-year forecast, 25/75 split callout, and calendar link to SLA/KCT Mapping booking.",
+          "estimated_minutes_saved": 25,
+          "delivery": "PDF in Outlook drafts + calendar link (ready-to-paste into Teams/email)"
+        }
+      }
+    },
+    {
+      "deal_id": "130260276728",
+      "deal_name": "Glen Keith - Callum Lloyd",
+      "attribution": "direct",
+      "current_stage": "KCT Issued",
+      "current_stage_friction_from": "KCT Issued",
+      "days_in_current_stage": 228,
+      "median_won_at_stage": 17.07,
+      "median_lost_at_stage": 126.16,
+      "risk_class": "red",
+      "risk_score": 98,
+      "coaching_message": "Glen Keith is at 228 days in KCT Issued—3x longer than your won deals (Cooeeanna closed in 75 days). The twins show that post-KCT silence = cold feet, and Mallawa + Colorado Cattle both hit 200+ days before going dark. You need to call Callum today, confirm signed acceptance, and reset the clock with a hard 30-day window. If he won't commit by day 20, close it.",
+      "primary_action": "Call Callum Lloyd today. Confirm KCT signed acceptance status. If unsigned, present a countersigned cover letter stating KCT is valid for 30 days from today (not from original issuance date). Set explicit callback for day 10.",
+      "supporting_twin_ids": [
+        "31711995442",
+        "37165900308",
+        "186974841297"
+      ],
+      "enablement": {
+        "inline_draft": {
+          "type": "email",
+          "subject": "Glen Keith KCT – Quick sign-off needed by [DATE +30 days]",
+          "body": "Hi Callum,\n\nJust checking in on the KCT we issued for Glen Keith. We want to make sure it's front-of-mind and there are no blockers holding things up on your end.\n\nThe way it works from here: once you countersign and send it back, we've got a clean 30-day window to lock in your baseline and get the project live. It's a straightforward process, and AgriProve handles most of the heavy lifting.\n\nCan you confirm—have you had a chance to review and sign? If there are any questions about the terms or next steps, I'm happy to walk through them. If you're good to go, just send the signed copy back and we'll move straight to on-farm scheduling with Hobbs.\n\nLet's aim to have this sorted by end of this week so we don't lose momentum. I'll follow up with you on [DATE +10 days] to check where we're at.\n\nCheers,\nBen",
+          "length_words": 155,
+          "tone": "Direct, unassuming, gives Callum agency to confirm or raise blockers, no pressure"
+        },
+        "cowork_task": {
+          "type": "prepare_call_brief",
+          "description": "Draft a 1-page call brief for Callum conversation: KCT status check, blockers checklist (regulatory, SLA, timeline), day-10 callback agenda, commit-or-close conversation template for day 20 if unsigned.",
+          "estimated_minutes_saved": 12,
+          "delivery": "OneNote / Teams prep doc"
+        }
+      }
+    },
+    {
+      "deal_id": "133180075466",
+      "deal_name": "Daniel Gazzola - Calca Block",
+      "attribution": "direct",
+      "current_stage": "KCT Issued",
+      "current_stage_friction_from": "KCT Issued",
+      "days_in_current_stage": 211,
+      "median_won_at_stage": 17.07,
+      "median_lost_at_stage": 126.16,
+      "risk_class": "red",
+      "risk_score": 97,
+      "coaching_message": "Daniel's been in KCT Issued for 211 days—that's a red flag. Your twins (Nullwarra, PS Nottle, Davidsons & Laen) all closed faster because you nailed the 30-day window hard and kept contact hot. Brenton Sewell and Amanda Mahy both drifted post-issuance and you lost them at 126+ days. Daniel needs a dated reconfirmation call within 5 days, a day-10 blocker probe, and a written commitment by day-30 or you escalate to commit-or-close. Don't let this one ghost.",
+      "primary_action": "Within 5 days, send Daniel Gazzola a dated cover letter restating KCT terms valid for 30 days. Schedule day-10 and day-20 rep calls to confirm commitment to implement and resolve any implementation blockers.",
+      "supporting_twin_ids": [
+        "39359914140",
+        "40735788180",
+        "186050120174"
+      ],
+      "enablement": {
+        "inline_draft": {
+          "type": "email",
+          "subject": "Calca Block KCT – Let's Lock in Your 30-Day Window",
+          "body": "Hi Daniel,\n\nYour KCT for Calca Block is live and valid for the next 30 days. I wanted to touch base and make sure we're aligned on timing and any blockers before we lock it in.\n\nHere's what I'm thinking: I'll give you a quick ring on [DAY 10 DATE] to walk through the implementation schedule and flag any financing, contractor, or land-use hurdles early. Then we'll touch base again around [DAY 20 DATE] so we can get your SLA signature across the line and confirm we're ready to go.\n\nYour KCT window closes on [DAY 30 DATE], so the next two weeks are when we nail the detail. AgriProve's grazier-in-residence (Hobbs) can help with on-farm logistics if you need it, and we've got a few options for the carbon monitoring snapshot depending on your property size.\n\nCan you confirm you're still keen to move forward? If there's anything that's come up—timing, cost, or just questions about how the 25-year term works—let's surface it now so we can solve it together.\n\nI'll call you on [DAY 10 DATE] at [TIME]. Looking forward to closing this one out.\n\nCheers,\nBen",
+          "length_words": 185,
+          "tone": "Direct, peer-to-peer, gives Daniel agency to surface blockers early, Australian casual"
+        },
+        "cowork_task": {
+          "type": "prepare_call_brief",
+          "description": "Prepare day-10 call brief for Ben: 3-5 discovery questions to surface timing, financing, contractor-availability, or land-use blockers. Include 'soft close' talking points for day-20 call (SLA signature + KCT acceptance). Land the brief in Teams within 2 hours.",
+          "estimated_minutes_saved": 12,
+          "delivery": "Teams message to Ben + Outlook drafts (call script PDF)"
+        }
+      }
     },
     {
       "deal_id": "167288289773",
@@ -149,17 +314,33 @@
       "attribution": "direct",
       "current_stage": "SLA/KCT Mapping",
       "current_stage_friction_from": "SLA/KCT Mapping",
-      "days_in_current_stage": 200,
-      "median_won_at_stage": 4.5,
-      "median_lost_at_stage": 21,
+      "days_in_current_stage": 204,
+      "median_won_at_stage": 41,
+      "median_lost_at_stage": 64,
       "risk_class": "red",
-      "risk_score": 96,
-      "coaching_message": "Day 200 at SLA/KCT Mapping — the highest-friction transition in the pipeline (4.7× gap between won and lost medians). This stage typically stalls when KCT walkthrough is async and customer's partner isn't engaged. Weatherall CP (#248596297166) and Davidsons & Laen (#186050120174) both progressed from this stage with rep-led 30-min KCT walkthroughs WITH partner on the call. Fenmore needs that intervention or it's a Fisher Brothers (#131569892814) pattern.",
-      "primary_action": "Schedule a 30-min Teams call this week to walk through KCT live with Bruce AND his partner. If partner won't attend, that itself is the diagnosis.",
+      "risk_score": 100,
+      "coaching_message": "204 days in mapping is a slow bleed, mate. Deon Attard and Emma Maudsley both moved fast once we showed payback math; Scott lost on cost transparency festering. McPhee Bros trial approach worked when baseline felt too heavy. Bruce's friction is cost or scale uncertainty, not a hard no. Send him a pre-populated payback calculator today—reference McPhee's pilot model as an option if he's hesitant on full hectarage. That unblocks the agronomy call you schedule for next week.",
+      "primary_action": "Send Bruce a pre-populated 'Baseline Cost vs Projected ACCU Revenue' payback calculator within 2 days, populated with Fenmore's NRM region and estimated hectarage. Reference McPhee Bros (#17876140382) trial approach if Bruce is hesitant on full-scale baseline.",
       "supporting_twin_ids": [
-        "248596297166",
-        "131569892814"
-      ]
+        "20181887651",
+        "21522499356",
+        "17876140382"
+      ],
+      "enablement": {
+        "inline_draft": {
+          "type": "email",
+          "subject": "Fenmore Baseline Cost & ACCU Payback – Simple Look",
+          "body": "Hi Bruce,\n\nWe've mapped your SLA/KCT pretty well now, and I reckon it's time we pull the curtain back on what baseline sampling actually costs versus the ACCU revenue you'll see over the 25 years.\n\nI've run the numbers for Fenmore using your NRM region and the hectarage you've flagged. Attached is a simple payback model—baseline cost upfront, then projected ACCU revenue by year. Most farmers are surprised how quick the offset lands.\n\nNow, if you'd rather not do a full-farm baseline in year one, we've had good success with a trial KCT design on a smaller block first (like McPhee Bros ran in Albury). De-risks the agronomics and proves the payback before you commit the full property. No pressure either way—just want you to see the real numbers before we lock in implementation.\n\nLet's grab 30 mins next week to walk through the sampling plan and timeline, and sort what makes sense for Fenmore. That'll get us across the line on SLA/KCT mapping.\n\nCheers,\nBen",
+          "length_words": 165,
+          "tone": "Direct, farm-to-farm, removes cost mystery, offers pragmatic trial option without re-qualifying"
+        },
+        "cowork_task": {
+          "type": "generate_horizon_snapshot",
+          "description": "Generate fresh HORIZON Snapshot for Fenmore Farming (Bruce McLean, #167288289773) pre-populated with estimated NRM region soil carbon baseline, hectarage range, and 25-year ACCU revenue projection. Include side-by-side comparison: full-farm vs. trial-block KCT design. Deliver as one-page PDF + embed in Outlook draft for Ben's review within 24 hours.",
+          "estimated_minutes_saved": 45,
+          "delivery": "Outlook drafts (PDF attachment ready-to-send)"
+        }
+      }
     },
     {
       "deal_id": "183762813378",
@@ -167,14 +348,67 @@
       "attribution": "direct",
       "current_stage": "Qualified Account",
       "current_stage_friction_from": "Qualified Account",
-      "days_in_current_stage": 181,
-      "median_won_at_stage": 3,
-      "median_lost_at_stage": 5,
-      "risk_class": "red",
-      "risk_score": 88,
-      "coaching_message": "Day 181 at Qualified Account — 36× past lost-median. This deal never progressed past qualification. Stale-zombie at the top of funnel. If never assessed: assess this week. If assessed and no engagement: close lost. Daniel is a consultant entity, not a typical farmer profile — worth a single direct call to triage and decide.",
-      "primary_action": "One triage call THIS WEEK. Decide: book Hobbs visit, defer with reason, or close lost. Don't leave dangling.",
-      "supporting_twin_ids": []
+      "days_in_current_stage": 185,
+      "median_won_at_stage": 0,
+      "median_lost_at_stage": 34,
+      "risk_class": "amber",
+      "risk_score": 50,
+      "coaching_message": "Daniel's been sitting at 185 days—you're past Mulcahy's loss point and into Bauer territory. Groat and Hollis both converted fast by skipping Discovery and moving straight to SLA/KCT Mapping to lock landowner commitment. Hit him with a 3-touch sequence today: call + SMS + personalised ACCU estimate. If no response by day 5, escalate.",
+      "primary_action": "Execute 3-touch sequence today: (1) Call attempt with SLA/KCT Mapping value prop, (2) SMS follow-up same day, (3) Personalised ACCU estimate email by tomorrow morning.",
+      "supporting_twin_ids": [
+        "13165246485",
+        "13703369560",
+        "16149552245"
+      ],
+      "enablement": {
+        "inline_draft": {
+          "type": "email",
+          "subject": "Keynes Consulting – 25-year soil carbon project estimate + next steps",
+          "body": "Hi Daniel,\n\nI've pulled together a quick 25-year cash-flow model and ACCU yield estimate for your property type in your NRM region. AgriProve's project structure is straightforward: we handle the compliance, stocking arrangements, and ERF paperwork—you get 75% of carbon revenue over the 25-year project life.\n\nThe next step is a short SLA/KCT Mapping call to lock in your property details, confirm the yield estimate, and map out the full project parameters. Most landowners are pleasantly surprised at how clean the process is compared to other carbon schemes.\n\nI'd like to get you a spot on the calendar by end of week. How does Thursday or Friday morning suit?\n\nThe attached one-pager shows the cash-flow breakdown and a recent case study (similar property type) that came through AgriProve last year.\n\nCheers,\nBen",
+          "length_words": 165,
+          "tone": "Direct, peer-to-peer, customer agency; Australian vernacular; value-driven, not pushy"
+        },
+        "cowork_task": {
+          "type": "draft_one_pager",
+          "description": "Generate property-type-specific ACCU yield estimate + 25-year cash-flow projection + one-page comparison of AgriProve project delivery vs. competitor (reference Groat case study if property type match exists); deliver to Outlook drafts as PDF + editable docx.",
+          "estimated_minutes_saved": 25,
+          "delivery": "Outlook drafts folder (PDF + docx) ready to attach to email"
+        }
+      }
+    },
+    {
+      "deal_id": "183759934939",
+      "deal_name": "- Tom  Rummery",
+      "attribution": "direct",
+      "current_stage": "Qualified Account",
+      "current_stage_friction_from": "Qualified Account",
+      "days_in_current_stage": 185,
+      "median_won_at_stage": 0,
+      "median_lost_at_stage": 34,
+      "risk_class": "amber",
+      "risk_score": 50,
+      "coaching_message": "Tom's been in Qualified for 185 days — that's 74 days past where Mulcahy cold-lost, and Hollis won their whole deal in 331 total. Your twins (Britton, Groat, Hollis) all skipped Discovery and went straight to SLA/KCT Mapping to show competitive ACCU advantage early. Tom needs that same move now, not a Discovery call. Book the SLA/KCT Mapping within 5 days or run the 3-touch sequence and flag him at-risk.",
+      "primary_action": "Book SLA/KCT Mapping call with Tom within 5 calendar days. Prepare NRM-region ACCU estimate and 25-year revenue model (75% landowner take) as collateral.",
+      "supporting_twin_ids": [
+        "13165246485",
+        "13703369560",
+        "16149552245"
+      ],
+      "enablement": {
+        "inline_draft": {
+          "type": "email",
+          "subject": "Tom — AgriProve 25-year carbon project: your site's ACCU potential + landowner income",
+          "body": "Hi Tom,\n\nThanks for qualifying with AgriProve. I want to skip the usual discovery chat and get straight to what matters — what your country's actually worth under a 25-year soil carbon project.\n\nI've put together a preliminary ACCU estimate for your NRM region and modelled your potential landowner take (you'd see 75% of revenue; we take 25%). The numbers are solid, but they're only accurate once we map your soil type, current practices, and sequestration baseline.\n\nThat's what the SLA/KCT Mapping call does — it's a 45-minute technical session where we lock in your real income forecast and set up the on-farm visit with our grazier-in-residence.\n\nI've got slots next week: Tuesday 2pm, Wednesday 10am, or Thursday 1pm AEST. Which works?\n\nI'll send the ACCU estimate over once we're booked so you can have a look beforehand.\n\nCheers,\nBen",
+          "length_words": 165,
+          "tone": "Direct, peer-to-peer, gives Tom agency, focuses on his income, skips jargon"
+        },
+        "cowork_task": {
+          "type": "prepare_call_brief",
+          "description": "Generate NRM-region ACCU estimate + 25-year revenue model one-pager (75/25 split clearly shown); attach talking points for SLA/KCT Mapping call (soil baseline, sequestration opportunity, on-farm visit trigger). Deliver to Outlook drafts + Teams DM.",
+          "estimated_minutes_saved": 18,
+          "delivery": "Outlook drafts folder (PDF one-pager + email) + Teams DM to rep"
+        }
+      }
     }
   ]
 }

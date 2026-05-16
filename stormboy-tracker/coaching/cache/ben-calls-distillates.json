@@ -1,0 +1,636 @@
+{
+  "version": "p0fv.1",
+  "generated_at": "2026-05-12T00:00:00+02:00",
+  "source": "Confluence parent 562364446 (Bens Calls folder), 15 most recent Aircall transcripts pulled 2026-05-12 via Atlassian MCP",
+  "context": "Ben Payne (HubSpot owner 76812243) is AgriProve's primary sales rep. This distillation runs parallel to Hobbs's call distillation to compare phone discipline (rapport vs pitch), cold-open style, value-prop deployment, and what each rep is setting up. Schema: pass0-farm-visit-distillation.md, but adapted for shorter call shapes.",
+  "extracted_calls": 15,
+  "extracted_distillates": 41,
+  "lens": "Ben vs Hobbs — does Ben pitch on the phone (compressed sales motion) or does he hold for visit (rapport infrastructure)?",
+  "calls": [
+    {
+      "transcript_id": "call-2026-05-06-thompson",
+      "visit_date": "2026-05-06",
+      "region_nrm": "NSW (Central Coast cohort, golf-club rapport)",
+      "size_bucket": "unknown",
+      "call_type": "warm late-stage — post-KCT shepherding",
+      "duration_min": 7.7,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — first-name + 'Ben from AgriProof' on warm contact",
+          "customer_position": "Long-standing contact, in late-stage carbon project workflow.",
+          "ben_response": "Opens 'Hi, Alec. It's Ben from AgriProof. How are you?' — names AgriProve (mispronounced as AgriProof) in the second sentence. Apologises for time between conversations. No persona, no permission ask.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "It's Ben from AgriProof. How are you? // Sorry, it's been a little bit of time between conversations.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Rapport — golf, geography, family",
+          "customer_position": "Customer mentions playing golf on Central Coast (where Ben lives); had been away playing golf.",
+          "ben_response": "Sustains 2+ minutes of golf-course chat: knows the local courses (Magenta, Chili Beats, Noraville), tells customer 'I'm just around the corner from there. I'm in Wombro,' offers next visit hospitality ('next time you're in the Central Coast, just give me a bell'). Personal-geography rapport is Ben's signature.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Every time I talk to you, you're playing golf at the golf club. // Next time you're in the Central Coast, just give me a bell.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "What Ben sets up — sequenced post-KCT close",
+          "customer_position": "Waiting for project documents; mentioned AgriWeb membership for records.",
+          "ben_response": "Sequences the next steps cleanly: 'We'll have everything to you by the end of the week as far as your carbon project plan and your key commercial terms... once we send that across for your review, then you take it down the avenues that you need to get checked off on... Will and I always like to do a post-KCT or key commercial terms catch up.' Names Will (Head of Ops) as the next touchpoint.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "We always like to do a post-KCT or key commercial terms catch up. // We've got all intentions to register the project, but we're a few steps away from that just yet.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Maintained warmth in late-stage KCT shepherding via Central-Coast/golf rapport; cleanly sequenced post-KCT review with Head of Ops as next step."
+      }
+    },
+    {
+      "transcript_id": "call-2026-05-06-martin",
+      "visit_date": "2026-05-06",
+      "region_nrm": "Riverina (Albury catchment)",
+      "size_bucket": "unknown",
+      "call_type": "cold outreach — Hobbs farm-visit booking",
+      "duration_min": 3.1,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — names AgriProve + Albury geography immediately",
+          "customer_position": "Stud-operator answering with company name; no prior contact with AgriProve.",
+          "ben_response": "Opens with 'Ben calling here from AgriProve in Albury. How's things?' AgriProve named in sentence one. Frames the call as a 'regional outreach program based out of Aubrey... looking at what's working across the Riverina as far as grazing operations.'",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "It's Ben calling here from AgriProve in Albury. // Your property has actually come up as one of those identified.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "The Hobbs intro — 'gentleman from The US, paddock conversation'",
+          "customer_position": "Asks what Hobbs would like to discuss / what the objective is.",
+          "ben_response": "Frames Hobbs as 'a gentleman out here from The US who's a guy by the name of Hobbs Magaret, who's just looking to have a bit of a paddock conversation on practical grazing methods.' Soft, low-commitment framing — 'paddock conversation' not 'sales meeting.' Mentions soil health and grazing management 'go hand in hand.'",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "A gentleman out here from The US... just looking to have a bit of a paddock conversation on practical grazing methods.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Visit booked — same call, specific slot",
+          "customer_position": "Open to Friday next week; checks distance from Albury.",
+          "ben_response": "Books 11am Friday 15th in-call. No carbon pitch, no ACCU mention, no methodology, no revenue split. Pure visit-booking. Will email meeting request + Hobbs's phone number.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I'll send through his phone number as well too and just a meeting request for 11:00 on the fifteenth.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Cold outreach to Riverina stud-operator booked Hobbs farm visit in 3 minutes; zero value-prop deployment — pure visit-booking discipline."
+      }
+    },
+    {
+      "transcript_id": "call-2026-05-06-milawa",
+      "visit_date": "2026-05-06",
+      "region_nrm": "NE Victoria (Milawa)",
+      "size_bucket": "small (~200 acres, irrigated)",
+      "call_type": "cold outreach — Hobbs farm-visit booking (mis-targeted)",
+      "duration_min": 4.7,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Geographic mis-match surfaces in rapport",
+          "customer_position": "Operator gently probes 'when you say Riverina, where do you think I am? Have you got the right person?'",
+          "ben_response": "Owns the awkwardness without polish: 'that's also the ultimate question here. So I don't have... I've got you in Vic, but I'm not too sure where.' Doesn't try to bluff. Asks about size.",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "That's also the ultimate question here. // It might be a little bit outside the catchment, and apologies for that.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Self-deprecating cold-list transparency",
+          "customer_position": "'Where are getting your call list from?'",
+          "ben_response": "Open about sourcing: 'You've come up based on research of property boundaries, addresses. You might have popped up on a breeder list or social media. It's all public sourced data.' Operator accepts it ('Yeah, not real targeted'). Mirrors Hobbs's 'nerds on the tech team scraped' move, somewhat blander but structurally identical.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "You've come up based on research of property boundaries, addresses. You might have popped up on a breeder list or social media. It's all public sourced data.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Value-prop drift — biodiversity / Verterra mention",
+          "customer_position": "Operator runs Agribalance (biosecurity consultancy), not biodiversity.",
+          "ben_response": "Misheard 'biosecurity' as 'biodiversity' and used it as a hook to mention Verterra and 'integrated projects... we're also looking at trees, biodiversity, and water quality credits.' This is the only call in the set where Ben extends past visit-booking into describing AgriProve's adjacent products.",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "We are just approaching another company called Vatera... we're looking at trees, biodiversity, and water quality credits as well too.",
+          "confidence": "moderate"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "neutral",
+        "one_line_summary": "Geographically mis-targeted prospect handled gracefully; operator left door open ('welcome to come and have a look anytime') without commitment."
+      }
+    },
+    {
+      "transcript_id": "call-2026-05-06-milong",
+      "visit_date": "2026-05-06",
+      "region_nrm": "NSW (Young, Angus stud)",
+      "size_bucket": "unknown",
+      "call_type": "cold outreach — Hobbs farm-visit booking (mis-identified contact)",
+      "duration_min": 4.9,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — AgriProve + Albury + fellowship frame",
+          "customer_position": "Skeptical Angus operator currently in Montana looking at cattle.",
+          "ben_response": "Opens 'It's Ben calling here from AgriProve in Albury. How are going?' Then frames Hobbs as 'a gentleman who's over here on a fellowship with us... ex Texas rancher.' The 'fellowship' word is Hobbs's persona handed forward by Ben — he's using Hobbs's framing verbatim.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "A gentleman who's over here on a fellowship with us. He's a ex Texas rancher by the name of Hobbs Magaret.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Skeptic disarm — 'Your information is very dodgy'",
+          "customer_position": "Operator pushes back hard: 'Your information is very dodgy.' Also turns out Ben likely wanted his cousin (Will Call) not him (Will of Milong Angus Stud).",
+          "ben_response": "Doesn't escalate or defend. 'Oh, I don't know about that. You know? All information's information at the end of the day.' Then bridges to rapport (wife's from Washington State, Montana geography). Doesn't get derailed by the data-quality jab.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "All information's information at the end of the day. // My wife's from Washington State originally. So, yeah, not far away.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Defer-and-book — circle back on the 21st",
+          "customer_position": "In US until mid-May, then heading to Hewitton end of month — narrow window.",
+          "ben_response": "Doesn't try to force the visit. 'No dramas at all. I'll just make a note to give you a call on the twenty first and see how you're tracking and how his calendar is and see if the stars align.' Closes warm ('Enjoy stateside').",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I'll just make a note to give you a call on the twenty first... see if the stars align.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Handled mis-identification + skepticism without flinching; deferred booking cleanly with specific callback date."
+      }
+    },
+    {
+      "transcript_id": "call-2026-05-05-pastoral-holdings",
+      "visit_date": "2026-05-05",
+      "region_nrm": "NSW Riverina",
+      "size_bucket": "unknown (partnership operation)",
+      "call_type": "cold outreach — Hobbs farm-visit booking",
+      "duration_min": 5.5,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — Ben names AgriProve + Albury",
+          "customer_position": "Operator picks up from message, polite, curious.",
+          "ben_response": "'It's Ben calling here from AgriProve in Albury. How are going?' AgriProve named first sentence. Frames Hobbs as 'an ag researcher that's out there on the road just basically popping and doing some farm visits, more or less just a paid conversation or fence line chat.'",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "More or less just a paid conversation or fence line chat.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Value-prop creep — 'soil health, specifically carbon development'",
+          "customer_position": "Asks 'I think I need to find out more about what your company's about... You guys got a website?'",
+          "ben_response": "Describes AgriProve's mission on the phone — 'mainly focused on soil health and developing more carbon stocks out of your soil... researching ways that help our current partners and clients basically grow more grass and get better results.' Mentions carbon directly. Differs from Hobbs (who never names the company or methodology on phone).",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "We're mainly focused on soil health and developing more carbon stocks out of your soil. // Specifically carbon development.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Hobbs intro — slightly tweaked from Riverina script",
+          "customer_position": "Curious about Hobbs's specific angle.",
+          "ben_response": "'A Texas rancher, a guy by the name of Hobbs Margaret... some very interesting views on how cattle and grazing systems integrate with Regen Ag. He's not one of these boring regen fanatics, but he sees the two hand in hand.' The 'boring regen fanatics' line is a Ben-specific positioning move (Hobbs doesn't disparage regen folk).",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "He's not one of these boring regen fanatics, but he sees the two hand in hand with each other.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Follow-up — email path, partner consultation",
+          "customer_position": "Wants to research + check with wife/business partner first.",
+          "ben_response": "Confirms email, captures address, sends details + Hobbs's name for Google check. No push to lock visit on phone. Operator closes 'That sounds exciting.'",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I'll send you my details and his name as well if you wanna Google it. You're more than welcome to do that.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Soft-curious operator handled with information-share + Google-Hobbs validation path; visit not yet booked but warmly progressing."
+      }
+    },
+    {
+      "transcript_id": "call-2026-05-05-hills",
+      "visit_date": "2026-05-05",
+      "region_nrm": "QLD (skeptical existing/late-stage prospect)",
+      "size_bucket": "unknown",
+      "call_type": "late-stage objection-handling — KCT review",
+      "duration_min": 11.0,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — minimal, warm contact",
+          "customer_position": "Late-stage skeptical operator who just received KCT/responses document.",
+          "ben_response": "'Hi, Brian. It's Ben calling here from AgriProof. How are you going?' Brief small-talk. Quickly pivots to 'I just shot you a text this morning. We've sent across all the responses... make sure they landed with you okay.'",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I just shot you a text this morning. We've sent across all the responses to both Kevin and you.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Trust + 25-year commitment objection (high-friction)",
+          "customer_position": "'I'm not instilled with confidence in it... when the word may is used, may doesn't stand any shit at all... I don't wanna lock anything up for twenty five years because you can't tell me what's gonna happen in the future. You can't tell me what the government is gonna do.'",
+          "ben_response": "Tries to defuse 'lock up' framing — 'We're not locking up land. We're not in the business of locking up land. I know that word gets bandied around a little bit, but there's no locking up a land.' But doesn't deploy Hobbs's clean Tier-1 framings (e.g., 'two clauses' or 'we don't do trees'). Defaults to procedural reassurance ('there are caveats in there', 'we can review this after a five year period').",
+          "landed_or_friction": "friction",
+          "quotable_phrasing": "We're not locking up land. We're not in the business of locking up land. // There are caveats in there a 100%. We can review this after a five year period.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Government risk + ACCU price (high-friction)",
+          "customer_position": "'If the government changes hands tomorrow, there's no nothing written in cement here that I'm gonna get paid in it... $37. That can drop, and that can up and down.'",
+          "ben_response": "Cites Abbott's failed abolition attempt: 'I think Abbott tried to abolish it as well too, and that didn't fly... there's been too many attempts at it, and the market's too big to warrant any any change there.' This is a Ben-specific historical/political defence — Hobbs uses 'carbon tax alternative' (#7) instead.",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "I think Abbott tried to abolish it as well too, and that didn't fly. The market's too big to warrant any change there.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "25% revenue split objection",
+          "customer_position": "'You take 25% of that every year. Am I right or wrong?'",
+          "ben_response": "Doesn't use Hobbs's killer reframe ('25% of what you weren't going to get anything from before'). Instead defaults to cost-justification: 'It's 25% of the ACCUs, which covers all of our costs for the entirety of the lifespan of the project... those audits cost us $30 alone... there's so much compliancy admin, there's so much cost involved for us to set this up.' Cost-defence rather than re-frame.",
+          "landed_or_friction": "friction",
+          "quotable_phrasing": "25% of the ACCUs covers all of our costs for the entirety of the lifespan of the project. Those audits cost us $30 alone.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Methodology / ratchet (Ben deploys it correctly)",
+          "customer_position": "Concerned about going backwards in carbon stocks.",
+          "ben_response": "Explains the ratchet correctly: 'When we do the baseline... once the project starts to take over, year one, once you see an increase above the baseline... If that dips in year two, if you go backwards — and this is one of the biggest misconceptions of soil carbon projects — the minute you go backwards, there's no penalty. There's no paying back of credits.' Hobbs-aligned framing, just less crisp than 'It works on a ratchet... boom, you get credited.'",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "The minute you go backwards, there's no penalty. There's no paying back of credits. It's one of the biggest misinformation pieces.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Close — defer to think, no push",
+          "customer_position": "'I just it's new. I'm not a fucking fan of taking shit off the table or putting shit on the table. I got enough going on as it is.'",
+          "ben_response": "'No, I understand that. Totally understand that. No problem at all. I'll leave that with you, and I'll come back to you with any kind of concerns I can quash.' No forcing. But no clean concrete next step either.",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "I'll leave that with you, and I'll come back to you with any kind of concerns I can quash, I'll come back with you on it.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "cooling",
+        "one_line_summary": "Late-stage QLD skeptic re-surfaced 25%/25-year/government-risk objections after KCT review; Ben handled defensively without Hobbs's Tier-1 reframes — call ended ambiguously, customer needs time."
+      }
+    },
+    {
+      "transcript_id": "call-2026-05-05-brunt",
+      "visit_date": "2026-05-05",
+      "region_nrm": "VIC/NSW (Finley region — Eagle I Machinery)",
+      "size_bucket": "unknown — irrigation + farming",
+      "call_type": "warm inbound — website information-pack download",
+      "duration_min": 4.5,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — info-pack follow-up",
+          "customer_position": "Mid-stream meeting, wants to talk, knows about regen ag.",
+          "ben_response": "'Hi, Peter. It's Ben calling here from AgriProve Carbon Farming.' Names AgriProve + 'Carbon Farming' in first sentence. Frames call as 'You've come through with downloading our information pack on the website recently. So I just wanted to circle back around as the national account manager.' Identifies own role.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I'm the national account manager here, so I just wanted to circle back around.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Visit booking — Hobbs introduced + 'lovely guy'",
+          "customer_position": "Operator says '100 percent' open to visit.",
+          "ben_response": "Books for 2pm Tuesday the 19th. Mentions 'a guy by the name of Hobbs, Margaret' — operator immediately recognises him ('Oh, yeah. US. I'll follow him on Instagram'). Ben adds 'Lovely guy. Very interesting fella.' Personal endorsement.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "A guy by the name of Hobbs, Margaret. He's on board with us until about the end of May. Lovely guy. Very interesting fella.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Value-prop hint — ACCU credits aside",
+          "customer_position": "Wants to understand benefits.",
+          "ben_response": "Brief one-line mention: 'The core validation is those credits, which you can offset emissions against your own business as well... totally flexible on what you wanna do with those credits.' Mentions ACCUs by inference but doesn't pitch methodology or split.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "The core validation is those credits, which you can actually offset emissions against your own business as well too.",
+          "confidence": "moderate"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Warm info-pack lead converted to in-person visit + 'do a little video with him' Instagram-recognition boost; clean, low-friction booking."
+      }
+    },
+    {
+      "transcript_id": "call-2026-05-05-boag",
+      "visit_date": "2026-05-05",
+      "region_nrm": "Riverina cluster (linked to neighbour Brad)",
+      "size_bucket": "unknown — Farm 572 Gilbert Road",
+      "call_type": "warm — neighbour-referral, double-booking with Brad",
+      "duration_min": 6.4,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — weather + neighbour rapport",
+          "customer_position": "Operator is friendly, knows Ben spoke to neighbour Brad yesterday.",
+          "ben_response": "Opens with weather ('It's pretty warm up my way... How's the sales of web venue down your way?'). When operator mentions Brad, Ben fluently bridges: 'Yeah, I was talking to Brad. How'd you know that?' Sustains warm-neighbour rapport for 90 seconds before pivoting.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I had 24 [mils]. // Yeah, I was talking to Brad. That was yeah. How'd you know that?",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Value-prop deployment — co-benefits framing",
+          "customer_position": "Operator skeptical-curious: 'I'm gonna go to carbon farming or I think both of us combined, no fuck all.'",
+          "ben_response": "Deploys a structured co-benefit pitch on the phone: 'It has a lot of co-benefits... healthier soils, better productivity, water retention in your soils, and ultimately, an additional income.' This is a clear example of Ben using phone time to position the value prop — Hobbs would not do this.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Healthier soils, better productivity, water retention in your soils, and ultimately, an additional income. That's the core validation of really undertaking a project.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Two-birds-one-stone visit booking",
+          "customer_position": "'Same time. Same meeting, same time' — wants to attend Brad's visit.",
+          "ben_response": "Embraces the efficiency: 'He was in first, so he should be the host. Right?' Locks 12 May 2:30pm at Brad's place. Captures Adam's address (Farm 572) for project records. Operator gets self-conscious ('a bit of homework for us so we don't sound stupid'); Ben reassures.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "He was in first, so he should be the host. // There's no right or wrong in this. It's just really an open forum to get to know your enterprise.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Neighbour-referral converted to joint farm visit; Ben used Brad-connection as rapport scaffold and deployed co-benefits framing on phone."
+      }
+    },
+    {
+      "transcript_id": "call-2026-05-04-anonymous-shelley",
+      "visit_date": "2026-05-04",
+      "region_nrm": "unknown",
+      "size_bucket": "unknown",
+      "call_type": "INBOUND — existing customer / late-stage contract discussion",
+      "duration_min": 21.2,
+      "direction": "inbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Data-limited record — full transcript exceeded read cap",
+          "customer_position": "Inbound from someone Ben knows by first name ('Shelley'). Conversation covers contract, eligibility, methodology, baseline, register, project. Likely late-stage customer call.",
+          "ben_response": "Substantive discussion — methodology, eligibility, register, project all surface as topics. No 'ratchet', '25%', 'Snapshot', 'ACCU', 'soil carbon', 'hectare' detected via grep — suggesting this is a non-pitch operational discussion (contract / procedure / status), not a pitch call.",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "[data-limited]",
+          "confidence": "low"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "ambiguous",
+        "one_line_summary": "21-minute inbound from existing late-stage contact; content not fully analysable due to read cap, but signals point to operational/contractual not pitch discussion."
+      }
+    },
+    {
+      "transcript_id": "call-2026-05-03-boldiston",
+      "visit_date": "2026-05-03",
+      "region_nrm": "Riverina cluster (Adam's neighbour)",
+      "size_bucket": "small-medium (~500ha, family ~800ha total)",
+      "call_type": "warm inbound — website form submission",
+      "duration_min": 7.4,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — warm-callback for website inquiry",
+          "customer_position": "Operator just submitted website form, 'new to the carbon farming space'.",
+          "ben_response": "'It's Ben calling here from AgriProve Carbon Farming.' Asks 'Have I caught you at an okay time?' — uses Hobbs-style permission ask. Operator mentions 17mm overnight rain; Ben acknowledges and pivots: 'A bit going on then today? That's fair enough.' Sustains weather rapport.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Have I caught you in okay time? // A bit going on then today? That's fair enough.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Methodology pitch on phone — eligible practices + material difference",
+          "customer_position": "Looking at regen path, fertilizer costs too high, wants test 'now so before I start improving them'.",
+          "ben_response": "Deploys methodology content on phone: 'One of the eligible practices, we call them, which ticks the box with the clean energy regulator is applying either a synthetic or non-synthetic fertilizer... about 11 different practices, you only have to choose two... new practices are classed as has been done on the property for five years or more... showcasing a material difference.' This is a Hobbs-on-farm pitch deployed on phone.",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "There's about 11 different practices you can implement. You only have to choose two of them. // Showcasing a material difference to a current practice.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Succession framing for project sizing",
+          "customer_position": "Wonders how to handle family land (his 500 + father's 300-400).",
+          "ben_response": "Frames it as succession-friendly: 'These kind of projects, the way we set them up is are actually really good for succession as well because we tend to divvy up our projects to around about the 300, 400 hectare mark. If you do have other properties that wanna look at splitting up projects as well too, it works out to your favor with succession as well down the track.' Original Ben framing (Hobbs doesn't have this in language bank).",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "These kind of projects are actually really good for succession because we tend to divvy up our projects to around 300, 400 hectare marks.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Visit + HORIZON Snapshot sequenced close",
+          "customer_position": "Open to visit.",
+          "ben_response": "Books 12 May 2:30 with Hobbs. Then introduces 'a bespoke report known as a Horizon snapshot... based off your lot and plan or your land titles.' Sequences: visit → Snapshot. Same low-commitment ladder Hobbs uses on-farm.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "We can also generate for you is a bespoke report known as a horizon snapshot. So if you've got a chance to send that between now and then, we can actually generate a report for you, but that can be a later discussion.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Inbound website lead converted to visit + Snapshot ladder; Ben deployed methodology + eligibility content on phone (departs from Hobbs's hold-for-visit discipline)."
+      }
+    },
+    {
+      "transcript_id": "call-2026-04-29-it-support",
+      "visit_date": "2026-04-29",
+      "region_nrm": "n/a (internal IT support call)",
+      "size_bucket": "n/a",
+      "call_type": "NOT A SALES CALL — IT support installing software on Ben's PC",
+      "duration_min": 9.3,
+      "direction": "inbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Misrouted into Bens Calls — IT support not sales",
+          "customer_position": "Jack from Total Solutions IT, installing software, troubleshooting browser hijack.",
+          "ben_response": "Operational, cooperative, calm. Allows remote control via Quick Assist. Asks for Claude installer to be pinned. Not analysable for sales pattern.",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "[n/a — IT support call]",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "ambiguous",
+        "one_line_summary": "IT-support call misrouted into Bens Calls folder; excluded from sales analysis."
+      }
+    },
+    {
+      "transcript_id": "call-2026-04-28-bott",
+      "visit_date": "2026-04-28",
+      "region_nrm": "QLD (between Meribah and Gympie — Mary Valley)",
+      "size_bucket": "~1000 acres total (his 500 + father's 490)",
+      "call_type": "warm inbound — misunderstood Movement tags inquiry",
+      "duration_min": 13.2,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open + course-correction on inquiry",
+          "customer_position": "Originally inquired about Movement (geofencing) but realised AgriProve isn't that.",
+          "ben_response": "Names AgriProve + 'Carbon Farming' first sentence. Acknowledges customer's wrong-product inference without defensiveness: 'Got you... did you end up finding a company that would help you out on that front?' Suggests Halter (a competitor product) for the customer's actual need. Helpful-first move.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "There's another one called Halter that seems to be popping up quite a bit when I'm doing my research. New Zealand based company doing good things on the virtual fencing side.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Bridge from virtual-fence interest to soil carbon eligibility",
+          "customer_position": "Wants to break paddocks into smaller paddocks, intensively graze — for productivity.",
+          "ben_response": "Smart bridge: 'That's actually with us — sorry to shift the dial there — but it's actually an eligible activity that you can undertake in conjunction with the project... if you're gonna do something like rotational grazing anyway and can plug it in to a project, then why not earn an extra income while you're at it?' Hobbs-style 'already doing it, get paid' reframe, deployed verbally on phone.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "If you're gonna do something like rotational grazing anyway and can plug it in to a project, why not earn an extra income while you're at it?",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Snapshot offer + eligibility framing on phone",
+          "customer_position": "Wants email + reading material.",
+          "ben_response": "Offers Snapshot + walks through what's excluded (waterways, fence lines, sheds, rocky terrain, slopes), then ratchet ('once you see levels lift off that baseline, that's when you go into the crediting system'). Methodology + ratchet + Snapshot all surfaced on phone. Operator stays engaged.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "It works off a ratchet up system where you're achieving your credits. // Once you see levels lift off that baseline, that's when you go into the crediting system.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Two-property reporting + threshold framing",
+          "customer_position": "Buying father's 490 acres, currently working away.",
+          "ben_response": "Frames the split-project advantage: 'We tend to split the projects up into sort of 300, 400 lots... the minute project one starts to see sequestration over that baseline level, then you go straight into the crediting system without having to wait on the other projects.' Original Ben framing — succession-aware split-project pitch.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "The minute project one starts to see sequestration over baseline, you go straight into the crediting system without having to wait on the other projects to perform.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Misunderstood product inquiry recovered into warm QLD prospect; Ben deployed bridge-from-existing-practice, Snapshot, ratchet, split-project framings all on phone."
+      }
+    },
+    {
+      "transcript_id": "call-2026-04-28-anon-tags",
+      "visit_date": "2026-04-28",
+      "region_nrm": "Northern AU (high-rainfall, 24 inches / ~600mm)",
+      "size_bucket": "small grazing",
+      "call_type": "warm callback — Movement-tag inquiry, ideological skeptic",
+      "duration_min": 6.9,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Climate-skeptic disarm",
+          "customer_position": "'I'm a bit like — it's a bit like climate change is carbon, I'm afraid. I don't believe it either. I can't see how you could measure it. It just depends on the weather.'",
+          "ben_response": "Doesn't defend or argue: 'That's a fair call. Absolutely. But there's a lot of co-benefits and side benefits from keeping your soil healthy.' Reframes around productivity/water/drought-resilience, not climate. Hobbs-aligned reframe (don't fight the ideology, reframe the value).",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "That's a fair call. Absolutely. But there's a lot of co-benefits and side benefits from keeping your soil healthy.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Counter-disinformation — 'doesn't work up north'",
+          "customer_position": "'They find that us up north, they can't really do it up here.'",
+          "ben_response": "Direct counter: 'Not necessarily. We've got projects all over the country. There's a lot of over the fence stuff and misinformation that does get bandied around a little bit.' Uses rainfall threshold as evidence: 'Our lowest credited project as far as rainfall is concerned is actually half of that.' Quantitative, not ideological. Hobbs-aligned.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "There's a lot of over the fence stuff and misinformation that does get bandied around a little bit. // Our lowest credited project as far as rainfall is around 320, 340 [mm].",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Defer to partner — graceful exit",
+          "customer_position": "Lost interest in carbon, just wanted Movement tag pricing.",
+          "ben_response": "'Best of luck with it all. Appreciate your time on the phone.' No push. Offers to connect to Movement partner ('I'm actually catching up with a guy from Movement today').",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I can pass you directly onto the teams if you are interested.",
+          "confidence": "moderate"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "neutral",
+        "one_line_summary": "Climate-skeptic + 'doesn't work up north' disinformation — handled cleanly with co-benefits reframe + rainfall data; customer left to Movement product instead."
+      }
+    },
+    {
+      "transcript_id": "call-2026-04-27-shaw",
+      "visit_date": "2026-04-27",
+      "region_nrm": "QLD (Capella, Central Highlands)",
+      "size_bucket": "large (~20,000ha organic certified, mixed cattle/grain)",
+      "call_type": "warm inbound — high-quality enthusiastic lead",
+      "duration_min": 11.2,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — public holiday callback",
+          "customer_position": "Eager, profane, fast-talking organic-certified QLD operator with 'master plan for statewide carbon sequestration'.",
+          "ben_response": "Apologises for delay: 'I'm New South Wales based on today's public holiday, but I saw you rang a few times. So I thought I'd give you a call.' Customer is grateful: 'I'll make it worth your while.' Patient, calm tone against high-energy speech.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I'm New South Wales based on today's public holiday, but I saw you rang a few times. So I thought I'd give you a call.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Threshold framing — minimum size",
+          "customer_position": "20,000ha — way above threshold.",
+          "ben_response": "Quotes threshold from memory: 'We generally work anywhere north of so it's it wraps around to 400 acres' — clarifies hectare conversion mid-sentence under audio drop. Explains baseline soil sampling cost recovery / deferred payment options.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Just for it to be commercially viable... the first round of soil sampling can be quite extensive... offsetting that cost with the carbon credits, which you can defer on future credits at a fixed rate.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Eligibility + 11 practices framing",
+          "customer_position": "Knows about Pure Earth, triple-A CORCs, offtake agreements — sophisticated.",
+          "ben_response": "Deploys eligibility framing on phone: 'About 11 eligible activities where you only have to choose one or two to tick a box with the clean energy regulator and get you eligible for a soil carbon project as part of the Australian Carbon Credit Unit Scheme.' Standard Ben pitch. Sequences to Snapshot.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "About 11 eligible activities where you only have to choose one or two to tick a box with the clean energy regulator.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Snapshot offer + lot-and-plan ask",
+          "customer_position": "Has it in messages, willing to text through.",
+          "ben_response": "Offers Horizon Snapshot — 'we've got an internal soil learning algorithm known as Horizon... free feasibility report.' Explains exclusions (waterways, sheds, roads, fence lines, rocky terrain, scrubby land, hilly slopes). Operator interjects 'Scrubby land becomes biochar' — Ben rolls with it.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I can generate what we call a horizon snapshot report. It would give you a fairly good indication of your strength and opportunity areas.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Large QLD organic-certified inbound; Ben deployed full methodology + threshold + Snapshot stack on phone — operator already sophisticated, found receptive ground."
+      }
+    },
+    {
+      "transcript_id": "call-2026-04-23-raynolds",
+      "visit_date": "2026-04-23",
+      "region_nrm": "QLD (Arcadia Valley, ~4500ha)",
+      "size_bucket": "large (~4500ha grazing)",
+      "call_type": "re-engagement — historic prospect, prior concerns about flexibility",
+      "duration_min": 14.0,
+      "direction": "outbound",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — re-engagement on prior objections",
+          "customer_position": "Long-paused prospect with prior contract-flexibility concerns.",
+          "ben_response": "Opens 'Just sort of touch base with you and just, obviously, things have changed a lot now... wanted to sort of touch base.' Then frames the change: 'I guess probably the major change is around sort of flexibility. I know there were sort of a couple of sort of concerns at your end, but we have made some significant strides... in the flexibility of our contracts and the way we sort of review things after a five year period. It's an annualized review.'",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Things have changed a lot now. // The major change is around sort of flexibility. We've made some significant strides in the flexibility of our contracts and an annualized review.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Horizon innovation pitch on phone (substantial)",
+          "customer_position": "Listens, asking cost questions.",
+          "ben_response": "Deploys full Horizon backstory on phone: '$12,000,000 investment that has been injected back into the business... using sophisticated satellite technology, which is a massive upgrade from the NDRE technology... 20 to 30,000 soil sets from live projects... washing it against topography and other scientific layers... understand your carbon stocks on a monthly basis... annual crediting system.' This is the heaviest value-prop deployment in the whole 15-call set.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Roughly $12,000,000 investment injected back into the business. // 20 to 30,000 soil sets from live projects. Understand your carbon stocks on a monthly basis.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "25/75 revenue split — clean deployment",
+          "customer_position": "'What's your sort of data... do you guys go to set percentage for The UK?'",
+          "ben_response": "Clean answer: 'You keep 75% of the credits. The 25% for us covers every single cost for the life of the project. So the only cost to you is the baselining.' This is Ben's standard split framing — closer to Hobbs's Tier-1 #1 in clarity but without the 'taking 25% of what you weren't going to get anything from before' reframe punch.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "You keep 75% of the credits. The 25% for us covers every single cost for the life of the project.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Restriction objection (recurring concern)",
+          "customer_position": "Concerned about 'how restricted they'll be on management... I don't wanna get five or ten years down the road and be like, this really needs to happen, but I'm restricted.'",
+          "ben_response": "Reassures via process: 'We do cover all that in what we call a land management strategy call... 12 different practices, you only have to choose a maximum of two... we're not here to tell you how to do your practices. It's very much led by you, entire journey.' Hobbs's 'we let you guys farm the way you think you should farm' lite — Ben uses 'led by you' instead.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "We're not here to tell you how to do your practices. It's very much led by you, entire journey. // We're here to run the race with you, besides you.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Snapshot close + address capture",
+          "customer_position": "Engaged, gives address (Castle Hill, 3624 Arcadia Valley Road).",
+          "ben_response": "Sequences: 'I'll start that report for you... I should have it ready by early next week, and I can touch base, next week and see once you've reviewed it.' Mentions ops-team detailed mapping as next layer (gas wells / pipelines).",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I'll have it ready by early next week, and I can touch base next week once you've reviewed it.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Stale prospect re-warmed via 'things have changed' flexibility frame + heavy Horizon innovation pitch; Snapshot booked, address captured, follow-up dated."
+      }
+    }
+  ]
+}

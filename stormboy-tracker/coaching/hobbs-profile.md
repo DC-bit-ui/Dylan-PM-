@@ -1,11 +1,13 @@
 # Hobbs's Brain — Digital Replica Profile
 
 **Status:** Active capture. Hobbs leaves the country ~2026-06-02. This profile is the central artifact of the 3-week capture sprint.
-**Last updated:** 2026-05-12
+**Last updated:** 2026-05-15
 **Sources so far:**
 - Hobbs Farm Visit Transcripts Dump 1 (6 distinct visits, 47 distillates) — `coaching/cache/hobbs-distillates-bulk.json`
 - Hobbs Aircall transcripts via Confluence (6 calls, 14 distillates) — `coaching/cache/hobbs-calls-distillates.json`
 - 7-topic playbook from initial sampling — `coaching/learnings/2026-05/2026-05-11-hobbs-objection-handling-playbook.md`
+- **2026-05-15 NEW: Hobbs's raw farm-visit transcripts (ongoing).** Confluence folder id `577011728` (`AG > Hobbs' Raw transcripts`). Companion structured database id `576192562` (`Hobbs Raw Transcripts`, tinyURL `/x/MgBYIg`). Apex's daily enrichment pulls children of this folder into `persona-supplements/hobbs/` automatically (registered in `coaching/cache/persona-registry.json` → `confluence_sources`).
+- 2026-05-15 Interview captures (Session 1, condensed 15-min) — `inbox/granola/2026-05-15-hobbs-interview.md`
 **Sources pending:**
 - Stormboy standup sections where Hobbs speaks
 - Teams channel posts (Storm Boy team)
@@ -364,3 +366,82 @@ The profile updates as:
 - The team validates the captured framings against their own observations of Hobbs in action
 
 **Validation step (Week 3 of sprint):** walk Hobbs through this profile. Ask him: *"Is this you?"* The gaps he identifies are the most important thing we can capture before he leaves.
+
+---
+
+## 2026-05-15 — Interview captures (15-min condensed session)
+
+The first interview from the structured set has landed. Six questions, 15 minutes. Source: Granola, 2026-05-15. Full capture archived at `inbox/granola/2026-05-15-hobbs-interview.md`. These captures REFINE the existing sections above; older gaps are now partially closed.
+
+### Refines: "The transition" (was Gap #2, now partially closed)
+
+- **30–60 min rapport before carbon is the default.** Hobbs's exact framing: *"wait until the social climate has been properly lubricated."*
+- ~**50% of the time, the customer raises carbon first.** Hobbs lets that happen rather than forcing the pivot — the recon phase produces the customer's own opening more often than not.
+- **NEW direct opener being tested** (recent evolution, not the historical default): *"Have you guys looked into the carbon program at all?"* — generating positive responses. The strict 30-60min rule is loosening when other rapport signals are strong.
+
+### Refines: "Close detection" (was Gap #4, now partially closed)
+
+- **The "Ben-books → Hobbs-visits" funnel is the clearest close signal.** All signed KCTs followed this exact flow. The two-motion separation in the dashboard (Storm Boy phone outreach → existing-deal visits) maps directly to this.
+- **Customers introduced to AgriProve by Ben first arrive more carbon-oriented.** The phone touch pre-warms; Hobbs walks into a conversation that already has the right frame.
+- **Field-day social proof framing** (NEW play): *"7 farmers at a typical field day. 3 with carbon projects. 2 of those 3 with AgriProve."* Concrete numbers remove doubt — abstract claims don't.
+- **Post-visit Horizon Snapshot delivery within 1 day.** Customers *"want to see the money"*. Slow delivery loses the moment. This sharpens the existing dashboard tag (Send HORIZON Snapshot) — the SLA isn't "some time after the visit", it's same-day.
+
+### Refines: Additionality territory (was Gap #1, mostly resolved with a new positioning move)
+
+The "we do this anyway" objection from conventional farmers is real and Hobbs is honest about it: these farmers follow agronomist/chemical-company recipes and genuinely doubt they can lift soil carbon materially. Don't try to fudge it on a credits-only pitch.
+
+**NEW positioning pivot for this segment** — pitch the **data asset**, not the carbon revenue:
+- AgriProve's measurement is ISO 9001:2015 certified.
+- Banks, insurers, investment houses increasingly require this kind of compliance-grade data track record for ag lending and risk products.
+- The credit becomes a by-product; the **data asset is the structural value**.
+- A farmer who would have walked away from a credits pitch can engage with this framing because it answers a question they actually have ("what's my farm worth to a bank in 5 years?").
+
+See `memory/learnings/2026-05/2026-05-15-iso-9000-positioning-pivot.md` for the full strategic implications — this propagates beyond Hobbs's profile alone.
+
+### NEW: What Hobbs has stopped doing
+
+- **Stopped leading with carbon as the cold-open.** The direct opener is a recent evolution, not his default — he tried it, it worked, he kept it.
+- **Stopped relying on single-touchpoint follow-up.** The multi-touch cadence (maps → economics → handoff to Ben) is now standard.
+
+### NEW: What Ben gets wrong (captured frankly)
+
+- **Wrong: agricultural background gap.** Hobbs is direct: this is fundamental, can't be faked, destroys trust with farmers on visits. Ben is a traditional salesman in temperament, not an agrarian connector.
+- **Right: phone-appointment work.** Ben's strengths are real but they belong on calls, not visits. The dashboard's two-motion separation aligns to this exactly.
+- Current numbers (from the interview): Ben missing weekly call target — target 65, achieved 46. Hobbs hit 23 of his 20 visit target. The gap on Ben isn't capability — it's volume on the right surface.
+
+This has been propagated to `persona-supplements/ben/manual-hobbs-feedback-2026-05-15.md` for Ben's next persona refresh.
+
+### NEW: The "next Hobbs" hiring brief
+
+Three **non-negotiable** traits — must hire for, no training compensates:
+1. **Legitimate agricultural background** — cannot be simulated.
+2. **Outgoing personality + charisma / X-factor** — no script fills this.
+3. **Performance under pressure** — no do-overs on farm visits.
+
+**Foundational reading:** *How to Win Friends and Influence People*.
+
+**Study material:** Hobbs's own successful KCT transcripts — start with **John Harpley** and possibly **Georgie Millard**.
+
+### Meta — Hobbs's own framing of this work
+
+> *"The faster we can make me redundant, the better off the company is."*
+
+This isn't documentation. It's succession.
+
+### Gap status after this interview
+
+Pre-interview the profile flagged ~10 gaps. Five are now partially or fully closed:
+- ✓ The transition cue → above
+- ✓ Close detection → above
+- ✓ Additionality framings → above + positioning pivot
+- ✓ What he's stopped doing → above
+- ✓ What others get wrong → above (Ben specifically)
+
+Still open for future sessions:
+- ❌ Body language reading during the math moment
+- ❌ Failed phone opens — when has a cold open bombed?
+- ❌ The phone-to-visit qualification logic — what makes a prospect visit-worthy vs HORIZON-Snapshot-only?
+- ❌ Family/decision dynamics in real time
+- ❌ Property-specific adjustments (operator-type matrix)
+
+Three more 30-min sessions in the original briefing would close most of the rest. The Apex enrichment pipeline (Confluence Aircall transcripts, Teams Deals-channel posts) starting up will also close some of these passively as data arrives.
