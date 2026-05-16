@@ -105,6 +105,29 @@ app.get('/api/brain/objection-cards', (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// Supplements — Apex-produced enrichment files per deal/contact, plus the
+// daily-enrichment heartbeat. Per the 2026-05-15 system-enrichment-pipeline
+// commission, Apex writes Confluence/Teams/Granola/Outlook signal into
+// shared-growth-memory/{deal,contact}-supplements/<id>/ each weekday.
+app.get('/api/work/deal-supplements/:id', (req, res) => {
+  try {
+    const { listSupplements } = require('./coaching/engine/supplements');
+    res.json(listSupplements('deal', req.params.id));
+  } catch (e) { res.status(400).json({ error: e.message }); }
+});
+app.get('/api/work/contact-supplements/:id', (req, res) => {
+  try {
+    const { listSupplements } = require('./coaching/engine/supplements');
+    res.json(listSupplements('contact', req.params.id));
+  } catch (e) { res.status(400).json({ error: e.message }); }
+});
+app.get('/api/work/apex-heartbeat', (req, res) => {
+  try {
+    const { readApexHeartbeat } = require('./coaching/engine/supplements');
+    res.json(readApexHeartbeat());
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // Farm-visit booking metrics — total + week-on-week + vs goal. Live HubSpot.
 app.get('/api/stats/farm-visits', async (req, res) => {
   try {
