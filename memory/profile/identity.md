@@ -1,6 +1,6 @@
 # Identity — Dylan Cronje
 
-**Last updated:** 2026-04-28 (populated from Cowork handoff)
+**Last updated:** 2026-05-11 (added employment agreement, option holder status from compliance assessment)
 
 ## Basics
 - **Name:** Dylan Cronje
@@ -40,7 +40,7 @@ Drive product delivery across AgriProve's surfaces — primarily Frontier (lead/
 - _(to confirm)_ — first Schedule 2 model validation run
 - _(to confirm)_ — Stormboy pipeline operational with Growth/Field alignment
 
-## Things Dylan does NOT want help with
-- Sycophancy / flattery / "great question" preambles
-- Surface-level briefs when depth is warranted (see `communication.md` — depth over speed)
-- Fabricated facts or false confidence — accuracy above all; flag uncertainty explicitly
+## Employment agreement
+
+- **Governing agreement:** Letter of Offer dated 2022-06-15 (file: `220615 CRONJE, Dylan - Letter of Offer.pdf`), signed. Cl 22.1 confirms it replaces all prior terms.
+- **Key clauses:** cl 13.1 (exclusive s

@@ -7,6 +7,7 @@
 |---|---|---|---|
 | 2026-05-12 | durable compliance fact | Letter of Offer (220615) key clauses — verbatim text for cl 13.1, 19, 20, 21; corrects 5 interpretation errors from original handoff; basis for career-portfolio 9 Rules | `2026-05/2026-05-12-letter-of-offer-key-clauses.md` |
 | 2026-05-12 | business-intelligence | SLT 12 May — strategic pivot (two priorities May–Jul: recruit + Sch 2), cash discipline rules, entity structure live issue | `2026-05/2026-05-12-slt-strategic-pivot-and-cash-discipline.md` |
+| 2026-05-11 | compliance | Letter of Offer (220615) key clauses (cl 13.1, 19, 20, 21) + 5 interpretation shifts correcting handoff brief errors — durable compliance facts for career portfolio | `2026-05/2026-05-11-letter-of-offer-compliance-clauses.md` |
 | 2026-05-11 | tooling / infrastructure | `git push` from this Claude Code session returns HTTP 403 (auth) — workaround via `mcp__github__push_files`; don't retry, reroute | `2026-05/2026-05-11-git-push-403-workaround.md` |
 | 2026-05-04 | correction + operational hazard | PR base-branch routing bug — legacy `claude/setup-claude-system-9cDDB` causes PRs to merge into a phantom (3 instances in 24h); fix is branch deletion + base verification gate | `2026-05/2026-05-04-pr-base-branch-routing-bug.md` |
 | 2026-05-01 | diagnostic / mental model | "Looks-like-work" anti-pattern — surface output without durable side effects (Daily Briefing + memory-export both instances this week) | `2026-05/2026-05-01-looks-like-work-anti-pattern.md` |
@@ -22,15 +23,4 @@
 | 2026-04-28 | architecture | Cowork ↔ this-repo is bidirectional — formalised in `/COWORK.md` | `2026-04/2026-04-28-cowork-bidirectional.md` |
 | 2026-04-28 | mechanism + behaviour | Reconciliation rule + connector-first protocol + PRD reference-only | `2026-04/2026-04-28-reconciliation-and-connectors.md` |
 | 2026-04-28 | mechanism | Cowork handoff absorbed — system architecture reconciled | `2026-04/2026-04-28-cowork-handoff-absorbed.md` |
-| 2026-04-28 | mechanism | Dylan operates with external workflows that need to read/write this system | `2026-04/2026-04-28-external-integration-need.md` |
-
-## Promoted → standing rules
-> Learnings that have been confirmed enough to live in `profile/` or `business/`. Linked here for traceability.
-
-| Original date | Title | Promoted to |
-|---|---|---|
-| _(none yet)_ | | |
-
-## Monthly archives
-- `2026-05/`
-- `2026-04/`
+| 2026-04-28 | mechanism | Dylan operates with external workflows that 
