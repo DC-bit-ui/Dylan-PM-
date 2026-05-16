@@ -1,0 +1,19 @@
+{
+  "deal_id": "140345085389",
+  "deal_name": "JA - John Atherton",
+  "as_of": "2026-05-12T04:38:47.562Z",
+  "attribution": "direct",
+  "current_stage": "Strategy Call",
+  "days_in_current_stage": 250,
+  "signals": null,
+  "coaching_mode": null,
+  "active_probes": [],
+  "what_we_dont_know": [],
+  "supporting_twin_ids": [
+    "20181887651",
+    "21522499356",
+    "146092019144"
+  ],
+  "next_recommended_action": "Send NRM-region ACCU scenario PDF (pessimistic/base/optimistic tonne projections, 25/75 revenue split modelled) same-day. Include 5-business-day expiry prompt to confirm SLA/KCT Mapping appointment (specific date/time offered).",
+  "written_by": "dashboard_coaching"
+}

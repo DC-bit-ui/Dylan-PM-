@@ -1,0 +1,19 @@
+{
+  "deal_id": "130260276728",
+  "deal_name": "Glen Keith - Callum Lloyd",
+  "as_of": "2026-05-12T04:38:47.562Z",
+  "attribution": "direct",
+  "current_stage": "KCT Issued",
+  "days_in_current_stage": 225,
+  "signals": null,
+  "coaching_mode": null,
+  "active_probes": [],
+  "what_we_dont_know": [],
+  "supporting_twin_ids": [
+    "31711995442",
+    "37165900308",
+    "186974841297"
+  ],
+  "next_recommended_action": "Send counter-signed KCT to Callum Lloyd today with landholder's ACCU projection embedded in the email body. Reference their specific farm carbon sequestration forecast.",
+  "written_by": "dashboard_coaching"
+}

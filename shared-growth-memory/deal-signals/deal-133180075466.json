@@ -1,0 +1,19 @@
+{
+  "deal_id": "133180075466",
+  "deal_name": "Daniel Gazzola - Calca Block",
+  "as_of": "2026-05-12T04:38:47.562Z",
+  "attribution": "direct",
+  "current_stage": "KCT Issued",
+  "days_in_current_stage": 208,
+  "signals": null,
+  "coaching_mode": null,
+  "active_probes": [],
+  "what_we_dont_know": [],
+  "supporting_twin_ids": [
+    "39359914140",
+    "40735788180",
+    "186050120174"
+  ],
+  "next_recommended_action": "Schedule 15-min blockers call with Daniel within 2 days. Confirm KCT signature status, any concerns with ACCU projections, and landholder approval authority.",
+  "written_by": "dashboard_coaching"
+}

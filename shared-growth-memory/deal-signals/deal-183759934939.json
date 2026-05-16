@@ -1,0 +1,19 @@
+{
+  "deal_id": "183759934939",
+  "deal_name": "- Tom  Rummery",
+  "as_of": "2026-05-12T04:38:47.562Z",
+  "attribution": "direct",
+  "current_stage": "Qualified Account",
+  "days_in_current_stage": 182,
+  "signals": null,
+  "coaching_mode": null,
+  "active_probes": [],
+  "what_we_dont_know": [],
+  "supporting_twin_ids": [
+    "13165246485",
+    "13703369560",
+    "16149552245"
+  ],
+  "next_recommended_action": "Book SLA/KCT Mapping call with Tom within 5 days. Lead with 25-year ACCU projection + NRM-region-specific compliance roadmap. Position as 'next phase' not 'catch-up'.",
+  "written_by": "dashboard_coaching"
+}

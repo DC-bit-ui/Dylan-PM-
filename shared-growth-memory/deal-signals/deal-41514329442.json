@@ -1,0 +1,19 @@
+{
+  "deal_id": "41514329442",
+  "deal_name": "Hanrahan - Griffin",
+  "as_of": "2026-05-12T04:38:47.562Z",
+  "attribution": "direct",
+  "current_stage": "KCT Issued",
+  "days_in_current_stage": 278,
+  "signals": null,
+  "coaching_mode": null,
+  "active_probes": [],
+  "what_we_dont_know": [],
+  "supporting_twin_ids": [
+    "31711995442",
+    "37165900308",
+    "186974841297"
+  ],
+  "next_recommended_action": "Schedule 15-minute blockers call with landholder within 5 days. Confirm KCT receipt, ask directly: missing info, process concern, financing question, or lost interest?",
+  "written_by": "dashboard_coaching"
+}

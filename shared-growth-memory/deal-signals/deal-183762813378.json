@@ -1,0 +1,19 @@
+{
+  "deal_id": "183762813378",
+  "deal_name": "Keynes Consulting Pty Ltd - Daniel Keynes",
+  "as_of": "2026-05-12T04:38:47.562Z",
+  "attribution": "direct",
+  "current_stage": "Qualified Account",
+  "days_in_current_stage": 182,
+  "signals": null,
+  "coaching_mode": null,
+  "active_probes": [],
+  "what_we_dont_know": [],
+  "supporting_twin_ids": [
+    "13165246485",
+    "13703369560",
+    "16149552245"
+  ],
+  "next_recommended_action": "Send NRM-region ACCU projection + SLA/KCT Mapping Calendly link (not 'Discovery') to Daniel Keynes within 24 hours. Frame as 'KCT Readiness Workshop' to match won twin language.",
+  "written_by": "dashboard_coaching"
+}

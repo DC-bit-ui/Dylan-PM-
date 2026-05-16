@@ -13,6 +13,25 @@ A filesystem-backed shared memory layer that two (and potentially more) growth-d
 
 Both systems read state from here before acting. Both write learnings + signals back. Same data, two execution surfaces. The rep gets coherent guidance whether they're looking at the dashboard or working in Claudia's tool.
 
+## Storage topology — how the two systems actually share the folder
+
+The folder is on **two different machines**. To make the bus bidirectional, it has to live somewhere both systems can read and write: the SharePoint location Claudia's tool already uses, which OneDrive syncs to both Dylan's and Claudia's local filesystems.
+
+**Target location:** `Claude Code Projects/shared-growth-memory/` (parallel to `Claude Code Projects/Storm Boy Claude Tool/`)
+
+**Setup steps (one-time):**
+
+1. Dylan moves the current `C:\Dylan PM\shared-growth-memory\` contents into the SharePoint folder above (which OneDrive syncs locally).
+2. Dylan adds `BUS_PATH=<local OneDrive sync path>` to `stormboy-tracker/.env`. The dashboard's `engine/shared-bus.js` reads this env var with a local-dev fallback.
+3. Claudia's tool resolves the same folder via its standard SharePoint path resolution (no code change required on her side beyond pointing reads/writes at this directory).
+4. Both machines must have OneDrive sync running for this folder. Confirm a test write from one side becomes readable on the other within a minute.
+
+**Concurrency:** writes use atomic write (`tmp + rename`), so partially-written files never appear to readers. OneDrive sync delay is typically seconds. The bus is not real-time; it's a few-minutes-stale shared substrate. That is acceptable for coaching patterns, probe outcomes, and customer positions, where the freshness requirement is hours-to-days, not seconds.
+
+**Conflict handling:** if both systems write the same file within the sync window, OneDrive keeps both as conflict copies. Conflicts are rare given the file-per-entity scheme (one file per pattern, one per probe outcome, one per deal-signal, one per customer-position) and the slug-based naming. If a conflict occurs, the resolution is manual: read both copies, merge, write back, delete the conflict copy.
+
+**Bidirectionality contract:** every entity in the bus is editable by any participating system. There is no read-only or write-only system. The schemas enforce a `surfaced_in_systems: []` array so each entry records which system originated and validated it; this is for traceability, not for permission.
+
 For the architectural reasoning, see [`stormboy-tracker/coaching/shared-learning-bus.md`](../stormboy-tracker/coaching/shared-learning-bus.md).
 
 ## Critical principle — two sales motions, NOT merged

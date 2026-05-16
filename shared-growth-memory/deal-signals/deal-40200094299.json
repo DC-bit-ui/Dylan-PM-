@@ -1,0 +1,19 @@
+{
+  "deal_id": "40200094299",
+  "deal_name": "Rosebank - Will McLachlan",
+  "as_of": "2026-05-12T04:38:47.562Z",
+  "attribution": "direct",
+  "current_stage": "KCT Issued",
+  "days_in_current_stage": 288,
+  "signals": null,
+  "coaching_mode": null,
+  "active_probes": [],
+  "what_we_dont_know": [],
+  "supporting_twin_ids": [
+    "40735788180",
+    "186050120174",
+    "39359914140"
+  ],
+  "next_recommended_action": "Day 1: Schedule 15-min blocker call with Will McLachlan. Ask specifically: 'Any internal sign-off, budget, or timeline questions blocking KCT signature?' Reference his projected ACCU value from SLA/KCT Mapping.",
+  "written_by": "dashboard_coaching"
+}

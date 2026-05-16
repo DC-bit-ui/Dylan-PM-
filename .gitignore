@@ -17,3 +17,21 @@ inbox/secrets/
 # Built / generated
 *.log
 node_modules/
+
+# Standalone sub-repos (own git history)
+EIH Automation/
+
+# shared-growth-memory: keep durable knowledge tracked (schemas/, patterns/,
+# team-brain/, deal-signals/, supplement READMEs as contracts). Ignore the
+# per-entity supplement subfolders — those are Apex-generated working state
+# that regenerates from authoritative sources (Confluence, Granola, Outlook,
+# Teams, HubSpot).
+shared-growth-memory/contact-supplements/*/
+shared-growth-memory/deal-supplements/*/
+shared-growth-memory/persona-supplements/*/
+shared-growth-memory/queues/
+shared-growth-memory/apex-runs.log
+
+# Coaching cache: corrupted/temp filenames from interrupted writes
+stormboy-tracker/coaching/cache/*TEMP*
+stormboy-tracker/coaching/cache/*.tmp

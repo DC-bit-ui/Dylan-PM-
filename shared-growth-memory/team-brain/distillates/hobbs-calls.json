@@ -1,0 +1,224 @@
+{
+  "version": "p0fv.1",
+  "generated_at": "2026-05-12T00:00:00+02:00",
+  "source": "Confluence pages 563839058, 564002821, 563838998, 561676364, 564723721, 561676344 (Hobbs Calls folder, Aircall transcripts routed by pelican294)",
+  "context": "Phone-style complement to farm-visit distillation. Hobbs leaves in 3 weeks; capturing his cold-open and call-handling patterns alongside on-farm style.",
+  "extracted_calls": 6,
+  "extracted_distillates": 14,
+  "calls": [
+    {
+      "transcript_id": "call-2026-04-28-alex-sloane",
+      "visit_date": "2026-04-28",
+      "region_nrm": "NSW Riverina (Albury cluster)",
+      "size_bucket": "unknown",
+      "call_type": "warm follow-up (re-engagement, several-months-prior contact)",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold re-introduction — 'Hobbs the American'",
+          "customer_position": "Senior operator at a mid-sized NSW grazing station; distracted, didn't immediately place him, asked who was speaking.",
+          "hobbs_response": "Self-identified twice as 'Hobbs, the American from Albury' and anchored to prior contact: 'we spoke several months ago about visiting [station].' No company name, no pitch — relied on the American descriptor and shared history.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "This is Hobbs, the American. // It's Hobbs, the American from Albury. We spoke several months ago about visiting [station].",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "De-positioning when asked 'what was your interest?'",
+          "customer_position": "Asked Hobbs to refresh her on his interest in the property.",
+          "hobbs_response": "Reframed away from sales entirely — described himself as observing what people are doing in ag, and added a personal hook: 'I've started writing my second book.' Positioned the visit as research, not a sales call.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I'm here just seeing what people are doing in the agricultural space in this part of the world. And, also, I've started writing my second book.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Booking the visit — flexible, low-friction",
+          "customer_position": "Squeezed for time this week, suggested following week; offered specific windows.",
+          "hobbs_response": "Held his ground softly on timing (next week didn't work for him), then offered a minimal ask: 'even if we just had an hour tomorrow.' Downscoped from 'farm tour' to 'just a conversation over the table' to remove resistance. Customer agreed.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Even if we just had an hour tomorrow, that would be fine. // Sure, absolutely. Or just a conversation over the table would be fine too.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Re-warmed a several-months-stale lead at a mid-sized NSW grazing station and booked an in-person visit for the next day with no objection or qualification friction."
+      }
+    },
+    {
+      "transcript_id": "call-2026-04-20-ian-cameron",
+      "visit_date": "2026-04-20",
+      "region_nrm": "NSW Riverina (Albury orbit)",
+      "size_bucket": "unknown",
+      "call_type": "warm follow-up (booking next farm visit)",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open as established familiar",
+          "customer_position": "Picked up routinely; immediately apologetic for not getting back, established mutual familiarity.",
+          "hobbs_response": "Single-line open with no preamble: 'Ian, this is Hobbs over at Aubrey.' Geography stands in for company/role. Then absolved him: 'Dude, that's okay. It's not a problem. You've been busy.'",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Ian, this is Hobbs over at Aubrey. // Dude, that's okay. It's not a problem. You've been busy.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Rapport via travel-and-family small talk",
+          "customer_position": "Mentioned a recent trip to Darwin / Katherine visiting family.",
+          "hobbs_response": "Spent 60+ seconds (a quarter of the call) on genuine curiosity about the trip — stations he'd visited up there, humidity, family in Katherine. Only then pivoted to scheduling.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Visit-purpose framing — 'what excites you'",
+          "customer_position": "Asked directly: 'what are you trying to achieve?'",
+          "hobbs_response": "Refused a structured agenda. Said he gets the most value from people talking about what excites them — wins, losses, struggles, victories. Customer-led, not Hobbs-led. Made the visit feel low-stakes.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I get the most value out of people talking about what excites them. // Driving around, telling me the stuff that you've been doing, the things you've been working on, wins, losses, struggles, victories.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Booked a 1:30pm Tuesday farm tour with an already-warm Riverina-orbit operator via small talk, mutual ease, and a customer-led visit frame — zero objection handling required."
+      }
+    },
+    {
+      "transcript_id": "call-2026-04-14-storm86-tim",
+      "visit_date": "2026-04-14",
+      "region_nrm": "NSW Riverina (near Albury)",
+      "size_bucket": "unknown",
+      "call_type": "relationship maintenance (post-visit, pre-sales)",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open as 'your favorite American'",
+          "customer_position": "Picked up casually, away in Brisbane, immediately conversational.",
+          "hobbs_response": "Branded the relationship in three words: 'Tim, it's Hobbs, your favorite American.' Asserts existing positive relationship; pre-empts any need to re-qualify himself.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Tim, it's Hobbs, your favorite American.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Carbon-satellite report as soft re-entry",
+          "customer_position": "Receptive, friendly, but no obvious commercial momentum.",
+          "hobbs_response": "Framed the HORIZON Snapshot equivalent ('that carbon satellite model that my my company does') as just an interesting artifact to look at — explicitly not a pitch: 'it'll just be interesting for you to look at.' Used uncertainty about whether he'd sent it already as natural cover.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I couldn't remember if I sent you that carbon satellite model that my my company does... it'll just be interesting for you to look at.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Macro-uncertainty bonding move",
+          "customer_position": "Brought up overseas/geopolitical uncertainty in passing.",
+          "hobbs_response": "Met it with humility ('I certainly don't understand') and an actionable principle that bonds rural neighbours: 'the only thing we can do is keep being good neighbors to each other in case things go south.' Reframes uncertainty into community values rather than risk.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I feel like all of the chess pieces are reordering across the world... the only thing that we can do is just keep being good neighbors to each other in case things go south.",
+          "confidence": "moderate"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Maintained warm contact with a previously-visited Riverina operator via light social call; teed up sending a carbon-satellite snapshot under the cover of 'might already have sent this' — zero pressure delivery."
+      }
+    },
+    {
+      "transcript_id": "call-2026-04-14-james-tehan",
+      "visit_date": "2026-04-14",
+      "region_nrm": "Victoria (near-Albury border)",
+      "size_bucket": "unknown",
+      "call_type": "cold-open (no prior contact)",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — 'a farmer from America' + 'caught you at a good time?'",
+          "customer_position": "Wife of operator picked up; cautious, asked who's calling before disclosing anything.",
+          "hobbs_response": "Three-beat open: confirm station identity, then 'My name's Hobbs. I'm a farmer from America. Have I caught you at a good time?' Permission-asks before claiming any attention. No company name in the opening at all.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Hi. Is this [station name]? // My name's Hobbs. I'm a farmer from America. Have I caught you at a good time?",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Sponsor/representation deflection — suspicion handling",
+          "customer_position": "Suspicious: 'I'm always a bit suspicious about who you're representing. Are you just coming out as an independent farmer interested?'",
+          "hobbs_response": "Half-acknowledged ('I'm sponsored by a company here') but immediately pivoted: 'I'm not here to sell anything. I'm here to gather information on what's happening in the industry.' Surfaced the sponsor without naming AgriProve; positioned as info-gather not sales.",
+          "landed_or_friction": "ambiguous",
+          "quotable_phrasing": "I'm sponsored by a company here, but I'm not here to sell anything. I'm here to gather information on what's happening in the industry.",
+          "confidence": "moderate"
+        },
+        {
+          "topic_label": "Government-overreach / privacy concern (deep customer territory)",
+          "customer_position": "Operator opened up about government surveillance fears, Catherine Austin Fitts following, anti-corporate-ag stance; long monologue, ideological territory.",
+          "hobbs_response": "Did NOT defend, correct, or counter-frame. Met it with 'I totally understand' and a clarifying mirror question ('so you're concerned that information will get out to the government'). Declared shared admiration ('Catherine Austin Fitts — I'm a big fan') — possibly genuine, possibly mirroring; either way, it bonded.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I totally understand. Have you had problems in the past? // I'm a big fan.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "ambiguous",
+        "one_line_summary": "Cold call to a Victorian family-farm operator with strong privacy/government-overreach concerns; Hobbs deflected suspicion through info-gathering frame and ideological mirroring; left with an email follow-up but no booking."
+      }
+    },
+    {
+      "transcript_id": "call-2026-04-13-peter-lawson",
+      "visit_date": "2026-04-13",
+      "region_nrm": "NSW Riverina (Dundee West area)",
+      "size_bucket": ">500ha (per scrape criterion)",
+      "call_type": "cold-open (no prior contact)",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — station-first, name-second",
+          "customer_position": "Mother of current operator picked up; gatekeeper, not decision-maker.",
+          "hobbs_response": "Led with the property name to confirm he had the right place ('Hi. I'm looking for [station name].'), then introduced himself and asked permission: 'My name is Hobbs. I'm a farmer from America. Did I catch you at a bad time?' Negative-frame ('bad time') opens easier 'no' rather than reluctant 'sure I guess'.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "Hi. I'm looking for [station name]. // My name is Hobbs. I'm a farmer from America. Did I catch you at a bad time?",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Fellowship + 'cool stuff' framing",
+          "customer_position": "Asked what it was about — open but neutral.",
+          "hobbs_response": "'I'm in Aubrey on a fellowship for another month, and I've been going around looking at farms, pastoral companies, stations that are doing cool stuff.' Three reframing devices stacked: time-bound ('another month' = no long-term agenda), academic-flavoured ('fellowship'), and complimentary ('doing cool stuff' implies the prospect is on a curated list).",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I'm in Aubrey on a fellowship for another month, and I've been going around looking at farms, pastoral companies, stations that are doing cool stuff.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "warming",
+        "one_line_summary": "Cold-opened a holistic-farming family operation; gatekeeper warmed quickly, volunteered son-in-law's phone number as the decision-maker — no objections, full handoff to next step."
+      }
+    },
+    {
+      "transcript_id": "call-2026-04-13-stormvic13-gwendolyn",
+      "visit_date": "2026-04-13",
+      "region_nrm": "Victoria",
+      "size_bucket": ">500ha (per scrape criterion)",
+      "call_type": "cold-open (no prior contact)",
+      "topic_distillates": [
+        {
+          "topic_label": "Cold-open — full transparency including how he got the number",
+          "customer_position": "Suspicious; asked 'how did you get to contact us?' explicitly.",
+          "hobbs_response": "Full transparency, self-deprecating about it: 'the nerds on the tech team scraped anybody with a property that's bigger than 500 hectares or something.' Owns the awkwardness of cold-list outreach rather than dodging it.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "The nerds on the tech team scraped anybody with a property that's bigger than 500 hectares or something.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Pre-empting rejection / not-now handling",
+          "customer_position": "Operator's wife: 'we're just fairly under the pump at the moment.' Soft brush-off.",
+          "hobbs_response": "Accepted the brush-off cleanly, repeated her ask back, and offered to call back later. No pressure, no counter. Then a Kanye line as light humor when she apologised for being curt: 'In the words of Kanye West, I'm not mean, I'm just focused.' Disarmed the apology.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "In the words of Kanye West, I'm not mean, I'm just focused.",
+          "confidence": "high"
+        },
+        {
+          "topic_label": "Credibility through volume + specificity",
+          "customer_position": "Asked what he'd looked at so far / what he runs at home.",
+          "hobbs_response": "Specific geographic name-drops (Gundagai to Upper Murray to Yarra to Parks), 40 properties visited, then concrete personal credentials: Pacific Northwest Angus crosses, Texas Spanish/African crosses, joining a US land fund post-fellowship. Built rancher-to-rancher credibility, not salesperson credibility.",
+          "landed_or_friction": "landed",
+          "quotable_phrasing": "I've been out probably to 40 different properties. // In Texas, I was running Spanish cattle crossed with African bulls.",
+          "confidence": "high"
+        }
+      ],
+      "visit_summary": {
+        "overall_outcome": "neutral",
+        "one_line_summary": "Cold call to a privacy-conscious Victorian operation; brush-off received, but Hobbs left on warm terms with explicit permission to call back and 'have a yarn with my husband' — pipeline preserved, not closed off."
+      }
+    }
+  ]
+}

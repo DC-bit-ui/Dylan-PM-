@@ -1,0 +1,19 @@
+{
+  "deal_id": "141507724737",
+  "deal_name": "Brigalow and Mostowie - RODGER JEFFERIS",
+  "as_of": "2026-05-12T04:38:47.562Z",
+  "attribution": "direct",
+  "current_stage": "Strategy Call",
+  "days_in_current_stage": 246,
+  "signals": null,
+  "coaching_mode": null,
+  "active_probes": [],
+  "what_we_dont_know": [],
+  "supporting_twin_ids": [
+    "20181887651",
+    "21522499356",
+    "146092019144"
+  ],
+  "next_recommended_action": "Within 24 hours, send Rodger a one-page NRM-region ACCU scenario PDF (pessimistic/base/optimistic tonne projections + 25yr ERF timeline) with SLA/KCT Mapping appointment link. 5-business-day expiry; explicit prompt: 'Confirm your SLA/KCT Mapping appointment by [date] to lock in pricing.'",
+  "written_by": "dashboard_coaching"
+}

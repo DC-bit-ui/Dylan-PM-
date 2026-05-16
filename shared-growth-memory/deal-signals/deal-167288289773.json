@@ -1,0 +1,19 @@
+{
+  "deal_id": "167288289773",
+  "deal_name": "Fenmore Farming - Bruce McLean",
+  "as_of": "2026-05-12T04:38:47.562Z",
+  "attribution": "direct",
+  "current_stage": "SLA/KCT Mapping",
+  "days_in_current_stage": 201,
+  "signals": null,
+  "coaching_mode": null,
+  "active_probes": [],
+  "what_we_dont_know": [],
+  "supporting_twin_ids": [
+    "20181887651",
+    "21522499356",
+    "17876140382"
+  ],
+  "next_recommended_action": "Schedule SLA/KCT Mapping checkpoint call with Bruce within 3 days. Clarify: (1) baseline sampling window and lab turnaround dates, (2) whether succession or land-improvement narrative exists, (3) expected KCT draft issuance date. Confirm or re-book sampling logistics.",
+  "written_by": "dashboard_coaching"
+}

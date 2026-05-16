@@ -1,0 +1,19 @@
+{
+  "deal_id": "16873339790",
+  "deal_name": "Hanrahan - Plibersek",
+  "as_of": "2026-05-12T04:38:47.562Z",
+  "attribution": "direct",
+  "current_stage": "KCT Issued",
+  "days_in_current_stage": 285,
+  "signals": null,
+  "coaching_mode": null,
+  "active_probes": [],
+  "what_we_dont_know": [],
+  "supporting_twin_ids": [
+    "186050120174",
+    "40735788180",
+    "37406371673"
+  ],
+  "next_recommended_action": "Day 1: Send counter-signed KCT with Hanrahan's specific ACCU projection and 25/75 revenue split breakdown. Ref subject line: 'Your KCT Ready to Sign – [ACCU tons] forecast.'",
+  "written_by": "dashboard_coaching"
+}

@@ -1,0 +1,19 @@
+{
+  "deal_id": "41104436568",
+  "deal_name": "Bulgoo Pastoral  - Jeremy  Pockley",
+  "as_of": "2026-05-12T04:38:47.562Z",
+  "attribution": "direct",
+  "current_stage": "Strategy Call",
+  "days_in_current_stage": 272,
+  "signals": null,
+  "coaching_mode": null,
+  "active_probes": [],
+  "what_we_dont_know": [],
+  "supporting_twin_ids": [
+    "20181887651",
+    "21522499356",
+    "146092019144"
+  ],
+  "next_recommended_action": "Issue disqualification call to Jeremy within 2 business days. Ask directly: 'Are you committing to SLA/KCT Mapping within 5 days, or should we part ways?' Document outcome.",
+  "written_by": "dashboard_coaching"
+}

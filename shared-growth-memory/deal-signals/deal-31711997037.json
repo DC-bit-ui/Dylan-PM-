@@ -1,50 +1,19 @@
 {
   "deal_id": "31711997037",
   "deal_name": "Daisy Bank + Bellevue - James Almond",
-  "as_of": "2026-05-11T12:05:20.310Z",
+  "as_of": "2026-05-12T04:38:47.562Z",
   "attribution": "direct",
   "current_stage": "KCT Issued",
-  "days_in_current_stage": 426,
-  "signals": {
-    "stage": {
-      "health": "red",
-      "value": "426d at KCT Issued · 35× past lost-median",
-      "confidence": "high",
-      "note": "Stale by stage timing alone."
-    },
-    "behavioral": {
-      "health": "amber",
-      "value": "Last meaningful contact 23d ago · slowing reply latency",
-      "confidence": "moderate",
-      "note": "Some recent activity. Not ghosted — but engagement is dropping.",
-      "last_meaningful_contact": "2026-04-18",
-      "contact_velocity_30d": 2,
-      "reply_latency_trend": "slowing"
-    },
-    "content": {
-      "health": "green",
-      "value": "Last customer email was warm; mentioned wife on board",
-      "confidence": "moderate",
-      "note": "Content trajectory is positive. The stall isn't cold — it's partner-alignment.",
-      "latest_customer_position": "Thanks for the update Ben — the wife and I are talking it through over Easter. I'll get back to you in early May.",
-      "latest_customer_position_at": "2026-04-18",
-      "sentiment_trajectory": "neutral_warm",
-      "unresolved_objections": [
-        "25-year commitment — partner needs to agree"
-      ]
-    }
-  },
-  "coaching_mode": "stuck_but_live",
+  "days_in_current_stage": 427,
+  "signals": null,
+  "coaching_mode": null,
   "active_probes": [],
-  "what_we_dont_know": [
-    "No phone call logged for this deal in 60+ days — partner's actual position is inferred, not confirmed",
-    "No HubSpot note since 2026-03-12 — rep's read on this deal isn't captured",
-    "James mentioned \"early May\" — that window starts today; no follow-up sent yet"
-  ],
+  "what_we_dont_know": [],
   "supporting_twin_ids": [
-    "40789889068",
-    "147625095632"
+    "31711995442",
+    "37165900308",
+    "186974841297"
   ],
-  "next_recommended_action": "Send the low-pressure check-in probe this week (draft below). Read the response time + tone — that disambiguates whether to push toward SLA Mapping or close-lost cleanly.",
+  "next_recommended_action": "Schedule 15-minute 'blockers' call with James Almond and landholder within 48 hours. Confirm: KCT signature authority, internal approvals, any ERF compliance concerns, timeline expectations.",
   "written_by": "dashboard_coaching"
 }

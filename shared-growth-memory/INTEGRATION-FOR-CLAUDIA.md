@@ -1,6 +1,26 @@
 # Integration Guide — Claudia's Storm Boy Claude Tool
 
+> **🆕 2026-05-13 — Team brain now available.** `team-brain/` holds the captured Hobbs / Ben / Claudia / Will profiles + distillates. Your tool can read these directly to power an `/ask-team` skill. See `team-brain/README.md` + the skill template alongside it.
+
+
+
 This doc is for **you, Claudia**. The dashboard side of the shared bus is wired. To make it bidirectional — the principle Dylan called out as essential ("these systems cannot live in isolation") — your tool needs to **read** the bus when working on a contact/deal, and **write** to it after each customer interaction.
+
+## Where the bus actually lives (storage topology)
+
+The bus is a folder. Currently it sits at `C:\Dylan PM\shared-growth-memory\` on Dylan's machine, which is **not** something your tool can reach. To make it actually bidirectional, the folder needs to live in a location both machines have access to.
+
+**Plan:** move the folder into the SharePoint location your tool already uses, so OneDrive syncs it to both Dylan's and your machines. Proposed path: `Claude Code Projects/shared-growth-memory/` (parallel to your `Storm Boy Claude Tool/`).
+
+Once moved:
+
+- Your tool reads + writes via your existing SharePoint path resolution.
+- The dashboard reads + writes via its local OneDrive sync path (set in its `.env` as `BUS_PATH`).
+- OneDrive sync delay is typically seconds. A write from one side becomes readable on the other within a minute.
+- Writes are atomic (tmp + rename), so partially-written files are never visible to readers.
+- Conflicts are rare given the file-per-entity scheme (slug-based filenames). When they do occur, OneDrive keeps both as conflict copies and a human merges.
+
+Dylan will action the move. After it lands, your tool's integration points (below) just work — no infra changes on your side beyond pointing at the new path.
 
 > **⚠ Read this first:** [`sales-motion-separation.md`](sales-motion-separation.md)
 >
