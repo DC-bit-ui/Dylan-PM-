@@ -66,6 +66,53 @@
     `;
   }
 
+  // "What's new" badge — for each rendered deal card, fetch its supplement
+  // listing and, if Apex wrote something in the last 14 days, inject a small
+  // pill into the collapsed header summarising the sources + recency. Runs
+  // post-render; cards stay interactive throughout.
+  const RECENT_SUPPLEMENT_WINDOW_DAYS = 14;
+  const SUPPLEMENT_LABEL_FOR_BADGE = {
+    'aircall-transcript': 'Aircall',
+    'farm-visit-transcript': 'Farm visit',
+    'outlook-email': 'Outlook',
+    'teams-message': 'Teams',
+    'granola-meeting': 'Granola',
+    'hubspot-snapshot': 'HubSpot snap',
+  };
+  function formatAge(ms) {
+    const hours = ms / (1000 * 60 * 60);
+    if (hours < 1) return 'just now';
+    if (hours < 24) return `${Math.round(hours)}h ago`;
+    const days = Math.round(hours / 24);
+    return `${days}d ago`;
+  }
+  async function augmentWithSupplementBadges(exemplars) {
+    const cutoffMs = Date.now() - RECENT_SUPPLEMENT_WINDOW_DAYS * 24 * 60 * 60 * 1000;
+    await Promise.all(exemplars.map(async ex => {
+      if (ex.lookup_type !== 'deal' || !ex.lookup_id) return;
+      try {
+        const r = await fetch(`/api/work/deal-supplements/${encodeURIComponent(ex.lookup_id)}`);
+        if (!r.ok) return;
+        const data = await r.json();
+        if (!data.files || !data.files.length) return;
+        const recent = data.files.filter(f => Date.parse(f.mtime) >= cutoffMs);
+        if (!recent.length) return;
+        const sources = Array.from(new Set(recent.map(f => SUPPLEMENT_LABEL_FOR_BADGE[f.type] || 'Apex')));
+        const newest = recent.reduce((a, b) => Date.parse(a.mtime) >= Date.parse(b.mtime) ? a : b);
+        const age = formatAge(Date.now() - Date.parse(newest.mtime));
+        const cardEl = document.querySelector(`.v2-ex-card[data-ex="${ex.id}"]`);
+        if (!cardEl) return;
+        const head = cardEl.querySelector('.v2-ex-collapsed-head');
+        if (!head || head.querySelector('.v2-ex-fresh-badge')) return;
+        const badge = document.createElement('span');
+        badge.className = 'v2-ex-fresh-badge';
+        badge.title = `${recent.length} new file(s) from Apex daily enrichment in the last ${RECENT_SUPPLEMENT_WINDOW_DAYS} days`;
+        badge.textContent = `↗ ${sources.join(' + ')} · ${age}`;
+        head.appendChild(badge);
+      } catch (_) { /* swallow; this is a best-effort enhancement */ }
+    }));
+  }
+
   async function fetchActive() {
     const res = await fetch('/api/coaching/active');
     if (!res.ok) throw new Error('coaching/active failed: ' + res.status);
@@ -788,6 +835,10 @@
         : '<div class="v2-empty">No active deals.</div>';
       // Bind action buttons in the new cards
       v2Exemplar.bindActions(document.getElementById('plays-list'));
+      // Decorate each card with a "what's new" badge if Apex has fresh
+      // supplement files. Async, non-blocking — cards render immediately and
+      // badges land seconds later as each fetch resolves.
+      augmentWithSupplementBadges(exemplars);
     }).catch(e => {
       document.getElementById('plays-list').innerHTML = `<div class="v2-empty" style="color:#a64545">${e.message}</div>`;
     });

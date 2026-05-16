@@ -356,13 +356,56 @@ window.v2Exemplar = (function() {
     return days >= 0 ? `${days}d ago` : '';
   }
 
+  // Supplement classification — Apex writes files into shared-growth-memory/
+  // {deal,contact}-supplements/<id>/ via /api/work/{deal,contact}-supplements.
+  // Each file gets mapped into the same timeline shape so the engagement view
+  // merges Confluence/Teams/Granola/Outlook signal alongside HubSpot direct.
+  const SUPPLEMENT_SOURCE = {
+    'aircall-transcript':      { label: 'Aircall',      kind: 'call'    },
+    'farm-visit-transcript':   { label: 'farm visit',   kind: 'meeting' },
+    'outlook-email':           { label: 'Outlook',      kind: 'email'   },
+    'teams-message':           { label: 'Teams',        kind: 'note'    },
+    'granola-meeting':         { label: 'Granola',      kind: 'meeting' },
+    'hubspot-snapshot':        { label: 'HubSpot snap', kind: 'note'    },
+  };
+  function supplementSourceMeta(t) {
+    return SUPPLEMENT_SOURCE[t] || { label: t || 'apex', kind: 'note' };
+  }
+  function supplementTitle(f) {
+    const meta = supplementSourceMeta(f.type);
+    // Filename shape examples:
+    //   confluence-aircall-2026-05-14-1017-george-raynolds.md
+    //   teams-deals-channel-2026-05-15.json
+    //   outlook-email-2026-05-08-norman-stoppy-wa.md
+    const m = f.filename.match(/^[a-z-]+?-(\d{4})-(\d{2})-(\d{2})(?:-\d{2,4})?-?(.*)\.(md|json)$/);
+    const subject = m && m[4] ? m[4].replace(/-/g, ' ') : '';
+    return subject ? `${meta.label} · ${subject}` : meta.label;
+  }
+  function supplementToTimelineEntry(f) {
+    const meta = supplementSourceMeta(f.type);
+    const body = f.content || f.preview || '';
+    return {
+      kind: meta.kind,
+      timestamp: f.mtime,
+      title: supplementTitle(f),
+      subline: `via Apex enrichment · ${meta.label}`,
+      body: body.slice(0, 1200),
+      _supplement: true,
+      _supplement_type: f.type,
+    };
+  }
+
   function renderTimelineEntry(e) {
+    const badge = e._supplement
+      ? `<span class="v2-ex-tl-source" title="From Apex daily enrichment (${e._supplement_type})">↗ ${escapeHtml(supplementSourceMeta(e._supplement_type).label)}</span>`
+      : '';
     return `
-      <div class="v2-ex-tl-entry">
+      <div class="v2-ex-tl-entry${e._supplement ? ' v2-ex-tl-entry-supplement' : ''}">
         <div class="v2-ex-tl-icon">${kindIcon(e.kind)}</div>
         <div class="v2-ex-tl-main">
           <div class="v2-ex-tl-head">
             <span class="v2-ex-tl-title">${escapeHtml(e.title)}</span>
+            ${badge}
             <span class="v2-ex-tl-date">${formatDate(e.timestamp)} · ${daysSinceLabel(e.timestamp)}</span>
           </div>
           ${e.subline ? `<div class="v2-ex-tl-subline">${escapeHtml(e.subline)}</div>` : ''}
@@ -383,15 +426,32 @@ window.v2Exemplar = (function() {
       return;
     }
     tlEl.dataset.loaded = 'loading';
-    tlEl.innerHTML = '<div class="v2-ex-timeline-pending">Loading from HubSpot…</div>';
+    tlEl.innerHTML = '<div class="v2-ex-timeline-pending">Loading from HubSpot + Apex enrichment…</div>';
     try {
-      const res = await fetch(`/api/work/timeline?type=${encodeURIComponent(type)}&id=${encodeURIComponent(id)}`);
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const data = await res.json();
+      // Fetch HubSpot timeline AND Apex-written supplements in parallel.
+      // Supplements are only available for deals and contacts; for other
+      // lookup types (none today, but future-proofed), supRes stays null.
+      const supUrl = (type === 'deal' || type === 'contact')
+        ? `/api/work/${type}-supplements/${encodeURIComponent(id)}`
+        : null;
+      const [tlRes, supRes] = await Promise.all([
+        fetch(`/api/work/timeline?type=${encodeURIComponent(type)}&id=${encodeURIComponent(id)}`),
+        supUrl ? fetch(supUrl).catch(() => null) : Promise.resolve(null),
+      ]);
+      if (!tlRes.ok) throw new Error('HTTP ' + tlRes.status);
+      const data = await tlRes.json();
+      const supData = (supRes && supRes.ok) ? await supRes.json() : { files: [], count: 0 };
+      const supplementEntries = (supData.files || []).map(supplementToTimelineEntry);
+      const supplementsLabel = supplementEntries.length
+        ? ` · <strong>+${supplementEntries.length}</strong> from Apex enrichment`
+        : '';
       const headline = data.last_contact_date
-        ? `<div class="v2-ex-tl-headline">Last contact: <strong>${formatDate(data.last_contact_date)}</strong> (${data.days_since_last_contact}d ago) · ${data.engagements_returned || (data.engagements || []).length} engagements</div>`
-        : '<div class="v2-ex-tl-headline">No contact recorded.</div>';
-      const all = data.engagements || [];
+        ? `<div class="v2-ex-tl-headline">Last contact: <strong>${formatDate(data.last_contact_date)}</strong> (${data.days_since_last_contact}d ago) · ${data.engagements_returned || (data.engagements || []).length} engagements${supplementsLabel}</div>`
+        : (supplementEntries.length
+            ? `<div class="v2-ex-tl-headline">No HubSpot contact recorded · ${supplementEntries.length} Apex enrichment item${supplementEntries.length === 1 ? '' : 's'}</div>`
+            : '<div class="v2-ex-tl-headline">No contact recorded.</div>');
+      const all = [...(data.engagements || []), ...supplementEntries]
+        .sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''));
       const visible = all.slice(0, 3);
       const hidden = all.slice(3);
       const visibleHtml = visible.map(renderTimelineEntry).join('') || '<div class="v2-ex-timeline-pending">No engagements found.</div>';

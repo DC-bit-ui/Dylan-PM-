@@ -2864,6 +2864,34 @@ body {
   border-bottom: 1px solid #eceadd;
 }
 .v2-ex-tl-entry:last-child { border-bottom: none; }
+.v2-ex-tl-entry-supplement { background: linear-gradient(to right, #f6f2e3 0%, transparent 8%); }
+.v2-ex-tl-entry-supplement .v2-ex-tl-icon { background: #ede5cd; }
+.v2-ex-tl-source {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #6a5a1a;
+  background: #f0e9d2;
+  border: 1px solid #d8cda5;
+  border-radius: 3px;
+  padding: 1px 6px;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+.v2-ex-fresh-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: #3a5a3a;
+  background: #e8efe1;
+  border: 1px solid #c8d8c0;
+  border-radius: 10px;
+  padding: 2px 8px;
+  margin-left: 8px;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
 .v2-ex-tl-icon {
   flex-shrink: 0;
   width: 28px;

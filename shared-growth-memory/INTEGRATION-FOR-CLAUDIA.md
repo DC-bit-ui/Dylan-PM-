@@ -1,222 +1,377 @@
-# Integration Guide — Claudia's Storm Boy Claude Tool
+# Instructions for Claudia's Claude Code — Shared Growth Memory Integration
 
-> **🆕 2026-05-13 — Team brain now available.** `team-brain/` holds the captured Hobbs / Ben / Claudia / Will profiles + distillates. Your tool can read these directly to power an `/ask-team` skill. See `team-brain/README.md` + the skill template alongside it.
+**Audience:** the Claude Code (or Cowork) session inside Claudia's Storm Boy Tool.
+**Goal:** wire automated writes from Claudia's tool into the shared bus so Dylan's dashboard can read every valuable signal her tool generates, and so her tool can read everything Apex generates on Dylan's side.
 
+**Status as of 2026-05-16:** dashboard side wired and pushed. New per-deal/per-contact supplement endpoints are live on Dylan's dashboard (`/api/work/deal-supplements/:id`, `/api/work/contact-supplements/:id`, `/api/work/apex-heartbeat`). Apex daily-enrichment pipeline (Cowork) writes the supplement folders weekdays 13:00 AEST. **Claudia's side is the missing leg of the bidirectional contract.**
 
+---
 
-This doc is for **you, Claudia**. The dashboard side of the shared bus is wired. To make it bidirectional — the principle Dylan called out as essential ("these systems cannot live in isolation") — your tool needs to **read** the bus when working on a contact/deal, and **write** to it after each customer interaction.
+## 1. The bus location
 
-## Where the bus actually lives (storage topology)
+The bus lives in SharePoint so OneDrive syncs every team member's copy automatically. Resolve the path on Claudia's machine like this:
 
-The bus is a folder. Currently it sits at `C:\Dylan PM\shared-growth-memory\` on Dylan's machine, which is **not** something your tool can reach. To make it actually bidirectional, the folder needs to live in a location both machines have access to.
+```
+<OneDrive root>\Claude Code Projects\shared-growth-memory\
+```
 
-**Plan:** move the folder into the SharePoint location your tool already uses, so OneDrive syncs it to both Dylan's and your machines. Proposed path: `Claude Code Projects/shared-growth-memory/` (parallel to your `Storm Boy Claude Tool/`).
+Typical resolved path:
+```
+C:\Users\<windows-user>\OneDrive - AgriProve\Claude Code Projects\shared-growth-memory\
+```
 
-Once moved:
-
-- Your tool reads + writes via your existing SharePoint path resolution.
-- The dashboard reads + writes via its local OneDrive sync path (set in its `.env` as `BUS_PATH`).
-- OneDrive sync delay is typically seconds. A write from one side becomes readable on the other within a minute.
-- Writes are atomic (tmp + rename), so partially-written files are never visible to readers.
-- Conflicts are rare given the file-per-entity scheme (slug-based filenames). When they do occur, OneDrive keeps both as conflict copies and a human merges.
-
-Dylan will action the move. After it lands, your tool's integration points (below) just work — no infra changes on your side beyond pointing at the new path.
-
-> **⚠ Read this first:** [`sales-motion-separation.md`](sales-motion-separation.md)
->
-> Two parallel sales motions: **Storm Boy outreach** (your `get-leads/` — primary queue, cold-call to scraped leads, Hobbs-on-farm-targeted) and **Engaged Pipeline Follow-up** (NEW — secondary queue, re-engaging existing pipeline deals using accumulated learnings).
->
-> **Do NOT fold dashboard deal-signals into `get-leads/`.** They are a different motion with different KPIs. Storm Boy targets (call volume, farm visits booked) must not be polluted by pipeline re-touches. The integration creates a **separate secondary surface**, not a merged list.
-
-## What the dashboard already writes here
-
-Every time the dashboard's coaching pipeline runs against live HubSpot data, it writes:
-
-- `deal-signals/deal-<deal_id>.json` — one per active deal coached. Multi-signal state (stage health, engagement health, content health), coaching mode, active probes, gaps in our data, next recommended action.
-- `patterns/*.md` — durable learnings the system has identified. Same shape as your own `cross-project-shared/self-improvement/` files would be.
-- `probe-outcomes/probe-<id>.json` — every probe the dashboard suggests creates a record; outcome populated when the customer responds (or doesn't).
-- `customer-positions/contact-<contact_id>.json` — verbatim customer language pulled from farm-visit transcripts.
-
-You can `cat` any of these files to verify what's there now.
-
-## What your tool should do — three integration points
-
-### 1. NEW skill: `engaged-pipeline-followups/engaged-pipeline-followups.md` — secondary queue, separate from `get-leads/`
-
-This is a **new skill, parallel to `get-leads/`** — not a modification to it. Reps should be able to ask for two distinct things:
-
-| Rep says | Routes to | Reads from | Motion |
-|---|---|---|---|
-| *"who should I call today"* | `get-leads/` (existing) | HubSpot Storm Boy contact listing | Motion 1 (Storm Boy outreach) |
-| *"any pipeline follow-ups"* / *"what engaged pipeline deals need attention"* / *"who in the sales pipeline needs a touch"* | `engaged-pipeline-followups/` (NEW) | `shared-growth-memory/deal-signals/` | Motion 2 (Engaged Pipeline Follow-up) |
-
-**Implementation sketch** for the new skill:
+**Discover dynamically** rather than hard-coding — Claudia's `<windows-user>` may differ:
 
 ```js
-// engaged-pipeline-followups/engaged-pipeline-followups.md
-//
-// Surface dashboard-derived re-engagement opportunities for deals already
-// in the sales pipeline. Reads deal-signals from the shared bus. Does NOT
-// pull from Storm Boy contact lists — that's get-leads/'s job.
-
-const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
-const SIGNALS_DIR = 'C:\\Dylan PM\\shared-growth-memory\\deal-signals';
-
-function getCurrentUserOwnerId(/* from session */) { /* ... */ }
-
-function pipelineFollowups() {
-  const ownerId = getCurrentUserOwnerId();
-  const files = fs.readdirSync(SIGNALS_DIR).filter(f => f.endsWith('.json'));
-  const signals = files.map(f => JSON.parse(fs.readFileSync(path.join(SIGNALS_DIR, f), 'utf8')));
-
-  // Filter to deals owned by this user; sort by coaching_mode priority
-  const priority = {
-    stuck_but_live: 1,
-    mystery_disconnect: 2,
-    partner_alignment_blocked: 3,
-    early_warning: 4,
-    cooling: 5,
-    cold_loss_imminent: 6,
-    healthy_progression: 99
-  };
-
-  return signals
-    .filter(s => s.owner_id === ownerId)  // when dashboard writes owner to deal-signals (small follow-up)
-    .sort((a, b) => (priority[a.coaching_mode] || 99) - (priority[b.coaching_mode] || 99));
+function busRoot() {
+  // 1. Explicit override
+  if (process.env.BUS_PATH) return process.env.BUS_PATH;
+  // 2. OneDrive-AgriProve sync
+  const od = process.env.OneDriveCommercial || process.env.OneDrive
+          || path.join(os.homedir(), 'OneDrive - AgriProve');
+  return path.join(od, 'Claude Code Projects', 'shared-growth-memory');
 }
 ```
 
-**Surface format** (in your tool's chat output):
+If `busRoot()` doesn't resolve to an existing folder, halt and report. Don't create — Dylan owns the folder structure.
+
+---
+
+## 2. The folder map (where each write goes)
+
 ```
-> Engaged pipeline follow-ups (3) — separate from your Storm Boy call list
->
-> 1. James Almond — Daisy Bank · KCT Issued (426d, RED) · STUCK BUT LIVE
->    Last from customer (23d ago): "Thanks for the update Ben — the wife
->    and I are talking it through over Easter. I'll get back to you in early May."
->    Next: Send low-pressure check-in. Draft ready in dashboard.
->    [Open in HubSpot] [Open dashboard probe draft]
->
-> 2. Will McLachlan — Rosebank · KCT Issued (287d, RED) · STUCK BUT LIVE
->    Next: 21-day countersign deadline. Copy agronomist who mapped the property.
->    [Open in HubSpot] [Open dashboard]
->
-> 3. ...
+shared-growth-memory/
+├── README.md                            ← bus contract (read-only)
+├── INTEGRATION-FOR-CLAUDIA.md           ← this file
+├── sales-motion-separation.md           ← two-motion principle — read first
+├── schemas/                             ← write according to these schemas
+│   ├── customer-position.md
+│   ├── deal-signal.md
+│   ├── pattern.md
+│   └── probe-outcome.md
+├── patterns/                            ← either side writes durable learnings
+├── deal-signals/                        ← dashboard writes; tool reads
+├── customer-positions/                  ← TOOL WRITES; dashboard reads
+├── probe-outcomes/                      ← either side writes/updates
+├── deal-supplements/<deal_id>/          ← Apex writes daily; tool MAY write call summaries
+├── contact-supplements/<contact_id>/    ← Apex writes daily; tool MAY write call summaries
+├── persona-supplements/<rep_slug>/      ← Apex writes; tool can write rep-self learnings
+├── team-brain/                          ← dashboard authoritative
+│   ├── profiles/<slug>.md
+│   ├── distillates/*.json
+│   └── objection-plays/*
+└── queues/<rep_slug>/work-cards.json    ← dashboard writes nightly; tool reads
 ```
 
-The trigger phrases should make clear this is a **secondary list, not the Storm Boy queue**. Reps explicitly choose which motion they're working on right now.
+Folders Claudia's tool **WRITES** to: `customer-positions/`, `probe-outcomes/`, `patterns/`, `deal-supplements/<id>/`, `contact-supplements/<id>/`, `persona-supplements/<rep_slug>/`.
+Folders Claudia's tool **READS** only: `deal-signals/`, `team-brain/`, `queues/<rep_slug>/`, `schemas/`.
 
-### 2. `call-admin/stormboy-call-admin.md` — write customer-positions + update probe-outcomes
+---
 
-When the rep logs a call via your tool's call-admin flow, your skill already produces a structured record. **Add two writes**:
+## 3. Atomic writes — non-negotiable
 
-**(a) Write a customer position:**
+Every write must go via tmp-and-rename so readers never see a partially written file:
+
 ```js
-const positionFile = `C:\\Dylan PM\\shared-growth-memory\\customer-positions\\contact-${contactId}.json`;
-let record;
-if (fs.existsSync(positionFile)) record = JSON.parse(fs.readFileSync(positionFile));
-else record = { contact_id: contactId, positions: [], associated_deal_ids: [] };
+function writeAtomic(filePath, content) {
+  const tmp = filePath + '.tmp';
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(tmp, content);
+  fs.renameSync(tmp, filePath);
+}
+```
 
-record.positions.push({
-  as_of: callTimestamp,
-  verbatim_or_distilled: "<the customer's most-impactful line from the call, ≤300 chars, PII-generalised>",
+JSON files: `JSON.stringify(obj, null, 2)`. Markdown files: write with `\n` line endings (the bus is normalized to LF via `.gitattributes`).
+
+---
+
+## 4. Triggered automations — what to write when
+
+### 4.1 After a logged call (`call-admin` skill)
+
+When Claudia's tool finishes recording a call, fire three writes in parallel:
+
+**(a) Customer position** — verbatim/distilled customer voice. Per `schemas/customer-position.md`.
+
+```js
+const positionFile = path.join(busRoot(), 'customer-positions', `contact-${contactId}.json`);
+let rec = fs.existsSync(positionFile)
+  ? JSON.parse(fs.readFileSync(positionFile, 'utf8'))
+  : { contact_id: String(contactId), positions: [], associated_deal_ids: [] };
+
+rec.positions.push({
+  as_of: callTimestamp,                     // ISO-8601
+  verbatim_or_distilled: customerLine,      // ≤300 chars; PII-generalised
   is_verbatim: true,
-  source: "call",
-  source_id: aircallCallId,
-  topic: "<one of: partner_alignment | timing | 25_year_commitment | revenue_split | competitor_mention | etc.>",
-  sentiment: "<positive | neutral_warm | neutral | neutral_cool | negative>",
-  captured_by: "claudia_call_admin"
+  source: 'call',
+  source_id: aircallCallId,                 // for cross-reference
+  topic: oneOf([                            // pick best fit; extend the list as patterns emerge
+    'partner_alignment','timing','25_year_commitment','revenue_split',
+    'competitor_mention','additionality','soil_health','price_friction','other'
+  ]),
+  sentiment: oneOf(['positive','neutral_warm','neutral','neutral_cool','negative']),
+  captured_by: 'claudia_call_admin',
 });
-// truncate to last 5 + anything in last 14 days
-record.last_updated = new Date().toISOString();
-fs.writeFileSync(positionFile + '.tmp', JSON.stringify(record, null, 2));
-fs.renameSync(positionFile + '.tmp', positionFile);
+// keep at most last 5, plus anything from the last 14 days
+rec.positions = pruneToRecent(rec.positions);
+rec.last_updated = new Date().toISOString();
+writeAtomic(positionFile, JSON.stringify(rec, null, 2));
 ```
 
-**(b) If the call was a response to a recent probe, update the probe outcome:**
-Check `probe-outcomes/` for any probe targeting this deal with `actual_outcome` not yet populated:
+**(b) Call summary into deal AND contact supplements** — so the dashboard's timeline picks it up alongside HubSpot data.
+
+Filename convention: `claudia-call-<YYYY-MM-DD-HHMM>-<short-slug>.md` (timestamp + slug ensures idempotent overwrite when the same call is re-processed).
+
 ```js
-const probes = fs.readdirSync('C:\\Dylan PM\\shared-growth-memory\\probe-outcomes')
-  .map(f => JSON.parse(fs.readFileSync(`C:\\Dylan PM\\shared-growth-memory\\probe-outcomes\\${f}`)))
+const callSummary = `---
+source: claudia_call_admin
+captured_at: ${callTimestamp}
+aircall_id: ${aircallCallId}
+rep: ${repSlug}
+contact_id: ${contactId}
+deal_id: ${dealId || 'none'}
+sentiment: ${sentiment}
+---
+
+# Call summary — ${customerName} · ${callDate}
+
+## Customer's most-impactful line
+> ${customerLine}
+
+## Topics covered
+- ${topicsArray.join('\n- ')}
+
+## Rep next-step
+${repNextStep}
+`;
+
+const filename = `claudia-call-${formatStamp(callTimestamp)}-${slugify(customerName)}.md`;
+
+// Write to contact supplements
+writeAtomic(path.join(busRoot(), 'contact-supplements', String(contactId), filename), callSummary);
+
+// If linked to a deal, also write there
+if (dealId) {
+  writeAtomic(path.join(busRoot(), 'deal-supplements', String(dealId), filename), callSummary);
+}
+```
+
+The dashboard's `/api/work/deal-supplements/:id` and `/api/work/contact-supplements/:id` endpoints will surface this automatically.
+
+**(c) Probe-outcome update** — if the call was a response to a dashboard-suggested probe, close the loop.
+
+```js
+const probesDir = path.join(busRoot(), 'probe-outcomes');
+const open = fs.readdirSync(probesDir)
+  .map(f => ({ file: f, ...JSON.parse(fs.readFileSync(path.join(probesDir, f), 'utf8')) }))
   .filter(p => p.deal_id === dealId && !p.actual_outcome?.detected_at);
 
-if (probes.length > 0) {
-  const probe = probes[0];
+if (open.length) {
+  const probe = open[0];
   probe.actual_outcome = {
     detected_at: callTimestamp,
-    detected_by: "claudia_call_admin",
-    outcome_class: "<reply_warm | reply_neutral | reply_cool — based on call sentiment>",
-    reply_summary: "<≤200 chars summary of what the customer said on the call>"
+    detected_by: 'claudia_call_admin',
+    outcome_class: mapSentimentToOutcomeClass(sentiment),  // reply_warm / reply_neutral / reply_cool / reply_negative
+    reply_summary: replySummary,  // ≤200 chars
   };
-  // atomic write back
+  writeAtomic(path.join(probesDir, probe.file), JSON.stringify(probe, null, 2));
 }
 ```
 
-This closes the loop: the dashboard suggested a probe → rep called the customer → your tool records the outcome → the dashboard's next coaching run reads it and re-classifies the deal.
+### 4.2 After `log-idea` (rep articulates a pattern)
 
-### 3. `log-idea.md` — write patterns when reps articulate a new insight
+When a rep says something like *"every farmer who mentions their accountant slows down at SLA"*, capture it twice: once in Claudia's local brain-dump, once in the shared bus as a pattern.
 
-When the rep says something like *"Just noticed every farmer who mentions their accountant slows down at SLA — should we get accountants involved earlier?"*, that's a pattern observation.
-
-Currently your skill captures these into your own brain-dump. **Also write to shared patterns/**:
+Per `schemas/pattern.md`:
 
 ```js
-const slug = `${date}-${slugify(title)}`;
-const filePath = `C:\\Dylan PM\\shared-growth-memory\\patterns\\${slug}.md`;
-const fm = {
-  title: "...",
-  category: "tactical_play | tactical_framing | strategic_finding | hypothesis",
-  confidence: "low",  // start as hypothesis; bumps to moderate/high if dashboard's data corroborates
+const slug = `${todayISO()}-${slugify(title)}`;
+const fmObj = {
+  title,
+  category: 'tactical_play',        // tactical_play | tactical_framing | strategic_finding | hypothesis
+  confidence: 'low',                // start as hypothesis
   written_at: new Date().toISOString(),
-  sources: ["claudia_storm_boy_tool/log-idea"],
-  evidence: ["<the rep's quote or context>"],
-  applicability: ["<where this might apply>"],
-  surfaced_in_systems: ["claudia_storm_boy_tool"]
+  sources: ['claudia_storm_boy_tool/log-idea'],
+  evidence: [repQuote],
+  applicability,
+  surfaced_in_systems: ['claudia_storm_boy_tool'],
 };
-// write atomically
+const body = `---\n${yaml.stringify(fmObj)}---\n\n# ${title}\n\n${narrative}\n`;
+writeAtomic(path.join(busRoot(), 'patterns', `${slug}.md`), body);
 ```
 
-The dashboard reads these on each pipeline run. If the dashboard's data confirms the pattern across multiple deals, it appends `dashboard_coaching` to `surfaced_in_systems` and bumps `confidence`. Two systems independently confirming = high-confidence pattern.
+When the dashboard's next coaching run sees corroborating evidence across multiple deals, it will append `dashboard_coaching` to `surfaced_in_systems` and bump `confidence`. Two systems independently confirming = high-confidence pattern.
 
-## Conflict handling
+### 4.3 During the daily session for a given rep
 
-Last-write-wins for `deal-signals/` and `customer-positions/`. If your tool and the dashboard both write to the same file, the later timestamp wins — but our schemas are designed so both should be writing complementary updates (you write call-derived data, dashboard writes email/farm-visit-derived data).
+When a rep opens Claudia's tool, the tool can surface today's work by reading:
 
-For `patterns/`: each pattern has a unique slug. No collision. If you write the same pattern title separately, it gets a different dated slug; cross-references via `also_observed_by` link them.
-
-For `probe-outcomes/`: probe_id is assigned at creation. Updates merge into the existing file. Both your tool and the dashboard can update the same probe (different fields).
-
-## Atomic writes — important
-
-Always write to `<file>.tmp` then rename. Otherwise readers can see half-written JSON:
 ```js
-fs.writeFileSync(filePath + '.tmp', content);
-fs.renameSync(filePath + '.tmp', filePath);
+const queueFile = path.join(busRoot(), 'queues', repSlug, 'work-cards.json');
+if (!fs.existsSync(queueFile)) return { stale: true, cards: [] };
+const queue = JSON.parse(fs.readFileSync(queueFile, 'utf8'));
+// queue.last_updated, queue.cards = [...]
 ```
 
-## How to verify it works
+Dashboard writes this every night at 05:00 SAST. Treat as read-only.
 
-After your skill writes a customer-position:
-1. Run the dashboard's coaching refresh (POST /api/coaching/refresh)
-2. The deal-signal for that customer's deal should now include the new position in its content signal
-3. The Plays tab on the dashboard should show "Latest from customer" pulled from your write
+For each open card, the tool can ALSO pull deal-context from the dashboard's HTTP API if it's running on Dylan's machine:
+- `GET http://<dylan-host>:3401/api/work/deal-supplements/<deal_id>` — latest signal per deal
+- `GET http://<dylan-host>:3401/api/work/apex-heartbeat` — confirm Apex's data is fresh
 
-After your skill writes a pattern:
-1. Within ~5 seconds (no polling lag — filesystem is shared)
-2. The dashboard's Patterns tab should show the new learning in its "Recent system learnings" section
+If the dashboard isn't reachable, fall back to reading the bus folders directly — same data is on disk.
 
-## What's NOT in the bus (and why)
+### 4.4 When a rep articulates self-improvement (their own working style)
 
-- **Customer PII** (full names, addresses, exact financial figures) — both systems must generalise before writing. The schemas explicitly require PII generalisation.
-- **HubSpot deal records** — those are the source of truth; we don't duplicate. Both systems READ HubSpot independently.
-- **Aircall transcripts** — those live in Confluence (via your `pelican294` workflow). We reference them by Confluence page ID in customer-positions records.
-- **Frontier (HORIZON Snapshot generation)** — that's a separate spatial app. When the dashboard recommends a HORIZON Snapshot, it surfaces an "Open in Frontier" link, not a Cowork delegation.
+When a rep tells the tool *"I want to remember that when I open with X, the customer responds with Y"* — that's persona evolution. Write to `persona-supplements/<rep_slug>/`:
 
-## Coordination
+```js
+const filename = `tool-self-observation-${todayISO()}-${slugify(short)}.md`;
+const body = `---
+source: claudia_storm_boy_tool/self_observation
+captured_at: ${new Date().toISOString()}
+rep: ${repSlug}
+---
 
-When you have a moment, let me know if anything in the schemas needs adjustment for how your tool actually works. The dashboard side is wired and will write to the bus on every coaching run — but until your tool also writes, the bus is effectively one-direction.
+# ${title}
 
-The shared assumption: we're building one coherent system that happens to have two execution surfaces (your tool for daily rep workflow, the dashboard for pipeline visibility + leadership). The bus is what makes them coherent.
+${narrative}
+`;
+writeAtomic(path.join(busRoot(), 'persona-supplements', repSlug, filename), body);
+```
+
+Dashboard's persona-builder will read this on the next `/api/brain/refresh-persona/${repSlug}` and fold it into the rep's profile in `team-brain/profiles/<slug>.md`.
+
+---
+
+## 5. Idempotency rules
+
+- **Same source-window + same artifact = same filename = overwrite.** A re-processed Aircall transcript for the same call must produce the same filename, so re-running on the same day doesn't accumulate dupes. Use deterministic naming: `claudia-call-<callTimestamp>-<contactSlug>.md` (timestamp + slug both come from the source record).
+- Last-write-wins on `customer-positions/` and `deal-signals/`. Schemas are designed so both sides write complementary fields — collisions are usually safe.
+- For `probe-outcomes/`: probe_id is assigned by the dashboard at creation. Tool updates merge into the existing file by reading-modifying-writing atomically.
+
+---
+
+## 6. Slug & owner conventions
+
+The bus maps HubSpot owner IDs to slugs. Hard-code these into Claudia's tool:
+
+| Slug | HubSpot owner | Active |
+|---|---|---|
+| `hobbs` | `361236574` | ✓ |
+| `ben` | `76812243` | ✓ |
+| `claudia` | `78272376` | ✓ |
+| `will` | `361823546` | ✓ |
+| `dylan-jones` | `401770537` | ✓ |
+| `harrison-inactive` | `145644281` | ✗ |
+
+Slug generation for filenames: lowercase, hyphenated, ASCII only. `"Daisy Bank · QLD"` → `daisy-bank-qld`. Strip apostrophes, accents, punctuation.
+
+---
+
+## 7. What Dylan's side writes (so the tool can consume)
+
+Apex (Cowork-side automation, weekdays 13:00 AEST) writes:
+
+| File | Path | Use case for Claudia's tool |
+|---|---|---|
+| Aircall transcript | `contact-supplements/<contact_id>/confluence-aircall-<YYYY-MM-DD-HHMM>-<slug>.md` | Surface "recent calls with this contact" inline |
+| Teams message bundle | `deal-supplements/<deal_id>/teams-deals-channel-<YYYY-MM-DD>.json` | Surface "what was said in Deals channel this week" |
+| Email | `deal-supplements/<deal_id>/outlook-email-<YYYY-MM-DD>-<slug>.md` | Surface "email exchanged with rep on this deal" |
+| Granola meeting | `contact-supplements/<contact_id>/granola-meeting-<YYYY-MM-DD>-<slug>.md` | Surface "meeting transcript with this contact" |
+| Farm visit transcript | `persona-supplements/hobbs/confluence-farmvisit-<YYYY-MM-DD>-<slug>.md` | Hobbs-only — feeds his persona |
+| HubSpot engagement snapshot | `contact-supplements/<contact_id>/hubspot-engagement-snapshot-<YYYY-MM-DD>.json` | Background context — last activity, last sent email |
+| Heartbeat | `apex-runs.log` (single-line append per run) | Confirm Apex is alive before using its data |
+
+**Heartbeat check** before relying on this data:
+
+```js
+const log = path.join(busRoot(), 'apex-runs.log');
+if (fs.existsSync(log)) {
+  const lastLine = fs.readFileSync(log, 'utf8').trim().split(/\r?\n/).pop();
+  // format: "2026-05-16T03:00:00Z · daily-enrichment · deals=128 contacts=1523 ..."
+  const ts = Date.parse(lastLine.split('·')[0].trim());
+  if (Date.now() - ts > 36 * 3600 * 1000) console.warn('Apex stale >36h — data may be old');
+}
+```
+
+---
+
+## 8. Sensitivity rules — PII generalisation
+
+Both systems must generalise before writing. Hard rules:
+
+- **Customer full names** → first name + property/business surname when material; "the contact" otherwise. Never write phone numbers, emails, addresses, exact financials into customer-positions or patterns. The contact_id is the join key.
+- **Revenue / ACCU figures** → ratios, percentages, multipliers. Never absolute dollars or absolute carbon units.
+- **Methodology IP** → category-level ("the 25-year baseline tooling"), not internal product code names.
+- **Other reps' performance** → category ("a senior rep"), not named — unless explicitly attributed in a public artifact.
+
+When unsure, over-strip and flag for Dylan rather than write. Patterns can be sanitised post-hoc; verbatim customer voice can't easily un-leak.
+
+---
+
+## 9. Verification — how to confirm the wiring works
+
+After implementing each automation, verify end-to-end:
+
+### Verify call-admin write
+
+1. Log a test call via Claudia's tool against a known contact (e.g. `109483813745`).
+2. From any machine with the bus synced: `ls <bus>/contact-supplements/109483813745/` — should contain `claudia-call-*.md` written within the last minute.
+3. From Dylan's dashboard host: `curl http://localhost:3401/api/work/contact-supplements/109483813745` — should return the file in the listing with full content.
+4. From Dylan's dashboard host: `curl http://localhost:3401/api/work/deal-supplements/<deal_id>` if the contact has an associated active deal — file should appear there too.
+
+### Verify pattern write
+
+1. Trigger `log-idea` with a clearly novel pattern.
+2. `ls <bus>/patterns/` — should contain a new `<YYYY-MM-DD>-<slug>.md`.
+3. Dashboard `/api/brain/refresh-persona/<owner-rep>` or the next nightly run will pick it up. Patterns surface in Dashboard's Patterns tab within ~24h.
+
+### Verify customer-position write
+
+1. After a call, check `<bus>/customer-positions/contact-<id>.json` — should have a new entry in `positions[]` with `captured_by: claudia_call_admin`.
+2. Dashboard's next coaching refresh (`POST http://localhost:3401/api/coaching/refresh`) will re-classify the deal using the new position.
+
+---
+
+## 10. Open coordination questions (raise back to Dylan when you have a position)
+
+These are unresolved between the two systems. Don't block — write per the conventions above and we'll converge:
+
+1. **Transcript-analysis duplication** — Claudia's ACORE pipeline and Apex's Confluence sweep both analyse the same Aircall transcripts. Decide between consolidated output vs. parallel-with-distinct-framings.
+2. **Cadence alignment** — Claudia's ACORE runs every 2 days; Apex runs daily weekdays. Either is fine; the bus tolerates both.
+3. **Confluence-as-storage** — is Confluence under the Stormboy folder a better home for some shared learnings than SharePoint? Markdown patterns specifically might live better there. SharePoint stays canonical for high-frequency JSON.
+4. **Schema evolution** — if a new write doesn't fit existing schemas, add a new schema file in `schemas/` and a corresponding write-target folder. Coordinate with Dylan before introducing a new top-level folder.
+
+---
+
+## 11. Failure modes to design against
+
+- **OneDrive sync conflict** — same file written from both sides within seconds. Effect: OneDrive creates `<file> (Conflict — <user>).<ext>`. Recovery: human merges. Mitigation: Claudia's tool and Dylan's dashboard write different field-sets to the same file (call data vs. email data on a customer-position), so two-sided collisions are rare and usually safe.
+- **OneDrive offline** — write succeeds locally; sync pending. Effect: other side doesn't see it until reconnect. Mitigation: writes are idempotent; on reconnect they sync naturally.
+- **Bus folder missing** — `busRoot()` resolves to a non-existent path. Effect: writes fail. Mitigation: halt and report to Dylan rather than auto-creating; the structure is owned by the dashboard side.
+- **Schema drift** — Claudia's tool writes a `customer-position` with a new field the dashboard doesn't expect. Effect: dashboard ignores the field harmlessly. Treat all schema fields as additive; never repurpose existing ones.
+
+---
+
+## 12. Reading order for orientation
+
+When the Claude Code session inside Claudia's tool boots up for the first time, walk these in order:
+
+1. `README.md` — bus contract
+2. `sales-motion-separation.md` — Storm Boy outreach vs. Engaged Pipeline Follow-up (two distinct motions, must not be merged)
+3. This file (`INTEGRATION-FOR-CLAUDIA.md`)
+4. `schemas/*.md` — the four canonical schemas
+5. `team-brain/README.md` — how the brain is structured (read-only from Claudia's side)
+6. `team-brain/ask-team-skill-template.md` — reference implementation if Claudia wants to add `/ask-team` to her tool
+
+After reading: implement the four triggered automations in §4 (call-admin write, log-idea write, daily-queue read, self-observation write), wire the atomic-write helper from §3, and run the verifications in §9.
+
+---
+
+**Contact:** Dylan (`dylan@agriprove.io`). The dashboard side is in active development; expect changes to schemas and folder conventions. Pull this file fresh from the bus before any major implementation pass.
 
 — Dylan + the dashboard
