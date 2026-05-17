@@ -142,6 +142,24 @@ app.get('/api/system/health', (req, res) => {
   }
 });
 
+// Pattern quality gate — archives patterns that stayed confidence=low for
+// >30 days without cross-confirmation. Defaults to dry-run (GET, or POST
+// with ?dry_run=1); pass ?dry_run=0 on POST to actually move files.
+// Apex schedules this weekly per inbox/cowork/2026-05-17-apex-weekly-pattern-curation-*.md.
+app.get('/api/system/curate-patterns', (req, res) => {
+  try {
+    const { curate } = require('./coaching/engine/curate-patterns');
+    res.json(curate({ dryRun: true }));
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.post('/api/system/curate-patterns', (req, res) => {
+  try {
+    const { curate } = require('./coaching/engine/curate-patterns');
+    const dryRun = req.query.dry_run !== '0';
+    res.json(curate({ dryRun }));
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // Probes — the action→outcome loop. Dashboard (and Claudia's tool) write probes;
 // either side updates the outcome once detected. listOpenProbes is the queue;
 // probe-outcome update is how the loop closes.
