@@ -128,6 +128,71 @@ app.get('/api/work/apex-heartbeat', (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// Probes — the action→outcome loop. Dashboard (and Claudia's tool) write probes;
+// either side updates the outcome once detected. listOpenProbes is the queue;
+// probe-outcome update is how the loop closes.
+app.get('/api/work/open-probes', (req, res) => {
+  try {
+    const bus = require('./coaching/engine/shared-bus');
+    const open = bus.listOpenProbes()
+      .sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
+    res.json({ count: open.length, probes: open });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/work/probe-stats', (req, res) => {
+  try {
+    const bus = require('./coaching/engine/shared-bus');
+    res.json(bus.probeStats());
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Create a new probe record. Body: { probe_id?, deal_id, deal_name, contact_id?,
+// probe_type, rationale, probe_text, predicted_outcomes?, sent_channel?, sent_by? }
+// probe_id auto-generated if absent. Used by manual probe-tagging in the UI and
+// by future Apex-side probe-suggestion automation.
+app.post('/api/work/probe', (req, res) => {
+  try {
+    const bus = require('./coaching/engine/shared-bus');
+    const p = req.body || {};
+    if (!p.deal_id || !p.probe_type) {
+      return res.status(400).json({ error: 'deal_id and probe_type required' });
+    }
+    const probe = {
+      probe_id: p.probe_id || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+      created_at: p.created_at || new Date().toISOString(),
+      created_by: p.created_by || 'manual_by_rep',
+      sent_at: p.sent_at || null,
+      ...p,
+    };
+    const written = bus.writeProbeOutcome(probe);
+    res.json(written);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Manually populate (or update) a probe's actual_outcome. Used by Dylan when
+// surveying old probes; Claudia's tool calls this from call-admin per the
+// INTEGRATION-FOR-CLAUDIA.md §4.1c flow.
+app.post('/api/work/probe-outcome/:probe_id', (req, res) => {
+  try {
+    const bus = require('./coaching/engine/shared-bus');
+    const o = req.body || {};
+    if (!o.outcome_class) return res.status(400).json({ error: 'outcome_class required' });
+    const merged = bus.writeProbeOutcome({
+      probe_id: req.params.probe_id,
+      actual_outcome: {
+        detected_at: o.detected_at || new Date().toISOString(),
+        detected_by: o.detected_by || 'manual',
+        outcome_class: o.outcome_class,
+        reply_latency_hours: o.reply_latency_hours,
+        reply_sentiment: o.reply_sentiment,
+        reply_summary: o.reply_summary,
+      },
+    });
+    res.json(merged);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // Farm-visit booking metrics — total + week-on-week + vs goal. Live HubSpot.
 app.get('/api/stats/farm-visits', async (req, res) => {
   try {

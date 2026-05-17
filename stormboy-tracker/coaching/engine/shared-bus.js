@@ -231,6 +231,51 @@ function listProbeOutcomesForDeal(dealId) {
     .filter(p => p && p.deal_id === dealId);
 }
 
+function listAllProbes() {
+  ensureDirs();
+  if (!fs.existsSync(PROBE_OUTCOMES_DIR)) return [];
+  return fs.readdirSync(PROBE_OUTCOMES_DIR)
+    .filter(f => f.startsWith('probe-') && f.endsWith('.json'))
+    .map(f => {
+      try { return JSON.parse(fs.readFileSync(path.join(PROBE_OUTCOMES_DIR, f), 'utf8')); }
+      catch (e) { return null; }
+    })
+    .filter(Boolean);
+}
+
+function listOpenProbes() {
+  return listAllProbes().filter(p => !p.actual_outcome || !p.actual_outcome.detected_at);
+}
+
+function probeStats() {
+  const all = listAllProbes();
+  const closed = all.filter(p => p.actual_outcome && p.actual_outcome.detected_at);
+  const now = Date.now();
+  const ageBuckets = { lt_7d: 0, lt_14d: 0, lt_30d: 0, gte_30d: 0 };
+  all.forEach(p => {
+    const t = Date.parse(p.created_at || p.sent_at || '');
+    if (!t) return;
+    const days = (now - t) / 86400000;
+    if (days < 7) ageBuckets.lt_7d++;
+    else if (days < 14) ageBuckets.lt_14d++;
+    else if (days < 30) ageBuckets.lt_30d++;
+    else ageBuckets.gte_30d++;
+  });
+  const outcomeMix = {};
+  closed.forEach(p => {
+    const c = p.actual_outcome.outcome_class || 'unknown';
+    outcomeMix[c] = (outcomeMix[c] || 0) + 1;
+  });
+  return {
+    total: all.length,
+    open: all.length - closed.length,
+    closed: closed.length,
+    populated_rate: all.length === 0 ? null : Math.round((closed.length / all.length) * 100) / 100,
+    by_age: ageBuckets,
+    outcome_mix: outcomeMix,
+  };
+}
+
 // ===========================================================================
 // YAML front-matter parsing — minimal but sufficient for our schema
 // ===========================================================================
@@ -278,5 +323,5 @@ module.exports = {
   writePattern, readPattern, listPatterns,
   writeDealSignal, readDealSignal, listDealSignals,
   writeCustomerPosition, readCustomerPosition,
-  writeProbeOutcome, listProbeOutcomesForDeal
+  writeProbeOutcome, listProbeOutcomesForDeal, listAllProbes, listOpenProbes, probeStats,
 };
