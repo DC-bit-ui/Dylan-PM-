@@ -128,6 +128,20 @@ app.get('/api/work/apex-heartbeat', (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// System health — single aggregator that answers "is this thing working?".
+// Apex liveness, write volume, pattern growth, loop closure, heuristic drift.
+// Consumed by the v2 HEALTH tab; safe to call as often as needed (filesystem
+// scans only, no external API calls).
+app.get('/api/system/health', (req, res) => {
+  try {
+    const { snapshot } = require('./coaching/engine/system-health');
+    res.json(snapshot());
+  } catch (e) {
+    console.error('system/health failed:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // Probes — the action→outcome loop. Dashboard (and Claudia's tool) write probes;
 // either side updates the outcome once detected. listOpenProbes is the queue;
 // probe-outcome update is how the loop closes.

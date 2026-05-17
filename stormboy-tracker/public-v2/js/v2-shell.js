@@ -8,7 +8,7 @@
  * Routing is hash-based: /v2#work, /v2#brain, etc.
  */
 window.v2Shell = (function() {
-  const tabs = ['ask', 'work', 'brain', 'stats', 'messaging'];
+  const tabs = ['ask', 'work', 'brain', 'stats', 'messaging', 'health'];
   const defaultTab = 'work';      // operational entry-point per the v2 doctrine
   const renderers = {};           // tab -> render(container)
   const rendered  = {};           // tab -> bool
