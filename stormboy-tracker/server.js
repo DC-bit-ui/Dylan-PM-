@@ -146,6 +146,24 @@ app.get('/api/system/health', (req, res) => {
 // >30 days without cross-confirmation. Defaults to dry-run (GET, or POST
 // with ?dry_run=1); pass ?dry_run=0 on POST to actually move files.
 // Apex schedules this weekly per inbox/cowork/2026-05-17-apex-weekly-pattern-curation-*.md.
+// Weekly system retro — synthesises last 7 days of bus activity into a
+// readable markdown summary. GET returns the synthesis without writing;
+// POST with ?write=1 also drops a file into <bus>/system-retros/<isoweek>.md
+// so it's visible to the whole team via SharePoint.
+app.get('/api/system/retro', (req, res) => {
+  try {
+    const { generate } = require('./coaching/engine/system-retro');
+    res.json(generate({ since: req.query.since, until: req.query.until, write: false }));
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.post('/api/system/retro', (req, res) => {
+  try {
+    const { generate } = require('./coaching/engine/system-retro');
+    const write = req.query.write === '1';
+    res.json(generate({ since: req.query.since, until: req.query.until, write }));
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 app.get('/api/system/curate-patterns', (req, res) => {
   try {
     const { curate } = require('./coaching/engine/curate-patterns');
