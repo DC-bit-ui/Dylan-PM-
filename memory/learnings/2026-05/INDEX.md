@@ -1,0 +1,2 @@
+- [2026-05-14 Apex task ownership corrections](2026-05-14-apex-task-ownership-corrections.md) — 7 tasks corrected: not Dylan's (Lightning Lane, Leaderboard v2 assign, KCT assign, Geoscape, SLT update, apology email); HubSpot mandatory fields marked Done
+- [2026-05-18 Apex task attribution errors](2026-05-18-apex-task-attribution-errors.md) — 2 errors: KCS run-through (Steve's task), sampling cost analysis (not Dylan's); rule added: verify first-person actor before attributing Granola commitments to Dylan

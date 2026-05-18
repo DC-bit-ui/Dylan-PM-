@@ -25,10 +25,13 @@
 - **Users:** internal team; Field team (Hobbs, Ben) are users
 
 ## Stormboy
-- **What it is:** project codename for the lead generation pipeline and **process alignment** between Growth (Claudia, lead scraping), Field team (Hobbs, Ben), and Product
-- **Stage:** active operational; process alignment ongoing
-- **Owner:** cross-functional; Dylan owns the PM-side alignment
-- **Note:** Stormboy is more about *process* than a discrete product surface
+- **What it is:** systematic field recruitment campaign targeting 500+ ha agricultural properties in the Murray-Darling Basin for soil carbon project sign-ups. 7-stage pipeline: Geographic Scoping → Lead Gen (Claude Code scraper) → Lead Research → Call List & Outreach → Farm Visit → HORIZON Snapshot (post-visit) → Post-Visit Conversion (KCT)
+- **Stage:** active operational; Phase 1 delivered ~23,000 ha pipeline; VIC expansion underway
+- **Owner:** cross-functional — Claudia (Growth tooling / Claude Code scraper), Hobbs & Ben (field team), Dylan (PM-side alignment + Frontier spatial intelligence)
+- **Tech:** Storm Boy Claude Code Tool (Claudia's CLAUDE.md router architecture), HubSpot (`contact_lead_stage_storm_boy` 10-stage pipeline), Frontier (spatial view + snapshot automation), HORIZON model
+- **Positioning:** "Fellowship Not Sales" — ~40% positive response rate vs industry 5-10%
+- **Skill:** `memory/deliverables/skills/operation-stormboy-SKILL.md` — comprehensive end-to-end process reference
+- **Note:** Stormboy spans process + tooling + field operations; not a discrete product surface
 
 ## Verterra
 - **What it is:** separate product line

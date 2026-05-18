@@ -43,4 +43,19 @@ Drive product delivery across AgriProve's surfaces — primarily Frontier (lead/
 ## Employment agreement
 
 - **Governing agreement:** Letter of Offer dated 2022-06-15 (file: `220615 CRONJE, Dylan - Letter of Offer.pdf`), signed. Cl 22.1 confirms it replaces all prior terms.
-- **Key clauses:** cl 13.1 (exclusive s
+- **Key clauses:** cl 13.1 (exclusive service), cl 19 (perpetual confidentiality), cl 20 (total IP assignment), cl 21 (3-month post-employment restraint). Full extraction: [`memory/learnings/2026-05/2026-05-11-letter-of-offer-compliance-clauses.md`](../learnings/2026-05/2026-05-11-letter-of-offer-compliance-clauses.md).
+- **Signed Code of Conduct:** HSE003 Duty of Care & Code of Conduct (Aug 2020) — contractually binding regardless of corporate retirement status.
+
+## Option holder status
+
+- **Plan:** Employee Option Plan (EOP 240701)
+- **Options:** 18 calculated, 16 accepted
+- **Exercise Price:** AUD$489.16
+- **Minimum Holding Period:** Ends 1 July 2026
+- **Provisions:** Good Leaver / Bad Leaver per EOP terms
+- **Implication:** Elevates insider information obligations beyond standard employment. See Portfolio Rule 9 and Category 14 caution breakdown.
+
+## Things Dylan does NOT want help with
+- Sycophancy / flattery / "great question" preambles
+- Surface-level briefs when depth is warranted (see `communication.md` — depth over speed)
+- Fabricated facts or false confidence — accuracy above all; flag uncertainty explicitly

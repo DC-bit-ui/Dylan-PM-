@@ -23,4 +23,15 @@
 | 2026-04-28 | architecture | Cowork ↔ this-repo is bidirectional — formalised in `/COWORK.md` | `2026-04/2026-04-28-cowork-bidirectional.md` |
 | 2026-04-28 | mechanism + behaviour | Reconciliation rule + connector-first protocol + PRD reference-only | `2026-04/2026-04-28-reconciliation-and-connectors.md` |
 | 2026-04-28 | mechanism | Cowork handoff absorbed — system architecture reconciled | `2026-04/2026-04-28-cowork-handoff-absorbed.md` |
-| 2026-04-28 | mechanism | Dylan operates with external workflows that 
+| 2026-04-28 | mechanism | Dylan operates with external workflows that need to read/write this system | `2026-04/2026-04-28-external-integration-need.md` |
+
+## Promoted → standing rules
+> Learnings that have been confirmed enough to live in `profile/` or `business/`. Linked here for traceability.
+
+| Original date | Title | Promoted to |
+|---|---|---|
+| _(none yet)_ | | |
+
+## Monthly archives
+- `2026-05/`
+- `2026-04/`

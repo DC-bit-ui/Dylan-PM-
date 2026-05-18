@@ -266,4 +266,64 @@ Full detail: [`memory/decisions/2026-04-28-multi-surface-strategy.md`](memory/de
 
 ## 16. Career signal surfacing — read carefully
 
-**Career-aggregation data lives OUTSIDE this repo.** Dylan's career portfolio (brag-doc / CV / interview-prep / comp-discussion artifact) lives in his **personal Notion workspace** (page `3288c08eb28f81378a
+**Career-aggregation data lives OUTSIDE this repo.** Dylan's career portfolio (brag-doc / CV / interview-prep / comp-discussion artifact) lives in his **personal Notion workspace** (page `3288c08eb28f81378a20f1a9913dcd27`). Because this repo's IP boundary with AgriProve is non-trivial, no career-aggregation content persists in `memory/` — even sanitised.
+
+**Operational model: single gate, then trustless automation.** The compliance assessment was **signed off on 2026-05-12**. The system is **LIVE**. Apex scheduled tasks run autonomously: daily capture (18:00 SAST) → weekly auto-promotion with 6-transform sanitiser pipeline (Friday 16:30) → weekly audit digest (Friday 16:45) → monthly meta-pass (first Monday). Dylan spot-checks the Friday audit digest and redacts post-hoc if anything slips. He is not a per-entry dependency.
+
+**Sanitiser skill:** [`memory/deliverables/career/career-sanitiser-SKILL.md`](memory/deliverables/career/career-sanitiser-SKILL.md) — 6 deterministic transforms (names→roles, numbers→ratios, identifiers→archetypes, internals→generic, company→personal, canary check). Pending promotion to `.claude/skills/career-sanitiser/SKILL.md`.
+
+**Canary list seed:** [`memory/deliverables/career/canary-list-seed.md`](memory/deliverables/career/canary-list-seed.md) — seeded from roster, products, customers, glossary. Must be pasted into personal Notion "Confidentiality Canary List" sub-page before first auto-promote run.
+
+**Standing decisions governing this system:** [`memory/decisions/2026-05-11-portfolio-rules.md`](memory/decisions/2026-05-11-portfolio-rules.md) (9 Portfolio Rules) and [`memory/decisions/2026-05-11-no-proprietary-data-in-ai-for-portfolio.md`](memory/decisions/2026-05-11-no-proprietary-data-in-ai-for-portfolio.md) (AI data rule).
+
+**In-session protocol — safe regardless of gate state:**
+
+This Claude's job is to **surface** career signal during normal work, never persist locally. When you spot a category below during any task, flag it inline with `[CAREER]`, propose the sanitised STAR shape. Apex picks it up via Granola/Outlook/Teams scanning; Dylan doesn't need to remember to capture.
+
+### What counts as career signal
+
+| Category | Examples |
+|---|---|
+| Owned decisions | Dylan drove a strategic choice; the outcome shipped |
+| Scope expansions | New surface owned, new direct report, P&L exposure, new stakeholder forum |
+| Quantified wins | Cycle-time reduction, conversion lift, cost cut, on-time launch, audit-pass rate |
+| Positive feedback | Granola transcript shows someone crediting Dylan; Outlook/Teams praise |
+| Milestones | Promotions, comp changes, anniversaries, external speaking |
+| Skill firsts | First use of a new methodology (e.g., first Shape Up cycle) |
+| Public artifacts | Blog post, podcast, talk, public release, conference appearance |
+
+### How to surface in conversation
+
+```
+[CAREER] <one-line summary>
+  Source: <Granola/Outlook/Jira/Confluence/etc.>
+  Suggested Notion section: <Raw Log / Portfolio / Skill / Public Artifact / Comp Annex>
+  Suggested STAR shape (sanitised, ratio not absolute):
+    S: <category-level situation>
+    T: <Dylan's task>
+    A: <action taken>
+    R: <quantified result>
+```
+
+**Do not** write the signal to any file in `memory/`. **Do not** auto-write to Notion from this Claude. Apex writes after the compliance gate is open; until then, your tag is a verbal nudge.
+
+### Subagent behaviour
+- `meeting-synthesizer`: when parsing Granola transcripts, append a `[CAREER]` block after decisions/actions.
+- `retrospector`: when running retros, surface `[CAREER]` signals before promoting them to ordinary learnings.
+- `pm-strategist`: when reviewing a decision Dylan drove, mention the portfolio implication.
+- All other subagents: surface opportunistically.
+
+### Confidentiality rules (apply when proposing STAR shape)
+
+Strip → keep:
+- Customer names → archetype ("tier-1 cattle station in NSW")
+- Specific revenue / ACCU / hectare absolutes → ratios, percentages, multipliers
+- Internal product code names → descriptive ("audit-batch-processing tool")
+- Named team members (mostly) → role titles ("led team of 6", "presented to CEO")
+- Unannounced roadmap / strategy → category
+- Internal conflicts / named failures → category-level learning
+- Third-party NDA-bound names → type ("federal regulator")
+
+If unsure, default to over-stripping and flag for Dylan.
+
+Full architecture and setup: [`inbox/cowork/2026-05-11-career-portfolio-setup.md`](inbox/cowork/2026-05-11-career-portfolio-setup.md). Compliance assessment: [`inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md`](inbox/cowork/2026-05-11-career-portfolio-compliance-assessment.md). Cowork policy review task: [`inbox/cowork/2026-05-11-cowork-policy-review-task.md`](inbox/cowork/2026-05-11-cowork-policy-review-task.md).
