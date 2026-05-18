@@ -37,6 +37,51 @@
     });
   }
 
+  // Open Claude Desktop with a pre-populated question via its registered
+  // claude:// URL protocol handler. Uses a hidden iframe so the main page
+  // isn't navigated away. URL form confirmed by inspecting Claude Desktop's
+  // AppX bundle (Claude_pzs8sxrjxfjjc package, registered protocol 'claude').
+  // 2026-05-18.
+  const CLAUDE_DESKTOP_URL_LIMIT = 7000;  // generous; Windows handlers vary
+  function openClaudeDesktop(prompt) {
+    const url = 'claude://cowork/new?q=' + encodeURIComponent(prompt);
+    if (url.length > CLAUDE_DESKTOP_URL_LIMIT) return { opened: false, reason: 'prompt-too-long' };
+    let frame = document.getElementById('v2-claude-launcher-frame');
+    if (!frame) {
+      frame = document.createElement('iframe');
+      frame.id = 'v2-claude-launcher-frame';
+      frame.style.display = 'none';
+      document.body.appendChild(frame);
+    }
+    frame.src = url;
+    return { opened: true, url_length: url.length };
+  }
+
+  // Toast — brief non-blocking confirmation, with a "Show prompt" affordance
+  // in case the deep link didn't fire (handler not installed, prompt blocked).
+  function showToast(msg, opts) {
+    let t = document.getElementById('v2-ask-toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'v2-ask-toast';
+      t.className = 'v2-ask-toast';
+      document.body.appendChild(t);
+    }
+    const fallbackLink = opts && opts.onFallback
+      ? ` <a href="#" class="v2-ask-toast-link" id="v2-ask-toast-fb">Show prompt</a>`
+      : '';
+    t.innerHTML = `<span>${msg}</span>${fallbackLink}`;
+    t.classList.add('show');
+    if (opts && opts.onFallback) {
+      const fb = document.getElementById('v2-ask-toast-fb');
+      if (fb) {
+        fb.addEventListener('click', e => { e.preventDefault(); opts.onFallback(); t.classList.remove('show'); });
+      }
+    }
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), opts && opts.duration ? opts.duration : 5000);
+  }
+
   function categoryById(data, id) {
     return (data.categories || []).find(c => c.id === id) || { label: id, icon: '·' };
   }
@@ -112,32 +157,54 @@
     if (m) m.classList.remove('show');
   }
 
-  async function showPromptFor(qid, qLabel) {
+  // Cache the last fetched prompt so the fallback "Show prompt" link can
+  // open the modal without re-fetching.
+  let _lastPrompt = null;
+
+  async function fetchPrompt(qid) {
+    const r = await fetch('/api/ask/prompt/' + encodeURIComponent(qid));
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }
+
+  function showModalWithPrompt(data) {
     ensurePromptModal();
-    const sub = document.getElementById('v2-ask-prompt-sub');
-    const body = document.getElementById('v2-ask-prompt-body');
-    const msg = document.getElementById('v2-ask-prompt-msg');
-    sub.textContent = qLabel + ' · fetching prompt…';
-    body.value = '';
-    msg.textContent = '';
+    document.getElementById('v2-ask-prompt-sub').textContent =
+      data.label + ' · sources: ' + (data.brain_sources || []).length;
+    document.getElementById('v2-ask-prompt-body').value = data.prompt;
+    document.getElementById('v2-ask-prompt-msg').textContent = '✓ on your clipboard';
+    document.getElementById('v2-ask-prompt-msg').style.color = '#3a6b3a';
     document.getElementById('v2-ask-prompt-modal').classList.add('show');
+  }
+
+  // Primary action: click question → deep-link Claude Desktop → done.
+  // Clipboard copy happens silently as backup. Toast confirms; "Show prompt"
+  // link in the toast opens the full modal if the deep link didn't fire.
+  async function launchPromptFor(qid, qLabel) {
+    let data;
     try {
-      const r = await fetch('/api/ask/prompt/' + encodeURIComponent(qid));
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      const data = await r.json();
-      sub.textContent = qLabel + ' · sources: ' + (data.brain_sources || []).length;
-      body.value = data.prompt;
-      try {
-        await copyToClipboard(data.prompt);
-        msg.textContent = '✓ on your clipboard';
-        msg.style.color = '#3a6b3a';
-      } catch (_) {
-        msg.textContent = 'Clipboard blocked — select all + copy manually';
-        msg.style.color = '#a64545';
-      }
+      data = await fetchPrompt(qid);
     } catch (e) {
-      sub.textContent = 'Failed: ' + e.message;
-      msg.textContent = '';
+      showToast(`Couldn't load prompt: ${escapeHtml(e.message)}`, { duration: 6000 });
+      return;
+    }
+    _lastPrompt = data;
+    // Silent clipboard copy as a backup path
+    copyToClipboard(data.prompt).catch(() => {});
+    // Fire the deep link
+    const launch = openClaudeDesktop(data.prompt);
+    if (launch.opened) {
+      showToast(
+        `Opening Claude Desktop with: <strong>${escapeHtml(qLabel)}</strong>`,
+        { duration: 6000, onFallback: () => showModalWithPrompt(data) }
+      );
+    } else {
+      // URL too long — fall through to modal with clipboard
+      showModalWithPrompt(data);
+      showToast(
+        `Prompt too long for direct launch — opened the preview, also on your clipboard`,
+        { duration: 6000 }
+      );
     }
   }
 
@@ -147,10 +214,11 @@
         <div class="v2-ask-launcher-head">
           <h2>Ask the team brain</h2>
           <p class="v2-ask-launcher-sub">
-            Pick a question. We'll copy a ready-to-paste prompt to your clipboard —
-            paste it into your Claude Code Desktop and Claude reads the sourced
-            files from your synced bus. Multi-turn happens in your own session.
-            Uses your Claude subscription, no API cost.
+            Pick a question — your Claude Desktop opens with the question
+            pre-filled and pointed at the relevant bus files. Multi-turn
+            happens in your own Claude session. Uses your subscription, no
+            API cost. <em>First click prompts Windows to confirm opening
+            Claude Desktop; tick "Always allow" so future clicks are silent.</em>
           </p>
         </div>
         <div id="v2-ask-launcher-list"><div class="v2-empty">Loading…</div></div>
@@ -177,7 +245,7 @@
         if (!btn) return;
         const qid = btn.dataset.qid;
         const label = btn.querySelector('.v2-ask-q-label').textContent;
-        showPromptFor(qid, label);
+        launchPromptFor(qid, label);
       });
     } catch (e) {
       document.getElementById('v2-ask-launcher-list').innerHTML =

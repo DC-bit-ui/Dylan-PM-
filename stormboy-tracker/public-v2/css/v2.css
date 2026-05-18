@@ -3155,6 +3155,33 @@ body {
 .v2-ask-prompt-btn:hover { background: #fbfaf3; border-color: #b6b09a; }
 .v2-ask-prompt-msg { font-size: 11px; color: #3a6b3a; flex: 1; }
 
+.v2-ask-toast {
+  position: fixed;
+  bottom: 70px;
+  right: 18px;
+  z-index: 9400;
+  background: #2a4a25;
+  color: #fff;
+  font-size: 12px;
+  padding: 10px 16px;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.15s, transform 0.15s;
+  pointer-events: none;
+  max-width: 420px;
+}
+.v2-ask-toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.v2-ask-toast strong { color: #fff; }
+.v2-ask-toast-link {
+  margin-left: 10px;
+  color: #d3e8c9;
+  text-decoration: underline;
+  font-size: 11px;
+}
+.v2-ask-toast-link:hover { color: #fff; }
+
 /* ============================================================
    FEEDBACK — floating button, modal form, inline target banner
    ============================================================ */
