@@ -342,7 +342,7 @@ async function run({ force = false } = {}) {
       estimated_project_ha: p.estimated_project_ha ? parseFloat(p.estimated_project_ha) : null,
       hubspot_url: `https://app.hubspot.com/contacts/24224559/record/0-3/${deal.id}`,
       analysis,
-      from_cache: usedCache,
+      from_cache: cacheValid,
     });
   }
 
