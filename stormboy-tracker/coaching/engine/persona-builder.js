@@ -28,7 +28,14 @@
 
 const fs = require('fs');
 const path = require('path');
-const { callJson } = require('./anthropic');
+const { create: createBundle, readResult: readBundleResult } = require('./intelligence-bundles');
+
+// Migrated from direct Anthropic API to bundle-based subscription compute
+// per Cadel directive 2026-05-18. Persona synthesis (the expensive call —
+// 4000-8000 token outputs per rep) now writes a bundle to the shared bus.
+// First refresh queues; subsequent refresh upgrades to the completed result
+// and regenerates the profile.md. The previous profile is preserved while
+// the bundle is in flight (no half-written profiles, no broken UIs).
 
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 const COACHING_ROOT = path.join(__dirname, '..');
@@ -647,26 +654,25 @@ function compressCorpusInPlace(corpus, maxChars) {
   return { passes: pass, final_chars: totalChars(), body_cap: bodyCap, per_parent_cap: perParent };
 }
 
-async function synthesize(corpus, supplements = []) {
+// Bundle-based synthesis. Returns one of:
+//   - the parsed analysis object (when a previously-queued bundle has completed)
+//   - { _pending: true, bundle_id, queued_at } when a bundle is in flight
+//     (this run won't write a profile; the next refresh will)
+async function synthesize(corpus, supplements = [], slug) {
   // First format to measure size, then compress if needed and re-format
   let corpusText = formatCorpusForLLM(corpus, supplements);
   if (corpusText.length > SYNTHESIS_MAX_CHARS) {
     const orig = corpusText.length;
     const stats = compressCorpusInPlace(corpus, SYNTHESIS_MAX_CHARS);
     corpusText = formatCorpusForLLM(corpus, supplements);
-    // Hard-truncate safety net: if structured compression bottomed out above
-    // the target (8 passes maxed without hitting it), slice the formatted
-    // text. Preserves the most engaged threads since they're emitted first.
     if (corpusText.length > SYNTHESIS_MAX_CHARS) {
-      corpusText = corpusText.slice(0, SYNTHESIS_MAX_CHARS) + '\n\n[corpus truncated to fit rate-limit window]';
+      corpusText = corpusText.slice(0, SYNTHESIS_MAX_CHARS) + '\n\n[corpus truncated to fit synthesis window]';
     }
     console.log(`[persona-builder] corpus compressed: ${orig} → ${corpusText.length} chars (${stats.passes} passes, body_cap=${stats.body_cap}, per_parent=${stats.per_parent_cap})`);
   }
-  console.log(`[persona-builder] synthesising — corpus is ${corpusText.length} chars (~${Math.round(corpusText.length/4)} tokens), ${supplements.length} supplements folded in`);
+  console.log(`[persona-builder] preparing synthesis bundle — corpus is ${corpusText.length} chars (~${Math.round(corpusText.length/4)} tokens), ${supplements.length} supplements folded in`);
 
-  // Role-aware framing: if the registry marks this persona as NOT a sales rep
-  // (e.g. ops, leadership), prepend a clarifying note so the synthesis doesn't
-  // produce a sales playbook from operations work.
+  // Role-aware framing
   const isSalesRep = corpus.subject.is_sales_rep !== false;
   const role = corpus.subject.role || (isSalesRep ? 'Sales rep' : 'Non-sales role');
   const roleNote = isSalesRep ? '' : `\n\nIMPORTANT CONTEXT: This subject is NOT a sales rep. Their role is "${role}". Their HubSpot footprint reflects oversight, escalation, coordination, or partner work — not direct outbound prospecting. Frame the output as a leadership/operations profile, not a sales playbook. The "headline_read" should describe how they operate within their actual role, not how they sell.`;
@@ -675,43 +681,53 @@ async function synthesize(corpus, supplements = []) {
     .replace('{NAME}', corpus.subject.name + ' (' + role + ')')
     .replace('{CORPUS}', corpusText) + roleNote;
 
-  // Retry-once on JSON malformation — Haiku 4.5 produces malformed JSON ~30%
-  // of the time on the nested schema. Second attempt with a stricter system
-  // nudge resolves most of those.
-  const STRICT_RETRY_SYSTEM = SYNTHESIS_SYSTEM + `\n\nCRITICAL: Your previous attempt produced malformed JSON. This time:\n- Output ONLY a single JSON object, no prose before or after.\n- Every string MUST escape internal double-quotes as \\\".\n- Every array MUST have commas between elements and a closing ].\n- Every object MUST have a closing }.\n- Validate brace/bracket balance before emitting.`;
+  // Pending-bundle handling: one in-flight bundle per persona at a time.
+  const slugKey = slug || corpus.subject.slug || (corpus.subject.email || 'unknown').replace(/[^a-z0-9]/gi, '-');
+  const pendingPath = path.join(CACHE_DIR, `persona-pending-${slugKey}.json`);
 
-  // Three retryable error classes:
-  //  - JSON malformation (Haiku produces bad JSON ~30% on this schema)
-  //  - Network errors (fetch failed, connection drops)
-  //  - Anthropic 529 overloaded / 503 (transient service load)
-  // Up to 3 attempts total, exponential backoff for service-load errors,
-  // strict-output system prompt after a JSON malformation.
-  let result;
-  let lastErrorKind = null;
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    try {
-      if (attempt > 1) console.log(`[persona-builder] synth attempt ${attempt}/3 (prev: ${lastErrorKind})`);
-      result = await callJson({
-        model: SYNTHESIS_MODEL,
-        system: lastErrorKind === 'json' ? STRICT_RETRY_SYSTEM : SYNTHESIS_SYSTEM,
-        user: userPrompt,
-        maxTokens: 8000,
-      });
-      break;
-    } catch (e) {
-      const msg = String(e.message);
-      const isJsonErr = msg.match(/parse JSON|unbalanced|Expected|Failed to parse/i);
-      const isNetErr = msg.match(/fetch failed|ECONNRESET|ETIMEDOUT|EAI_AGAIN|socket hang up|network/i);
-      const isOverloaded = msg.match(/529|overloaded|Overloaded|503|service unavailable/i);
-      const retryable = isJsonErr || isNetErr || isOverloaded;
-      if (!retryable || attempt === 3) throw e;
-      lastErrorKind = isJsonErr ? 'json' : isNetErr ? 'network' : 'overloaded';
-      const backoffMs = isOverloaded ? 30_000 * attempt : 4_000;
-      console.log(`[persona-builder] attempt ${attempt} failed (${lastErrorKind}); waiting ${Math.round(backoffMs/1000)}s before retry`);
-      await new Promise(r => setTimeout(r, backoffMs));
+  // (a) If there's already a pending bundle for this persona, check its result.
+  if (fs.existsSync(pendingPath)) {
+    let pending = null;
+    try { pending = JSON.parse(fs.readFileSync(pendingPath, 'utf8')); } catch (_) {}
+    if (pending && pending.bundle_id) {
+      const result = readBundleResult(pending.bundle_id);
+      if (result && result.result != null) {
+        const parsed = typeof result.result === 'string' ? safeParseJson(result.result) : result.result;
+        if (parsed) {
+          console.log(`[persona-builder] bundle ${pending.bundle_id} complete — using result`);
+          try { fs.unlinkSync(pendingPath); } catch (_) {}
+          return parsed;
+        }
+        console.error(`[persona-builder] bundle ${pending.bundle_id} result unparseable; clearing pending and re-queueing`);
+        try { fs.unlinkSync(pendingPath); } catch (_) {}
+        // fall through to (b) and queue a new bundle
+      } else {
+        // Still queued — return pending sentinel, don't re-queue
+        return { _pending: true, bundle_id: pending.bundle_id, queued_at: pending.queued_at };
+      }
     }
   }
-  return result;
+
+  // (b) Queue a new bundle
+  const meta = createBundle({
+    purpose: 'persona-refresh',
+    system_prompt: SYNTHESIS_SYSTEM,
+    input_data: userPrompt,
+    output_spec: 'Strict JSON object matching the schema in the user prompt. No preamble, no markdown fence. The persona analysis fields: headline_read, openers, discovery_questions, transitions, friction_patterns, replicable_plays, voice_signature, confidence_markers — match whatever the prompt requires.',
+    output_schema: 'json',
+    model_hint: SYNTHESIS_MODEL,
+    target_kind: 'profile',
+    target_file: `team-brain/profiles/${slugKey}.md`,
+    input_summary: `Persona synthesis · ${corpus.subject.name} (${role})`,
+    created_by: 'persona-builder.js',
+  });
+  fs.writeFileSync(pendingPath, JSON.stringify({
+    bundle_id: meta.id,
+    slug: slugKey,
+    queued_at: new Date().toISOString(),
+  }, null, 2));
+  console.log(`[persona-builder] queued bundle ${meta.id} for ${slugKey} — profile will regenerate on next refresh once processed`);
+  return { _pending: true, bundle_id: meta.id, queued_at: new Date().toISOString() };
 }
 
 // ---- Stage 6: write profile markdown -------------------------------------
@@ -922,8 +938,25 @@ async function buildPersona({ slug, name, email, seed, useCachedCorpus = false }
     console.log(`[persona-builder] loaded ${supplements.length} supplemental items from bus`);
   }
 
-  console.log(`[persona-builder] synthesising via Claude Sonnet`);
-  const analysis = await synthesize(corpus, supplements);
+  console.log(`[persona-builder] synthesising via bundle queue (subscription compute)`);
+  const analysis = await synthesize(corpus, supplements, slug);
+
+  // Bundle still in flight — leave the previous profile.md as-is and return.
+  // Next refresh of this slug will pick up the completed bundle result.
+  if (analysis && analysis._pending) {
+    console.log(`[persona-builder] ${slug}: bundle ${analysis.bundle_id} queued; previous profile preserved`);
+    return {
+      ok: false,
+      pending: true,
+      slug,
+      name,
+      bundle_id: analysis.bundle_id,
+      queued_at: analysis.queued_at,
+      corpus_path: corpusPath,
+      discovery: corpus.discovery,
+      message: 'Persona synthesis queued. Profile will regenerate on next refresh after Cowork or Claude Code processes the bundle.',
+    };
+  }
 
   // Capture supplement counts in the corpus before rendering for the source list
   corpus.supplements_used = supplements.map(s => ({ file: s.file, source_type: s.source_type }));
