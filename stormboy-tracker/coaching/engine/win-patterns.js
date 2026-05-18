@@ -19,8 +19,14 @@
 
 const fs = require('fs');
 const path = require('path');
-const { callJson } = require('./anthropic');
+const { create: createBundle, readResult: readBundleResult, readMeta: readBundleMeta } = require('./intelligence-bundles');
 const engagementTimeline = require('./engagement-timeline');
+
+// Migrated from direct Anthropic API to bundle-based subscription compute
+// per Cadel directive 2026-05-18. First run for each deal writes a bundle
+// to <bus>/intelligence-bundles/ and caches a "pending" stub; subsequent
+// runs check the bundle's result file and replace pending entries with
+// the completed analysis when ready.
 
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 const CACHE_PATH = path.join(__dirname, '..', 'cache', 'win-patterns.json');
@@ -145,11 +151,11 @@ function formatTimelineForPrompt(timeline) {
   }).join('\n\n');
 }
 
-async function analyzeWin(deal) {
+// Build the LLM prompt for one win. Used by queueWin() to create a bundle.
+async function buildWinPrompt(deal) {
   const dealId = deal.id;
   const p = deal.properties || {};
 
-  // Pull the engagement timeline (reuses the same backend as the WORK card)
   let timeline = { engagements: [], last_contact_date: null, engagements_returned: 0 };
   try {
     timeline = await engagementTimeline.run('deal', dealId);
@@ -182,21 +188,79 @@ Return strict JSON only, no preamble:
   "confidence": "high | moderate | low — based on how much signal the timeline gave you"
 }`;
 
-  const json = await callJson({
-    model: 'haiku',
-    system,
-    user: userPrompt,
-    maxTokens: 800,
-  });
+  return { system, userPrompt, timelineLen: (timeline.engagements || []).length, dealCtx };
+}
 
+// Create a bundle for this win, return the pending stub. Cowork (or interactive
+// Claude Code) processes the bundle later and writes the result file. Subsequent
+// runs of win-patterns pick up the completed result via refreshPendingResults.
+async function queueWin(deal) {
+  const { system, userPrompt, timelineLen } = await buildWinPrompt(deal);
+  const p = deal.properties || {};
+  const meta = createBundle({
+    purpose: 'win-pattern-extraction',
+    system_prompt: system,
+    input_data: userPrompt,
+    output_spec: 'Strict JSON matching: { "one_line_why": "...", "replicable_pattern": [...up to 5...], "key_moment": "...", "confidence": "high|moderate|low" }',
+    output_schema: 'json',
+    model_hint: 'haiku',
+    target_kind: 'win-pattern',
+    target_file: `coaching/cache/win-patterns.json#${deal.id}`,
+    input_summary: `Win analysis · deal ${deal.id} · ${(p.dealname || '').slice(0, 60)}`,
+    created_by: 'win-patterns.js',
+  });
   return {
-    one_line_why: json.one_line_why || '(no analysis)',
-    replicable_pattern: Array.isArray(json.replicable_pattern) ? json.replicable_pattern.slice(0, 5) : [],
-    key_moment: json.key_moment || null,
-    confidence: json.confidence || 'moderate',
+    one_line_why: '(pending — Cowork or Claude Code will process this bundle)',
+    replicable_pattern: [],
+    key_moment: null,
+    confidence: 'pending',
     generated_at: new Date().toISOString(),
-    n_engagements_used: (timeline.engagements || []).length,
+    n_engagements_used: timelineLen,
+    bundle_id: meta.id,
+    bundle_status: 'queued',
   };
+}
+
+function safeParseJson(s) {
+  if (typeof s !== 'string') return s;
+  try { return JSON.parse(s); }
+  catch (_) {
+    // Try to extract JSON from text — bundles may return Claude's response
+    // wrapped with preamble/postamble.
+    const m = s.match(/\{[\s\S]*\}/);
+    if (m) { try { return JSON.parse(m[0]); } catch (_) {} }
+    return null;
+  }
+}
+
+// Walk the cache; for any entry whose analysis is `pending` with a bundle_id,
+// check if the result file exists. If yes, replace the pending stub with the
+// completed analysis. Returns the number of entries upgraded.
+function refreshPendingResults(cache) {
+  let upgraded = 0;
+  for (const dealId of Object.keys(cache)) {
+    const entry = cache[dealId];
+    const a = entry && entry.analysis;
+    if (!a || a.confidence !== 'pending' || !a.bundle_id) continue;
+    const result = readBundleResult(a.bundle_id);
+    if (!result || result.result == null) continue;
+    const parsed = safeParseJson(result.result);
+    if (!parsed) {
+      console.error('win-patterns: bundle', a.bundle_id, 'completed but result unparseable');
+      continue;
+    }
+    entry.analysis = {
+      one_line_why: parsed.one_line_why || '(no analysis)',
+      replicable_pattern: Array.isArray(parsed.replicable_pattern) ? parsed.replicable_pattern.slice(0, 5) : [],
+      key_moment: parsed.key_moment || null,
+      confidence: parsed.confidence || 'moderate',
+      generated_at: result.completed_at,
+      n_engagements_used: a.n_engagements_used || 0,
+      from_bundle: a.bundle_id,
+    };
+    upgraded++;
+  }
+  return upgraded;
 }
 
 async function run({ force = false } = {}) {
@@ -225,32 +289,38 @@ async function run({ force = false } = {}) {
   });
   const top = indexed.slice(0, DISPLAY_N);
 
-  // 4) LLM analysis (cached per deal_id) on the displayed subset only
+  // 4) Bundle-based analysis (cached per deal_id) on the displayed subset only.
+  //    Step (i): pull cache and try to upgrade any pending bundles whose
+  //              results have landed since last run.
+  //    Step (ii): for each displayed win, either use the cached analysis
+  //              (completed) or queue a new bundle (pending stub).
   const cache = readCache();
+  const upgraded = refreshPendingResults(cache);
+  let dirty = upgraded > 0;
   const out = [];
-  let dirty = false;
 
   for (const { deal, channel } of top) {
     const p = deal.properties || {};
     const cached = cache[deal.id];
-    const usedCache = !force && cached
+    const cacheValid = !force && cached
       && cached.cached_for_closedate === p.closedate
-      && cached.analysis;
+      && cached.analysis
+      && cached.analysis.confidence !== 'pending';   // pending = still queued
     let analysis;
-    if (usedCache) {
+    if (cacheValid) {
+      analysis = cached.analysis;
+    } else if (!force && cached && cached.analysis && cached.analysis.confidence === 'pending') {
+      // Bundle is in flight — don't re-queue, just return the pending stub.
       analysis = cached.analysis;
     } else {
       try {
-        analysis = await analyzeWin(deal);
-        cache[deal.id] = {
-          cached_for_closedate: p.closedate,
-          analysis,
-        };
+        analysis = await queueWin(deal);
+        cache[deal.id] = { cached_for_closedate: p.closedate, analysis };
         dirty = true;
       } catch (e) {
-        console.error('win-patterns analyze failed for', deal.id, e.message);
+        console.error('win-patterns queue failed for', deal.id, e.message);
         analysis = {
-          one_line_why: '(analysis failed: ' + e.message.slice(0, 100) + ')',
+          one_line_why: '(queueing failed: ' + e.message.slice(0, 100) + ')',
           replicable_pattern: [],
           key_moment: null,
           confidence: 'low',
