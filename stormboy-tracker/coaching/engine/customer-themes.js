@@ -24,7 +24,13 @@
 
 const fs = require('fs');
 const path = require('path');
-const { callJson } = require('./anthropic');
+const { create: createBundle, readResult: readBundleResult } = require('./intelligence-bundles');
+
+// Migrated from direct Anthropic API to bundle-based subscription compute
+// per Cadel directive 2026-05-18. The clustering call (~once per refresh)
+// now writes a bundle to <bus>/intelligence-bundles/ and caches a pending
+// stub. Subsequent runs check for the result and upgrade cache when ready.
+// While pending, the engine returns ungrouped themes so the UI keeps working.
 
 const CACHE_DIR = path.join(__dirname, '..', 'cache');
 const CLUSTERS_CACHE_PATH = path.join(CACHE_DIR, 'customer-themes-clusters.json');
@@ -173,8 +179,27 @@ Rules:
 - Order clusters by likely marketing utility (start with what's landing most widely).
 - Do not omit any label — every label must appear in exactly one cluster.`;
 
-async function clusterTopicLabels(labels) {
-  if (labels.length === 0) return { clusters: [] };
+// Queue (or check) clustering as an intelligence bundle.
+// Returns one of:
+//   { status: 'completed', clusters: [...] } — bundle result available
+//   { status: 'queued',    bundle_id: 'xyz' } — bundle waiting; no clusters yet
+function queueOrFetchClusters(labels, labelKey, cache) {
+  if (labels.length === 0) return { status: 'completed', clusters: [] };
+
+  // If cache has a pending bundle for this labelKey, check the result
+  if (cache && cache.label_key === labelKey && cache.bundle_id && cache.status === 'queued') {
+    const result = readBundleResult(cache.bundle_id);
+    if (result && result.result != null) {
+      const parsed = safeParseJson(result.result);
+      if (parsed && Array.isArray(parsed.clusters)) {
+        return { status: 'completed', clusters: parsed.clusters, bundle_id: cache.bundle_id };
+      }
+    }
+    // Still pending — keep returning queued
+    return { status: 'queued', bundle_id: cache.bundle_id };
+  }
+
+  // No matching cache; create a new bundle
   const numbered = labels.map((l, i) => `${i}. ${l}`).join('\n');
   const user = `Cluster these ${labels.length} topic labels into 12-22 broader marketing themes. Return strict JSON only:
 {
@@ -190,13 +215,29 @@ async function clusterTopicLabels(labels) {
 LABELS:
 ${numbered}`;
 
-  const result = await callJson({
-    model: 'haiku',
-    system: CLUSTER_SYSTEM,
-    user,
-    maxTokens: 4000,
+  const meta = createBundle({
+    purpose: 'customer-themes-cluster',
+    system_prompt: CLUSTER_SYSTEM,
+    input_data: user,
+    output_spec: 'Strict JSON: { "clusters": [ { "theme": "...", "member_indices": [...] }, ... ] }',
+    output_schema: 'json',
+    model_hint: 'haiku',
+    target_kind: 'cluster',
+    target_file: 'coaching/cache/customer-themes-clusters.json',
+    input_summary: `Customer themes clustering · ${labels.length} labels`,
+    created_by: 'customer-themes.js',
   });
-  return result;
+  return { status: 'queued', bundle_id: meta.id };
+}
+
+function safeParseJson(s) {
+  if (typeof s !== 'string') return s;
+  try { return JSON.parse(s); }
+  catch (_) {
+    const m = s.match(/\{[\s\S]*\}/);
+    if (m) { try { return JSON.parse(m[0]); } catch (_) {} }
+    return null;
+  }
 }
 
 function loadClusterCache() {
@@ -215,28 +256,45 @@ async function clusterThemes(themes, force = false) {
   const labels = themes.map(t => t.theme);
   const labelKey = labels.length + ':' + labels.slice(0, 5).join('|').slice(0, 80);
   let cache = loadClusterCache();
-  if (!force && cache && cache.label_key === labelKey && cache.labels.length === labels.length) {
+
+  // Cache hit (completed) — use it
+  if (!force && cache && cache.label_key === labelKey
+      && cache.labels && cache.labels.length === labels.length
+      && Array.isArray(cache.clusters) && cache.status !== 'queued') {
     return applyClusters(themes, cache.clusters);
   }
-  // Re-cluster
-  console.log(`[customer-themes] clustering ${labels.length} topic labels via Haiku`);
-  let result;
-  try {
-    result = await clusterTopicLabels(labels);
-  } catch (e) {
-    console.error('[customer-themes] clustering failed:', e.message);
-    return themes; // fall back to ungrouped
+
+  // Bundle path: queue or check
+  console.log(`[customer-themes] clustering ${labels.length} labels via bundle queue`);
+  const r = queueOrFetchClusters(labels, labelKey, cache);
+
+  if (r.status === 'completed' && Array.isArray(r.clusters)) {
+    cache = {
+      generated_at: new Date().toISOString(),
+      label_count: labels.length,
+      label_key: labelKey,
+      labels,
+      clusters: r.clusters,
+      bundle_id: r.bundle_id || null,
+      status: 'completed',
+    };
+    saveClusterCache(cache);
+    return applyClusters(themes, r.clusters);
   }
-  if (!result || !Array.isArray(result.clusters)) return themes;
+
+  // status === 'queued' — bundle in flight, return ungrouped for now.
+  // Save the pending cache entry so next run can pick up the completed result.
   cache = {
     generated_at: new Date().toISOString(),
     label_count: labels.length,
     label_key: labelKey,
     labels,
-    clusters: result.clusters,
+    clusters: null,
+    bundle_id: r.bundle_id,
+    status: 'queued',
   };
   saveClusterCache(cache);
-  return applyClusters(themes, result.clusters);
+  return themes;  // ungrouped fallback while bundle processes
 }
 
 function applyClusters(themes, clusters) {
