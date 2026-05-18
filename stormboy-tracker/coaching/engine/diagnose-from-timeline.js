@@ -16,8 +16,37 @@
  *   // result.next_step_short / .next_step_qualifier (rewritten by LLM if needed)
  */
 
-const anthropic = require('./anthropic');
+const fs = require('fs');
+const path = require('path');
+const { create: createBundle, readResult: readBundleResult } = require('./intelligence-bundles');
 const timeline = require('./engagement-timeline');
+
+// Migrated from direct Anthropic API to bundle-based subscription compute
+// per Cadel directive 2026-05-18. One bundle per (lookup_type, lookup_id);
+// pending state tracked in coaching/cache/diagnose-pending.json so the
+// batch orchestrator can detect completions on subsequent runs.
+
+const PENDING_PATH = path.join(__dirname, '..', 'cache', 'diagnose-pending.json');
+
+function loadPending() {
+  try {
+    if (!fs.existsSync(PENDING_PATH)) return {};
+    return JSON.parse(fs.readFileSync(PENDING_PATH, 'utf8')) || {};
+  } catch (_) { return {}; }
+}
+function savePending(obj) {
+  const tmp = PENDING_PATH + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(obj, null, 2));
+  fs.renameSync(tmp, PENDING_PATH);
+}
+function pendingKey(type, id) { return `${type}-${id}`; }
+function safeParseJson(s) {
+  if (typeof s !== 'string') return s;
+  try { return JSON.parse(s); } catch (_) {}
+  const m = s.match(/\{[\s\S]*\}/);
+  if (m) { try { return JSON.parse(m[0]); } catch (_) {} }
+  return null;
+}
 
 const SYSTEM_PROMPT = `You are a sales coach for AgriProve, a soil-carbon project company. Your job is to write a 3-step diagnosis of a sales situation (stuck deal, completed farm visit, or stalled call) that helps a rep decide WHAT to do next.
 
@@ -98,26 +127,65 @@ ${evText}
 Write the 3-step diagnosis. Quote specific dates and verbatim. If the artifact reveals the planned next_step is wrong, revise it and set diagnosis_assessment to "heuristic_was_wrong" or "next_step_revised".`;
 }
 
+// Bundle-based diagnose. Returns one of:
+//   - The parsed result (with generated_at + timeline_used) when a previously
+//     queued bundle has completed.
+//   - { _pending: true, bundle_id, queued_at } when a bundle is in flight.
+// One bundle in flight per (lookup_type, lookup_id) at a time.
 async function diagnose(input) {
-  // Fetch timeline if not provided
+  const type = input.lookup_type, id = input.lookup_id;
+  const key = (type && id) ? pendingKey(type, id) : null;
+
+  // Fetch timeline once (needed either for the bundle prompt OR to populate
+  // timeline_used on a completed result).
   let tl = input.timeline;
-  if (!tl && input.lookup_type && input.lookup_id) {
-    tl = await timeline.run(input.lookup_type, input.lookup_id);
+  if (!tl && type && id) {
+    try { tl = await timeline.run(type, id); }
+    catch (e) { console.error('[diagnose] timeline fetch failed:', e.message); }
   }
+  const timelineUsed = tl ? { days_since_last_contact: tl.days_since_last_contact, engagement_count: tl.engagements_returned } : null;
+
+  // (a) Check existing pending bundle for this key
+  const pendingMap = loadPending();
+  const pending = key ? pendingMap[key] : null;
+  if (pending && pending.bundle_id) {
+    const result = readBundleResult(pending.bundle_id);
+    if (result && result.result != null) {
+      const parsed = safeParseJson(result.result);
+      if (parsed) {
+        delete pendingMap[key];
+        savePending(pendingMap);
+        return { ...parsed, generated_at: result.completed_at, timeline_used: timelineUsed, from_bundle: pending.bundle_id };
+      }
+      console.error(`[diagnose] bundle ${pending.bundle_id} unparseable for ${key}; clearing and re-queueing`);
+      delete pendingMap[key];
+      savePending(pendingMap);
+      // fall through to (b)
+    } else {
+      // Still queued
+      return { _pending: true, bundle_id: pending.bundle_id, queued_at: pending.queued_at, timeline_used: timelineUsed };
+    }
+  }
+
+  // (b) Create a new bundle
   const enrichedInput = { ...input, timeline: tl };
-
-  const result = await anthropic.callJson({
-    model: 'haiku',
-    system: SYSTEM_PROMPT,
-    user: buildUserPrompt(enrichedInput),
-    maxTokens: 2000,
+  const meta = createBundle({
+    purpose: 'deal-diagnosis',
+    system_prompt: SYSTEM_PROMPT,
+    input_data: buildUserPrompt(enrichedInput),
+    output_spec: 'Strict JSON: { "diagnosis": [{step,header,body}*3], "next_step_short": "...", "next_step_qualifier": "...", "diagnosis_assessment": "ok|next_step_revised|heuristic_was_wrong" }',
+    output_schema: 'json',
+    model_hint: 'haiku',
+    target_kind: 'diagnosis',
+    target_file: `coaching/cache/deal-diagnoses.json#${id}`,
+    input_summary: `Diagnose ${input.kind || type || 'item'}: ${(input.title || id || '').slice(0, 80)}`,
+    created_by: 'diagnose-from-timeline.js',
   });
-
-  return {
-    ...result,
-    generated_at: new Date().toISOString(),
-    timeline_used: tl ? { days_since_last_contact: tl.days_since_last_contact, engagement_count: tl.engagements_returned } : null,
-  };
+  if (key) {
+    pendingMap[key] = { bundle_id: meta.id, queued_at: new Date().toISOString() };
+    savePending(pendingMap);
+  }
+  return { _pending: true, bundle_id: meta.id, queued_at: pendingMap[key] ? pendingMap[key].queued_at : new Date().toISOString(), timeline_used: timelineUsed };
 }
 
 module.exports = { diagnose };

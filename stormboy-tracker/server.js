@@ -686,7 +686,20 @@ app.post('/api/work/regenerate-exemplar', async (req, res) => {
       other_evidence: ex.evidence || [],
     });
 
-    // Apply the LLM result back into the JSON
+    // Bundle path — diagnose may return _pending. In that case the exemplar's
+    // existing diagnosis stays untouched; UI tells the user to wait.
+    if (result && result._pending) {
+      return res.json({
+        ok: true,
+        pending: true,
+        exemplar_id: exemplarId,
+        bundle_id: result.bundle_id,
+        queued_at: result.queued_at,
+        message: 'Diagnosis bundle queued. Result will appear on the next batch run (or run "process the next intelligence bundle" in Claude Code).',
+      });
+    }
+
+    // Apply the result back into the JSON
     ex.diagnosis = result.diagnosis || ex.diagnosis;
     if (result.next_step_short) ex.next_step_short = result.next_step_short;
     if (result.next_step_qualifier) ex.next_step_qualifier = result.next_step_qualifier;
@@ -694,6 +707,7 @@ app.post('/api/work/regenerate-exemplar', async (req, res) => {
       regenerated_at: result.generated_at,
       assessment: result.diagnosis_assessment,
       timeline_used: result.timeline_used,
+      from_bundle: result.from_bundle,
     };
 
     const tmp = filePath + '.tmp';

@@ -15,7 +15,8 @@ const { diagnose } = require('./diagnose-from-timeline');
 
 const ACTIVE_CACHE  = path.join(__dirname, '..', 'cache', 'active.json');
 const DIAGNOSES_CACHE = path.join(__dirname, '..', 'cache', 'deal-diagnoses.json');
-const THROTTLE_MS = 35000;
+// Bundle path is filesystem-only — no rate limit. Old 35s throttle dropped.
+const THROTTLE_MS = 0;
 
 let _jobState = {
   running: false,
@@ -72,6 +73,28 @@ function dealToDiagnoseInput(d) {
 async function diagnoseDeal(d) {
   const input = dealToDiagnoseInput(d);
   const result = await diagnose(input);
+  // Bundle path may return a pending sentinel — store that state in the cache
+  // so we know not to re-queue on the next batch pass, and so the UI can
+  // surface "queued for analysis" instead of stale heuristics.
+  if (result && result._pending) {
+    return {
+      deal_id: d.deal_id,
+      deal_name: d.deal_name,
+      risk_class: d.risk_class,
+      risk_score: d.risk_score,
+      current_stage: d.current_stage,
+      days_in_current_stage: d.days_in_current_stage,
+      attribution: d.attribution,
+      diagnosis: [],
+      next_step_short: '(pending — bundle queued)',
+      next_step_qualifier: 'Cowork or Claude Code will process this bundle and the diagnosis will appear on the next batch run.',
+      diagnosis_assessment: 'pending',
+      bundle_id: result.bundle_id,
+      queued_at: result.queued_at,
+      timeline_used: result.timeline_used,
+      regenerated_at: new Date().toISOString(),
+    };
+  }
   return {
     deal_id: d.deal_id,
     deal_name: d.deal_name,
@@ -86,6 +109,7 @@ async function diagnoseDeal(d) {
     diagnosis_assessment: result.diagnosis_assessment,
     timeline_used: result.timeline_used,
     regenerated_at: result.generated_at,
+    from_bundle: result.from_bundle,
   };
 }
 

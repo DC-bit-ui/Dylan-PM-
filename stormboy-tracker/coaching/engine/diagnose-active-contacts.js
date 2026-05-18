@@ -87,6 +87,23 @@ function contactToInput(c) {
 async function diagnoseContact(c) {
   const input = contactToInput(c);
   const result = await diagnose(input);
+  if (result && result._pending) {
+    return {
+      contact_id: c.id,
+      name: c.name,
+      stage: c.stage,
+      heat: c.heat,
+      owner_id: c.owner_id,
+      diagnosis: [],
+      next_step_short: '(pending — bundle queued)',
+      next_step_qualifier: 'Cowork or Claude Code will process this bundle; diagnosis appears on next batch run.',
+      diagnosis_assessment: 'pending',
+      bundle_id: result.bundle_id,
+      queued_at: result.queued_at,
+      timeline_used: result.timeline_used,
+      regenerated_at: new Date().toISOString(),
+    };
+  }
   return {
     contact_id: c.id,
     name: c.name,
@@ -99,6 +116,7 @@ async function diagnoseContact(c) {
     diagnosis_assessment: result.diagnosis_assessment,
     timeline_used: result.timeline_used,
     regenerated_at: result.generated_at,
+    from_bundle: result.from_bundle,
   };
 }
 
