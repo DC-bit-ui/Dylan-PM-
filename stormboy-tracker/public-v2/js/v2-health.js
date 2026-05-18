@@ -111,7 +111,8 @@
     if (!a || !a.cohorts) return '';
     const inv = a.cohorts.involved;
     const not = a.cohorts.not_involved;
-    const cls = a.sample.not_involved < 5 ? 'status-warn' : 'status-ok';
+    const baseline = a.baseline;
+    const cls = baseline ? 'status-ok' : a.sample.not_involved < 5 ? 'status-warn' : 'status-ok';
     const compareRow = (label, invVal, notVal) => `
       <div class="v2-health-cmp-row">
         <span class="v2-health-cmp-label">${label}</span>
@@ -119,13 +120,29 @@
         <span class="v2-health-cmp-vs">vs</span>
         <span class="v2-health-cmp-val">${notVal == null ? '—' : notVal}</span>
       </div>`;
+    const baselineBlock = baseline ? `
+      <div class="v2-health-baseline">
+        <div class="v2-health-baseline-head">Historical baseline (pre-system control)</div>
+        <div class="v2-health-baseline-row">
+          <span>${baseline.sample.total_closed} closed deals</span>
+          <span>·</span>
+          <span><strong>${baseline.sample.win_rate_pct}%</strong> win rate</span>
+          <span>·</span>
+          <span>median ${baseline.median_days_to_close_won}d to win</span>
+        </div>
+        <div class="v2-health-baseline-period">${baseline.period.since_iso.slice(0,10)} → ${baseline.period.until_iso.slice(0,10)} · ${baseline.period.days}d window</div>
+      </div>
+      ` : `
+      <div class="v2-health-baseline-cta">No historical baseline yet · <code>POST /api/system/backfill-baseline</code> to generate one</div>
+    `;
     return `
       <div class="v2-health-card ${cls}">
-        <div class="v2-health-card-head">${statusDot(a.sample.not_involved >= 5, true)} Outcome attribution</div>
+        <div class="v2-health-card-head">${statusDot(!!baseline, true)} Outcome attribution</div>
         <div class="v2-health-card-big">${inv.count} <span class="v2-health-soft">vs ${not.count}</span></div>
         <div class="v2-health-card-sub">involved · vs not-involved (of ${a.sample.active_deals_in_working_set} active deals)</div>
         ${compareRow('Mean risk score',  inv.mean_risk_score,  not.mean_risk_score)}
         ${compareRow('Mean days in stage', inv.mean_days_in_stage, not.mean_days_in_stage)}
+        ${baselineBlock}
         <div class="v2-health-target">${escapeHtml(a.sample.caveat || a.methodology_note)}</div>
       </div>`;
   }

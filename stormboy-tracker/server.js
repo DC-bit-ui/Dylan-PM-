@@ -178,6 +178,29 @@ app.get('/api/system/outcome-attribution', (req, res) => {
   }
 });
 
+// Historical baseline — pull closed deals from HubSpot (default past 24 months)
+// and compute pre-system win-rate + days-to-close. Solves the empty-control-
+// cohort problem in outcome-attribution: lets us compare post-system trajectory
+// against pre-system reality.
+app.post('/api/system/backfill-baseline', async (req, res) => {
+  try {
+    const { backfill } = require('./coaching/engine/historical-baseline');
+    const result = await backfill({ since: req.query.since, until: req.query.until });
+    res.json(result);
+  } catch (e) {
+    console.error('backfill-baseline failed:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+app.get('/api/system/baseline', (req, res) => {
+  try {
+    const { loadLatest } = require('./coaching/engine/historical-baseline');
+    const latest = loadLatest();
+    if (!latest) return res.json({ ok: false, reason: 'no baseline yet — POST /api/system/backfill-baseline to generate one' });
+    res.json(latest);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 app.get('/api/system/curate-patterns', (req, res) => {
   try {
     const { curate } = require('./coaching/engine/curate-patterns');

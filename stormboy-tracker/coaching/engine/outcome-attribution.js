@@ -29,6 +29,7 @@ const fs = require('fs');
 const path = require('path');
 const { BUS_ROOT } = require('./supplements');
 const bus = require('./shared-bus');
+const { loadLatest: loadLatestBaseline } = require('./historical-baseline');
 
 function safeReadDir(p) {
   try { return fs.readdirSync(p, { withFileTypes: true }); }
@@ -129,6 +130,11 @@ function analyze() {
   const heavySignal = involved.filter(p => p.involvement_score > medSig);
   const lightSignal = involved.filter(p => p.involvement_score <= medSig);
 
+  // Historical baseline — generated separately via /api/system/backfill-baseline.
+  // When present, this is the proper "no-system" control: closed deals before
+  // Apex went live, with known outcomes (win/lose) and days-to-close.
+  const baseline = loadLatestBaseline();
+
   return {
     generated_at: new Date().toISOString(),
     methodology_note: [
@@ -153,6 +159,14 @@ function analyze() {
       light_signal: cohortStats(lightSignal, `Light signal (involvement_score <= ${medSig})`),
     },
     per_deal: perDeal.sort((a, b) => b.involvement_score - a.involvement_score),
+    baseline: baseline ? {
+      generated_at: baseline.generated_at,
+      period: baseline.period,
+      sample: baseline.sample,
+      mean_days_to_close_won: baseline.by_outcome && baseline.by_outcome.won && baseline.by_outcome.won.mean_days_to_close,
+      median_days_to_close_won: baseline.by_outcome && baseline.by_outcome.won && baseline.by_outcome.won.median_days_to_close,
+      interpretation: baseline.interpretation,
+    } : null,
   };
 }
 
