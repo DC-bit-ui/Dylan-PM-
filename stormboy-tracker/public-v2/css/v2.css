@@ -3292,6 +3292,25 @@ body {
 }
 .v2-ib-fallback[open] summary { margin-bottom: 8px; }
 
+.v2-ih-process-btn {
+  margin-top: 10px;
+  font-size: 11px;
+  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff;
+  color: #2a4a25;
+  border: 1px solid #b6cda8;
+}
+.v2-ih-process-btn:hover { background: #f0efe7; border-color: #2a4a25; }
+.v2-ih-process-msg {
+  font-size: 11px;
+  margin-top: 6px;
+  min-height: 14px;
+  line-height: 1.4;
+}
+
 .v2-fb-btn-floating {
   position: fixed;
   bottom: 18px;

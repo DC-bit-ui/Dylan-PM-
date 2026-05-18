@@ -230,9 +230,43 @@
         <div class="v2-health-card-big">${queued} <span class="v2-health-soft">queued</span></div>
         <div class="v2-health-card-sub">${s.total || 0} total · claimed: ${(s.by_status && s.by_status.claimed) || 0} · completed: ${(s.by_status && s.by_status.completed) || 0} · failed: ${(s.by_status && s.by_status.failed) || 0}</div>
         <div class="v2-health-card-meta">${purposes || '(no bundles yet — no synthesis flows migrated)'}</div>
-        <div class="v2-health-target">Bundles get processed by Cowork's scheduled apex-process-intelligence task (every 2h) or by an interactive Claude Code session. Zero metered-API cost.</div>
+        <div class="v2-health-target">
+          Scheduled drains run twice on weekdays — <strong>08:30 AEST</strong> + <strong>14:00 AEST</strong>.
+          Use the button below if you need fresh insights before the next scheduled run.
+        </div>
+        <button class="v2-ib-btn-primary v2-ih-process-btn" onclick="v2Intelligence.manualProcessQueue()">
+          ↻ Process queue now
+        </button>
+        <div class="v2-ih-process-msg" id="v2-ih-process-msg"></div>
       </div>`;
   }
 
-  window.v2Intelligence = { runBundle, fetchQueueSummary, renderQueueWidget };
+  // Manual queue-drain trigger. Fires claude://cowork/new with a prompt
+  // asking Apex to process the queue immediately under whichever Cowork
+  // session the user opens it in. The user clicks send in Claude Desktop;
+  // Apex drains autonomously from there.
+  function manualProcessQueue() {
+    const prompt = [
+      'You are Apex. Process the intelligence-bundle queue now (manual trigger from dashboard).',
+      '',
+      'Scan `shared-growth-memory/intelligence-bundles/*.json` for status=queued and process up to 20 per run, per the contract in `inbox/cowork/2026-05-18-apex-intelligence-bundles-commission.md` (cadence updated by `inbox/cowork/2026-05-18-apex-intelligence-bundles-cadence-update.md`).',
+      '',
+      'For each: read the corresponding .md (the prompt + inputs), produce the result matching meta.output_schema, write `shared-growth-memory/intelligence-results/<id>.json`, update the bundle meta to status=completed. Atomic writes (tmp+rename) throughout.',
+      '',
+      'Append the run summary to `shared-growth-memory/apex-runs.log` with `manual-process-intelligence` as the run-type, including counts: scanned/queued/claimed/completed/failed.',
+    ].join('\n');
+    const result = openClaudeDesktop(prompt);
+    const msgEl = document.getElementById('v2-ih-process-msg');
+    if (!msgEl) return;
+    if (result.opened) {
+      msgEl.innerHTML = '✓ Sent to Claude Desktop — click Send in Cowork to drain the queue. Refresh this tab in a minute or two to see updated counts.';
+      msgEl.style.color = '#3a6b3a';
+    } else {
+      msgEl.innerHTML = `⚠ Couldn't open Claude Desktop (URL ${result.length} chars). Run the same prompt in any open Claude Code session pointed at the bus.`;
+      msgEl.style.color = '#a64545';
+    }
+    setTimeout(() => { if (msgEl) msgEl.innerHTML = ''; }, 8000);
+  }
+
+  window.v2Intelligence = { runBundle, fetchQueueSummary, renderQueueWidget, manualProcessQueue };
 })();
