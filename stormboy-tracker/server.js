@@ -164,6 +164,20 @@ app.post('/api/system/retro', (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+// Sales outcome attribution — measurement infrastructure for "are deals
+// with system involvement progressing differently?". Descriptive, not
+// causal — caveats baked into the response. Needs 50+ deals × 90+ days
+// for statistical meaning; building the pipe now so it starts collecting.
+app.get('/api/system/outcome-attribution', (req, res) => {
+  try {
+    const { analyze } = require('./coaching/engine/outcome-attribution');
+    res.json(analyze());
+  } catch (e) {
+    console.error('outcome-attribution failed:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.get('/api/system/curate-patterns', (req, res) => {
   try {
     const { curate } = require('./coaching/engine/curate-patterns');

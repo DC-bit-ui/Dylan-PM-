@@ -107,6 +107,29 @@
       </div>`;
   }
 
+  function attributionWidget(a) {
+    if (!a || !a.cohorts) return '';
+    const inv = a.cohorts.involved;
+    const not = a.cohorts.not_involved;
+    const cls = a.sample.not_involved < 5 ? 'status-warn' : 'status-ok';
+    const compareRow = (label, invVal, notVal) => `
+      <div class="v2-health-cmp-row">
+        <span class="v2-health-cmp-label">${label}</span>
+        <span class="v2-health-cmp-val">${invVal == null ? '—' : invVal}</span>
+        <span class="v2-health-cmp-vs">vs</span>
+        <span class="v2-health-cmp-val">${notVal == null ? '—' : notVal}</span>
+      </div>`;
+    return `
+      <div class="v2-health-card ${cls}">
+        <div class="v2-health-card-head">${statusDot(a.sample.not_involved >= 5, true)} Outcome attribution</div>
+        <div class="v2-health-card-big">${inv.count} <span class="v2-health-soft">vs ${not.count}</span></div>
+        <div class="v2-health-card-sub">involved · vs not-involved (of ${a.sample.active_deals_in_working_set} active deals)</div>
+        ${compareRow('Mean risk score',  inv.mean_risk_score,  not.mean_risk_score)}
+        ${compareRow('Mean days in stage', inv.mean_days_in_stage, not.mean_days_in_stage)}
+        <div class="v2-health-target">${escapeHtml(a.sample.caveat || a.methodology_note)}</div>
+      </div>`;
+  }
+
   function heuristicWidget(h) {
     if (!h) return '';
     const rate = h.rate == null ? null : Math.round(h.rate * 100);
@@ -131,9 +154,13 @@
         <div class="v2-health-bus" id="health-bus"></div>
       </div>`;
     try {
-      const res = await fetch('/api/system/health');
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const h = await res.json();
+      const [hRes, aRes] = await Promise.all([
+        fetch('/api/system/health'),
+        fetch('/api/system/outcome-attribution').catch(() => null),
+      ]);
+      if (!hRes.ok) throw new Error('HTTP ' + hRes.status);
+      const h = await hRes.json();
+      const a = (aRes && aRes.ok) ? await aRes.json() : null;
       const grid = document.getElementById('health-grid');
       grid.innerHTML = [
         apexWidget(h.apex),
@@ -141,7 +168,8 @@
         patternsWidget(h.patterns),
         probesWidget(h.probes),
         heuristicWidget(h.heuristic_errors),
-      ].join('');
+        attributionWidget(a),
+      ].filter(Boolean).join('');
       const bus = document.getElementById('health-bus');
       bus.innerHTML = `
         <div class="v2-health-buspath">
