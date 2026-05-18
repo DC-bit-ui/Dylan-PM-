@@ -35,7 +35,8 @@ Each row below is a current dashboard flow that calls `api.anthropic.com`. Migra
 | 4 | `coaching/engine/customer-themes.js` clustering | `customer-themes-cluster` | **Easy** | Batch operation; already runs irregularly. Schedule it as a bundle once/week. |
 | 5 | `coaching/engine/diagnose-from-timeline.js` | `deal-diagnosis` | **Medium** | One bundle per deal — fan out, max 10 per scheduled run. Use Cowork-scheduled (nightly) cadence. |
 | 6 | `coaching/engine/win-patterns.js` | `win-pattern-extraction` | **Easy** | Weekly batch. Same shape as customer-themes. |
-| 7 | `coaching/engine/objection-cards.js` | `objection-cards` | **Easy** | Cached output, re-runs rarely. Bundle once-per-edit-of-source. |
+| 7 | ~~`coaching/engine/objection-cards.js`~~ | n/a | **Not needed** | **Re-audit 2026-05-18:** this module is a deterministic markdown parser. No Anthropic calls. Removed from migration scope. |
+| 8 | `coaching/engine/live-pipeline.js` | `friction-analysis` · `twin-narration` · `coaching-message` | **Hard** | **Missed in initial audit.** 3 call sites: line 216 (Sonnet friction analysis, ~4K tokens), line 322 (Haiku twin narration per active deal), line 393 (Haiku coaching message per active deal). Called from scheduler.js + jobs.js. Highest output volume per run. Needs Session B.4 (~2-3h). |
 
 ## Suggested order (per session, parallel to other work)
 
