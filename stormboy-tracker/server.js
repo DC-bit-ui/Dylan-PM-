@@ -864,20 +864,60 @@ app.post('/api/hubspot/associations', async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-// AI Analysis proxy
+// AI Analysis
 // POST /api/ai/analyze
 // Body: { prompt: "..." }
-// Returns: { text: "..." }
+//
+// Default path (DEPRECATED — pending removal): proxies to Anthropic Messages
+//   API. Counts against the shared ANTHROPIC_API_KEY quota.
+// Bundle path (?via=bundles): writes the prompt to <bus>/intelligence-bundles/
+//   and returns 202 with a poll_url. Cowork-scheduled task or Claude Code
+//   interactive session processes under flat-fee subscription. Zero metered
+//   cost. Per Cadel directive 2026-05-18.
+//
+// Once v1 callers migrate to ?via=bundles, the legacy path will be removed
+// and ?via=bundles will become default. See briefings/api-to-subscription-
+// migration-plan.md for the schedule.
 // ---------------------------------------------------------------------------
 app.post('/api/ai/analyze', async (req, res) => {
-  if (!ANTHROPIC_API_KEY) {
-    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured' });
-  }
-
   const { prompt } = req.body;
   if (!prompt) {
     return res.status(400).json({ error: 'prompt is required' });
   }
+
+  // ----- Bundle path (subscription compute) -----
+  if (req.query.via === 'bundles') {
+    try {
+      const ib = require('./coaching/engine/intelligence-bundles');
+      const meta = ib.create({
+        purpose: 'ai-analyze',
+        system_prompt: 'You are an analyst supporting a sales pipeline review. Read the user prompt below carefully and produce the analysis it asks for. Return as plain markdown text — no JSON wrapper, no preamble, just the answer. Be concrete with specific numbers from the input.',
+        input_data: prompt,
+        output_spec: 'Plain markdown text. Match what the user prompt asks for in count of insights (e.g. "Give exactly 3 insights") and format. Use real numbers from the input data, not placeholders.',
+        output_schema: 'text',
+        model_hint: 'haiku',
+        target_kind: 'analysis',
+        input_summary: `v1 ai/analyze · ${prompt.slice(0, 100).replace(/\s+/g, ' ')}`,
+        created_by: 'dashboard:/api/ai/analyze',
+      });
+      return res.status(202).json({
+        bundle_id: meta.id,
+        status: meta.status,
+        poll_url: `/api/intelligence/results/${meta.id}`,
+        bundle_url: `/api/intelligence/bundles/${meta.id}`,
+        message: 'Bundle queued. Cowork-scheduled task processes every 2h; for immediate completion, run "process the next intelligence bundle" in a Claude Code session pointed at shared-growth-memory/.',
+      });
+    } catch (e) {
+      console.error('intelligence-bundle create failed:', e);
+      return res.status(500).json({ error: 'bundle create failed', detail: e.message });
+    }
+  }
+
+  // ----- Legacy API path (deprecated) -----
+  if (!ANTHROPIC_API_KEY) {
+    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured', hint: 'Use ?via=bundles to route via subscription compute instead.' });
+  }
+  res.set('X-Deprecated', '/api/ai/analyze direct API path; migrate callers to ?via=bundles');
 
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {

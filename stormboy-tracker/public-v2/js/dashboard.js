@@ -7,6 +7,30 @@ let deals=[],sbIds=new Set(),tab='overview',ch={},processedCache=null,pipeFilter
 try{const saved=localStorage.getItem('stormboy_tab');if(saved)tab=saved;}catch(e){}
 
 async function hs(p){const r=await fetch('/api/hubspot/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});if(!r.ok)throw new Error('HubSpot '+r.status);return await r.json();}
+
+// AI Analysis (bundle path) — per Cadel directive 2026-05-18, posts to
+// /api/ai/analyze?via=bundles which writes a bundle to the shared bus
+// instead of calling api.anthropic.com directly. Polls the result endpoint
+// for up to 60s. Beyond that, the bundle stays queued for Cowork's
+// scheduled task (every 2h) or a Claude Code interactive session.
+async function aiAnalyze(prompt, statusEl){
+  const set=m=>{if(statusEl)statusEl.innerHTML='<span style="color:var(--text-muted,#888);font-size:12px">'+m+'</span>';};
+  set('Queuing analysis…');
+  const r=await fetch('/api/ai/analyze?via=bundles',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+  if(!r.ok&&r.status!==202)throw new Error('Queue '+r.status);
+  const ack=await r.json();
+  if(ack&&ack.bundle_id){
+    const start=Date.now(),TIMEOUT=60000,INTERVAL=4000;
+    while(Date.now()-start<TIMEOUT){
+      set('Bundle '+ack.bundle_id+' queued — polling ('+Math.round((Date.now()-start)/1000)+'s)…');
+      await new Promise(res=>setTimeout(res,INTERVAL));
+      const pr=await fetch(ack.poll_url);
+      if(pr.ok){const data=await pr.json();if(data&&data.result!=null)return typeof data.result==='string'?data.result:JSON.stringify(data.result);}
+    }
+    throw new Error('Bundle '+ack.bundle_id+' still queued. Run "process the next intelligence bundle" in Claude Code pointed at shared-growth-memory/, or wait for the next Cowork scheduled run (every 2h).');
+  }
+  return typeof ack==='string'?ack:ack&&ack.text?ack.text:(ack&&ack.content&&ack.content[0]?ack.content[0].text:JSON.stringify(ack));
+}
 function lg(m,e){const el=document.getElementById('ll');if(el){const d=document.createElement('div');d.className='lg'+(e?' lge':'');d.textContent=new Date().toLocaleTimeString()+' '+m;el.appendChild(d);el.scrollTop=el.scrollHeight;}}
 function lm(m){const el=document.getElementById('lm');if(el)el.textContent=m;}
 function setst(m){document.getElementById('st').textContent=m;}
@@ -241,7 +265,7 @@ Engagement notes: ${d.notes}
 Created: ${d.created?.toLocaleDateString()} | Closed: ${d.closed?.toLocaleDateString()}
 
 Give: (1) one sentence on what was distinctive about this deal's journey, (2) one specific actionable insight that could be applied to current pipeline deals. Be concrete — name the stages and numbers.`;
-  try{const r=await fetch('/api/ai/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})}).then(r=>{if(!r.ok)throw new Error('AI '+r.status);return r.json();});const txt=typeof r==='string'?r:r&&r.text?r.text:(r&&r.content&&r.content[0]?r.content[0].text:JSON.stringify(r));el.innerHTML=md2h(txt);}catch(e){el.innerHTML='<span style="color:var(--error)">Failed: '+e.message+'</span>';}
+  try{const txt=await aiAnalyze(prompt,el||out);el.innerHTML=md2h(txt);}catch(e){el.innerHTML='<span style="color:var(--error)">Failed: '+e.message+'</span>';}
 };
 
 window.winPatternAi=async function(){
@@ -268,7 +292,7 @@ Most common bottleneck stage: ${topBottleneck?topBottleneck[0]+' ('+topBottlenec
 Stage medians: ${STG.map(s=>s.n+': '+stageMed[s.id]+'d').join(', ')}
 
 Give exactly 3 insights: (1) What pattern distinguishes the fast wins from the slow ones? (2) What's the single biggest process bottleneck and what would fix it? (3) One specific thing to do differently for the current active pipeline based on these wins. Be concrete with stage names and numbers.`;
-  try{const r=await fetch('/api/ai/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})}).then(r=>{if(!r.ok)throw new Error('AI '+r.status);return r.json();});const txt=typeof r==='string'?r:r&&r.text?r.text:(r&&r.content&&r.content[0]?r.content[0].text:JSON.stringify(r));el.innerHTML='<div class="ar">'+md2h(txt)+'</div>';}catch(e){el.innerHTML='<span style="color:var(--error)">Failed: '+e.message+'</span>';}
+  try{const txt=await aiAnalyze(prompt,el||out);el.innerHTML='<div class="ar">'+md2h(txt)+'</div>';}catch(e){el.innerHTML='<span style="color:var(--error)">Failed: '+e.message+'</span>';}
 };
 
 
@@ -496,7 +520,7 @@ window.lossInsight=async function(i){
     'Engagement notes: '+d.notes+'\n'+
     'Created: '+(d.created?.toLocaleDateString()||'?')+' | Closed: '+(d.closed?.toLocaleDateString()||'?')+'\n\n'+
     'Give: (1) most likely reason this deal stalled at '+lsName+', (2) one early warning signal that could have flagged this, (3) one process change that might have saved it. Be specific with stage names and timing.';
-  try{const r=await fetch('/api/ai/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})}).then(r=>{if(!r.ok)throw new Error('AI '+r.status);return r.json();});const txt=typeof r==='string'?r:r&&r.text?r.text:(r&&r.content&&r.content[0]?r.content[0].text:JSON.stringify(r));el.innerHTML=md2h(txt);}catch(e){el.innerHTML='<span style="color:var(--error)">Failed: '+e.message+'</span>';}
+  try{const txt=await aiAnalyze(prompt,el||out);el.innerHTML=md2h(txt);}catch(e){el.innerHTML='<span style="color:var(--error)">Failed: '+e.message+'</span>';}
 };
 
 window.lossPatternAi=async function(){
@@ -526,7 +550,7 @@ window.lossPatternAi=async function(){
     'Era loss rates: '+Object.entries(eraLoss).map(([e,v])=>e+': '+v.rate+'% ('+v.lost+'/'+((v.won||0)+(v.lost||0))+')').join(', ')+'\n'+
     'Recent lost examples: '+lost.slice(0,5).map(d=>d.name+' ('+d.era+', stalled at '+(SM[lastStage(d)]?.n||'?')+', '+d.days+'d)').join('; ')+'\n\n'+
     'Give exactly 3 insights: (1) What is the single biggest loss pattern and what specific process change would address it? (2) Are Stormboy deals performing better or worse on loss rate, and why? (3) What early warning signals should trigger intervention on active deals? Be concrete with numbers and stage names.';
-  try{const r=await fetch('/api/ai/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})}).then(r=>{if(!r.ok)throw new Error('AI '+r.status);return r.json();});const txt=typeof r==='string'?r:r&&r.text?r.text:(r&&r.content&&r.content[0]?r.content[0].text:JSON.stringify(r));el.innerHTML='<div class="ar">'+md2h(txt)+'</div>';}catch(e){el.innerHTML='<span style="color:var(--error)">Failed: '+e.message+'</span>';}
+  try{const txt=await aiAnalyze(prompt,el||out);el.innerHTML='<div class="ar">'+md2h(txt)+'</div>';}catch(e){el.innerHTML='<span style="color:var(--error)">Failed: '+e.message+'</span>';}
 };
 
 
@@ -705,7 +729,7 @@ window.sbFunnelAiAnalysis=async function(){
     'Conversion to sales pipeline: '+stageCounts['Proceed to Sales Pipeline']+' ('+((stageCounts['Proceed to Sales Pipeline']/total)*100).toFixed(1)+'%)\n\n'+
     'Context: Stormboy is AgriProve\'s outbound recruitment campaign for Australian landholders. The funnel runs from Identified (data list) → phone contact → farm visits → sales pipeline (where HubSpot deals begin).\n\n'+
     'Give exactly 3 insights: (1) Where is the biggest bottleneck in the funnel and what would unblock it? (2) What does the exit rate tell us — is it healthy or concerning? (3) One specific operational recommendation to improve conversion from Identified to Sales Pipeline. Use the actual numbers.';
-  try{const r=await fetch('/api/ai/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})}).then(r=>{if(!r.ok)throw new Error('AI '+r.status);return r.json();});const txt=typeof r==='string'?r:r&&r.text?r.text:(r&&r.content&&r.content[0]?r.content[0].text:JSON.stringify(r));el.innerHTML='<div class="ar">'+md2h(txt)+'</div>';}catch(e){el.innerHTML='<span style="color:var(--error)">Failed: '+e.message+'</span>';}
+  try{const txt=await aiAnalyze(prompt,el||out);el.innerHTML='<div class="ar">'+md2h(txt)+'</div>';}catch(e){el.innerHTML='<span style="color:var(--error)">Failed: '+e.message+'</span>';}
 };
 
 
@@ -813,7 +837,7 @@ window.ai=async function(type,btn){
   else if(type==='trend'){const q={};cw.forEach(d=>{if(!d.closed)return;const k=d.closed.getFullYear()+' Q'+Math.ceil((d.closed.getMonth()+1)/3);(q[k]=q[k]||[]).push(d)});prompt+='Quarterly trends — is this getting better?\n'+Object.entries(q).sort(([a],[bb])=>a.localeCompare(bb)).map(([k,d])=>k+': '+d.length+' deals, P50='+bench(d).p50+'d ('+d.filter(x=>x.era.startsWith('Stormboy')).length+' SB)').join('\n')+'\n3 bullets: (1) trend direction, (2) what drove it, (3) what to watch next.';}
   else if(type==='loss'){prompt+='Loss analysis...';}
   else if(type==='deal'){const id=document.getElementById('dds').value,d=all.find(x=>x.id===id);if(!d){out.innerHTML='<div class="ar">Select a deal.</div>';btn.disabled=false;btn.textContent='AI Analysis';return;}prompt+='Deal: '+d.name+', '+d.era+', '+(SM[d.stage]?.n||d.stage)+', '+d.days+'d. P25='+b.p25+' P50='+b.p50+' P75='+b.p75+'. 2-3 sentences: what stands out and what to do.';}
-  try{const r=await fetch('/api/ai/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})}).then(r=>{if(!r.ok)throw new Error('AI '+r.status);return r.json();});const txt=typeof r==='string'?r:r&&r.text?r.text:(r&&r.content&&r.content[0]?r.content[0].text:JSON.stringify(r));out.innerHTML='<div class="ar">'+md2h(txt)+'</div>';}catch(e){out.innerHTML='<div class="ar" style="color:var(--error)">Failed: '+e.message+'</div>';}
+  try{const txt=await aiAnalyze(prompt,out);out.innerHTML='<div class="ar">'+md2h(txt)+'</div>';}catch(e){out.innerHTML='<div class="ar" style="color:var(--error)">Failed: '+e.message+'</div>';}
   btn.disabled=false;btn.textContent=type==='deal'?'AI Analysis':type==='evo'?'Compare eras':type==='pipe'?'Identify risks':'Analyse trends';
 };
 
