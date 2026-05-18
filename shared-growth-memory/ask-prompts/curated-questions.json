@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "updated_at": "2026-05-18",
+  "description": "Curated starter questions that pop the user's Claude Code Desktop with a context-rich prompt. The dashboard's ASK tab is a launcher — the conversation happens in the user's own Claude Code session, sourced from the bus content they already have synced via OneDrive.",
+  "instruction_template": "Read these files from the shared-growth-memory bus on your machine (relative to your OneDrive 'Claude Code Projects/shared-growth-memory' folder):\n\n{SOURCES}\n\nThen answer this question for me, citing verbatim where it lands harder than paraphrase, and naming the source each excerpt came from:\n\n> {QUESTION}\n\nKeep your answer tight (200-400 words unless the question genuinely warrants more). Lead with the answer, then the supporting evidence. If the source material doesn't ground a clear answer, say so honestly rather than inventing.",
+  "categories": [
+    {
+      "id": "cold-outreach",
+      "label": "Cold outreach",
+      "icon": "📞"
+    },
+    {
+      "id": "objection-handling",
+      "label": "Objection handling",
+      "icon": "💬"
+    },
+    {
+      "id": "pre-visit-prep",
+      "label": "Pre-visit prep",
+      "icon": "🗺️"
+    },
+    {
+      "id": "re-engagement",
+      "label": "Re-engagement",
+      "icon": "🔄"
+    },
+    {
+      "id": "team-patterns",
+      "label": "Team patterns",
+      "icon": "✨"
+    },
+    {
+      "id": "operational-intelligence",
+      "label": "Operational intelligence",
+      "icon": "📊"
+    }
+  ],
+  "questions": [
+    {
+      "id": "cold-open-framings",
+      "category": "cold-outreach",
+      "icon": "📞",
+      "label": "Cold-open framings that work",
+      "hint": "Hobbs's verbatim openings + when each fits",
+      "question": "What cold-open framings does Hobbs use that actually land? Give me his verbatim openings with the situations each fits.",
+      "brain_sources": [
+        "team-brain/profiles/hobbs.md",
+        "team-brain/distillates/hobbs-calls.json",
+        "team-brain/objection-plays/storm-boy-cold-call-script.md"
+      ]
+    },
+    {
+      "id": "im-just-a-grazier",
+      "category": "cold-outreach",
+      "icon": "🙋",
+      "label": "\"I'm just a grazier\" objection",
+      "hint": "Disarming self-deprecation without flattery",
+      "question": "A prospect says \"I wouldn't say I do anything out of this world\" — how does Hobbs handle that self-deprecation without flattery?",
+      "brain_sources": [
+        "team-brain/profiles/hobbs.md",
+        "team-brain/distillates/hobbs-calls.json"
+      ]
+    },
+    {
+      "id": "ben-curiosity-cold-open",
+      "category": "cold-outreach",
+      "icon": "🎯",
+      "label": "Ben's curiosity-frame cold open",
+      "hint": "The validated framing producing bookings",
+      "question": "Tell me about Ben's curiosity-frame cold-open pattern. Why is it working and how should I deploy it?",
+      "brain_sources": [
+        "team-brain/profiles/ben.md",
+        "patterns/2026-05-09-nurture-back-horizon-snapshot.md"
+      ]
+    },
+    {
+      "id": "25-percent-too-high",
+      "category": "objection-handling",
+      "icon": "💸",
+      "label": "\"25% is too high\"",
+      "hint": "Reframing the AgriProve fee structure",
+      "question": "A landholder is pushing back on the 25% AgriProve share. How does the team handle this objection?",
+      "brain_sources": [
+        "team-brain/profiles/hobbs.md",
+        "team-brain/objection-plays/agriprove-objection-handling-guide.md",
+        "team-brain/objection-plays/agriprove-sales-faqs-2022.md",
+        "patterns/2026-05-09-hobbs-2575-methodology-liability-frame.md"
+      ]
+    },
+    {
+      "id": "25-years-too-long",
+      "category": "objection-handling",
+      "icon": "⏳",
+      "label": "\"25 years is too long\"",
+      "hint": "Permanence + lock-in reframes",
+      "question": "A landholder is worried about being locked in for 25 years. What's Hobbs's reframe + what does the AgriProve guide add?",
+      "brain_sources": [
+        "team-brain/profiles/hobbs.md",
+        "team-brain/objection-plays/agriprove-objection-handling-guide.md",
+        "team-brain/objection-plays/hobbs-farmer-objection-handbook.md"
+      ]
+    },
+    {
+      "id": "additionality-objection",
+      "category": "objection-handling",
+      "icon": "🌱",
+      "label": "Additionality objection",
+      "hint": "\"I'm already doing this — why pay AgriProve?\"",
+      "question": "A landholder argues they're already doing regenerative practices and don't need the methodology — why should they sign up? Walk me through Hobbs's framing.",
+      "brain_sources": [
+        "team-brain/profiles/hobbs.md",
+        "team-brain/objection-plays/hobbs-farmer-objection-handbook.md"
+      ]
+    },
+    {
+      "id": "on-farm-sequence",
+      "category": "pre-visit-prep",
+      "icon": "🗺️",
+      "label": "On-farm sequence",
+      "hint": "Hobbs's first 30-60 minutes",
+      "question": "What does Hobbs do in the first 30-60 minutes on-farm? Give me his sequence so I can prepare for tomorrow's visit.",
+      "brain_sources": [
+        "team-brain/profiles/hobbs.md",
+        "team-brain/distillates/hobbs-farm-visits.json"
+      ]
+    },
+    {
+      "id": "pre-visit-checklist",
+      "category": "pre-visit-prep",
+      "icon": "📋",
+      "label": "Pre-visit checklist (Riverina grazier)",
+      "hint": "What to bring, ask, prep before walking on-farm",
+      "question": "I have a farm visit tomorrow with a Riverina grazier (~1500 ha). What should I prep, what should I bring, and what are the 3 most important questions to ask?",
+      "brain_sources": [
+        "team-brain/profiles/hobbs.md",
+        "team-brain/distillates/hobbs-farm-visits.json",
+        "team-brain/objection-plays/agriprove-sales-faqs-2022.md"
+      ]
+    },
+    {
+      "id": "re-engage-stalled-kct",
+      "category": "re-engagement",
+      "icon": "🔄",
+      "label": "Re-engage after KCT silence",
+      "hint": "Breaking silence without generic check-ins",
+      "question": "A landholder went silent after KCT was issued. What does Hobbs do to break the pattern without sending another generic check-in?",
+      "brain_sources": [
+        "team-brain/profiles/hobbs.md",
+        "team-brain/distillates/hobbs-calls.json"
+      ]
+    },
+    {
+      "id": "nurture-back-no-for-now",
+      "category": "re-engagement",
+      "icon": "📨",
+      "label": "Nurture-back from a \"no for now\"",
+      "hint": "Ben's HORIZON-snapshot tactic",
+      "question": "What's Ben's nurture-back tactic for landholders who said no 6 months ago? Walk me through the framing he uses.",
+      "brain_sources": [
+        "team-brain/profiles/ben.md",
+        "patterns/2026-05-09-nurture-back-horizon-snapshot.md"
+      ]
+    },
+    {
+      "id": "recent-visit-patterns",
+      "category": "team-patterns",
+      "icon": "✨",
+      "label": "What worked in the last 6 visits",
+      "hint": "Patterns across distilled visits",
+      "question": "Across the 6 most recent farm visits, what patterns emerged? Which framings landed and which didn't?",
+      "brain_sources": [
+        "team-brain/distillates/hobbs-farm-visits.json"
+      ]
+    },
+    {
+      "id": "best-call-times",
+      "category": "operational-intelligence",
+      "icon": "⏰",
+      "label": "Best times of day for calls",
+      "hint": "Kieren's call-times analysis from 2026-05-18",
+      "question": "What does our data say about the best time of day to make outbound calls — both for connect rate and for booking farm visits? Walk me through Kieren's recent analysis and what it implies for how I should structure my call blocks this week.",
+      "brain_sources": [
+        "patterns/",
+        "team-brain/profiles/hobbs.md",
+        "team-brain/profiles/ben.md"
+      ]
+    },
+    {
+      "id": "conversion-baseline",
+      "category": "operational-intelligence",
+      "icon": "📊",
+      "label": "Pre-system conversion baseline",
+      "hint": "Win rate + days-to-close before this system",
+      "question": "What's our historical pre-system baseline for deal conversion — win rate, days to close, by year? Is the trend improving or worsening, and what does that imply for what we should focus on?",
+      "brain_sources": [
+        "baselines/"
+      ]
+    },
+    {
+      "id": "lawrieco-pattern",
+      "category": "operational-intelligence",
+      "icon": "🌾",
+      "label": "LawrieCo channel performance",
+      "hint": "Why LawrieCo deals close 3x faster",
+      "question": "LawrieCo deals close ~3x faster than direct — what's the captured pattern, and what should we replicate in non-LawrieCo deals?",
+      "brain_sources": [
+        "patterns/2026-05-09-lawrieco-3x-channel-performance.md"
+      ]
+    },
+    {
+      "id": "hobbs-objection-playbook",
+      "category": "objection-handling",
+      "icon": "📚",
+      "label": "Full Hobbs objection playbook",
+      "hint": "Seven framings he uses on farm",
+      "question": "Give me Hobbs's full objection-handling playbook — the seven topic framings he's used on actual farm visits, with the verbatim language for each.",
+      "brain_sources": [
+        "patterns/2026-05-11-hobbs-objection-handling-playbook.md",
+        "team-brain/objection-plays/hobbs-farmer-objection-handbook.md",
+        "team-brain/distillates/hobbs-farm-visits.json"
+      ]
+    },
+    {
+      "id": "my-current-pipeline",
+      "category": "operational-intelligence",
+      "icon": "🎯",
+      "label": "What should I work on today?",
+      "hint": "Read your work-cards queue + deal signals",
+      "question": "Look at my work-cards queue and the active deal signals — what should I work on today, in priority order? Cite specific deals and the heuristic each pull was made from.",
+      "brain_sources": [
+        "queues/",
+        "deal-signals/"
+      ]
+    }
+  ]
+}

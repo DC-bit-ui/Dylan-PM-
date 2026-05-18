@@ -494,7 +494,31 @@ app.post('/api/work/build-rep-queues', async (req, res) => {
 // Ask the team — natural-language query against the captured team brain
 // (Hobbs profile + distillates + Ben + Claudia + Will profiles). Supports
 // multi-turn conversation via the `history` array.
+// Curated ASK prompts — launcher pattern. The dashboard's ASK tab shows
+// these questions; clicking one copies a self-contained prompt to clipboard
+// for the user's Claude Code Desktop. No conversational ASK in the dashboard
+// — the user's own Claude Code is the conversation surface.
+app.get('/api/ask/prompts', (req, res) => {
+  try {
+    const ap = require('./coaching/engine/ask-prompts');
+    res.json(ap.listQuestions());
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/ask/prompt/:id', (req, res) => {
+  try {
+    const ap = require('./coaching/engine/ask-prompts');
+    const p = ap.getPrompt(req.params.id);
+    if (!p) return res.status(404).json({ error: 'not found' });
+    res.json(p);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// DEPRECATED — conversational ASK is being replaced by the launcher above.
+// Kept for legacy callers until v2-ask.js fully ships. The underlying
+// ask.js still calls Anthropic directly, which fails with credit-balance
+// errors on this org's shared API key.
 app.post('/api/ask', async (req, res) => {
+  res.set('X-Deprecated', '/api/ask conversational endpoint; use /api/ask/prompt/:id + launcher pattern');
   try {
     const { ask } = require('./coaching/engine/ask');
     const { question, context, history, model } = req.body || {};
@@ -502,8 +526,12 @@ app.post('/api/ask', async (req, res) => {
     const result = await ask({ question, context, history, model });
     res.json(result);
   } catch (e) {
-    console.error('/api/ask failed:', e);
-    res.status(500).json({ error: 'ask failed', detail: e.message });
+    console.error('/api/ask (deprecated) failed:', e);
+    res.status(500).json({
+      error: 'ask failed',
+      detail: e.message,
+      hint: 'The conversational /api/ask is deprecated. Use /api/ask/prompts to fetch curated questions and /api/ask/prompt/:id for a ready-to-paste Claude Code prompt.',
+    });
   }
 });
 

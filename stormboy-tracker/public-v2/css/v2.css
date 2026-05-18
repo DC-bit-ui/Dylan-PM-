@@ -3023,6 +3023,139 @@ body {
 }
 .v2-health-baseline-cta code { background: #f0e9d2; padding: 1px 4px; border-radius: 2px; }
 /* ============================================================
+   ASK launcher — curated questions, click → clipboard for Claude Code
+   ============================================================ */
+.v2-ask-launcher { padding: 18px 24px; max-width: 1100px; }
+.v2-ask-launcher-head h2 { margin: 0 0 6px; font-size: 22px; color: #2a2a2a; }
+.v2-ask-launcher-sub {
+  font-size: 12px;
+  color: #666;
+  max-width: 760px;
+  line-height: 1.5;
+  margin-bottom: 22px;
+}
+.v2-ask-category { margin-bottom: 26px; }
+.v2-ask-cat-head {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #777;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+.v2-ask-cat-icon { font-size: 14px; }
+.v2-ask-q-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 10px;
+}
+.v2-ask-q-card {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #e0dcc4;
+  border-radius: 5px;
+  padding: 12px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.08s, background 0.08s;
+}
+.v2-ask-q-card:hover {
+  border-color: #b6b09a;
+  background: #fbfaf3;
+}
+.v2-ask-q-icon { font-size: 18px; line-height: 1; text-align: center; }
+.v2-ask-q-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.v2-ask-q-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2a2a2a;
+  line-height: 1.3;
+}
+.v2-ask-q-hint {
+  font-size: 11px;
+  color: #888;
+  line-height: 1.3;
+}
+.v2-ask-q-cta {
+  font-size: 10px;
+  color: #2a4a25;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.v2-ask-prompt-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 9300;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px 20px;
+  overflow-y: auto;
+}
+.v2-ask-prompt-modal.show { display: flex; }
+.v2-ask-prompt-card {
+  background: #fff;
+  border-radius: 6px;
+  max-width: 720px;
+  width: 100%;
+  padding: 20px 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.v2-ask-prompt-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.v2-ask-prompt-title { font-size: 15px; font-weight: 600; color: #2a2a2a; }
+.v2-ask-prompt-sub { font-size: 11px; color: #777; margin-top: 3px; }
+.v2-ask-prompt-close { background: none; border: none; font-size: 18px; color: #888; cursor: pointer; }
+.v2-ask-prompt-steps ol {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  font-size: 12px;
+  color: #555;
+  line-height: 1.55;
+}
+.v2-ask-prompt-steps li { margin-bottom: 4px; }
+.v2-ask-prompt-body-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  margin-bottom: 4px;
+}
+.v2-ask-prompt-body {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d8d4be;
+  border-radius: 3px;
+  font-family: 'SF Mono', Consolas, monospace;
+  font-size: 11px;
+  background: #fbfaf3;
+  resize: vertical;
+  min-height: 220px;
+  box-sizing: border-box;
+}
+.v2-ask-prompt-foot { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.v2-ask-prompt-btn {
+  padding: 6px 14px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #d8d4be;
+  background: #fff;
+  color: #555;
+}
+.v2-ask-prompt-btn:hover { background: #fbfaf3; border-color: #b6b09a; }
+.v2-ask-prompt-msg { font-size: 11px; color: #3a6b3a; flex: 1; }
+
+/* ============================================================
    FEEDBACK — floating button, modal form, inline target banner
    ============================================================ */
 /* ============================================================

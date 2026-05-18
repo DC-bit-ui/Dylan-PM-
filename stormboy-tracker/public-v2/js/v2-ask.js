@@ -1,364 +1,188 @@
 /**
- * v2 ASK tab: query the team brain in natural language.
+ * v2 ASK tab — launcher for the user's Claude Code Desktop.
  *
- * The rep types a question; we POST /api/ask with it; Claude answers
- * with verbatim citations from Hobbs profile, the call distillates,
- * Ben, Claudia, and Will profiles. Each exchange shows in a conversation
- * thread above the input.
+ * No chat UI here. The dashboard is the SOURCE OF INTELLIGENCE; Claude Code
+ * Desktop is the INTERFACE. Click a curated question → clipboard gets a
+ * ready-to-paste prompt that tells Claude to read specific files from the
+ * shared-growth-memory bus (synced to the user's OneDrive) and answer.
+ * Multi-turn happens naturally in the user's own Claude Code session, under
+ * their flat-fee subscription. No metered API.
  *
- * Quick-prompt suggestions land common Storm Boy use-cases at one click.
+ * Source of truth for questions: <bus>/ask-prompts/curated-questions.json
+ * — editable by Dylan/Kieren directly; reloads on every fetch.
  */
 (function() {
-
-  const SUGGESTED_PROMPTS = [
-    {
-      category: 'Cold outreach',
-      icon: '📞',
-      label: 'Cold-open framings that work',
-      hint: 'Hobbs\'s verbatim openings + when each fits',
-      question: 'What cold-open framings does Hobbs use that actually land? Give me his verbatim openings with the situations each fits.',
-    },
-    {
-      category: 'Cold outreach',
-      icon: '🙋',
-      label: '"I\'m just a grazier" objection',
-      hint: 'Disarming self-deprecation without flattery',
-      question: 'A prospect says "I wouldn\'t say I do anything out of this world" — how does Hobbs handle that self-deprecation without flattery?',
-    },
-    {
-      category: 'Objection handling',
-      icon: '💸',
-      label: '"25% is too high"',
-      hint: 'Reframing the AgriProve fee structure',
-      question: 'A landholder is pushing back on the 25% AgriProve share. How does the team handle this objection?',
-    },
-    {
-      category: 'Objection handling',
-      icon: '⏳',
-      label: '"25 years is too long"',
-      hint: 'Permanence + lock-in reframes',
-      question: 'A landholder is worried about being locked in for 25 years. What\'s Hobbs\'s reframe + what does the AgriProve guide add?',
-    },
-    {
-      category: 'Pre-visit prep',
-      icon: '🗺️',
-      label: 'On-farm sequence',
-      hint: 'Hobbs\'s first 30-60 minutes',
-      question: 'What does Hobbs do in the first 30-60 minutes on-farm? Give me his sequence so I can prepare for tomorrow\'s visit.',
-    },
-    {
-      category: 'Pre-visit prep',
-      icon: '📋',
-      label: 'Pre-visit checklist for a specific contact',
-      hint: 'What to bring, ask, prep before walking on-farm',
-      question: 'I have a farm visit tomorrow with a Riverina grazier (~1500 ha). What should I prep, what should I bring, and what are the 3 most important questions to ask?',
-    },
-    {
-      category: 'Re-engagement',
-      icon: '🔄',
-      label: 'Re-engage a stalled deal',
-      hint: 'Breaking silence without generic check-ins',
-      question: 'A landholder went silent after KCT was issued. What does Hobbs do to break the pattern without sending another generic check-in?',
-    },
-    {
-      category: 'Re-engagement',
-      icon: '📨',
-      label: 'Nurture-back from a "no for now"',
-      hint: 'Ben\'s HORIZON-snapshot tactic',
-      question: 'What\'s Ben\'s nurture-back tactic for landholders who said no 6 months ago? Walk me through the framing he uses.',
-    },
-    {
-      category: 'Team patterns',
-      icon: '✨',
-      label: 'What worked in the last 6 visits',
-      hint: 'Patterns across distilled visits',
-      question: 'Across the 6 most recent farm visits, what patterns emerged? Which framings landed and which didn\'t?',
-    },
-    {
-      category: 'Team patterns',
-      icon: '🎯',
-      label: 'Ben\'s curiosity-frame cold open',
-      hint: 'The validated framing producing bookings',
-      question: 'Tell me about Ben\'s curiosity-frame cold-open pattern. Why is it working and how should I deploy it?',
-    },
-  ];
-
   function escapeHtml(s) {
-    if (s === null || s === undefined) return '';
-    return String(s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
   }
 
-  // Tiny markdown renderer for answer body: bold, blockquote, paragraphs.
-  function renderMarkdown(md) {
-    if (!md) return '';
-    let lines = md.split('\n');
-    const out = [];
-    let inQuote = false;
-    let buf = [];
-    function flushPara() {
-      if (buf.length) {
-        out.push('<p>' + buf.join(' ') + '</p>');
-        buf = [];
-      }
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
     }
-    for (let raw of lines) {
-      const line = raw.trim();
-      if (!line) {
-        flushPara();
-        if (inQuote) { out.push('</blockquote>'); inQuote = false; }
-        continue;
-      }
-      if (line.startsWith('>')) {
-        flushPara();
-        if (!inQuote) { out.push('<blockquote class="v2-ask-q">'); inQuote = true; }
-        out.push(formatInline(line.replace(/^>\s?/, '')));
-        continue;
-      }
-      if (inQuote) { out.push('</blockquote>'); inQuote = false; }
-      if (line.match(/^[-*]\s/)) {
-        flushPara();
-        out.push('<li>' + formatInline(line.replace(/^[-*]\s/, '')) + '</li>');
-        continue;
-      }
-      if (line.match(/^#{1,6}\s/)) {
-        flushPara();
-        const level = line.match(/^(#+)/)[1].length;
-        out.push(`<h${Math.min(level+2, 6)}>${formatInline(line.replace(/^#+\s/, ''))}</h${Math.min(level+2, 6)}>`);
-        continue;
-      }
-      buf.push(formatInline(line));
-    }
-    flushPara();
-    if (inQuote) out.push('</blockquote>');
-    return out.join('\n').replace(/(<li>.*?<\/li>\s*)+/gs, m => '<ul>' + m + '</ul>');
-  }
-
-  function formatInline(s) {
-    return escapeHtml(s)
-      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-      .replace(/`([^`]+)`/g, '<code>$1</code>');
-  }
-
-  function confidenceBadge(c) {
-    const m = { high: 'high · grounded', medium: 'medium', low: 'low · be careful' };
-    return `<span class="v2-ask-conf v2-ask-conf-${c}">${m[c] || c}</span>`;
-  }
-
-  function renderSources(sources) {
-    if (!sources || !sources.length) return '';
-    return `
-      <div class="v2-ask-sources">
-        <div class="v2-ask-sources-label">Sources</div>
-        ${sources.map(s => `
-          <div class="v2-ask-source">
-            <div class="v2-ask-source-name">${escapeHtml(s.source)}</div>
-            <div class="v2-ask-source-excerpt">${escapeHtml(s.excerpt || '')}</div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  }
-
-  function renderExchange(ex) {
-    return `
-      <div class="v2-ask-exchange">
-        <div class="v2-ask-q-block">
-          <span class="v2-ask-q-tag">You</span>
-          <div class="v2-ask-q-text">${escapeHtml(ex.question)}</div>
-        </div>
-        <div class="v2-ask-a-block">
-          <div class="v2-ask-a-head">
-            <span class="v2-ask-a-tag">Team brain</span>
-            ${confidenceBadge(ex.confidence)}
-            <span class="v2-ask-a-meta">${ex.model_used} · ${Math.round(ex.latency_ms / 100) / 10}s</span>
-          </div>
-          <div class="v2-ask-a-body">${renderMarkdown(ex.answer)}</div>
-          ${renderSources(ex.sources)}
-        </div>
-      </div>
-    `;
-  }
-
-  function renderSuggestions() {
-    // Group prompts by category
-    const byCategory = {};
-    SUGGESTED_PROMPTS.forEach((p, i) => {
-      if (!byCategory[p.category]) byCategory[p.category] = [];
-      byCategory[p.category].push({ ...p, _idx: i });
-    });
-    const sections = Object.entries(byCategory).map(([cat, prompts]) => `
-      <div class="v2-ask-suggest-section">
-        <div class="v2-ask-suggest-cat">${escapeHtml(cat)}</div>
-        <div class="v2-ask-suggest-grid">
-          ${prompts.map(p => `
-            <button class="v2-ask-suggest-card" data-suggest="${p._idx}">
-              <span class="v2-ask-suggest-icon">${p.icon || '•'}</span>
-              <span class="v2-ask-suggest-text">
-                <span class="v2-ask-suggest-label">${escapeHtml(p.label)}</span>
-                <span class="v2-ask-suggest-hint">${escapeHtml(p.hint || '')}</span>
-              </span>
-            </button>
-          `).join('')}
-        </div>
-      </div>
-    `).join('');
-    return `<div class="v2-ask-suggestions">${sections}</div>`;
-  }
-
-  let _exchanges = [];
-  let _container = null;
-
-  function paint() {
-    if (!_container) return;
-    const conv = _container.querySelector('.v2-ask-conv');
-    if (!conv) return;
-    if (!_exchanges.length) {
-      conv.innerHTML = `
-        <div class="v2-ask-empty">
-          <h3>Ask the team brain</h3>
-          <p>Hobbs's framings, Ben's call patterns, Claudia's operating model — queryable in natural language. Cites verbatim from the source material so you know it's real.</p>
-          ${renderSuggestions()}
-        </div>
-      `;
-    } else {
-      const pending = _container.querySelector('.v2-ask-input').dataset.pending === 'true';
-      conv.innerHTML = `
-        <div class="v2-ask-thread-bar">
-          <span class="v2-ask-thread-count">${_exchanges.length} ${_exchanges.length === 1 ? 'question' : 'questions'} in this thread</span>
-          <div class="v2-ask-thread-actions">
-            <button class="v2-ask-thread-btn" onclick="v2AskBackToSuggestions()">← Back to suggestions</button>
-            <button class="v2-ask-thread-btn danger" onclick="v2AskClearThread()">Clear thread</button>
-          </div>
-        </div>
-        ${_exchanges.map(renderExchange).join('')}
-        ${pending ? `<div class="v2-ask-thinking">Team brain thinking… (Haiku call, usually 5-10s)</div>` : ''}
-      `;
-      conv.scrollTop = conv.scrollHeight;
-    }
-    bindSuggestions();
-  }
-
-  // Exposed globally for inline onclick handlers
-  window.v2AskBackToSuggestions = function() {
-    if (!_container) return;
-    // Scroll to top to reveal a suggestion strip without dropping the thread
-    const conv = _container.querySelector('.v2-ask-conv');
-    if (!conv) return;
-    // Toggle a suggestion overlay state
-    const existing = conv.querySelector('.v2-ask-overlay-suggestions');
-    if (existing) { existing.remove(); return; }
-    const overlay = document.createElement('div');
-    overlay.className = 'v2-ask-overlay-suggestions';
-    overlay.innerHTML = `
-      <div class="v2-ask-overlay-head">
-        <span>Suggested questions</span>
-        <button class="v2-ask-thread-btn" onclick="this.closest('.v2-ask-overlay-suggestions').remove()">Close</button>
-      </div>
-      ${renderSuggestions()}
-    `;
-    conv.insertBefore(overlay, conv.firstChild);
-    overlay.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    bindSuggestions();
-  };
-
-  window.v2AskClearThread = function() {
-    if (!_exchanges.length) return;
-    if (!confirm('Clear the current conversation? This drops the memory and starts fresh.')) return;
-    _exchanges = [];
-    paint();
-  };
-
-  function bindSuggestions() {
-    if (!_container) return;
-    // Card buttons in the new empty state + overlay
-    _container.querySelectorAll('.v2-ask-suggest-card').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const idx = parseInt(btn.dataset.suggest, 10);
-        const p = SUGGESTED_PROMPTS[idx];
-        if (!p) return;
-        const input = _container.querySelector('.v2-ask-input');
-        input.value = p.question;
-        // Close the overlay if we're inside one
-        const overlay = btn.closest('.v2-ask-overlay-suggestions');
-        if (overlay) overlay.remove();
-        input.focus();
-        submit();
-      });
+    return new Promise((resolve, reject) => {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        resolve();
+      } catch (e) { reject(e); }
     });
   }
 
-  async function submit() {
-    const input = _container.querySelector('.v2-ask-input');
-    const q = input.value.trim();
-    if (!q || input.dataset.pending === 'true') return;
-    input.dataset.pending = 'true';
-    input.disabled = true;
-    paint();
+  function categoryById(data, id) {
+    return (data.categories || []).find(c => c.id === id) || { label: id, icon: '·' };
+  }
+
+  function questionCardHtml(q, cat) {
+    return `
+      <button class="v2-ask-q-card" data-qid="${escapeHtml(q.id)}">
+        <span class="v2-ask-q-icon">${escapeHtml(q.icon || cat.icon || '·')}</span>
+        <span class="v2-ask-q-main">
+          <span class="v2-ask-q-label">${escapeHtml(q.label)}</span>
+          <span class="v2-ask-q-hint">${escapeHtml(q.hint || '')}</span>
+        </span>
+        <span class="v2-ask-q-cta">Pop into Claude Code →</span>
+      </button>`;
+  }
+
+  function categoryHtml(cat, questions) {
+    if (!questions.length) return '';
+    return `
+      <section class="v2-ask-category">
+        <h3 class="v2-ask-cat-head"><span class="v2-ask-cat-icon">${escapeHtml(cat.icon)}</span>${escapeHtml(cat.label)}</h3>
+        <div class="v2-ask-q-grid">
+          ${questions.map(q => questionCardHtml(q, cat)).join('')}
+        </div>
+      </section>`;
+  }
+
+  function ensurePromptModal() {
+    if (document.getElementById('v2-ask-prompt-modal')) return;
+    const m = document.createElement('div');
+    m.id = 'v2-ask-prompt-modal';
+    m.className = 'v2-ask-prompt-modal';
+    m.innerHTML = `
+      <div class="v2-ask-prompt-card">
+        <div class="v2-ask-prompt-head">
+          <div>
+            <div class="v2-ask-prompt-title">Prompt copied · paste into Claude Code Desktop</div>
+            <div class="v2-ask-prompt-sub" id="v2-ask-prompt-sub">—</div>
+          </div>
+          <button class="v2-ask-prompt-close" data-ask-close>✕</button>
+        </div>
+        <div class="v2-ask-prompt-steps">
+          <ol>
+            <li>The prompt is already on your clipboard.</li>
+            <li>Open your Claude Code Desktop window (or any Claude surface with file access to your OneDrive).</li>
+            <li>Paste and send. Claude will read the source files from your synced bus and answer in your own session — where you can multi-turn naturally.</li>
+          </ol>
+        </div>
+        <div class="v2-ask-prompt-body-label">Preview (full prompt)</div>
+        <textarea class="v2-ask-prompt-body" id="v2-ask-prompt-body" readonly></textarea>
+        <div class="v2-ask-prompt-foot">
+          <button id="v2-ask-prompt-recopy" class="v2-ask-prompt-btn">Copy again</button>
+          <span id="v2-ask-prompt-msg" class="v2-ask-prompt-msg">✓ on your clipboard</span>
+        </div>
+      </div>`;
+    document.body.appendChild(m);
+    m.addEventListener('click', e => {
+      if (e.target.matches('[data-ask-close]') || e.target === m) close();
+    });
+    document.getElementById('v2-ask-prompt-recopy').addEventListener('click', async () => {
+      const body = document.getElementById('v2-ask-prompt-body').value;
+      try {
+        await copyToClipboard(body);
+        const msg = document.getElementById('v2-ask-prompt-msg');
+        msg.textContent = '✓ copied again';
+        setTimeout(() => { msg.textContent = '✓ on your clipboard'; }, 1200);
+      } catch (_) {}
+    });
+  }
+
+  function close() {
+    const m = document.getElementById('v2-ask-prompt-modal');
+    if (m) m.classList.remove('show');
+  }
+
+  async function showPromptFor(qid, qLabel) {
+    ensurePromptModal();
+    const sub = document.getElementById('v2-ask-prompt-sub');
+    const body = document.getElementById('v2-ask-prompt-body');
+    const msg = document.getElementById('v2-ask-prompt-msg');
+    sub.textContent = qLabel + ' · fetching prompt…';
+    body.value = '';
+    msg.textContent = '';
+    document.getElementById('v2-ask-prompt-modal').classList.add('show');
     try {
-      // Send last 10 exchanges as conversation memory. Server trims further.
-      const history = _exchanges.slice(-10).map(ex => ({
-        question: ex.question,
-        answer: ex.answer,
-        sources: ex.sources || [],
-        confidence: ex.confidence || 'medium',
-      }));
-      const res = await fetch('/api/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q, history }),
-      });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const data = await res.json();
-      _exchanges.push(data);
-      input.value = '';
+      const r = await fetch('/api/ask/prompt/' + encodeURIComponent(qid));
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      sub.textContent = qLabel + ' · sources: ' + (data.brain_sources || []).length;
+      body.value = data.prompt;
+      try {
+        await copyToClipboard(data.prompt);
+        msg.textContent = '✓ on your clipboard';
+        msg.style.color = '#3a6b3a';
+      } catch (_) {
+        msg.textContent = 'Clipboard blocked — select all + copy manually';
+        msg.style.color = '#a64545';
+      }
     } catch (e) {
-      _exchanges.push({
-        question: q,
-        answer: `**Error:** ${e.message}`,
-        sources: [],
-        confidence: 'low',
-        model_used: 'error',
-        latency_ms: 0,
-        asked_at: new Date().toISOString(),
-      });
-    } finally {
-      input.dataset.pending = 'false';
-      input.disabled = false;
-      paint();
-      input.focus();
+      sub.textContent = 'Failed: ' + e.message;
+      msg.textContent = '';
     }
   }
 
-  function render(container) {
-    _container = container;
+  async function render(container) {
     container.innerHTML = `
-      <div class="v2-section-header">
-        <h2 class="v2-section-title">Ask the team</h2>
-        <p class="v2-section-sub">"Ask Hobbs" · "Ask the team" · natural-language queries against the captured intelligence layer. cites verbatim from profiles + distillates.</p>
-      </div>
-
-      <div class="v2-ask-shell">
-        <div class="v2-ask-conv"></div>
-        <div class="v2-ask-input-row">
-          <textarea class="v2-ask-input" placeholder="Ask the team brain anything — pre-visit prep, objection handling, what worked for similar prospects…" rows="2"></textarea>
-          <button class="v2-ask-send">Ask &rarr;</button>
+      <div class="v2-ask-launcher">
+        <div class="v2-ask-launcher-head">
+          <h2>Ask the team brain</h2>
+          <p class="v2-ask-launcher-sub">
+            Pick a question. We'll copy a ready-to-paste prompt to your clipboard —
+            paste it into your Claude Code Desktop and Claude reads the sourced
+            files from your synced bus. Multi-turn happens in your own session.
+            Uses your Claude subscription, no API cost.
+          </p>
         </div>
-      </div>
-    `;
-
-    const input = container.querySelector('.v2-ask-input');
-    const sendBtn = container.querySelector('.v2-ask-send');
-    sendBtn.addEventListener('click', submit);
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey || !e.shiftKey)) {
-        e.preventDefault();
-        submit();
+        <div id="v2-ask-launcher-list"><div class="v2-empty">Loading…</div></div>
+      </div>`;
+    try {
+      const r = await fetch('/api/ask/prompts');
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const data = await r.json();
+      if (data.error) {
+        document.getElementById('v2-ask-launcher-list').innerHTML =
+          `<div class="v2-empty" style="color:#a64545">Curated questions unavailable: ${escapeHtml(data.error)}</div>`;
+        return;
       }
-    });
-
-    paint();
+      const byCat = {};
+      (data.questions || []).forEach(q => {
+        const c = q.category || 'uncategorised';
+        (byCat[c] = byCat[c] || []).push(q);
+      });
+      const html = (data.categories || []).map(cat => categoryHtml(cat, byCat[cat.id] || [])).join('');
+      const list = document.getElementById('v2-ask-launcher-list');
+      list.innerHTML = html || '<div class="v2-empty">No curated questions in the bus yet. Add them to shared-growth-memory/ask-prompts/curated-questions.json.</div>';
+      list.addEventListener('click', e => {
+        const btn = e.target.closest('.v2-ask-q-card');
+        if (!btn) return;
+        const qid = btn.dataset.qid;
+        const label = btn.querySelector('.v2-ask-q-label').textContent;
+        showPromptFor(qid, label);
+      });
+    } catch (e) {
+      document.getElementById('v2-ask-launcher-list').innerHTML =
+        `<div class="v2-empty" style="color:#a64545">Load failed: ${escapeHtml(e.message)}</div>`;
+    }
   }
 
   v2Shell.register('ask', render);
