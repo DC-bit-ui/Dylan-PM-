@@ -149,6 +149,13 @@ function heuristicErrorStats() {
   }
 }
 
+function feedbackStats() {
+  try {
+    const fb = require('./feedback');
+    return fb.stats();
+  } catch (_) { return { total: 0, open: 0 }; }
+}
+
 function snapshot() {
   return {
     generated_at: new Date().toISOString(),
@@ -161,6 +168,7 @@ function snapshot() {
     patterns: patternStats(),
     probes: bus.probeStats(),
     heuristic_errors: heuristicErrorStats(),
+    feedback: feedbackStats(),
   };
 }
 

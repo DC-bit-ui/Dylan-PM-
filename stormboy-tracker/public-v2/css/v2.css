@@ -3022,6 +3022,124 @@ body {
   margin-top: 8px;
 }
 .v2-health-baseline-cta code { background: #f0e9d2; padding: 1px 4px; border-radius: 2px; }
+/* ============================================================
+   FEEDBACK — floating button, modal form, inline target banner
+   ============================================================ */
+.v2-fb-btn-floating {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  z-index: 9000;
+  background: #2a4a25;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 9px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  letter-spacing: 0.2px;
+}
+.v2-fb-btn-floating:hover { background: #3a6b3a; }
+.v2-fb-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 9100;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 60px 20px 20px;
+  overflow-y: auto;
+}
+.v2-fb-modal.show { display: flex; }
+.v2-fb-modal-card {
+  background: #fff;
+  border-radius: 6px;
+  max-width: 540px;
+  width: 100%;
+  padding: 20px 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.v2-fb-modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.v2-fb-modal-title { font-size: 16px; font-weight: 600; color: #2a2a2a; }
+.v2-fb-modal-close { background: none; border: none; font-size: 18px; color: #888; cursor: pointer; }
+.v2-fb-form label { display: block; margin-bottom: 10px; }
+.v2-fb-form label > span { display: block; font-size: 11px; color: #555; font-weight: 600; margin-bottom: 3px; }
+.v2-fb-form label > span em { color: #888; font-style: normal; font-weight: 400; }
+.v2-fb-form input,
+.v2-fb-form select,
+.v2-fb-form textarea {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #d8d4be;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 13px;
+  background: #fff;
+  box-sizing: border-box;
+}
+.v2-fb-form textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+.v2-fb-form-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+.v2-fb-btn-primary,
+.v2-fb-btn-secondary {
+  padding: 8px 16px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.v2-fb-btn-primary { background: #2a4a25; color: #fff; border-color: #2a4a25; }
+.v2-fb-btn-primary:hover { background: #3a6b3a; }
+.v2-fb-btn-secondary { background: #fff; color: #555; border-color: #d8d4be; }
+.v2-fb-form-msg { font-size: 11px; color: #555; margin-top: 10px; min-height: 14px; }
+
+.v2-fb-inline {
+  margin-bottom: 10px;
+  border: 1px solid #d8c69c;
+  background: #fdf6e3;
+  border-radius: 3px;
+  padding: 8px 10px;
+}
+.v2-fb-inline-head {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6a5a1a;
+  margin-bottom: 4px;
+}
+.v2-fb-inline-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 6px;
+  align-items: baseline;
+  font-size: 11px;
+  padding: 3px 0;
+  border-top: 1px dashed #ebd9a8;
+}
+.v2-fb-inline-item:first-of-type { border-top: none; }
+.v2-fb-inline-item.sev-high { color: #a64545; }
+.v2-fb-inline-type {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: #f0e9d2;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+.v2-fb-inline-title { color: #2a2a2a; }
+.v2-fb-inline-date { color: #888; font-size: 10px; }
+
+.v2-health-pill.sev-low      { background: #f0efe7; }
+.v2-health-pill.sev-medium   { background: #f5ece0; }
+.v2-health-pill.sev-high     { background: #f0d8d8; border-color: #d8a8a8; color: #8a2a2a; }
+
 .v2-health-buspath {
   font-size: 11px;
   color: #777;

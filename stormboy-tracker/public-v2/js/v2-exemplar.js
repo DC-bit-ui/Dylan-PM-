@@ -427,6 +427,16 @@ window.v2Exemplar = (function() {
     }
     tlEl.dataset.loaded = 'loading';
     tlEl.innerHTML = '<div class="v2-ex-timeline-pending">Loading from HubSpot + Apex enrichment…</div>';
+    // Pull any open feedback tagged to this target — render as a heads-up
+    // banner above the timeline so reps see corrections before acting.
+    if (window.v2Feedback && (type === 'deal' || type === 'contact')) {
+      v2Feedback.loadForTarget(type, id).then(items => {
+        if (!items.length) return;
+        const banner = document.createElement('div');
+        banner.innerHTML = v2Feedback.renderListInline(items);
+        tlEl.parentNode.insertBefore(banner.firstElementChild, tlEl);
+      }).catch(() => {});
+    }
     try {
       // Fetch HubSpot timeline AND Apex-written supplements in parallel.
       // Supplements are only available for deals and contacts; for other

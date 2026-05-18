@@ -147,6 +147,28 @@
       </div>`;
   }
 
+  function feedbackWidget(f) {
+    if (!f) return '';
+    const cls = f.open > 0 ? 'status-warn' : 'status-ok';
+    const types = Object.entries(f.by_type || {}).map(([k, v]) => `<span class="v2-health-pill">${escapeHtml(k)}: ${v}</span>`).join('');
+    const recent = (f.recent || []).slice(0, 4).map(r => `
+      <li class="v2-health-list-item">
+        <span class="v2-health-pill sev-${escapeHtml(r.severity)}">${escapeHtml(r.severity)}</span>
+        <span class="v2-health-pill">${escapeHtml(r.type)}</span>
+        ${escapeHtml(r.title)}
+        <span style="color:#aaa;font-size:10px">${(r.created_at || '').slice(0,10)}</span>
+      </li>`).join('');
+    return `
+      <div class="v2-health-card ${cls}">
+        <div class="v2-health-card-head">${statusDot(f.open === 0, true)} User feedback</div>
+        <div class="v2-health-card-big">${f.open} <span class="v2-health-soft">open</span></div>
+        <div class="v2-health-card-sub">${f.total} total · resolved: ${f.resolved} · wontfix: ${f.wontfix || 0}</div>
+        <div class="v2-health-card-meta">${types || '(no feedback yet)'}</div>
+        ${recent ? `<ul class="v2-health-list">${recent}</ul>` : ''}
+        <div class="v2-health-target">Use the floating "💬 Report" button to add feedback. Coaching engines will check open errors before generating new suggestions for the same target.</div>
+      </div>`;
+  }
+
   function heuristicWidget(h) {
     if (!h) return '';
     const rate = h.rate == null ? null : Math.round(h.rate * 100);
@@ -185,6 +207,7 @@
         patternsWidget(h.patterns),
         probesWidget(h.probes),
         heuristicWidget(h.heuristic_errors),
+        feedbackWidget(h.feedback),
         attributionWidget(a),
       ].filter(Boolean).join('');
       const bus = document.getElementById('health-bus');

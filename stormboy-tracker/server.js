@@ -168,6 +168,43 @@ app.post('/api/system/retro', (req, res) => {
 // with system involvement progressing differently?". Descriptive, not
 // causal — caveats baked into the response. Needs 50+ deals × 90+ days
 // for statistical meaning; building the pipe now so it starts collecting.
+// Feedback — user-raised errors / preferences / comments / corrections.
+// Stored in <bus>/feedback/feedback-<id>.json per schemas/feedback.md.
+// Both systems read this; coaching engines should check open type=error
+// feedback for a target before generating new suggestions.
+app.get('/api/feedback', (req, res) => {
+  try {
+    const fb = require('./coaching/engine/feedback');
+    res.json({
+      count: fb.list(req.query).length,
+      items: fb.list(req.query),
+      stats: fb.stats(),
+    });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.post('/api/feedback', (req, res) => {
+  try {
+    const fb = require('./coaching/engine/feedback');
+    const entry = fb.create(req.body || {}, { createdBy: (req.body && req.body.created_by) || 'manual_dashboard' });
+    res.status(201).json(entry);
+  } catch (e) { res.status(400).json({ error: e.message }); }
+});
+app.get('/api/feedback/:id', (req, res) => {
+  try {
+    const fb = require('./coaching/engine/feedback');
+    const item = fb.get(req.params.id);
+    if (!item) return res.status(404).json({ error: 'not found' });
+    res.json(item);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.patch('/api/feedback/:id', (req, res) => {
+  try {
+    const fb = require('./coaching/engine/feedback');
+    const updated = fb.update(req.params.id, req.body || {});
+    res.json(updated);
+  } catch (e) { res.status(400).json({ error: e.message }); }
+});
+
 app.get('/api/system/outcome-attribution', (req, res) => {
   try {
     const { analyze } = require('./coaching/engine/outcome-attribution');
