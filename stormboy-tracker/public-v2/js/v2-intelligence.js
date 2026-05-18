@@ -22,6 +22,23 @@
     }[c]));
   }
 
+  // Deep-link helper — same pattern as v2-ask.js. Duplicated for now;
+  // consolidate when a third consumer appears.
+  const CLAUDE_DESKTOP_URL_LIMIT = 7000;
+  function openClaudeDesktop(prompt) {
+    const url = 'claude://cowork/new?q=' + encodeURIComponent(prompt);
+    if (url.length > CLAUDE_DESKTOP_URL_LIMIT) return { opened: false, reason: 'prompt-too-long', length: url.length };
+    let frame = document.getElementById('v2-claude-launcher-frame');
+    if (!frame) {
+      frame = document.createElement('iframe');
+      frame.id = 'v2-claude-launcher-frame';
+      frame.style.display = 'none';
+      document.body.appendChild(frame);
+    }
+    frame.src = url;
+    return { opened: true, length: url.length };
+  }
+
   function ensureModal() {
     if (document.getElementById('v2-ib-modal')) return;
     const wrap = document.createElement('div');
@@ -37,32 +54,46 @@
           <button class="v2-ib-modal-close" data-ib-close>✕</button>
         </div>
         <div class="v2-ib-modal-body">
-          <div class="v2-ib-section">
-            <div class="v2-ib-section-head">
-              <span>1. The prompt</span>
-              <button id="v2-ib-copy" class="v2-ib-btn-secondary">Copy markdown</button>
-            </div>
-            <textarea id="v2-ib-prompt" readonly rows="10"></textarea>
-            <div class="v2-ib-section-hint">Paste this into a Claude Code session (or claude.ai web). Claude reads + writes the result file directly; you don't need to copy the answer back.</div>
-          </div>
-          <div class="v2-ib-section">
-            <div class="v2-ib-section-head">
-              <span>2. Or paste the result back here (fallback)</span>
-            </div>
-            <textarea id="v2-ib-result" rows="6" placeholder="Paste the JSON output Claude returned, then click Submit"></textarea>
-            <div class="v2-ib-section-foot">
-              <button id="v2-ib-submit" class="v2-ib-btn-primary">Submit result</button>
-              <span id="v2-ib-msg" class="v2-ib-msg"></span>
-            </div>
-          </div>
-          <div class="v2-ib-section">
-            <div class="v2-ib-section-head"><span>3. Or just wait</span></div>
+          <div class="v2-ib-section v2-ib-primary-action">
+            <div class="v2-ib-section-head"><span>Process this bundle now</span></div>
+            <button id="v2-ib-launch" class="v2-ib-btn-primary v2-ib-btn-launch">↗ Open in Claude Desktop</button>
             <div class="v2-ib-section-hint">
-              Cowork's <code>apex-process-intelligence</code> scheduled task picks up queued
-              bundles every 2h and processes them under Dylan's subscription.
-              Bundle status will move from <em>queued</em> → <em>completed</em> automatically.
+              Opens your Claude Desktop with the bundle prompt pre-filled.
+              Claude reads + writes the result file directly — no paste-back
+              needed. Uses your subscription, instant.
+            </div>
+            <div class="v2-ib-section-hint v2-ib-launch-warning" id="v2-ib-launch-warning" style="display:none">
+              ⚠ Bundle is large (over ~7KB) — direct launch unavailable.
+              Use the copy + paste flow below instead.
             </div>
           </div>
+          <div class="v2-ib-section">
+            <div class="v2-ib-section-head"><span>Or wait for Cowork</span></div>
+            <div class="v2-ib-section-hint">
+              Cowork's <code>apex-process-intelligence</code> scheduled task picks
+              up queued bundles every 2h and processes them automatically. Just
+              close this modal — the bundle is already written to the bus.
+              Status will move from <em>queued</em> → <em>completed</em> on its own.
+            </div>
+          </div>
+          <details class="v2-ib-section v2-ib-fallback">
+            <summary>Or copy the prompt manually (fallback)</summary>
+            <div style="margin-top:10px">
+              <div class="v2-ib-section-head">
+                <span>The prompt markdown</span>
+                <button id="v2-ib-copy" class="v2-ib-btn-secondary">Copy markdown</button>
+              </div>
+              <textarea id="v2-ib-prompt" readonly rows="8"></textarea>
+              <div class="v2-ib-section-head" style="margin-top:14px">
+                <span>Paste result back here (if processed elsewhere)</span>
+              </div>
+              <textarea id="v2-ib-result" rows="5" placeholder="Paste the JSON output Claude returned, then click Submit"></textarea>
+              <div class="v2-ib-section-foot">
+                <button id="v2-ib-submit" class="v2-ib-btn-primary">Submit result</button>
+                <span id="v2-ib-msg" class="v2-ib-msg"></span>
+              </div>
+            </div>
+          </details>
         </div>
       </div>
     `;
@@ -78,6 +109,22 @@
       const orig = btn.textContent;
       btn.textContent = 'Copied ✓';
       setTimeout(() => { btn.textContent = orig; }, 1200);
+    });
+    document.getElementById('v2-ib-launch').addEventListener('click', () => {
+      const prompt = document.getElementById('v2-ib-prompt').value;
+      if (!prompt) return;
+      const r = openClaudeDesktop(prompt);
+      const btn = document.getElementById('v2-ib-launch');
+      const orig = btn.textContent;
+      if (r.opened) {
+        btn.textContent = '✓ Launched';
+        btn.disabled = true;
+        setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 2500);
+      } else {
+        document.getElementById('v2-ib-launch-warning').style.display = '';
+        btn.disabled = true;
+        btn.textContent = 'Too long — use copy flow';
+      }
     });
   }
 
@@ -112,7 +159,21 @@
       const r2 = await fetch('/api/intelligence/bundles/' + meta.id);
       const detail = await r2.json();
       prompt.value = detail.markdown || '';
-      msg.textContent = 'Bundle written to bus. Copy the prompt above, or wait for Cowork.';
+      // Direct-launch viability check: if the URL-encoded prompt would exceed
+      // the protocol-handler limit, surface the warning and disable launch.
+      const urlLen = ('claude://cowork/new?q=' + encodeURIComponent(prompt.value)).length;
+      const launchBtn = document.getElementById('v2-ib-launch');
+      const launchWarning = document.getElementById('v2-ib-launch-warning');
+      if (urlLen > CLAUDE_DESKTOP_URL_LIMIT) {
+        launchBtn.disabled = true;
+        launchBtn.textContent = 'Too long — use copy flow';
+        launchWarning.style.display = '';
+      } else {
+        launchBtn.disabled = false;
+        launchBtn.textContent = '↗ Open in Claude Desktop';
+        launchWarning.style.display = 'none';
+      }
+      msg.textContent = 'Bundle written to bus.';
       msg.style.color = '#3a6b3a';
     } catch (e) {
       msg.textContent = 'Failed: ' + e.message;
