@@ -17,7 +17,8 @@ const { BUS_ROOT } = require('./supplements');
 const VALID_PURPOSES = [
   'persona-refresh', 'deal-diagnosis', 'customer-themes-cluster',
   'brain-ask', 'objection-cards', 'win-pattern-extraction',
-  'ai-analyze', 'other',
+  'ai-analyze', 'friction-analysis', 'twin-narration',
+  'coaching-message', 'other',
 ];
 const VALID_STATUSES = ['queued', 'claimed', 'completed', 'failed'];
 const VALID_OUTPUT_SCHEMAS = ['json', 'markdown', 'text'];

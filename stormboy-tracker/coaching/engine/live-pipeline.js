@@ -19,8 +19,59 @@
 const fs = require('fs');
 const path = require('path');
 const cache = require('./cache');
-const { callJson, callText } = require('./anthropic');
+const { create: createBundle, readResult: readBundleResult } = require('./intelligence-bundles');
 const bus = require('./shared-bus');
+
+// Migrated from direct Anthropic API to bundle-based subscription compute
+// per Cadel directive 2026-05-18. Three call sites:
+//   A1 friction (Sonnet, one global call)
+//   B2 twins    (Haiku, per active deal)
+//   B1 active   (Haiku, per active deal)
+// Pending state tracked in coaching/cache/live-pipeline-pending.json so
+// the orchestrator can resume across runs without re-queueing the same
+// bundles or trashing valid prior cache values.
+
+const PENDING_PATH = path.join(__dirname, '..', 'cache', 'live-pipeline-pending.json');
+function loadPending() {
+  try {
+    if (!fs.existsSync(PENDING_PATH)) return { friction: null, twins: {}, active: {} };
+    return JSON.parse(fs.readFileSync(PENDING_PATH, 'utf8')) || { friction: null, twins: {}, active: {} };
+  } catch (_) { return { friction: null, twins: {}, active: {} }; }
+}
+function savePending(p) {
+  const tmp = PENDING_PATH + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify(p, null, 2));
+  fs.renameSync(tmp, PENDING_PATH);
+}
+function safeParseJson(s) {
+  if (typeof s !== 'string') return s;
+  try { return JSON.parse(s); } catch (_) {}
+  const m = s.match(/\{[\s\S]*\}/);
+  if (m) { try { return JSON.parse(m[0]); } catch (_) {} }
+  return null;
+}
+
+// Generic "queue-or-fetch" wrapper used by all three call sites.
+// pendingRef is { bundle_id, queued_at } | null.
+// On completion, returns { ok: true, result }. On still-pending, returns
+// { ok: false, pending: { bundle_id, queued_at } }.
+function tryFetchOrQueue({ pendingRef, bundleSpec }) {
+  if (pendingRef && pendingRef.bundle_id) {
+    const r = readBundleResult(pendingRef.bundle_id);
+    if (r && r.result != null) {
+      const parsed = typeof r.result === 'string' ? safeParseJson(r.result) : r.result;
+      if (parsed) {
+        return { ok: true, result: parsed, completed_at: r.completed_at, bundle_id: pendingRef.bundle_id, cleared: true };
+      }
+      // Unparseable — clear and re-queue
+      console.error(`[live-pipeline] bundle ${pendingRef.bundle_id} unparseable; re-queueing`);
+    } else {
+      return { ok: false, pending: { bundle_id: pendingRef.bundle_id, queued_at: pendingRef.queued_at } };
+    }
+  }
+  const meta = createBundle(bundleSpec);
+  return { ok: false, pending: { bundle_id: meta.id, queued_at: new Date().toISOString() } };
+}
 
 const STG = [
   { id: '64066367',   n: 'Qualified Account' },
@@ -213,9 +264,30 @@ OUTPUT SCHEMA:
 
 Include one entry per transition in the input. Use the actual numbers from the data — don't invent. Output strict JSON only.`;
 
-  const result = await callJson({ model: 'sonnet', system, user: userMsg, maxTokens: 4096 });
-  result.generated_at = new Date().toISOString();
-  return result;
+  const pending = loadPending();
+  const r = tryFetchOrQueue({
+    pendingRef: pending.friction,
+    bundleSpec: {
+      purpose: 'friction-analysis',
+      system_prompt: system,
+      input_data: userMsg,
+      output_spec: 'Strict JSON with stage_transitions[], top_systemic_friction, era_lift_observation. Use real numbers from the input data.',
+      output_schema: 'json',
+      model_hint: 'sonnet',
+      target_kind: 'analysis',
+      target_file: 'coaching/cache/friction.json',
+      input_summary: 'A1 stage-friction analysis across pipeline',
+      created_by: 'live-pipeline.js#A1',
+    },
+  });
+  if (r.ok) {
+    pending.friction = null;
+    savePending(pending);
+    return { ...r.result, generated_at: new Date().toISOString(), from_bundle: r.bundle_id };
+  }
+  pending.friction = r.pending;
+  savePending(pending);
+  return { _pending: true, bundle_id: r.pending.bundle_id, queued_at: r.pending.queued_at };
 }
 
 // ============================================================================
@@ -319,7 +391,30 @@ OUTPUT SCHEMA:
   ]
 }`;
 
-  return callJson({ model: 'haiku', system, user: userMsg, maxTokens: 2048 });
+  const pending = loadPending();
+  const r = tryFetchOrQueue({
+    pendingRef: pending.twins[active.id] || null,
+    bundleSpec: {
+      purpose: 'twin-narration',
+      system_prompt: system,
+      input_data: userMsg,
+      output_spec: 'Strict JSON: { version, active_deal, twins[], synthesis, next_best_actions[] }. Every next_best_action.rationale must cite a twin deal_id.',
+      output_schema: 'json',
+      model_hint: 'haiku',
+      target_kind: 'analysis',
+      target_file: `coaching/cache/twins.json#${active.id}`,
+      input_summary: `B2 twins · ${active.name} (#${active.id})`,
+      created_by: 'live-pipeline.js#B2',
+    },
+  });
+  if (r.ok) {
+    delete pending.twins[active.id];
+    savePending(pending);
+    return { ...r.result, from_bundle: r.bundle_id };
+  }
+  pending.twins[active.id] = r.pending;
+  savePending(pending);
+  return { _pending: true, bundle_id: r.pending.bundle_id, queued_at: r.pending.queued_at };
 }
 
 // ============================================================================
@@ -390,8 +485,30 @@ OUTPUT SCHEMA (strict JSON):
 
 Output the JSON only. The draft body is the highest-value field — make it genuinely usable.`;
 
-  const result = await callJson({ model: 'haiku', system, user: userMsg, maxTokens: 2048 });
-  return result;
+  const pending = loadPending();
+  const r = tryFetchOrQueue({
+    pendingRef: pending.active[active.id] || null,
+    bundleSpec: {
+      purpose: 'coaching-message',
+      system_prompt: system,
+      input_data: userMsg,
+      output_spec: 'Strict JSON: { coaching_message, primary_action, inline_draft, cowork_task }. inline_draft.body is the highest-value field — make it genuinely usable.',
+      output_schema: 'json',
+      model_hint: 'haiku',
+      target_kind: 'coaching',
+      target_file: `coaching/cache/active.json#${active.id}`,
+      input_summary: `B1 coaching · ${active.name} (#${active.id}) · ${riskInfo.class}`,
+      created_by: 'live-pipeline.js#B1',
+    },
+  });
+  if (r.ok) {
+    delete pending.active[active.id];
+    savePending(pending);
+    return { ...r.result, from_bundle: r.bundle_id };
+  }
+  pending.active[active.id] = r.pending;
+  savePending(pending);
+  return { _pending: true, bundle_id: r.pending.bundle_id, queued_at: r.pending.queued_at };
 }
 
 // ============================================================================
@@ -412,11 +529,20 @@ async function runAllLive() {
   console.log(`[live-pipeline] Loaded ${allDeals.length} deals total`);
 
   // ----- A1 Friction -----
-  console.log('[live-pipeline] Running A1 friction analysis...');
-  const friction = await runA1Friction(allDeals);
-  cache.write('friction', friction);
-  ran.push('friction');
-  console.log(`[live-pipeline] A1 done — ${(friction.stage_transitions || []).length} transitions analysed`);
+  // Bundle path: returns _pending on first run; preserve prior cache while
+  // bundle processes; pick up completed result on subsequent run.
+  console.log('[live-pipeline] Running A1 friction analysis (bundle path)...');
+  const frictionResult = await runA1Friction(allDeals);
+  let friction;
+  if (frictionResult && frictionResult._pending) {
+    console.log(`[live-pipeline] A1 friction bundle ${frictionResult.bundle_id} queued — preserving prior cache`);
+    friction = cache.read('friction') || { stage_transitions: [] };
+  } else {
+    friction = frictionResult;
+    cache.write('friction', friction);
+    ran.push('friction');
+    console.log(`[live-pipeline] A1 done — ${(friction.stage_transitions || []).length} transitions analysed`);
+  }
 
   // ----- B2 Twins per active deal -----
   console.log('[live-pipeline] Running B2 twin matching for active deals...');
@@ -434,51 +560,107 @@ async function runAllLive() {
 
   const frictionByFrom = Object.fromEntries((friction.stage_transitions || []).map(t => [t.from, t]));
 
-  // Anthropic rate limit: 4,000 output tokens/min on Haiku for this org.
-  // Each B2 call produces ~1.5K tokens; each B1 ~300 tokens. ~1.8K tokens
-  // per deal. 30-second throttle = 2 deals/min × 1.8K = 3.6K/min, under
-  // the 4K limit with safety margin.
-  const THROTTLE_MS = 30_000;
-  let dealIdx = 0;
+  // Bundle path is filesystem-only — no rate-limit throttle needed.
+  // Old THROTTLE_MS=30000 dropped. Each deal queues/resolves bundles in
+  // milliseconds; the actual LLM work happens in Cowork / Claude Code.
+
+  // Load prior caches so we can preserve entries for deals whose bundles
+  // are still pending (don't overwrite a valid prior coaching message
+  // with an empty pending stub).
+  const priorTwins = (cache.read('twins') && cache.read('twins').deals) || [];
+  const priorTwinsByDealId = Object.fromEntries(priorTwins.map(t => [t.active_deal && t.active_deal.id, t]));
+  const priorActive = (cache.read('active') && cache.read('active').deals) || [];
+  const priorActiveByDealId = Object.fromEntries(priorActive.map(a => [a.deal_id, a]));
+
+  let pendingB2 = 0, completedB2 = 0, pendingB1 = 0, completedB1 = 0;
 
   for (const { d: active } of activeRanked) {
-    if (dealIdx > 0) await new Promise(r => setTimeout(r, THROTTLE_MS));
-    dealIdx++;
     try {
       const stageName = STG_BY_ID[active.stage]?.n || active.stage;
       const frictionForStage = frictionByFrom[stageName];
       const twinSelections = selectTwins(active, closedPool, 5);
       const twinResult = await runB2TwinsForDeal(active, twinSelections, frictionForStage);
-      twinsResults.push(twinResult);
 
-      // B1 — risk score (deterministic) + coaching message (Haiku)
+      let effectiveTwinResult;
+      if (twinResult && twinResult._pending) {
+        pendingB2++;
+        const prior = priorTwinsByDealId[active.id];
+        effectiveTwinResult = prior || { twins: [], next_best_actions: [], synthesis: null, _pending: true, bundle_id: twinResult.bundle_id };
+        twinsResults.push(effectiveTwinResult);
+      } else {
+        completedB2++;
+        effectiveTwinResult = twinResult;
+        twinsResults.push(twinResult);
+      }
+
       const daysInStage = active.stages[active.stage] ? Math.round((Date.now() - active.stages[active.stage].entered) / MS_PER_DAY) : null;
       const medianWon = frictionForStage?.median_days_won;
       const medianLost = frictionForStage?.median_days_lost;
       const risk = computeRiskScore(daysInStage, medianWon, medianLost);
-      const b1Out = await runB1ForDeal(active, twinResult, frictionForStage, risk);
+      const b1Out = await runB1ForDeal(active, effectiveTwinResult, frictionForStage, risk);
 
-      activeResults.push({
-        deal_id: active.id,
-        deal_name: active.name,
-        attribution: active.attribution,
-        current_stage: stageName,
-        current_stage_friction_from: stageName,
-        days_in_current_stage: daysInStage,
-        median_won_at_stage: medianWon,
-        median_lost_at_stage: medianLost,
-        risk_class: risk.class,
-        risk_score: risk.score,
-        coaching_message: b1Out.coaching_message || null,
-        primary_action: b1Out.primary_action || (twinResult.next_best_actions || [])[0]?.action || null,
-        supporting_twin_ids: (twinResult.twins || []).slice(0, 3).map(t => t.deal_id),
-        enablement: (b1Out.inline_draft || b1Out.cowork_task) ? { inline_draft: b1Out.inline_draft, cowork_task: b1Out.cowork_task } : null
-      });
-      console.log(`[live-pipeline]   ✓ ${active.name} (${active.id}) — ${risk.class.toUpperCase()} ${risk.score}`);
+      if (b1Out && b1Out._pending) {
+        pendingB1++;
+        const prior = priorActiveByDealId[active.id];
+        if (prior) {
+          // Update only the risk score (always cheap) + days_in_stage; preserve
+          // coaching content from prior run.
+          activeResults.push({
+            ...prior,
+            current_stage: stageName,
+            days_in_current_stage: daysInStage,
+            median_won_at_stage: medianWon,
+            median_lost_at_stage: medianLost,
+            risk_class: risk.class,
+            risk_score: risk.score,
+            coaching_bundle_pending: b1Out.bundle_id,
+          });
+        } else {
+          activeResults.push({
+            deal_id: active.id,
+            deal_name: active.name,
+            attribution: active.attribution,
+            current_stage: stageName,
+            current_stage_friction_from: stageName,
+            days_in_current_stage: daysInStage,
+            median_won_at_stage: medianWon,
+            median_lost_at_stage: medianLost,
+            risk_class: risk.class,
+            risk_score: risk.score,
+            coaching_message: null,
+            primary_action: null,
+            supporting_twin_ids: [],
+            enablement: null,
+            coaching_bundle_pending: b1Out.bundle_id,
+          });
+        }
+        console.log(`[live-pipeline]   … ${active.name} (${active.id}) — ${risk.class.toUpperCase()} ${risk.score} · bundles queued`);
+      } else {
+        completedB1++;
+        activeResults.push({
+          deal_id: active.id,
+          deal_name: active.name,
+          attribution: active.attribution,
+          current_stage: stageName,
+          current_stage_friction_from: stageName,
+          days_in_current_stage: daysInStage,
+          median_won_at_stage: medianWon,
+          median_lost_at_stage: medianLost,
+          risk_class: risk.class,
+          risk_score: risk.score,
+          coaching_message: b1Out.coaching_message || null,
+          primary_action: b1Out.primary_action || (effectiveTwinResult.next_best_actions || [])[0]?.action || null,
+          supporting_twin_ids: (effectiveTwinResult.twins || []).slice(0, 3).map(t => t.deal_id),
+          enablement: (b1Out.inline_draft || b1Out.cowork_task) ? { inline_draft: b1Out.inline_draft, cowork_task: b1Out.cowork_task } : null,
+        });
+        console.log(`[live-pipeline]   ✓ ${active.name} (${active.id}) — ${risk.class.toUpperCase()} ${risk.score}`);
+      }
     } catch (e) {
       console.error(`[live-pipeline]   ✗ ${active.name}: ${e.message}`);
     }
   }
+  console.log(`[live-pipeline] B2 twins: ${completedB2} completed, ${pendingB2} pending`);
+  console.log(`[live-pipeline] B1 active: ${completedB1} completed, ${pendingB1} pending`);
 
   cache.write('twins', { version: 'b2.1', generated_at: ranAt, deals: twinsResults });
   ran.push('twins');
