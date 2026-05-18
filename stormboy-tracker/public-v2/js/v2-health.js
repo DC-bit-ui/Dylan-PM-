@@ -193,14 +193,16 @@
         <div class="v2-health-bus" id="health-bus"></div>
       </div>`;
     try {
-      const [hRes, aRes] = await Promise.all([
+      const [hRes, aRes, iData] = await Promise.all([
         fetch('/api/system/health'),
         fetch('/api/system/outcome-attribution').catch(() => null),
+        (window.v2Intelligence && v2Intelligence.fetchQueueSummary()) || Promise.resolve(null),
       ]);
       if (!hRes.ok) throw new Error('HTTP ' + hRes.status);
       const h = await hRes.json();
       const a = (aRes && aRes.ok) ? await aRes.json() : null;
       const grid = document.getElementById('health-grid');
+      const intelWidget = (window.v2Intelligence && iData) ? v2Intelligence.renderQueueWidget(iData) : '';
       grid.innerHTML = [
         apexWidget(h.apex),
         supplementsWidget(h.supplements),
@@ -208,6 +210,7 @@
         probesWidget(h.probes),
         heuristicWidget(h.heuristic_errors),
         feedbackWidget(h.feedback),
+        intelWidget,
         attributionWidget(a),
       ].filter(Boolean).join('');
       const bus = document.getElementById('health-bus');

@@ -168,6 +168,61 @@ app.post('/api/system/retro', (req, res) => {
 // with system involvement progressing differently?". Descriptive, not
 // causal — caveats baked into the response. Needs 50+ deals × 90+ days
 // for statistical meaning; building the pipe now so it starts collecting.
+// Intelligence bundles — subscription-LLM compute substrate. Replaces direct
+// Anthropic API calls for analytic synthesis. Bundles are processed by Cowork
+// scheduled task or interactive Claude Code session — both run under Dylan's
+// flat-fee subscription, no metered API cost. See shared-growth-memory/
+// schemas/intelligence-bundle.md for the contract.
+app.post('/api/intelligence/bundles', (req, res) => {
+  try {
+    const ib = require('./coaching/engine/intelligence-bundles');
+    const created = ib.create(req.body || {});
+    res.status(201).json(created);
+  } catch (e) { res.status(400).json({ error: e.message }); }
+});
+app.get('/api/intelligence/bundles', (req, res) => {
+  try {
+    const ib = require('./coaching/engine/intelligence-bundles');
+    const items = ib.listBundles({ status: req.query.status });
+    res.json({ count: items.length, items, stats: ib.stats() });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/intelligence/bundles/:id', (req, res) => {
+  try {
+    const ib = require('./coaching/engine/intelligence-bundles');
+    const meta = ib.readMeta(req.params.id);
+    if (!meta) return res.status(404).json({ error: 'not found' });
+    res.json({ meta, markdown: ib.readMarkdown(req.params.id) });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+app.post('/api/intelligence/bundles/:id/claim', (req, res) => {
+  try {
+    const ib = require('./coaching/engine/intelligence-bundles');
+    const processor = (req.body && req.body.processor) || 'manual';
+    res.json(ib.claim(req.params.id, processor));
+  } catch (e) { res.status(409).json({ error: e.message }); }
+});
+app.post('/api/intelligence/results/:id', (req, res) => {
+  try {
+    const ib = require('./coaching/engine/intelligence-bundles');
+    const body = req.body || {};
+    const result = ib.submitResult(req.params.id, {
+      result: body.result,
+      completed_by: body.completed_by || 'manual_paste',
+      error: body.error,
+    });
+    res.json(result);
+  } catch (e) { res.status(400).json({ error: e.message }); }
+});
+app.get('/api/intelligence/results/:id', (req, res) => {
+  try {
+    const ib = require('./coaching/engine/intelligence-bundles');
+    const r = ib.readResult(req.params.id);
+    if (!r) return res.status(404).json({ error: 'not yet processed' });
+    res.json(r);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // Feedback — user-raised errors / preferences / comments / corrections.
 // Stored in <bus>/feedback/feedback-<id>.json per schemas/feedback.md.
 // Both systems read this; coaching engines should check open type=error
