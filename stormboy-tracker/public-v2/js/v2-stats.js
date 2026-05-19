@@ -921,18 +921,22 @@
       return `<div class="v2-empty" style="padding:18px">${escapeHtml(eff && eff.reason || 'No efficacy data available yet.')}</div>`;
     }
     const sb = eff.cohorts.stormboy, ct = eff.cohorts.control;
+    const lc = eff.cohorts.lawrieco || {};
     const winDelta   = eff.deltas.win_rate_pp;
     const daysDelta  = eff.deltas.median_days_to_close;
     const haDelta    = eff.deltas.hectares_per_won_deal_mean;
     const since = (eff.window.since_iso || '').slice(0, 10);
     const until = (eff.window.until_iso || '').slice(0, 10);
+    const lawriecoNote = lc && lc.total_closed
+      ? ` · LawrieCo n=${lc.total_closed} carved out (closes ~3x faster, would bias comparison)`
+      : '';
     return `
       <section class="v2-eff-hero">
         <div class="v2-eff-hero-head">
           <h2 class="v2-eff-hero-title">Is Stormboy working?</h2>
           <div class="v2-eff-hero-sub">
             Cohort comparison · ${since} → ${until} (${eff.window.months}mo window) ·
-            Stormboy n=${sb.total_closed}, control n=${ct.total_closed} ·
+            Stormboy n=${sb.total_closed}, direct control n=${ct.total_closed}${lawriecoNote} ·
             Stormboy launched ${eff.stormboy_launch_date}
           </div>
         </div>
@@ -940,7 +944,7 @@
           ${heroCard({
             label: 'Win rate',
             value: fmtNumber(sb.win_rate_pct, { pct: true }),
-            compare: `${fmtNumber(ct.win_rate_pct, { pct: true })} control`,
+            compare: `${fmtNumber(ct.win_rate_pct, { pct: true })} direct control`,
             delta: deltaPill(winDelta, { pp: true }),
             trend: winDelta && winDelta.trend,
             note: `${sb.won_count} won / ${sb.lost_count} lost · vs ${ct.won_count} won / ${ct.lost_count} lost`,
@@ -948,7 +952,7 @@
           ${heroCard({
             label: 'Median days to close',
             value: fmtNumber(sb.median_days_to_close, { days: true }),
-            compare: `${fmtNumber(ct.median_days_to_close, { days: true })} control`,
+            compare: `${fmtNumber(ct.median_days_to_close, { days: true })} direct control`,
             delta: deltaPill(daysDelta, { days: true }),
             trend: daysDelta && daysDelta.trend,
             note: `mean: ${fmtNumber(sb.mean_days_to_close, { days: true })} vs ${fmtNumber(ct.mean_days_to_close, { days: true })}`,
@@ -956,7 +960,7 @@
           ${heroCard({
             label: 'Hectares per won deal',
             value: fmtNumber(sb.hectares_per_won_deal_mean, { ha: true }),
-            compare: `${fmtNumber(ct.hectares_per_won_deal_mean, { ha: true })} control`,
+            compare: `${fmtNumber(ct.hectares_per_won_deal_mean, { ha: true })} direct control`,
             delta: deltaPill(haDelta, { ha: true }),
             trend: haDelta && haDelta.trend,
             note: `total enrolled: ${fmtNumber(sb.hectares_won, { ha: true })} vs ${fmtNumber(ct.hectares_won, { ha: true })}`,

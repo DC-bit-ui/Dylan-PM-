@@ -141,10 +141,22 @@ async function fetchStormboyFlags(token, contactIds) {
   return map;
 }
 
+// Three-cohort classification so LawrieCo doesn't bias the control bucket.
+// LawrieCo deals close ~3x faster than direct; if they're in control, the
+// Stormboy-vs-control comparison flatters Stormboy because control is
+// artificially fast. So we carve them out into their own bucket.
+//
+// Rules:
+//   - Has any Stormboy-tagged contact      → 'stormboy' (regardless of partner)
+//   - No Stormboy contact + partner=LawrieCo → 'lawrieco' (excluded from primary comparison)
+//   - Else                                  → 'control' (direct-only)
 function classifyCohort(deal, dealContacts, contactFlags) {
   const contactIds = dealContacts[deal.id] || [];
   const isStormboy = contactIds.some(cid => contactFlags[cid] === 'Yes');
-  return isStormboy ? 'stormboy' : 'control';
+  if (isStormboy) return 'stormboy';
+  const partner = (deal.properties.partner || '').trim();
+  if (partner === 'LawrieCo') return 'lawrieco';
+  return 'control';
 }
 
 function mean(arr) {
@@ -255,11 +267,16 @@ async function run({ windowMonths, force = false } = {}) {
   console.log(`[stormboy-efficacy] fetching storm_boy_campaign_member flag for ${contactIds.length} contacts`);
   const contactFlags = await fetchStormboyFlags(token, contactIds);
 
-  const stormboyDeals = allDeals.filter(d => classifyCohort(d, dealContacts, contactFlags) === 'stormboy');
-  const controlDeals = allDeals.filter(d => classifyCohort(d, dealContacts, contactFlags) === 'control');
+  // Three-way split so LawrieCo doesn't pollute the control bucket
+  const cohortOf = new Map();
+  allDeals.forEach(d => cohortOf.set(d.id, classifyCohort(d, dealContacts, contactFlags)));
+  const stormboyDeals = allDeals.filter(d => cohortOf.get(d.id) === 'stormboy');
+  const controlDeals = allDeals.filter(d => cohortOf.get(d.id) === 'control');
+  const lawriecoDeals = allDeals.filter(d => cohortOf.get(d.id) === 'lawrieco');
 
   const stormboy = summariseCohort('Stormboy cohort', stormboyDeals);
-  const control = summariseCohort('Control (non-Stormboy)', controlDeals);
+  const control = summariseCohort('Control (direct, non-Stormboy)', controlDeals);
+  const lawrieco = summariseCohort('LawrieCo (excluded from primary comparison)', lawriecoDeals);
 
   // Pipeline-entry rate — independent of close outcome. How often are
   // direct (non-LawrieCo) deals reaching the sales pipeline? Compute for
@@ -283,7 +300,7 @@ async function run({ windowMonths, force = false } = {}) {
     generated_at: new Date().toISOString(),
     window: { months, since_iso: new Date(sinceMs).toISOString(), until_iso: new Date(untilMs).toISOString() },
     stormboy_launch_date: STORMBOY_LAUNCH_DATE,
-    cohorts: { stormboy, control },
+    cohorts: { stormboy, control, lawrieco },
     deltas: {
       win_rate_pp: stormboy.win_rate_pct != null && control.win_rate_pct != null
         ? { absolute: Math.round((stormboy.win_rate_pct - control.win_rate_pct) * 10) / 10, trend: stormboy.win_rate_pct >= control.win_rate_pct ? 'good' : 'bad', direction: 'up_good' }
@@ -302,6 +319,7 @@ async function run({ windowMonths, force = false } = {}) {
       note: 'Direct deals only (excludes partner=LawrieCo). Measures deals entering the default sales pipeline per week, normalised across periods of different lengths.',
     },
     caveats: [
+      'Control is DIRECT deals only — LawrieCo deals are carved out into their own bucket (visible at .cohorts.lawrieco) because they close ~3x faster than direct and would bias the comparison. Stormboy-tagged deals stay in the Stormboy cohort regardless of partner.',
       'Cohort comparison, not randomised assignment. Stormboy deals are selected by the campaign, so selection effects matter.',
       'Same time window for both cohorts so macro shifts (carbon market, regulation) affect both equally.',
       'Hectares uses estimated_project_ha when present, else total_property_hectares as fallback.',
