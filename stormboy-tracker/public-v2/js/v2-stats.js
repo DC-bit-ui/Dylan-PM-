@@ -923,7 +923,9 @@
     const sb = eff.cohorts.stormboy, ct = eff.cohorts.control;
     const lc = eff.cohorts.lawrieco || {};
     const winDelta   = eff.deltas.win_rate_pp;
-    const daysDelta  = eff.deltas.median_days_to_close;
+    // Days to decision (won + lost) is the headline; days-to-close (won-only)
+    // is shown as a secondary breakout in the card note.
+    const decDelta   = eff.deltas.median_days_to_decision;
     const haDelta    = eff.deltas.hectares_per_won_deal_mean;
     const since = (eff.window.since_iso || '').slice(0, 10);
     const until = (eff.window.until_iso || '').slice(0, 10);
@@ -950,12 +952,12 @@
             note: `${sb.won_count} won / ${sb.lost_count} lost · vs ${ct.won_count} won / ${ct.lost_count} lost`,
           })}
           ${heroCard({
-            label: 'Median days to close',
-            value: fmtNumber(sb.median_days_to_close, { days: true }),
-            compare: `${fmtNumber(ct.median_days_to_close, { days: true })} direct control`,
-            delta: deltaPill(daysDelta, { days: true }),
-            trend: daysDelta && daysDelta.trend,
-            note: `mean: ${fmtNumber(sb.mean_days_to_close, { days: true })} vs ${fmtNumber(ct.mean_days_to_close, { days: true })}`,
+            label: 'Median days to decision',
+            value: fmtNumber(sb.median_days_to_decision, { days: true }),
+            compare: `${fmtNumber(ct.median_days_to_decision, { days: true })} direct control`,
+            delta: deltaPill(decDelta, { days: true }),
+            trend: decDelta && decDelta.trend,
+            note: `won-only: ${fmtNumber(sb.median_days_to_close_won, { days: true })} vs ${fmtNumber(ct.median_days_to_close_won, { days: true })} · lost-only: ${fmtNumber(sb.median_days_to_close_lost, { days: true })} vs ${fmtNumber(ct.median_days_to_close_lost, { days: true })} · n=${sb.n_with_decision_days} vs ${ct.n_with_decision_days} (noise filtered [1, 730]d)`,
           })}
           ${heroCard({
             label: 'Hectares per won deal',

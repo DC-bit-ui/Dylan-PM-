@@ -170,17 +170,40 @@ function median(arr) {
   return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
 }
 
+// Noise filter for days-to-close / days-to-decision. Excludes:
+//   - days < MIN_DAYS (instant-close data hygiene issues — bad records,
+//     duplicates closed same day, CRM cleanup)
+//   - days > MAX_DAYS (multi-year zombies — abandoned but never marked,
+//     finally closed-lost in a sweep, would otherwise skew the tail)
+// Per Dylan 2026-05-19 — applies to both Stormboy era AND the historical
+// control so noise is removed symmetrically.
+const NOISE_MIN_DAYS = 1;
+const NOISE_MAX_DAYS = 730;
+
+function daysToClose(deal) {
+  const c = Date.parse(deal.properties.createdate || '');
+  const cl = Date.parse(deal.properties.closedate || '');
+  if (!c || !cl || cl <= c) return null;
+  return Math.round((cl - c) / (24 * 60 * 60 * 1000));
+}
+function applyNoiseFilter(arr) {
+  return arr.filter(d => d >= NOISE_MIN_DAYS && d <= NOISE_MAX_DAYS);
+}
+
 function summariseCohort(label, deals) {
   const won = deals.filter(d => d.properties.dealstage === WON_STAGE);
   const lost = deals.filter(d => d.properties.dealstage === LOST_STAGE);
   const total = won.length + lost.length;
   const winRate = total === 0 ? null : Math.round((won.length / total) * 1000) / 10;
-  const daysToClose = won.map(d => {
-    const c = Date.parse(d.properties.createdate || '');
-    const cl = Date.parse(d.properties.closedate || '');
-    if (!c || !cl || cl <= c) return null;
-    return Math.round((cl - c) / (24 * 60 * 60 * 1000));
-  }).filter(x => x != null);
+  // Days to close (won-only) — kept as a secondary breakout
+  const wonDaysRaw = won.map(daysToClose).filter(x => x != null);
+  const wonDays = applyNoiseFilter(wonDaysRaw);
+  // Days to decision (won + lost combined) — the speed-to-decision metric.
+  // Both yes and no count; the goal is fast resolution either way.
+  const lostDaysRaw = lost.map(daysToClose).filter(x => x != null);
+  const lostDays = applyNoiseFilter(lostDaysRaw);
+  const decisionDays = [...wonDays, ...lostDays];
+  const noiseExcluded = (wonDaysRaw.length - wonDays.length) + (lostDaysRaw.length - lostDays.length);
   const hectaresPerDeal = won.map(d => {
     const v = parseFloat(d.properties.estimated_project_ha || d.properties.total_property_hectares || '0');
     return isNaN(v) ? 0 : v;
@@ -192,8 +215,19 @@ function summariseCohort(label, deals) {
     lost_count: lost.length,
     total_closed: total,
     win_rate_pct: winRate,
-    mean_days_to_close: mean(daysToClose),
-    median_days_to_close: median(daysToClose),
+    // Days to decision (won + lost) — the headline metric per Dylan 2026-05-19
+    mean_days_to_decision: mean(decisionDays),
+    median_days_to_decision: median(decisionDays),
+    n_with_decision_days: decisionDays.length,
+    // Won-only breakouts (for the card note)
+    mean_days_to_close_won: mean(wonDays),
+    median_days_to_close_won: median(wonDays),
+    mean_days_to_close_lost: mean(lostDays),
+    median_days_to_close_lost: median(lostDays),
+    // Legacy field names kept as aliases so any older readers don't break
+    mean_days_to_close: mean(wonDays),
+    median_days_to_close: median(wonDays),
+    noise_excluded_count: noiseExcluded,
     hectares_won: Math.round(hectaresTotal),
     hectares_per_won_deal_mean: won.length === 0 ? null : Math.round(hectaresTotal / won.length),
   };
@@ -306,6 +340,11 @@ async function run({ windowMonths, force = false } = {}) {
         ? { absolute: Math.round((stormboy.win_rate_pct - control.win_rate_pct) * 10) / 10, trend: stormboy.win_rate_pct >= control.win_rate_pct ? 'good' : 'bad', direction: 'up_good' }
         : null,
       win_rate_relative: delta(stormboy.win_rate_pct, control.win_rate_pct, { direction: 'up_good' }),
+      // Days to DECISION (won + lost combined) — headline. Speed to "yes
+      // or no, direct from us" is the strategic goal Dylan stated 2026-05-19.
+      median_days_to_decision: delta(stormboy.median_days_to_decision, control.median_days_to_decision, { direction: 'down_good' }),
+      mean_days_to_decision: delta(stormboy.mean_days_to_decision, control.mean_days_to_decision, { direction: 'down_good' }),
+      // Won-only breakout (legacy aliases kept for back-compat)
       median_days_to_close: delta(stormboy.median_days_to_close, control.median_days_to_close, { direction: 'down_good' }),
       mean_days_to_close: delta(stormboy.mean_days_to_close, control.mean_days_to_close, { direction: 'down_good' }),
       hectares_won: delta(stormboy.hectares_won, control.hectares_won, { direction: 'up_good' }),
@@ -323,7 +362,9 @@ async function run({ windowMonths, force = false } = {}) {
       'Cohort comparison, not randomised assignment. Stormboy deals are selected by the campaign, so selection effects matter.',
       'Same time window for both cohorts so macro shifts (carbon market, regulation) affect both equally.',
       'Hectares uses estimated_project_ha when present, else total_property_hectares as fallback.',
-      'Days-to-close measured from createdate to closedate. Deals created pre-Stormboy that closed post-Stormboy still attribute to whichever cohort their contacts belong to.',
+      'Days-to-decision measured from createdate to closedate, INCLUDING closed-lost (speed to yes-or-no is the goal). Days-to-close (legacy) is won-only.',
+      'Noise filter: only days in [1, 730] counted (instant closes are data hygiene issues; multi-year zombies were never really worked). Applied symmetrically to both cohorts.',
+      'Deals created pre-Stormboy that closed post-Stormboy still attribute to whichever cohort their contacts belong to.',
     ],
     from_cache: false,
   };

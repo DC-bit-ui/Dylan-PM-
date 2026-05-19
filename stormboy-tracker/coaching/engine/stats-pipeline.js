@@ -94,18 +94,25 @@ function percentile(arr, p) {
   return sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
 }
 
+// Noise filter applied symmetrically to both eras: exclude days < 1 (instant-
+// close data hygiene) and days > 730 (multi-year zombies). Per Dylan 2026-05-19.
+const ERA_NOISE_MIN_DAYS = 1;
+const ERA_NOISE_MAX_DAYS = 730;
+
 function eraStats(deals, eraStart, eraEnd) {
   const inEra = deals.filter(d => {
     if (!d.properties.closedate) return false;
     const c = new Date(d.properties.closedate).toISOString();
     return (!eraStart || c >= eraStart) && (!eraEnd || c <= eraEnd);
   });
-  const ttcs = inEra
+  const ttcsRaw = inEra
     .map(d => daysBetween(d.properties.createdate, d.properties.closedate))
     .filter(x => x !== null);
+  const ttcs = ttcsRaw.filter(x => x >= ERA_NOISE_MIN_DAYS && x <= ERA_NOISE_MAX_DAYS);
   return {
     n: inEra.length,
     n_with_ttc: ttcs.length,
+    n_noise_excluded: ttcsRaw.length - ttcs.length,
     median_days: percentile(ttcs, 0.5),
     p25_days: percentile(ttcs, 0.25),
     p75_days: percentile(ttcs, 0.75),
