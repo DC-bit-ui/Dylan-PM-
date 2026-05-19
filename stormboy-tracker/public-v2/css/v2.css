@@ -1725,6 +1725,57 @@ body {
   margin-right: 6px;
 }
 
+/* Direct-only flag chip on era columns */
+.v2-stats-era-flag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #6a5a1a;
+  background: #fdf6e3;
+  border: 1px solid #d8c69c;
+  border-radius: 8px;
+  padding: 1px 6px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* Era-comparison secondary view (all-channels with LawrieCo) */
+.v2-stats-secondary {
+  margin-top: 12px;
+  font-size: 11px;
+  border-top: 1px dashed #ddd;
+  padding-top: 10px;
+}
+.v2-stats-secondary summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #777;
+  user-select: none;
+}
+.v2-stats-secondary summary:hover { color: #2a2a2a; }
+.v2-stats-secondary[open] summary { margin-bottom: 8px; }
+.v2-stats-secondary-body {
+  background: #fafaf3;
+  border: 1px solid #ece8d2;
+  border-radius: 3px;
+  padding: 8px 12px;
+}
+.v2-stats-secondary-row {
+  display: grid;
+  grid-template-columns: 100px auto 1fr;
+  gap: 8px;
+  align-items: baseline;
+  padding: 3px 0;
+  font-size: 12px;
+}
+.v2-stats-secondary-row strong { font-size: 13px; font-variant-numeric: tabular-nums; }
+.v2-stats-secondary-row strong.better { color: #2a4a25; }
+.v2-stats-secondary-row strong.worse  { color: #8a2a2a; }
+.v2-stats-secondary-meta { color: #888; font-size: 11px; }
+.v2-stats-secondary-note { font-size: 10px; color: #888; margin-top: 6px; line-height: 1.4; font-style: italic; }
+
 /* Channel comparison */
 .v2-stats-channel-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
 .v2-stats-channel-row {

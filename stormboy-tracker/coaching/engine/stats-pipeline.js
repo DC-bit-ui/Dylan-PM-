@@ -163,10 +163,26 @@ async function run() {
   const lost = allTerminal.filter(d => d.properties.dealstage === 'closedlost');
 
   // Era stats
-  const preEra = eraStats(won, null, PRE_STORMBOY_END);
-  const postEra = eraStats(won, STORMBOY_ERA_START, null);
+  // Era comparison is supposed to measure Stormboy's effect on time-to-
+  // close. LawrieCo deals close ~3x faster than the average (per the
+  // captured pattern in shared-growth-memory/patterns/2026-05-09-lawrieco-*).
+  // If LawrieCo volume differs between eras, including them biases the
+  // comparison either way. Filter LawrieCo out of BOTH eras so the
+  // turnaround is attributable to Stormboy direct vs. pre-Stormboy direct.
+  const directWon = won.filter(d => (d.properties.partner || '').trim() !== 'LawrieCo');
+  const lawriecoWonCount = won.length - directWon.length;
+  const preEra = eraStats(directWon, null, PRE_STORMBOY_END);
+  const postEra = eraStats(directWon, STORMBOY_ERA_START, null);
   const delta = (preEra.median_days !== null && postEra.median_days !== null)
     ? preEra.median_days - postEra.median_days
+    : null;
+  // Side-data: same calc with LawrieCo INCLUDED — kept for transparency
+  // (the UI can surface this as a secondary view if leadership wants
+  // to see the all-channels number). Default-displayed view is direct.
+  const preEraAll = eraStats(won, null, PRE_STORMBOY_END);
+  const postEraAll = eraStats(won, STORMBOY_ERA_START, null);
+  const deltaAll = (preEraAll.median_days !== null && postEraAll.median_days !== null)
+    ? preEraAll.median_days - postEraAll.median_days
     : null;
 
   // Win rate by channel
@@ -461,6 +477,15 @@ async function run() {
       post_stormboy: { window: `from ${STORMBOY_ERA_START.slice(0, 10)}`, ...postEra },
       delta_median_days: delta !== null ? Math.round(delta * 10) / 10 : null,
       honesty_note: honestSignificanceNote(preEra.n_with_ttc, postEra.n_with_ttc, preEra.median_days, postEra.median_days),
+      // LawrieCo isolation context — surfaced in the UI subtitle/footnote
+      filter: 'direct_only',
+      lawrieco_excluded_wins: lawriecoWonCount,
+      all_channels_comparison: {
+        pre_stormboy: { window: `before ${PRE_STORMBOY_END.slice(0, 10)}`, ...preEraAll },
+        post_stormboy: { window: `from ${STORMBOY_ERA_START.slice(0, 10)}`, ...postEraAll },
+        delta_median_days: deltaAll !== null ? Math.round(deltaAll * 10) / 10 : null,
+        note: 'Same calc INCLUDING LawrieCo on both sides — LawrieCo closes ~3x faster than direct, so this view tends to compress the inter-era delta.',
+      },
     },
     win_rate_by_channel: channels,
     hectares_to_30k: {

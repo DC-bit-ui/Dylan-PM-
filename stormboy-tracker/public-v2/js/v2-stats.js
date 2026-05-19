@@ -59,15 +59,18 @@
     const pre = e.pre_stormboy, post = e.post_stormboy;
     const deltaSign = e.delta_median_days > 0 ? '−' : '+';
     const deltaAbs = Math.abs(e.delta_median_days || 0);
+    const ac = e.all_channels_comparison || {};
+    const acPre = ac.pre_stormboy || {};
+    const acPost = ac.post_stormboy || {};
     return `
       <div class="v2-stats-card">
         <div class="v2-stats-head">
           <h3>Time to project registration · era comparison</h3>
-          <p>Median days from initial landholder engagement to registered carbon project, pre vs post 1 Sep 2025.</p>
+          <p>Median days from initial landholder engagement to registered carbon project, pre vs post 1 Sep 2025. <strong>LawrieCo excluded on both sides</strong> so the turnaround is attributable to Stormboy direct vs pre-Stormboy direct — LawrieCo deals close ~3x faster than the average and would bias the comparison.</p>
         </div>
         <div class="v2-stats-era-grid">
           <div class="v2-stats-era-col">
-            <div class="v2-stats-era-label">Pre-Stormboy</div>
+            <div class="v2-stats-era-label">Pre-Stormboy <span class="v2-stats-era-flag">direct only</span></div>
             <div class="v2-stats-era-window">${escapeHtml(pre.window)}</div>
             <div class="v2-stats-era-big">${fmtDays(pre.median_days)}</div>
             <div class="v2-stats-era-sub">median · n=${pre.n_with_ttc}</div>
@@ -79,7 +82,7 @@
             <div class="v2-stats-era-delta-label">${e.delta_median_days > 0 ? 'faster' : 'slower'}</div>
           </div>
           <div class="v2-stats-era-col">
-            <div class="v2-stats-era-label">Stormboy era</div>
+            <div class="v2-stats-era-label">Stormboy era <span class="v2-stats-era-flag">direct only</span></div>
             <div class="v2-stats-era-window">${escapeHtml(post.window)}</div>
             <div class="v2-stats-era-big">${fmtDays(post.median_days)}</div>
             <div class="v2-stats-era-sub">median · n=${post.n_with_ttc}</div>
@@ -88,8 +91,29 @@
         </div>
         <div class="v2-stats-honesty">
           <span class="v2-stats-honesty-label">Honest read</span>
-          <span>${escapeHtml(e.honesty_note)}</span>
+          <span>${escapeHtml(e.honesty_note)} · ${e.lawrieco_excluded_wins || 0} LawrieCo wins excluded across both eras.</span>
         </div>
+        <details class="v2-stats-secondary">
+          <summary>Show all-channels view (with LawrieCo)</summary>
+          <div class="v2-stats-secondary-body">
+            <div class="v2-stats-secondary-row">
+              <span>Pre-Stormboy:</span>
+              <strong>${fmtDays(acPre.median_days)}</strong>
+              <span class="v2-stats-secondary-meta">median · n=${acPre.n_with_ttc || 0}</span>
+            </div>
+            <div class="v2-stats-secondary-row">
+              <span>Stormboy era:</span>
+              <strong>${fmtDays(acPost.median_days)}</strong>
+              <span class="v2-stats-secondary-meta">median · n=${acPost.n_with_ttc || 0}</span>
+            </div>
+            <div class="v2-stats-secondary-row">
+              <span>Delta:</span>
+              <strong class="${(ac.delta_median_days || 0) > 0 ? 'better' : 'worse'}">${ac.delta_median_days > 0 ? '−' : '+'}${Math.round(Math.abs(ac.delta_median_days || 0))}d</strong>
+              <span class="v2-stats-secondary-meta">${(ac.delta_median_days || 0) > 0 ? 'faster' : 'slower'} when LawrieCo is included</span>
+            </div>
+            <div class="v2-stats-secondary-note">${escapeHtml(ac.note || '')}</div>
+          </div>
+        </details>
       </div>`;
   }
 
