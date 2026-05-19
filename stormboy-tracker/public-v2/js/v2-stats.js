@@ -868,13 +868,112 @@
     target.scrollTop = 0;
   }
 
+  // ====== EFFICACY HERO — Section 1 of the STATS redesign ======
+  // The single most important question this page should answer: is Stormboy
+  // working? Three cards comparing Stormboy cohort vs control on the same
+  // time window. Reads /api/stats/stormboy-efficacy. Renders before the
+  // existing subtab nav (subtabs to be removed in subsequent slices once
+  // sections 2-5 land).
+  function fmtNumber(n, opts = {}) {
+    if (n == null) return '—';
+    if (opts.pct) return n + '%';
+    if (opts.days) return n + 'd';
+    if (opts.ha)   return n.toLocaleString() + ' ha';
+    return n.toLocaleString();
+  }
+  function deltaPill(d, opts = {}) {
+    if (!d) return '<span class="v2-eff-delta v2-eff-delta-na">n/a</span>';
+    const arrow = d.trend === 'good' ? '↑' : d.trend === 'bad' ? '↓' : '→';
+    const cls = `v2-eff-delta v2-eff-delta-${d.trend}`;
+    const absLabel = opts.pp ? `${d.absolute > 0 ? '+' : ''}${d.absolute}pp`
+                  : opts.days ? `${d.absolute > 0 ? '+' : ''}${d.absolute}d`
+                  : opts.ha ? `${d.absolute > 0 ? '+' : ''}${d.absolute.toLocaleString()} ha`
+                  : `${d.absolute > 0 ? '+' : ''}${d.absolute}`;
+    const pct = d.pct_change != null ? ` · ${d.pct_change > 0 ? '+' : ''}${d.pct_change}%` : '';
+    return `<span class="${cls}">${arrow} ${absLabel}${pct}</span>`;
+  }
+  function efficacyHeroHtml(eff) {
+    if (!eff || eff.empty) {
+      return `<div class="v2-empty" style="padding:18px">${escapeHtml(eff && eff.reason || 'No efficacy data available yet.')}</div>`;
+    }
+    const sb = eff.cohorts.stormboy, ct = eff.cohorts.control;
+    const winDelta   = eff.deltas.win_rate_pp;
+    const daysDelta  = eff.deltas.median_days_to_close;
+    const haDelta    = eff.deltas.hectares_per_won_deal_mean;
+    const since = (eff.window.since_iso || '').slice(0, 10);
+    const until = (eff.window.until_iso || '').slice(0, 10);
+    return `
+      <section class="v2-eff-hero">
+        <div class="v2-eff-hero-head">
+          <h2 class="v2-eff-hero-title">Is Stormboy working?</h2>
+          <div class="v2-eff-hero-sub">
+            Cohort comparison · ${since} → ${until} (${eff.window.months}mo window) ·
+            Stormboy n=${sb.total_closed}, control n=${ct.total_closed} ·
+            Stormboy launched ${eff.stormboy_launch_date}
+          </div>
+        </div>
+        <div class="v2-eff-grid">
+          ${heroCard({
+            label: 'Win rate',
+            value: fmtNumber(sb.win_rate_pct, { pct: true }),
+            compare: `${fmtNumber(ct.win_rate_pct, { pct: true })} control`,
+            delta: deltaPill(winDelta, { pp: true }),
+            trend: winDelta && winDelta.trend,
+            note: `${sb.won_count} won / ${sb.lost_count} lost · vs ${ct.won_count} won / ${ct.lost_count} lost`,
+          })}
+          ${heroCard({
+            label: 'Median days to close',
+            value: fmtNumber(sb.median_days_to_close, { days: true }),
+            compare: `${fmtNumber(ct.median_days_to_close, { days: true })} control`,
+            delta: deltaPill(daysDelta, { days: true }),
+            trend: daysDelta && daysDelta.trend,
+            note: `mean: ${fmtNumber(sb.mean_days_to_close, { days: true })} vs ${fmtNumber(ct.mean_days_to_close, { days: true })}`,
+          })}
+          ${heroCard({
+            label: 'Hectares per won deal',
+            value: fmtNumber(sb.hectares_per_won_deal_mean, { ha: true }),
+            compare: `${fmtNumber(ct.hectares_per_won_deal_mean, { ha: true })} control`,
+            delta: deltaPill(haDelta, { ha: true }),
+            trend: haDelta && haDelta.trend,
+            note: `total enrolled: ${fmtNumber(sb.hectares_won, { ha: true })} vs ${fmtNumber(ct.hectares_won, { ha: true })}`,
+          })}
+        </div>
+        <details class="v2-eff-caveats">
+          <summary>How to read this</summary>
+          <ul>${(eff.caveats || []).map(c => `<li>${escapeHtml(c)}</li>`).join('')}</ul>
+        </details>
+      </section>`;
+  }
+  function heroCard({ label, value, compare, delta, trend, note }) {
+    return `
+      <div class="v2-eff-card v2-eff-trend-${trend || 'flat'}">
+        <div class="v2-eff-card-label">${escapeHtml(label)}</div>
+        <div class="v2-eff-card-value">${value}</div>
+        <div class="v2-eff-card-delta">${delta}</div>
+        <div class="v2-eff-card-compare">${escapeHtml(compare)}</div>
+        <div class="v2-eff-card-note">${escapeHtml(note)}</div>
+      </div>`;
+  }
+  async function fetchEfficacy() {
+    try {
+      const r = await fetch('/api/stats/stormboy-efficacy');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+
   async function render(container) {
     container.innerHTML = `
-      <div class="v2-section-header">
-        <h2 class="v2-section-title">Stats · process refinement insights</h2>
-        <p class="v2-section-sub">leadership-facing analytics aligned to AgriProve's ISO 9001:2015 certified scope. operational surfaces (WORK / ASK / BRAIN) keep team-spoken language.</p>
+      <div id="stats-efficacy"><div class="v2-loading" style="padding:24px">Loading efficacy comparison…</div></div>
+      <div class="v2-section-header" style="margin-top:24px">
+        <h2 class="v2-section-title">Detail · process refinement</h2>
+        <p class="v2-section-sub">drill-downs by sub-tab. Sections 2-5 of the STATS redesign will replace this nav with scrolled-narrative views.</p>
       </div>
       <div id="stats-content"><div class="v2-loading">Loading from HubSpot…</div></div>`;
+    // Hero loads in parallel with detail
+    fetchEfficacy().then(eff => {
+      document.getElementById('stats-efficacy').innerHTML = efficacyHeroHtml(eff);
+    });
     try {
       const res = await fetch('/api/stats/pipeline');
       if (!res.ok) throw new Error('HTTP ' + res.status);

@@ -3052,6 +3052,104 @@ body {
 }
 .v2-health-baseline-cta code { background: #f0e9d2; padding: 1px 4px; border-radius: 2px; }
 /* ============================================================
+   EFFICACY HERO — "Is Stormboy working?" headline on the STATS tab
+   ============================================================ */
+.v2-eff-hero {
+  padding: 22px 24px 18px;
+  background: linear-gradient(180deg, #fbfaf3 0%, #f6f4ec 100%);
+  border: 1px solid #e0dcc4;
+  border-radius: 6px;
+  margin: 4px 0 0;
+}
+.v2-eff-hero-head { margin-bottom: 18px; }
+.v2-eff-hero-title {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2a2a2a;
+  letter-spacing: -0.3px;
+}
+.v2-eff-hero-sub {
+  font-size: 11px;
+  color: #888;
+  line-height: 1.5;
+}
+.v2-eff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+.v2-eff-card {
+  background: #fff;
+  border: 1px solid #e0dcc4;
+  border-left: 4px solid #b6b09a;
+  border-radius: 4px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.v2-eff-card.v2-eff-trend-good { border-left-color: #2d6a4f; }
+.v2-eff-card.v2-eff-trend-bad  { border-left-color: #a64545; }
+.v2-eff-card.v2-eff-trend-flat { border-left-color: #c89a3a; }
+.v2-eff-card-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #777;
+  font-weight: 600;
+}
+.v2-eff-card-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.05;
+  letter-spacing: -0.4px;
+  font-variant-numeric: tabular-nums;
+}
+.v2-eff-card-delta { margin-top: 2px; }
+.v2-eff-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.1px;
+  font-variant-numeric: tabular-nums;
+}
+.v2-eff-delta-good { background: #e8f0e2; color: #2a4a25; border: 1px solid #b6cda8; }
+.v2-eff-delta-bad  { background: #f4e2e2; color: #8a2a2a; border: 1px solid #d6a8a8; }
+.v2-eff-delta-flat { background: #f6efde; color: #6a5a1a; border: 1px solid #d8c69c; }
+.v2-eff-delta-na   { background: #f0efe7; color: #888;    border: 1px solid #d8d4be; }
+.v2-eff-card-compare {
+  font-size: 12px;
+  color: #6a6a5a;
+  margin-top: 2px;
+}
+.v2-eff-card-note {
+  font-size: 10px;
+  color: #999;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.v2-eff-caveats {
+  margin-top: 14px;
+  font-size: 11px;
+  color: #777;
+}
+.v2-eff-caveats summary {
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  color: #555;
+}
+.v2-eff-caveats[open] summary { margin-bottom: 6px; }
+.v2-eff-caveats ul { margin: 0; padding-left: 18px; }
+.v2-eff-caveats li { margin-bottom: 4px; line-height: 1.45; }
+
+/* ============================================================
    ASK launcher — curated questions, click → clipboard for Claude Code
    ============================================================ */
 .v2-ask-launcher { padding: 18px 24px; max-width: 1100px; }

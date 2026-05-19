@@ -377,6 +377,23 @@ app.post('/api/work/probe-outcome/:probe_id', (req, res) => {
 });
 
 // Farm-visit booking metrics — total + week-on-week + vs goal. Live HubSpot.
+// Stormboy efficacy — the "is Stormboy working?" headline answer.
+// Compares Stormboy-cohort vs control deals on win_rate, days_to_close,
+// hectares within the same time window. Caches 4h on disk; ?force=1 to refresh.
+app.get('/api/stats/stormboy-efficacy', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/stormboy-efficacy');
+    const result = await run({
+      windowMonths: req.query.months ? parseInt(req.query.months, 10) : undefined,
+      force: req.query.force === '1',
+    });
+    res.json(result);
+  } catch (e) {
+    console.error('stormboy-efficacy failed:', e);
+    res.status(500).json({ error: 'efficacy failed', detail: e.message });
+  }
+});
+
 app.get('/api/stats/farm-visits', async (req, res) => {
   try {
     const { run } = require('./coaching/engine/farm-visit-metrics');
