@@ -937,6 +937,7 @@
             trend: haDelta && haDelta.trend,
             note: `total enrolled: ${fmtNumber(sb.hectares_won, { ha: true })} vs ${fmtNumber(ct.hectares_won, { ha: true })}`,
           })}
+          ${pipelineEntryCard(eff)}
         </div>
         <details class="v2-eff-caveats">
           <summary>How to read this</summary>
@@ -944,6 +945,33 @@
         </details>
       </section>`;
   }
+  // 4th hero card — pipeline entry rate (direct deals only, excludes
+  // LawrieCo). Measures deals reaching the sales pipeline per week,
+  // Stormboy era vs pre-Stormboy, normalised so the two periods are
+  // directly comparable regardless of length.
+  function pipelineEntryCard(eff) {
+    const pe = eff.pipeline_entry || {};
+    const sb = pe.stormboy_era || {};
+    const pre = pe.pre_stormboy || {};
+    const d = eff.deltas && eff.deltas.pipeline_entry_direct_per_week;
+    return heroCard({
+      label: 'Direct deals to pipeline / week',
+      value: sb.direct_per_week != null ? sb.direct_per_week + '/wk' : '—',
+      compare: pre.direct_per_week != null ? `${pre.direct_per_week}/wk pre-Stormboy` : '—',
+      delta: deltaPillRate(d),
+      trend: d && d.trend,
+      note: `${sb.direct_count} direct in ${sb.weeks}wk Stormboy era · vs ${pre.direct_count} in ${pre.weeks}wk · LawrieCo excluded (${sb.excluded_lawrieco} + ${pre.excluded_lawrieco})`,
+    });
+  }
+  function deltaPillRate(d) {
+    if (!d) return '<span class="v2-eff-delta v2-eff-delta-na">n/a</span>';
+    const arrow = d.trend === 'good' ? '↑' : d.trend === 'bad' ? '↓' : '→';
+    const cls = `v2-eff-delta v2-eff-delta-${d.trend}`;
+    const sign = d.absolute > 0 ? '+' : '';
+    const pct = d.pct_change != null ? ` · ${d.pct_change > 0 ? '+' : ''}${d.pct_change}%` : '';
+    return `<span class="${cls}">${arrow} ${sign}${d.absolute}/wk${pct}</span>`;
+  }
+
   function heroCard({ label, value, compare, delta, trend, note }) {
     return `
       <div class="v2-eff-card v2-eff-trend-${trend || 'flat'}">

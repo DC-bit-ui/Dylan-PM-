@@ -83,6 +83,48 @@ async function fetchDealContacts(token, dealIds) {
   return map;
 }
 
+// Fetches every deal that entered the default sales pipeline in the
+// window. Used for the "pipeline entry rate" metric — counts how often
+// direct (non-LawrieCo) deals show up in the pipeline, normalised to
+// deals/week so Stormboy era and control are directly comparable.
+async function fetchPipelineEntries(token, sinceMs, untilMs) {
+  const deals = [];
+  let after;
+  while (deals.length < 10000) {
+    const body = {
+      filterGroups: [{
+        filters: [
+          { propertyName: 'pipeline', operator: 'EQ', value: 'default' },
+          { propertyName: 'createdate', operator: 'GTE', value: String(sinceMs) },
+          { propertyName: 'createdate', operator: 'LTE', value: String(untilMs) },
+        ],
+      }],
+      properties: ['dealname', 'createdate', 'partner', 'lead_source', 'dealstage'],
+      sorts: [{ propertyName: 'createdate', direction: 'ASCENDING' }],
+      limit: 100,
+    };
+    if (after) body.after = after;
+    const page = await hubspotPost(token, '/crm/v3/objects/deals/search', body);
+    deals.push(...(page.results || []));
+    after = page.paging && page.paging.next && page.paging.next.after;
+    if (!after) break;
+  }
+  return deals;
+}
+
+function pipelineEntryRate(deals, sinceMs, untilMs) {
+  const direct = deals.filter(d => (d.properties.partner || '').trim() !== 'LawrieCo');
+  const weeks = Math.max((untilMs - sinceMs) / (7 * 24 * 60 * 60 * 1000), 0.1);
+  return {
+    total_in_period: deals.length,
+    direct_count: direct.length,
+    excluded_lawrieco: deals.length - direct.length,
+    weeks: Math.round(weeks * 10) / 10,
+    direct_per_week: Math.round((direct.length / weeks) * 100) / 100,
+    direct_per_month: Math.round((direct.length / weeks * 4.345) * 10) / 10,
+  };
+}
+
 async function fetchStormboyFlags(token, contactIds) {
   if (!contactIds.length) return {};
   const map = {};
@@ -219,6 +261,24 @@ async function run({ windowMonths, force = false } = {}) {
   const stormboy = summariseCohort('Stormboy cohort', stormboyDeals);
   const control = summariseCohort('Control (non-Stormboy)', controlDeals);
 
+  // Pipeline-entry rate — independent of close outcome. How often are
+  // direct (non-LawrieCo) deals reaching the sales pipeline? Compute for
+  // Stormboy era and for the (pre-Stormboy) part of the window so the
+  // two rates are directly comparable as deals/week.
+  const launchMs = Date.parse(STORMBOY_LAUNCH_DATE + 'T00:00:00Z');
+  console.log(`[stormboy-efficacy] fetching pipeline entries in window for rate calc`);
+  const entries = await fetchPipelineEntries(token, sinceMs, untilMs);
+  const stormboyEra = entries.filter(d => {
+    const c = Date.parse(d.properties.createdate || '');
+    return !isNaN(c) && c >= launchMs;
+  });
+  const preStormboyEra = entries.filter(d => {
+    const c = Date.parse(d.properties.createdate || '');
+    return !isNaN(c) && c < launchMs;
+  });
+  const stormboyEraRate = pipelineEntryRate(stormboyEra, launchMs, untilMs);
+  const preStormboyRate = pipelineEntryRate(preStormboyEra, sinceMs, launchMs);
+
   const result = {
     generated_at: new Date().toISOString(),
     window: { months, since_iso: new Date(sinceMs).toISOString(), until_iso: new Date(untilMs).toISOString() },
@@ -233,6 +293,13 @@ async function run({ windowMonths, force = false } = {}) {
       mean_days_to_close: delta(stormboy.mean_days_to_close, control.mean_days_to_close, { direction: 'down_good' }),
       hectares_won: delta(stormboy.hectares_won, control.hectares_won, { direction: 'up_good' }),
       hectares_per_won_deal_mean: delta(stormboy.hectares_per_won_deal_mean, control.hectares_per_won_deal_mean, { direction: 'up_good' }),
+      pipeline_entry_direct_per_week: delta(stormboyEraRate.direct_per_week, preStormboyRate.direct_per_week, { direction: 'up_good' }),
+    },
+    pipeline_entry: {
+      stormboy_era: stormboyEraRate,
+      pre_stormboy: preStormboyRate,
+      launch_date: STORMBOY_LAUNCH_DATE,
+      note: 'Direct deals only (excludes partner=LawrieCo). Measures deals entering the default sales pipeline per week, normalised across periods of different lengths.',
     },
     caveats: [
       'Cohort comparison, not randomised assignment. Stormboy deals are selected by the campaign, so selection effects matter.',

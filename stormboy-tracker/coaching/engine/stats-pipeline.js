@@ -30,6 +30,11 @@ const STAGE_NAMES = {
 // Era boundaries. Adjust if a clearer date emerges from the operating doc.
 const PRE_STORMBOY_END = '2025-08-31T23:59:59Z';
 const STORMBOY_ERA_START = '2025-09-01T00:00:00Z';
+// The 30k target-set date — used ONLY for the hectares-to-30k card so
+// it matches the header-tile figure. The era-comparison stats above
+// keep using STORMBOY_ERA_START because those are about Stormboy as a
+// motion, not about the 30k target's reporting window.
+const HA_TARGET_SET_DATE = '2026-04-27T00:00:00Z';
 
 // Multi-era classification (used by Era & Channel sub-tab). Tightened from
 // the simple pre/post binary so leadership can see the KCT and Stormboy phases.
@@ -181,14 +186,20 @@ async function run() {
     direct:   rate(allTerminal, d => !d.properties.partner),
   };
 
-  // Hectares to 30K (post-Stormboy era only)
+  // Era wins — used by the multi-era + recent-win sections below
   const eraWins = won.filter(d => new Date(d.properties.closedate) >= new Date(STORMBOY_ERA_START));
-  const totalHa = eraWins.reduce((s, d) => s + num(d.properties.total_property_hectares), 0);
-  const projectHa = eraWins.reduce((s, d) => s + num(d.properties.estimated_project_ha), 0);
 
-  // Monthly project-ha trend (Stormboy era)
+  // Hectares to 30K — anchor at the date the 30k target was set
+  // (2026-04-27), matching the header-tile figure. Different from
+  // eraWins above because the 30k target is a leadership artefact
+  // post-dating the Stormboy era start.
+  const targetSetWins = won.filter(d => new Date(d.properties.closedate) >= new Date(HA_TARGET_SET_DATE));
+  const totalHa = targetSetWins.reduce((s, d) => s + num(d.properties.total_property_hectares), 0);
+  const projectHa = targetSetWins.reduce((s, d) => s + num(d.properties.estimated_project_ha), 0);
+
+  // Monthly project-ha trend (since target set)
   const byMonth = {};
-  eraWins.forEach(d => {
+  targetSetWins.forEach(d => {
     const m = d.properties.closedate.slice(0, 7); // YYYY-MM
     byMonth[m] = (byMonth[m] || 0) + num(d.properties.estimated_project_ha);
   });
@@ -458,7 +469,7 @@ async function run() {
       project_ha: Math.round(projectHa),
       project_pct: Math.round((projectHa / 30000) * 1000) / 10,
       monthly_trend: monthlyTrend,
-      n_wins: eraWins.length,
+      n_wins: targetSetWins.length,
     },
     recent_wins: recentWins,
     totals: {
