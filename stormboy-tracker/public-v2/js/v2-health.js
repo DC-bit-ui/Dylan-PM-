@@ -182,9 +182,117 @@
       </div>`;
   }
 
+  // System schema embed — Cowork-generated explainer (5-band flow + plain-
+  // English sections). Lives in shared-growth-memory/architecture/system-
+  // schema.html and is inlined here (rather than iframed) so it can be
+  // styled to match the dashboard. Pills removed since the HEALTH widgets
+  // below provide the same signals. dark-mode block from the original
+  // dropped since v2 is a light-theme dashboard.
+  function schemaEmbedHtml() {
+    return `
+      <details class="v2-schema-embed-wrap" id="v2-schema-toggle">
+        <summary class="v2-schema-embed-summary">
+          <span class="v2-schema-embed-chevron">▾</span>
+          How the Stormboy Tracker works
+          <span class="v2-schema-embed-sub">5-band data flow · plain-English explainer · click to collapse</span>
+        </summary>
+        <div class="v2-schema-embed">
+          <div class="hdr">
+            <h1>How the Stormboy Tracker works</h1>
+            <p>A self-improving sales intelligence system that gets smarter every day your team uses it</p>
+          </div>
+          <div class="flow">
+            <div class="band band-sources">
+              <div class="band-label">Where the data comes from</div>
+              <div class="band-title">Five systems your team already uses</div>
+              <div class="band-desc">The tracker reads from these automatically. Nobody needs to change how they work — it picks up what's already there.</div>
+              <div class="chips">
+                <span class="chip">HubSpot CRM — deals + contacts</span>
+                <span class="chip">Confluence — Aircall call transcripts</span>
+                <span class="chip">Granola — meeting notes</span>
+                <span class="chip">Teams — Storm Boy channels</span>
+                <span class="chip">Outlook — email + calendar</span>
+              </div>
+            </div>
+            <div class="conn-box">
+              <div class="conn-arrow" style="color:#3b82f6"><div class="conn-line" style="background:#3b82f6"></div><svg viewBox="0 0 16 16"><path d="M8 2v10M4 9l4 4 4-4" stroke="#3b82f6" stroke-width="2" fill="none" stroke-linecap="round"/></svg> swept daily</div>
+              <div class="conn-arrow" style="color:#9333ea"><div class="conn-dash" style="border-color:#9333ea"></div><svg viewBox="0 0 16 16"><path d="M8 2v10M4 9l4 4 4-4" stroke="#9333ea" stroke-width="2" fill="none" stroke-linecap="round"/></svg> live reads</div>
+            </div>
+            <div class="band-proc">
+              <div class="proc-auto">
+                <div class="band-label">Runs automatically in the background</div>
+                <div class="band-title">Scheduled processing</div>
+                <div class="band-desc">Cowork runs these tasks on a set schedule without anyone triggering them. They sweep all five systems, enrich every deal and contact, process intelligence requests, and review pattern quality.</div>
+                <div class="sched" style="background:#dbeafe;color:#1d4ed8">Daily enrichment — weekday 13:00 AEST (05:00 SAST)</div><br>
+                <div class="sched" style="background:#dbeafe;color:#1d4ed8">Intelligence processing — twice daily (morning + afternoon AEST)</div><br>
+                <div class="sched" style="background:#dbeafe;color:#1d4ed8">Pattern curation + system review — Friday 00:30 AEST (Sat)</div>
+              </div>
+              <div class="proc-dash">
+                <div class="band-label">Where you interact with the results</div>
+                <div class="band-title">Stormboy Dashboard</div>
+                <div class="band-desc">A local web app where you see coaching recommendations, pipeline stats, team brain, and messaging insights. The ASK tab launches directly into your Claude app to explore any question further.</div>
+                <div class="sched" style="background:#f3e8ff;color:#7c3aed">Six tabs: WORK · BRAIN · STATS · MESSAGING · HEALTH · ASK</div>
+              </div>
+            </div>
+            <div class="conn-box">
+              <div class="conn-arrow" style="color:#3b82f6"><svg viewBox="0 0 16 16"><path d="M8 2v10M4 9l4 4 4-4" stroke="#3b82f6" stroke-width="2" fill="none" stroke-linecap="round"/></svg> enriched data</div>
+              <div class="conn-arrow" style="color:#9333ea"><svg viewBox="0 0 16 16"><path d="M8 2v10M4 9l4 4 4-4" stroke="#9333ea" stroke-width="2" fill="none" stroke-linecap="round"/></svg> analysis + signals</div>
+              <div class="conn-arrow" style="color:#10b981"><svg viewBox="0 0 16 16"><path d="M8 14V4M4 7l4-4 4 4" stroke="#10b981" stroke-width="2" fill="none" stroke-linecap="round"/></svg> reads back</div>
+            </div>
+            <div class="band band-bus">
+              <div class="band-label">The shared memory — lives on SharePoint, syncs to every machine via OneDrive</div>
+              <div class="band-title">Shared Growth Memory</div>
+              <div class="band-desc">Everything the system knows lives here as simple files in a shared folder. No database, no special tools needed — anyone on the team can browse it directly.</div>
+              <div class="bus-grid">
+                <div class="bus-card"><h4>What we know</h4><p>Conversation patterns, rep profiles, objection plays, deal health signals, customer positions, baseline metrics</p></div>
+                <div class="bus-card"><h4>What to do next</h4><p>Each rep's personalised daily work queue, plus intelligence analysis requests waiting to be processed</p></div>
+                <div class="bus-card"><h4>What we learned</h4><p>User corrections that prevent repeated mistakes, probe outcomes from outreach, weekly system reviews</p></div>
+              </div>
+            </div>
+            <div class="conn-box">
+              <div class="conn-arrow" style="color:#10b981"><div class="conn-dash" style="border-color:#10b981"></div><svg viewBox="0 0 16 16"><path d="M8 2v10M4 9l4 4 4-4" stroke="#10b981" stroke-width="2" fill="none" stroke-linecap="round"/></svg> syncs to every machine via OneDrive</div>
+            </div>
+            <div class="band band-team">
+              <div class="band-label">Who uses it — everyone reads from and writes back to the shared memory</div>
+              <div class="band-title">Your team's Claude apps</div>
+              <div class="band-desc">Each person has their own Claude session tuned to their role. They all share the same knowledge base — and every insight they add makes the system smarter for everyone.</div>
+              <div class="rep-grid">
+                <div class="rep-card"><strong>Dylan — strategy + oversight</strong><span>Processes intelligence requests, oversees system health, writes strategic patterns</span></div>
+                <div class="rep-card"><strong>Kieren — analysis + patterns</strong><span>Runs strategic analyses across the pipeline, writes confirmed patterns that improve future coaching</span></div>
+                <div class="rep-card"><strong>Claudia — call prep + logging</strong><span>Reads her daily work queue each morning, logs call outcomes, updates customer positions after conversations</span></div>
+                <div class="rep-card"><strong>Each rep — daily queue</strong><span>Reads their personalised work cards via OneDrive. As they adopt Claude, they contribute insights back too</span></div>
+              </div>
+            </div>
+            <div class="conn-box">
+              <div class="conn-arrow" style="color:#d97706"><svg viewBox="0 0 16 16"><path d="M8 2v10M4 9l4 4 4-4" stroke="#d97706" stroke-width="2" fill="none" stroke-linecap="round"/></svg> corrections + insights flow back</div>
+            </div>
+            <div class="band band-loop">
+              <div class="band-label">The learning loop — this is what makes it get smarter over time</div>
+              <div class="band-title">Every correction improves the next recommendation</div>
+              <div class="band-desc" style="margin-bottom:8px">When someone flags an error in a recommendation, logs a call outcome, or writes down a pattern they've noticed, that insight flows back into the shared memory. The coaching engines check these corrections before generating new suggestions — so the same mistake won't repeat.</div>
+              <div class="band-desc">Patterns confirmed by multiple sources get promoted to higher confidence. Unconfirmed patterns are automatically archived after 30 days. When a recommended outreach gets a response, the outcome feeds back into the deal signal — shaping the next recommendation. The system doesn't just analyse historical data — it learns from what actually happened.</div>
+              <div class="loop-callout">
+                <svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 2.5a1 1 0 011 1v4.09l2.7 1.57a1 1 0 01-1 1.73L9.5 11V5.5a1 1 0 011-1z" fill="#d97706"/></svg>
+                <span>This completes the circle. Next time the scheduled processing runs or the dashboard generates coaching, it reads everything the team learned — and the recommendations are better than yesterday's.</span>
+              </div>
+            </div>
+          </div>
+          <div class="deprecated"><b>Note:</b> Direct AI API calls are deprecated. All analysis now runs under flat-fee subscription compute — zero metered cost to the team.</div>
+          <div class="explain">
+            <h2>Understanding the system</h2>
+            <div class="exp"><h3>What this achieves</h3><p>The Stormboy Tracker turns the information your team already generates — CRM updates, call notes, meeting transcripts, emails, Teams messages — into personalised coaching for every rep, every day. Instead of each person working from their own memory and instinct alone, the whole team benefits from a shared, growing knowledge base. When Hobbs learns something on a farm visit, that insight can shape the coaching Claudia sees before her next call — automatically, without anyone having to relay the message.</p></div>
+            <div class="exp"><h3>How it learns and improves over time</h3><p>The system has a built-in feedback loop. Every time someone flags an error in a recommendation, logs a call outcome, or writes down a pattern they've noticed, that correction goes into the shared memory. The coaching engines check for these corrections before generating new suggestions — so the same mistake doesn't repeat. Weekly, the system automatically reviews its own patterns: insights confirmed by multiple sources get promoted; those that haven't been validated after 30 days get archived. Over time, recommendations improve because the system is learning from real outcomes, not just historical data.</p></div>
+            <div class="exp"><h3>How it works with each rep's Claude</h3><p>Every team member's Claude app has access to the shared memory through OneDrive sync — the same folder appears on everyone's machine. When Claudia opens her Claude session in the morning, it reads her personalised work queue: deals to follow up, contacts to call, probes to chase. When she finishes a call and logs the outcome, her notes flow back into the shared memory. Kieren's Claude reads the same folder but focuses on strategic patterns — spotting trends across the whole pipeline. Dylan's Claude processes intelligence requests and oversees the system. Each person's Claude is tuned to their role, but they all read from and write to the same shared knowledge base. That's what makes this a team system, not just individual tools.</p></div>
+            <div class="exp"><h3>What happens without anyone lifting a finger</h3><p>Every weekday at 1:00 PM AEST, the scheduled processing automatically sweeps HubSpot, Confluence, Teams, Granola, and Outlook. It enriches every active deal and contact with the latest signals and rebuilds each rep's daily work queue. Twice a day — morning and afternoon — it processes any queued intelligence requests (deal diagnoses, persona refreshes, theme analysis). Each week, it curates patterns and generates a system retrospective summarising what worked. The live signal pills below this section show whether each part is currently flowing.</p></div>
+          </div>
+        </div>
+      </details>`;
+  }
+
   async function render(container) {
     container.innerHTML = `
       <div class="v2-health-wrap">
+        ${schemaEmbedHtml()}
         <div class="v2-health-head">
           <h2>System health</h2>
           <div class="v2-health-sub">Is this thing learning? Five signals — if any one stalls, the system has a specific named problem.</div>
@@ -192,6 +300,17 @@
         <div class="v2-health-grid" id="health-grid"><div class="v2-empty">Loading…</div></div>
         <div class="v2-health-bus" id="health-bus"></div>
       </div>`;
+    // Restore collapsed state from localStorage (default: open on first visit)
+    try {
+      const toggle = document.getElementById('v2-schema-toggle');
+      if (toggle) {
+        const stored = localStorage.getItem('v2-schema-collapsed');
+        toggle.open = stored !== 'true';
+        toggle.addEventListener('toggle', () => {
+          try { localStorage.setItem('v2-schema-collapsed', toggle.open ? 'false' : 'true'); } catch (_) {}
+        });
+      }
+    } catch (_) { /* localStorage blocked in some contexts; non-fatal */ }
     try {
       const [hRes, aRes, iData] = await Promise.all([
         fetch('/api/system/health'),
