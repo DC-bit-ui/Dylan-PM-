@@ -27,6 +27,10 @@ const HUBSPOT_TOKEN = process.env.HUBSPOT_TOKEN;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const PORT = process.env.PORT || 3000;
 
+// Shared HubSpot client with 429 retry-with-backoff. All HubSpot requests
+// from this server (proxies + engine modules) route through it.
+const { hubspotFetch } = require('./coaching/engine/hubspot-client');
+
 // Wire coaching routes (cache reads, refresh trigger). See coaching/engine/.
 const { wireCoachingRoutes } = require('./coaching/engine/routes');
 wireCoachingRoutes(app);
@@ -820,7 +824,7 @@ app.post('/api/hubspot/search', async (req, res) => {
     if (cursor) body.after = String(cursor);
     if (sorts) body.sorts = sorts;
 
-    const resp = await fetch(url, {
+    const resp = await hubspotFetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -875,7 +879,7 @@ app.post('/api/hubspot/associations', async (req, res) => {
     for (let i = 0; i < ids.length; i += 100) {
       const batch = ids.slice(i, i + 100);
       const url = `https://api.hubapi.com/crm/v4/associations/${fromType}/${toType}/batch/read`;
-      const resp = await fetch(url, {
+      const resp = await hubspotFetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

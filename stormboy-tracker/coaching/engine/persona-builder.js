@@ -37,6 +37,8 @@ const { create: createBundle, readResult: readBundleResult } = require('./intell
 // and regenerates the profile.md. The previous profile is preserved while
 // the bundle is in flight (no half-written profiles, no broken UIs).
 
+const { hubspotFetch } = require('./hubspot-client');
+
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 const COACHING_ROOT = path.join(__dirname, '..');
 const CACHE_DIR = path.join(COACHING_ROOT, 'cache');
@@ -65,7 +67,7 @@ const SYNTHESIS_MODEL = 'haiku';
 // ---- HubSpot primitives ---------------------------------------------------
 
 async function hubspotPost(token, urlPath, body) {
-  const res = await fetch(HUBSPOT_BASE + urlPath, {
+  const res = await hubspotFetch(HUBSPOT_BASE + urlPath, {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -78,7 +80,7 @@ async function hubspotPost(token, urlPath, body) {
 }
 
 async function hubspotGet(token, urlPath) {
-  const res = await fetch(HUBSPOT_BASE + urlPath, {
+  const res = await hubspotFetch(HUBSPOT_BASE + urlPath, {
     headers: { Authorization: 'Bearer ' + token },
   });
   if (!res.ok) {

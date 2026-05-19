@@ -13,6 +13,8 @@
  * Lifetime total + last 12 weeks trend + this/last week + running average + vs goal.
  */
 
+const { hubspotFetch } = require('./hubspot-client');
+
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 const TRENDED_WEEKS = 12;
 
@@ -28,7 +30,7 @@ async function fetchAll(token, filterGroups, properties) {
   while (safety-- > 0) {
     const body = { filterGroups, properties, limit: 100 };
     if (after) body.after = after;
-    const res = await fetch(HUBSPOT_BASE + '/crm/v3/objects/contacts/search', {
+    const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v3/objects/contacts/search', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

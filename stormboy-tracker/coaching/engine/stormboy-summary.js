@@ -13,6 +13,8 @@
  *   - recent:     contacts whose stage moved in the last 7 days
  */
 
+const { hubspotFetch } = require('./hubspot-client');
+
 const FUNNEL_STAGES = [
   'Identified',
   'In Conversation',
@@ -26,10 +28,6 @@ const CALL_QUEUE_STALE_DAYS = 3;
 
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 
-// HubSpot's secondly rate limit is ~10 req/s/account across the whole org.
-// When persona-builder, live-pipeline, and dashboard requests fire in parallel
-// they collectively breach it and HubSpot returns 429 with a retryable error.
-// Retry up to 3 times with exponential backoff; respect Retry-After if present.
 async function fetchContactsPage(token, filterGroups, after, properties) {
   const body = {
     filterGroups,
@@ -39,30 +37,16 @@ async function fetchContactsPage(token, filterGroups, after, properties) {
   };
   if (after) body.after = after;
 
-  let lastErr;
-  for (let attempt = 0; attempt < 4; attempt++) {
-    const res = await fetch(HUBSPOT_BASE + '/crm/v3/objects/contacts/search', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    if (res.ok) return res.json();
+  const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v3/objects/contacts/search', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
     const text = await res.text();
-    if (res.status === 429 && attempt < 3) {
-      // HubSpot 429 — secondly or daily limit. Backoff respects Retry-After
-      // header (seconds) when present; otherwise exponential with jitter.
-      const retryAfterRaw = res.headers.get('Retry-After');
-      const retryAfterMs = retryAfterRaw && !isNaN(+retryAfterRaw)
-        ? (+retryAfterRaw) * 1000
-        : (500 * Math.pow(2, attempt)) + Math.floor(Math.random() * 200);
-      console.warn(`[stormboy-summary] HubSpot 429 (attempt ${attempt + 1}/4); backing off ${retryAfterMs}ms`);
-      await new Promise(r => setTimeout(r, retryAfterMs));
-      continue;
-    }
-    lastErr = new Error('HubSpot contacts search failed: ' + res.status + ' ' + text);
-    break;
+    throw new Error('HubSpot contacts search failed: ' + res.status + ' ' + text);
   }
-  throw lastErr || new Error('HubSpot contacts search exhausted retries');
+  return res.json();
 }
 
 async function fetchAllContacts(token, filterGroups, properties) {

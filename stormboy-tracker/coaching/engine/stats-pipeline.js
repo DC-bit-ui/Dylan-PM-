@@ -13,6 +13,8 @@
  *   - Don't compute a p-value unless n is large enough to mean anything.
  */
 
+const { hubspotFetch } = require('./hubspot-client');
+
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 
 const STAGE_NAMES = {
@@ -57,7 +59,7 @@ async function fetchAll(token, filterGroups, properties) {
       sorts: [{ propertyName: 'createdate', direction: 'DESCENDING' }],
     };
     if (after) body.after = after;
-    const res = await fetch(HUBSPOT_BASE + '/crm/v3/objects/deals/search', {
+    const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v3/objects/deals/search', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

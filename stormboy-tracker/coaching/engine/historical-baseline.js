@@ -29,6 +29,8 @@ const fs = require('fs');
 const path = require('path');
 const { BUS_ROOT } = require('./supplements');
 
+const { hubspotFetch } = require('./hubspot-client');
+
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 const WON_STAGE = '231921676';
 const LOST_STAGE = 'closedlost';
@@ -36,7 +38,7 @@ const PAGE_LIMIT = 100;
 const HARD_CAP = 5000; // safety; tune if real volume exceeds
 
 async function hubspotPost(token, urlPath, body) {
-  const res = await fetch(HUBSPOT_BASE + urlPath, {
+  const res = await hubspotFetch(HUBSPOT_BASE + urlPath, {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

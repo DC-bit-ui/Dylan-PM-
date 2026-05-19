@@ -7,6 +7,8 @@
  * ("last email 2025-10-12 read: 'Will need to discuss with my brother…'").
  */
 
+const { hubspotFetch } = require('./hubspot-client');
+
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 const PER_TYPE_LIMIT = 5;
 const BODY_TRUNCATE = 600;
@@ -19,7 +21,7 @@ const ENGAGEMENT_TYPES = [
 ];
 
 async function hubspotGet(token, urlPath) {
-  const res = await fetch(HUBSPOT_BASE + urlPath, {
+  const res = await hubspotFetch(HUBSPOT_BASE + urlPath, {
     headers: { 'Authorization': 'Bearer ' + token },
   });
   if (!res.ok) {
@@ -30,7 +32,7 @@ async function hubspotGet(token, urlPath) {
 }
 
 async function hubspotPost(token, urlPath, body) {
-  const res = await fetch(HUBSPOT_BASE + urlPath, {
+  const res = await hubspotFetch(HUBSPOT_BASE + urlPath, {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

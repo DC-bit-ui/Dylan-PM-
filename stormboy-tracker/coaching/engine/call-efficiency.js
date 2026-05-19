@@ -16,6 +16,8 @@
  *   - Calls per visit = calls_in_week / visits_in_week (Will's preferred framing)
  */
 
+const { hubspotFetch } = require('./hubspot-client');
+
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 const TRENDED_WEEKS = 12;
 
@@ -72,7 +74,7 @@ async function buildCustomerContactIds(token) {
       limit: 100,
     };
     if (after) body.after = after;
-    const res = await fetch(HUBSPOT_BASE + '/crm/v3/objects/deals/search', {
+    const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v3/objects/deals/search', {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -83,7 +85,7 @@ async function buildCustomerContactIds(token) {
     // Batch fetch deal→contact associations
     for (let i = 0; i < dealIds.length; i += 100) {
       const slice = dealIds.slice(i, i + 100);
-      const assocRes = await fetch(HUBSPOT_BASE + '/crm/v4/associations/deals/contacts/batch/read', {
+      const assocRes = await hubspotFetch(HUBSPOT_BASE + '/crm/v4/associations/deals/contacts/batch/read', {
         method: 'POST',
         headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
         body: JSON.stringify({ inputs: slice.map(id => ({ id })) }),
@@ -106,7 +108,7 @@ async function fetchCallContacts(token, callIds) {
   const map = {};
   for (let i = 0; i < callIds.length; i += 100) {
     const slice = callIds.slice(i, i + 100);
-    const res = await fetch(HUBSPOT_BASE + '/crm/v4/associations/calls/contacts/batch/read', {
+    const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v4/associations/calls/contacts/batch/read', {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify({ inputs: slice.map(id => ({ id: String(id) })) }),
@@ -140,7 +142,7 @@ async function fetchAllCalls(token, sinceTimestampMs, ownerIds) {
       limit: 100,
     };
     if (after) body.after = after;
-    const res = await fetch(HUBSPOT_BASE + '/crm/v3/objects/calls/search', {
+    const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v3/objects/calls/search', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -176,7 +178,7 @@ async function fetchVisitsByWeek(token) {
   while (safety-- > 0) {
     const b = { ...body };
     if (after) b.after = after;
-    const res = await fetch(HUBSPOT_BASE + '/crm/v3/objects/contacts/search', {
+    const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v3/objects/contacts/search', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify(b),

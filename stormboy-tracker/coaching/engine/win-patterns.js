@@ -28,6 +28,8 @@ const engagementTimeline = require('./engagement-timeline');
 // runs check the bundle's result file and replace pending entries with
 // the completed analysis when ready.
 
+const { hubspotFetch } = require('./hubspot-client');
+
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 const CACHE_PATH = path.join(__dirname, '..', 'cache', 'win-patterns.json');
 // Fetch a wider window so Stormboy wins still surface if they fall outside the
@@ -61,7 +63,7 @@ async function fetchRecentWins(token) {
     sorts: [{ propertyName: 'closedate', direction: 'DESCENDING' }],
     limit: FETCH_N,
   };
-  const res = await fetch(HUBSPOT_BASE + '/crm/v3/objects/deals/search', {
+  const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v3/objects/deals/search', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -74,7 +76,7 @@ async function fetchRecentWins(token) {
 // Batch deal → contact associations. Returns { dealId: [contactId, ...] }
 async function fetchDealContacts(token, dealIds) {
   if (!dealIds.length) return {};
-  const res = await fetch(HUBSPOT_BASE + '/crm/v4/associations/deals/contacts/batch/read', {
+  const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v4/associations/deals/contacts/batch/read', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
     body: JSON.stringify({ inputs: dealIds.map(id => ({ id })) }),
@@ -97,7 +99,7 @@ async function fetchDealContacts(token, dealIds) {
 // Returns { contactId: 'Yes' | other }.
 async function fetchContactsStormboyFlag(token, contactIds) {
   if (!contactIds.length) return {};
-  const res = await fetch(HUBSPOT_BASE + '/crm/v3/objects/contacts/batch/read', {
+  const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v3/objects/contacts/batch/read', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
     body: JSON.stringify({

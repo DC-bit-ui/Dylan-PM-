@@ -23,6 +23,8 @@
  *   }
  */
 
+const { hubspotFetch } = require('./hubspot-client');
+
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 // 30K conversion target anchor — date the target was set. Hectares + Stormboy
 // wins in the header scorecard count only from this date forward.
@@ -53,7 +55,7 @@ async function searchAll(token, path, filterGroups, properties, sorts) {
     const body = { filterGroups, properties, limit: 100 };
     if (sorts) body.sorts = sorts;
     if (after) body.after = after;
-    const res = await fetch(HUBSPOT_BASE + path, {
+    const res = await hubspotFetch(HUBSPOT_BASE + path, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -74,7 +76,7 @@ async function fetchDealContacts(token, dealIds) {
   const map = {};
   for (let i = 0; i < dealIds.length; i += 100) {
     const slice = dealIds.slice(i, i + 100);
-    const res = await fetch(HUBSPOT_BASE + '/crm/v4/associations/deals/contacts/batch/read', {
+    const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v4/associations/deals/contacts/batch/read', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify({ inputs: slice.map(id => ({ id })) }),
@@ -98,7 +100,7 @@ async function fetchContactStormboyFlags(token, contactIds) {
   const map = {};
   for (let i = 0; i < contactIds.length; i += 100) {
     const slice = contactIds.slice(i, i + 100);
-    const res = await fetch(HUBSPOT_BASE + '/crm/v3/objects/contacts/batch/read', {
+    const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v3/objects/contacts/batch/read', {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -15,6 +15,8 @@
  * lifetime) and small enough to ship as one payload.
  */
 
+const { hubspotFetch } = require('./hubspot-client');
+
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 
 function num(x) { const n = parseFloat(x); return Number.isFinite(n) ? n : 0; }
@@ -38,7 +40,7 @@ async function fetchAllWins(token) {
       limit: 100,
     };
     if (after) body.after = after;
-    const res = await fetch(HUBSPOT_BASE + '/crm/v3/objects/deals/search', {
+    const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v3/objects/deals/search', {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -58,7 +60,7 @@ async function fetchDealContacts(token, dealIds) {
   const map = {};
   for (let i = 0; i < dealIds.length; i += 100) {
     const slice = dealIds.slice(i, i + 100);
-    const res = await fetch(HUBSPOT_BASE + '/crm/v4/associations/deals/contacts/batch/read', {
+    const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v4/associations/deals/contacts/batch/read', {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify({ inputs: slice.map(id => ({ id })) }),
@@ -79,7 +81,7 @@ async function fetchContactStormboyFlags(token, contactIds) {
   const map = {};
   for (let i = 0; i < contactIds.length; i += 100) {
     const slice = contactIds.slice(i, i + 100);
-    const res = await fetch(HUBSPOT_BASE + '/crm/v3/objects/contacts/batch/read', {
+    const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v3/objects/contacts/batch/read', {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify({

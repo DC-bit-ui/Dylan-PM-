@@ -13,6 +13,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { hubspotFetch } = require('./hubspot-client');
 
 const COACHING_CACHE = path.join(__dirname, '..', 'cache');
 const BUS_ROOT = process.env.BUS_PATH || path.join('C:', 'Dylan PM', 'shared-growth-memory');
@@ -60,7 +61,7 @@ async function fetchDealOwners(dealIds) {
     inputs: dealIds.map(id => ({ id: String(id) })),
     properties: ['hubspot_owner_id'],
   };
-  const res = await fetch('https://api.hubapi.com/crm/v3/objects/deals/batch/read', {
+  const res = await hubspotFetch('https://api.hubapi.com/crm/v3/objects/deals/batch/read', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

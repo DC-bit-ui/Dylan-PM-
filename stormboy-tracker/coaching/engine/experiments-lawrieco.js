@@ -27,6 +27,8 @@ const STAGE_ORDER = [
   '64066367', '2929183214', '64066368', '64066369', '1026535686', '231921676', 'closedlost'
 ];
 
+const { hubspotFetch } = require('./hubspot-client');
+
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 
 async function fetchDealsPage(token, filterGroups, after) {
@@ -38,7 +40,7 @@ async function fetchDealsPage(token, filterGroups, after) {
   };
   if (after) body.after = after;
 
-  const res = await fetch(HUBSPOT_BASE + '/crm/v3/objects/deals/search', {
+  const res = await hubspotFetch(HUBSPOT_BASE + '/crm/v3/objects/deals/search', {
     method: 'POST',
     headers: {
       'Authorization': 'Bearer ' + token,

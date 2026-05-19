@@ -18,6 +18,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const { hubspotFetch } = require('./hubspot-client');
+
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 const NOTE_TRUNCATE = 320;
 const HOT_DAYS = 7;
@@ -65,7 +67,7 @@ function matchCallDistillate(firstname, lastname) {
 }
 
 async function hubspotPost(token, urlPath, body) {
-  const res = await fetch(HUBSPOT_BASE + urlPath, {
+  const res = await hubspotFetch(HUBSPOT_BASE + urlPath, {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -75,7 +77,7 @@ async function hubspotPost(token, urlPath, body) {
 }
 
 async function hubspotGet(token, urlPath) {
-  const res = await fetch(HUBSPOT_BASE + urlPath, {
+  const res = await hubspotFetch(HUBSPOT_BASE + urlPath, {
     method: 'GET',
     headers: { 'Authorization': 'Bearer ' + token },
   });
