@@ -799,9 +799,11 @@
 
     loadCallCadence();
 
-    // Upcoming visits rail
+    // Upcoming visits rail — render all booked visits (server filters
+    // completed-over-24h-ago and sorts by next-proximal); panel scrolls
+    // internally per the .v2-work-rail CSS.
     fetchStormboy().then(sb => {
-      const upcoming = (sb.upcoming || []).slice(0, 10);
+      const upcoming = sb.upcoming || [];
       const el = document.getElementById('upcoming-visits');
       if (!upcoming.length) {
         el.innerHTML = '<div class="v2-empty" style="padding:18px">No upcoming visits scheduled.</div>';

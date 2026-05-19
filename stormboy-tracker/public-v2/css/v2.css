@@ -1035,12 +1035,36 @@ body {
   align-items: start;
 }
 .v2-work-main { min-width: 0; }
+/* Sticky rails with internal scroll. The head stays visible; the body
+   (#upcoming-visits, #wins-rail) scrolls independently of the main page.
+   max-height anchors the rail to the viewport so the body can overflow. */
 .v2-work-rail,
 .v2-work-rail-left {
   position: sticky;
   top: 12px;
   align-self: start;
   min-width: 0;
+  max-height: calc(100vh - 24px);
+  display: flex;
+  flex-direction: column;
+}
+.v2-work-rail .v2-milestone-card,
+.v2-work-rail-left .v2-milestone-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 100%;
+}
+.v2-work-rail .v2-milestone-head,
+.v2-work-rail-left .v2-milestone-head {
+  flex-shrink: 0;
+}
+#upcoming-visits,
+#wins-rail {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;  /* required so the flex child can actually shrink/scroll */
+  scrollbar-gutter: stable;
 }
 
 /* Medium screens — fold left rail under main, keep right rail */
@@ -1050,7 +1074,9 @@ body {
     grid-column: 1 / -1;
     position: static;
     order: -1;
+    max-height: none;  /* unconstrained when laid horizontally */
   }
+  .v2-work-rail-left #wins-rail { overflow-y: visible; }
 }
 
 /* Narrow screens — single column, wins above main */
@@ -1060,7 +1086,10 @@ body {
   .v2-work-rail-left {
     position: static;
     grid-column: 1;
+    max-height: none;
   }
+  #upcoming-visits,
+  #wins-rail { overflow-y: visible; }
 }
 
 .v2-work-streams {

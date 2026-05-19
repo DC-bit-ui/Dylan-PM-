@@ -104,7 +104,13 @@ async function run() {
     else if (funnelCounts[stage] !== undefined) funnelCounts[stage]++;
   });
 
-  // Upcoming farm visits — contacts in "Farm Visit booked", sorted by meeting date
+  // Upcoming farm visits — contacts in "Farm Visit booked". Includes all
+  // booked visits sorted by meeting_date ascending so the soonest future
+  // appears first. Completed visits drop out of the list 24h after their
+  // meeting_date — the brief window lets reps see + action the just-
+  // -completed visit (e.g. send HORIZON Snapshot) before it disappears.
+  // No cap; the UI rail scrolls internally.
+  const completedCutoffMs = Date.now() - 24 * 60 * 60 * 1000;
   const upcoming = contacts
     .filter(c => c.properties.contact_lead_stage_storm_boy === 'Farm Visit booked')
     .map(c => ({
@@ -117,13 +123,20 @@ async function run() {
       horizon_snapshot_created: c.properties.storm_boy__horizon_snapshot_created,
       hubspot_url: 'https://app.hubspot.com/contacts/24224559/contact/' + c.id,
     }))
+    .filter(item => {
+      // Keep all non-completed entries
+      if (item.meeting_completed !== 'Yes') return true;
+      // For completed entries: keep only if the meeting was within the last 24h
+      if (!item.meeting_date) return false;
+      const mt = new Date(item.meeting_date).getTime();
+      return !isNaN(mt) && mt >= completedCutoffMs;
+    })
     .sort((a, b) => {
       if (!a.meeting_date && !b.meeting_date) return 0;
       if (!a.meeting_date) return 1;
       if (!b.meeting_date) return -1;
       return new Date(a.meeting_date) - new Date(b.meeting_date);
-    })
-    .slice(0, 10);
+    });
 
   // Call queue — "In Conversation" contacts whose last contact is older than N days
   const callQueue = contacts
