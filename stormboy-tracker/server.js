@@ -411,6 +411,50 @@ app.get('/api/stats/cohort-funnel', async (req, res) => {
   }
 });
 
+// Forward forecast — Section 8 of the STATS redesign. Leading
+// indicator: open pipeline × historical stage-win probability →
+// "expected to register". Pairs with Section 5's trailing pace.
+app.get('/api/stats/forecast', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/stormboy-forecast');
+    const result = await run({ force: req.query.force === '1' });
+    res.json(result);
+  } catch (e) {
+    console.error('stormboy-forecast failed:', e);
+    res.status(500).json({ error: 'forecast failed', detail: e.message });
+  }
+});
+
+// Stormboy contact funnel velocity — Section 7 of the STATS redesign.
+// The outreach motion lives in the contact funnel (Identified → In
+// Conversation → Farm Visit booked → ... → Exited), not the deal
+// funnel. Surfaces conversion-to-next, median dwell, stuck counts,
+// and the biggest dropoff. 4h disk cache.
+app.get('/api/stats/funnel-velocity', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/stormboy-funnel-velocity');
+    const result = await run({ force: req.query.force === '1' });
+    res.json(result);
+  } catch (e) {
+    console.error('stormboy-funnel-velocity failed:', e);
+    res.status(500).json({ error: 'funnel-velocity failed', detail: e.message });
+  }
+});
+
+// Friction map — Section 6 of the STATS redesign. Ranks pipeline-stage
+// transitions by impact (gap × volume) so the top item is "biggest
+// lever for Stormboy efficacy". Includes loss-reason concentration
+// per stage per cohort. Built on top of cohort-funnel cache.
+app.get('/api/stats/friction-map', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/friction-map');
+    res.json(await run());
+  } catch (e) {
+    console.error('friction-map failed:', e);
+    res.status(500).json({ error: 'friction-map failed', detail: e.message });
+  }
+});
+
 // 30k hectare projection — Section 5 of the STATS redesign. Builds on
 // cached trajectory data and computes projected target hit-dates at
 // 4-week / 12-week / since-anchor paces.

@@ -4863,3 +4863,203 @@ body.v2-ex-overlay-open {
   .v2-proj-layout { grid-template-columns: 1fr; }
   .v2-proj-ring-wrap { margin: 0 auto; }
 }
+
+/* ===== STATS Section 6 — Friction map ===== */
+.v2-friction-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0 6px;
+  font-size: 12.5px;
+}
+.v2-friction-table thead th {
+  text-align: left;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #777;
+  font-weight: 700;
+  padding: 8px 10px;
+  border-bottom: 1px solid #e0dcc4;
+  background: #fbfaf3;
+}
+.v2-friction-table tbody td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #f0eedb;
+  vertical-align: top;
+}
+.v2-friction-rank {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6a6a5a;
+  font-variant-numeric: tabular-nums;
+  width: 38px;
+}
+.v2-friction-stage {
+  min-width: 180px;
+}
+.v2-friction-stage strong {
+  display: block;
+  color: #2a2a2a;
+  font-size: 13px;
+  letter-spacing: -0.1px;
+}
+.v2-friction-volume {
+  font-size: 10.5px;
+  color: #777;
+  margin-top: 3px;
+}
+.v2-friction-conv {
+  font-size: 12px;
+  white-space: nowrap;
+  width: 90px;
+  font-variant-numeric: tabular-nums;
+}
+.v2-friction-conv strong { font-size: 13px; }
+.v2-friction-conv-sub { font-size: 10.5px; color: #888; margin-top: 2px; }
+.v2-friction-gap {
+  width: 110px;
+  font-variant-numeric: tabular-nums;
+}
+.v2-friction-gap strong { font-size: 14px; letter-spacing: -0.3px; }
+.v2-friction-impact { font-size: 10.5px; color: #888; margin-top: 2px; }
+.v2-friction-good-cell strong { color: #2d6a4f; }
+.v2-friction-bad-cell strong { color: #8a2a2a; }
+.v2-friction-flat-cell strong { color: #6a5a1a; }
+.v2-friction-row.v2-friction-good { background: rgba(45, 106, 79, 0.025); }
+.v2-friction-row.v2-friction-bad  { background: rgba(138, 42, 36, 0.025); }
+.v2-friction-action {
+  min-width: 240px;
+  font-size: 11.5px;
+  color: #3a3a3a;
+  line-height: 1.45;
+}
+.v2-friction-fix { margin-bottom: 4px; }
+.v2-friction-fix strong { color: #2d6a4f; }
+.v2-friction-fix-src {
+  font-size: 10px;
+  color: #888;
+  margin-bottom: 4px;
+}
+.v2-friction-fix-src code { font-size: 10px; background: #f5f3df; padding: 1px 4px; border-radius: 2px; }
+.v2-friction-loss {
+  font-size: 10.5px;
+  color: #6a5a3a;
+  background: #fdf6e3;
+  padding: 4px 6px;
+  border-radius: 3px;
+  border-left: 2px solid #d8c69c;
+}
+.v2-friction-loss em { font-style: normal; color: #2a2a2a; font-weight: 600; }
+.v2-friction-reasons {
+  margin: 4px 0 0;
+  padding: 0 0 0 14px;
+  font-size: 11.5px;
+  color: #3a3a3a;
+  line-height: 1.6;
+}
+.v2-friction-reasons li { list-style: disc; }
+.v2-friction-reasons li strong { color: #2a2a2a; font-variant-numeric: tabular-nums; }
+.v2-friction-loss-n { color: #888; font-size: 10.5px; }
+.v2-friction-loss-empty { list-style: none; color: #999; font-style: italic; }
+
+@media (max-width: 880px) {
+  .v2-friction-table thead { display: none; }
+  .v2-friction-table tr { display: block; padding: 10px 0; }
+  .v2-friction-table td { display: block; padding: 4px 10px; border: 0; }
+  .v2-friction-table tbody tr { border-bottom: 1px solid #e0dcc4; }
+}
+
+/* ===== STATS Section 7 — Stormboy funnel velocity ===== */
+.v2-vel-funnel { display: flex; flex-direction: column; gap: 0; margin-top: 4px; }
+.v2-vel-stage-block { display: flex; flex-direction: column; gap: 0; }
+.v2-vel-stage-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 120px;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 12px;
+  background: #fbfaf3;
+  border: 1px solid #ece8cd;
+  border-radius: 4px;
+}
+.v2-vel-stage-name {
+  font-size: 13px;
+  color: #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.v2-vel-stage-name strong { letter-spacing: -0.1px; }
+.v2-vel-stuck {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #8a2a2a;
+  background: #f4e2e2;
+  border: 1px solid #d6a8a8;
+  padding: 1px 6px;
+  border-radius: 8px;
+  align-self: flex-start;
+}
+.v2-vel-stage-bar-wrap {
+  height: 22px;
+  background: #efedda;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+.v2-vel-stage-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #2d6a4f, #5a8a6e);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  min-width: 36px;
+  color: #fff;
+  border-radius: 3px;
+}
+.v2-vel-stage-bar-label {
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.v2-vel-stage-meta {
+  font-size: 11.5px;
+  color: #2a2a2a;
+  text-align: right;
+}
+.v2-vel-stage-meta-sub { font-size: 10px; color: #888; margin-top: 2px; }
+.v2-vel-arrow {
+  margin: 4px 0 4px 60px;
+  font-size: 11px;
+  color: #6a6a5a;
+  padding: 4px 8px;
+}
+.v2-vel-arrow strong { color: #2a2a2a; font-variant-numeric: tabular-nums; }
+.v2-vel-arrow-warn {
+  background: #fdf6e3;
+  border-left: 3px solid #d8c69c;
+  border-radius: 0 3px 3px 0;
+  color: #6a5a1a;
+}
+.v2-vel-arrow-warn strong { color: #8a2a2a; }
+.v2-vel-dropoff { color: #888; font-size: 10.5px; margin-left: 6px; }
+
+/* ===== Cohort loss-reasons card (Conversion Analysis sub-tab) ===== */
+.v2-stats-cohort-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 6px;
+}
+.v2-stats-cohort-col {
+  background: #fbfaf3;
+  border: 1px solid #ece8cd;
+  border-top: 3px solid #b6b09a;
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+.v2-stats-cohort-col ul.v2-friction-reasons li { color: #3a3a3a; }

@@ -283,33 +283,89 @@
       </div>`;
   }
 
-  function renderConversion(d) {
-    return `${funnelCard(d)}${transitionTimesCard(d)}${distributionCard(d)}${lossCard(d)}`;
+  // Cohort-aware loss-reason mini-card. Pulls /api/stats/friction-map's
+  // overall-per-cohort top reasons (already computed; cheap) and renders
+  // as a 3-column comparison. Added 2026-05-20 alongside Section 6 work —
+  // the same data feeds both views. Useful as a drill-down within
+  // Conversion Analysis without leaving the sub-tab.
+  async function cohortLossesCard() {
+    try {
+      const r = await fetch('/api/stats/friction-map');
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const fm = await r.json();
+      const lr = fm.loss_reasons_top || {};
+      const cohorts = [
+        { key: 'stormboy', label: 'Stormboy', accent: '#2d6a4f' },
+        { key: 'control',  label: 'Direct control', accent: '#5a6878' },
+        { key: 'lawrieco', label: 'LawrieCo (carved out)', accent: '#a16207' },
+      ];
+      const cols = cohorts.map(c => {
+        const reasons = lr[c.key] || [];
+        const items = reasons.length
+          ? reasons.map(rr => `<li><strong>${rr.pct_of_losses}%</strong> ${escapeHtml(rr.reason)} <span class="v2-friction-loss-n">(n=${rr.count})</span></li>`).join('')
+          : '<li class="v2-friction-loss-empty">No losses recorded.</li>';
+        return `<div class="v2-stats-cohort-col" style="border-top-color:${c.accent}">
+          <h4 style="margin:0 0 6px;font-size:12px;color:${c.accent}">${escapeHtml(c.label)}</h4>
+          <ul class="v2-friction-reasons">${items}</ul>
+        </div>`;
+      }).join('');
+      return `
+        <div class="v2-stats-card">
+          <div class="v2-stats-head">
+            <h3>Top loss reasons · by cohort</h3>
+            <p>Aggregated across stages because HubSpot's <code>deal_stage_before_close</code> is sparsely populated. What is killing deals, split by channel — different cohorts often need different interventions.</p>
+          </div>
+          <div class="v2-stats-cohort-grid">${cols}</div>
+        </div>`;
+    } catch (e) {
+      return `<div class="v2-stats-card"><div class="v2-empty" style="color:#a64545">Cohort losses failed: ${escapeHtml(e.message)}</div></div>`;
+    }
+  }
+
+  async function renderConversion(d) {
+    const cl = await cohortLossesCard();
+    return `${funnelCard(d)}${transitionTimesCard(d)}${distributionCard(d)}${lossCard(d)}${cl}`;
   }
 
   // ============================ ERA & CHANNEL ============================
   function multiEraCard(d) {
     const me = d.multi_era;
-    const max = Math.max(...me.map(e => e.median_days || 0), 1);
     return `
       <div class="v2-stats-card">
         <div class="v2-stats-head">
           <h3>Multi-era comparison · Legacy / KCT / Stormboy</h3>
-          <p>Median time-to-registration and hectares enrolled per era. Successive eras should show tighter medians + larger hectare totals if the system is compounding.</p>
+          <p>Win rate, time-to-registration, and hectares enrolled per era. Successive eras should show <em>higher win rate + tighter medians + growing share of hectares</em> if the system is compounding.</p>
         </div>
         <table class="v2-stats-era-table">
-          <thead><tr><th>Era</th><th>Window</th><th class="num">n</th><th class="num">Median TTC</th><th class="num">IQR</th><th class="num">Project ha</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Era</th>
+              <th>Window</th>
+              <th class="num">Wins</th>
+              <th class="num">Win rate</th>
+              <th class="num">Median TTC</th>
+              <th class="num">IQR</th>
+              <th class="num">Project ha</th>
+              <th class="num">% of lifetime ha</th>
+            </tr>
+          </thead>
           <tbody>
             ${me.map(e => `<tr>
               <td><strong>${escapeHtml(e.name)}</strong></td>
               <td class="meta">${escapeHtml(e.window)}</td>
               <td class="num">${e.n}</td>
+              <td class="num strong">${e.win_rate_pct != null ? e.win_rate_pct + '%' : '—'}<div class="meta">${e.n}w · ${e.n_lost || 0}l</div></td>
               <td class="num strong">${fmtDays(e.median_days)}</td>
               <td class="num meta">${fmtDays(e.p25_days)}–${fmtDays(e.p75_days)}</td>
               <td class="num">${fmtNum(e.project_ha)} ha</td>
+              <td class="num">${e.share_of_ha_pct != null ? e.share_of_ha_pct + '%' : '—'}</td>
             </tr>`).join('')}
           </tbody>
         </table>
+        <div class="v2-stats-honesty">
+          <span class="v2-stats-honesty-label">Reading this</span>
+          <span>The Stormboy era's small sample (${me.find(e => e.key === 'stormboy')?.n || 0} wins, ${me.find(e => e.key === 'stormboy')?.n_lost || 0} losses) means win-rate is directional, not statistically settled. Trajectory in Section 3 above shows the smoothed view.</span>
+        </div>
       </div>`;
   }
 
@@ -370,7 +426,10 @@
   }
 
   function renderEraChannel(d) {
-    return `${multiEraCard(d)}${channelMixCard(d)}${quarterlyCard(d)}`;
+    // Quarterly trend removed 2026-05-20 — superseded by Section 3's
+    // weekly trajectory chart above. Multi-era + channel mix kept here
+    // as the era-specific drill-down.
+    return `${multiEraCard(d)}${channelMixCard(d)}`;
   }
 
   // ============================ TEAM & GOALS ============================
@@ -557,8 +616,12 @@
   }
 
   async function renderTeamGoals(d) {
-    const [sb, fv, ce] = await Promise.all([sbFunnelCard(), farmVisitsCard(), callEfficiencyCard()]);
-    return `${repCard(d)}${projectionCard(d)}${fv}${ce}${sb}`;
+    // projectionCard removed 2026-05-20 — superseded by Section 5 ring.
+    // sbFunnelCard removed — superseded by Section 7 velocity funnel.
+    // Keep reps, farm visits, call efficiency — these are unique team
+    // operational views not yet covered by the redesign.
+    const [fv, ce] = await Promise.all([farmVisitsCard(), callEfficiencyCard()]);
+    return `${repCard(d)}${fv}${ce}`;
   }
 
   // ============================ WIN TIMELINE ============================
@@ -861,18 +924,21 @@
   window.runDeepDiveSearch = runDeepDiveSearch;
 
   // ============================ SHELL + ROUTING ============================
+  // Overview retired 2026-05-20: hectares + era summary + recent wins are
+  // now in Sections 1 + 5 above. Recent wins lives in Win timeline.
+  // Quarterly trend retired from Era & Channel — it's in Section 3.
+  // 30k projection retired from Team & Goals — it's Section 5.
+  // SB landholder funnel retired from Team & Goals — it's Section 7.
   const SUBTABS = [
-    { key: 'overview',     label: 'Overview',           hint: 'Scorecard · top-line KPIs' },
-    { key: 'conversion',   label: 'Conversion Analysis', hint: 'Funnel · stage dwell · distribution · losses' },
-    { key: 'era-channel',  label: 'Era & Channel',      hint: 'Multi-era · channel mix · quarterly trend' },
-    { key: 'win-timeline', label: 'Win timeline',       hint: 'All wins · channel-coloured · seasonal trends · range selector' },
-    { key: 'team-goals',   label: 'Team & Goals',       hint: 'Reps · 30k projection · farm visits · call efficiency · SB funnel' },
-    { key: 'deep-dive',    label: 'Deep Dive',          hint: 'Per-deal timeline + diagnosis' },
+    { key: 'conversion',   label: 'Conversion drill-down', hint: 'Stage funnel · dwell · distribution · loss forensics' },
+    { key: 'era-channel',  label: 'Era & Channel',         hint: 'Legacy / KCT / Stormboy era comparison · channel mix' },
+    { key: 'win-timeline', label: 'Win timeline',          hint: 'All wins · channel-coloured · range selector' },
+    { key: 'team-goals',   label: 'Team',                  hint: 'Reps · farm visits · call efficiency' },
+    { key: 'deep-dive',    label: 'Deep Dive',             hint: 'Per-deal timeline + diagnosis' },
   ];
 
   async function renderSubtab(key, d) {
-    if (key === 'overview')     return renderOverview(d);
-    if (key === 'conversion')   return renderConversion(d);
+    if (key === 'conversion')   return await renderConversion(d);
     if (key === 'era-channel')  return renderEraChannel(d);
     if (key === 'win-timeline') return await renderWinTimeline();
     if (key === 'team-goals')   return await renderTeamGoals(d);
@@ -1301,6 +1367,167 @@
     });
   }
 
+  // ====== STORMBOY FUNNEL VELOCITY — Section 7 of the STATS redesign ======
+  // The outreach motion's own funnel — Identified → ... → Exited. Shows
+  // conversion-to-next, median dwell, stuck counts, biggest dropoff.
+  async function fetchFunnelVelocity() {
+    try {
+      const r = await fetch('/api/stats/funnel-velocity');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function funnelVelocityHtml(fv) {
+    if (!fv || !fv.stages) {
+      return `<section class="v2-funnel-section"><div class="v2-empty">No funnel velocity data.</div></section>`;
+    }
+    const total = fv.total_ever_entered_funnel || 1;
+    const stagesHtml = fv.stages.map((s, idx) => {
+      const widthPct = total > 0 ? (s.ever_reached / total) * 100 : 0;
+      const isLast = idx === fv.stages.length - 1;
+      const conv = s.conversion_to_next_pct;
+      // Highlight if this is the biggest dropoff transition
+      const isBiggest = fv.biggest_dropoff && fv.biggest_dropoff.from_stage === s.stage;
+      const stuckBadge = s.stuck_count > 0
+        ? `<span class="v2-vel-stuck">${s.stuck_count} stuck >28d</span>`
+        : '';
+      const convBlock = !isLast
+        ? `<div class="v2-vel-arrow ${isBiggest ? 'v2-vel-arrow-warn' : ''}">
+            ↓ <strong>${conv != null ? conv + '%' : '—'}</strong> convert
+            <span class="v2-vel-dropoff">(${s.dropoff_count} dropped off)</span>
+          </div>`
+        : '';
+      return `<div class="v2-vel-stage-block">
+        <div class="v2-vel-stage-row">
+          <div class="v2-vel-stage-name">
+            <strong>${escapeHtml(s.stage)}</strong>
+            ${stuckBadge}
+          </div>
+          <div class="v2-vel-stage-bar-wrap">
+            <div class="v2-vel-stage-bar" style="width:${Math.max(2, widthPct)}%">
+              <span class="v2-vel-stage-bar-label">${s.ever_reached} ever reached</span>
+            </div>
+          </div>
+          <div class="v2-vel-stage-meta">
+            <div>${s.currently_at} now</div>
+            <div class="v2-vel-stage-meta-sub">median ${s.median_days_in_stage != null ? s.median_days_in_stage + 'd' : '—'} dwell</div>
+          </div>
+        </div>
+        ${convBlock}
+      </div>`;
+    }).join('');
+
+    const bd = fv.biggest_dropoff;
+    const bdCallout = bd
+      ? `<div class="v2-funnel-callout v2-funnel-callout-bad">
+          <span class="v2-funnel-callout-label">Biggest dropoff</span>
+          <span class="v2-funnel-callout-body"><strong>${escapeHtml(bd.from_stage)} → ${escapeHtml(bd.to_stage)}</strong> · only ${bd.conversion_pct}% convert · ${bd.dropoff_count} contacts not making it past ${escapeHtml(bd.from_stage)}</span>
+        </div>`
+      : '';
+
+    return `
+      <section class="v2-funnel-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">Is the outreach motion working?</h2>
+          <div class="v2-funnel-sub">Stormboy contact funnel · ${fv.total_ever_entered_funnel} contacts have entered (of ${fv.total_contacts} total in campaign — others unstaged or marked not eligible). Bars show "ever reached this stage" (cumulative); right-hand column shows currently sitting at this stage + median dwell.</div>
+        </header>
+        ${bdCallout}
+        <div class="v2-vel-funnel">${stagesHtml}</div>
+        <div class="v2-funnel-sub" style="margin-top:8px">${fv.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}</div>
+      </section>`;
+  }
+
+  // ====== FORWARD FORECAST — Section 8 of the STATS redesign ======
+  // Open pipeline × historical stage-win probability → expected hectares
+  // to register. Pairs with Section 5's trailing pace.
+  async function fetchForecast() {
+    try {
+      const r = await fetch('/api/stats/forecast');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function forecastHtml(fc) {
+    if (!fc || !fc.by_stage) {
+      return `<section class="v2-funnel-section"><div class="v2-empty">No forecast data.</div></section>`;
+    }
+    const reg = fc.already_registered_hectares;
+    const exp = fc.expected_to_register_hectares;
+    const total = fc.projected_total_hectares;
+    const gap = fc.gap_to_30k_hectares;
+    const overTarget = gap < 0;
+
+    const headlineTone = overTarget ? 'good' : (gap < 5000 ? 'flat' : 'bad');
+    const headline = `
+      <div class="v2-funnel-summary-cell" style="border-left-color:${overTarget ? '#2d6a4f' : '#8a3024'}">
+        <div class="v2-funnel-summary-cohort">Already registered</div>
+        <div class="v2-funnel-summary-flow"><strong>${reg.toLocaleString()}</strong> ha</div>
+        <div class="v2-funnel-summary-rate">won deals since ${escapeHtml(fc.target_set_date)}</div>
+      </div>
+      <div class="v2-funnel-summary-cell" style="border-left-color:#5a6878">
+        <div class="v2-funnel-summary-cohort">Expected from open pipeline</div>
+        <div class="v2-funnel-summary-flow"><strong>${exp.toLocaleString()}</strong> ha</div>
+        <div class="v2-funnel-summary-rate">Σ(open ha × historical stage-win prob)</div>
+      </div>
+      <div class="v2-funnel-summary-cell" style="border-left-color:${overTarget ? '#2d6a4f' : '#8a3024'}">
+        <div class="v2-funnel-summary-cohort">Projected total vs 30k</div>
+        <div class="v2-funnel-summary-flow"><strong>${total.toLocaleString()}</strong> ha · ${fc.pct_covered_by_pipeline}%</div>
+        <div class="v2-funnel-summary-rate">${overTarget ? Math.abs(gap).toLocaleString() + ' ha buffer' : gap.toLocaleString() + ' ha gap'} to target</div>
+      </div>`;
+
+    const byStage = fc.by_stage.map(s => {
+      const fillPct = s.hectares > 0 ? Math.round((s.expected_hectares / s.hectares) * 100) : 0;
+      return `<tr>
+        <td><strong>${escapeHtml(s.stage_name)}</strong></td>
+        <td class="num">${s.count}</td>
+        <td class="num">${s.hectares.toLocaleString()} ha</td>
+        <td class="num strong">${s.expected_hectares.toLocaleString()} ha</td>
+        <td class="num meta">${fillPct}% weighted</td>
+      </tr>`;
+    }).join('');
+
+    const cohortLabels = { stormboy: 'Stormboy', control: 'Direct control', lawrieco: 'LawrieCo' };
+    const cohortAccent = { stormboy: '#2d6a4f', control: '#5a6878', lawrieco: '#a16207' };
+    const byCohort = fc.by_cohort.map(c => {
+      const fillPct = c.hectares > 0 ? Math.round((c.expected_hectares / c.hectares) * 100) : 0;
+      return `<div class="v2-funnel-summary-cell" style="border-left-color:${cohortAccent[c.cohort]}">
+        <div class="v2-funnel-summary-cohort">${escapeHtml(cohortLabels[c.cohort])}</div>
+        <div class="v2-funnel-summary-flow"><strong>${c.expected_hectares.toLocaleString()}</strong> ha expected</div>
+        <div class="v2-funnel-summary-rate">${c.count} open deals · ${c.hectares.toLocaleString()} ha total · ${fillPct}% weighted</div>
+      </div>`;
+    }).join('');
+
+    const atRisk = fc.at_risk || {};
+    const atRiskCallout = atRisk.count > 0
+      ? `<div class="v2-funnel-callout v2-funnel-callout-bad">
+          <span class="v2-funnel-callout-label">At risk</span>
+          <span class="v2-funnel-callout-body"><strong>${atRisk.count} open deals</strong> (${atRisk.hectares.toLocaleString()} ha) have been in their current stage for more than ${atRisk.threshold_days} days. That's pipeline that's slipping — biggest leverage for the team this week.</span>
+        </div>`
+      : '';
+
+    return `
+      <section class="v2-funnel-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">What's in flight? — forward forecast</h2>
+          <div class="v2-funnel-sub">Open pipeline × historical stage-win probability (per cohort) → expected hectares to register. The leading-indicator complement to Section 5's trailing pace.</div>
+        </header>
+        <div class="v2-funnel-summary">${headline}</div>
+        ${atRiskCallout}
+        <header class="v2-funnel-head" style="margin-top:14px">
+          <h3 class="v2-funnel-title" style="font-size:14px">Expected hectares by current stage</h3>
+        </header>
+        <table class="v2-stats-era-table">
+          <thead><tr><th>Stage</th><th class="num">Open deals</th><th class="num">Open hectares</th><th class="num">Expected ha</th><th class="num">Weighted by</th></tr></thead>
+          <tbody>${byStage}</tbody>
+        </table>
+        <header class="v2-funnel-head" style="margin-top:14px">
+          <h3 class="v2-funnel-title" style="font-size:14px">Expected hectares by cohort</h3>
+        </header>
+        <div class="v2-funnel-summary">${byCohort}</div>
+        <div class="v2-funnel-sub" style="margin-top:8px">${fc.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}</div>
+      </section>`;
+  }
+
   // ====== EVIDENCE CARDS — Section 4 of the STATS redesign ======
   // Reads /api/stats/evidence-cards which scans shared-growth-memory/patterns/
   // for the team's distilled tactical patterns. Each card cites its
@@ -1346,6 +1573,126 @@
           <div class="v2-funnel-sub">Tactical patterns distilled from farm-visit transcripts, standup notes, and HubSpot loss data. Each card cites the source file in <code>shared-growth-memory/patterns/</code> — the team can read the full pattern there.</div>
         </header>
         <div class="v2-evid-grid">${cards}</div>
+      </section>`;
+  }
+
+  // ====== FRICTION MAP — Section 6 of the STATS redesign ======
+  // Ranks pipeline-stage transitions by impact (gap × volume). Top of
+  // the list is "biggest lever for Stormboy efficacy". Also shows top
+  // loss reasons per cohort.
+  async function fetchFrictionMap() {
+    try {
+      const r = await fetch('/api/stats/friction-map');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function dirTone(d) {
+    if (d === 'stormboy_winning') return 'good';
+    if (d === 'stormboy_lagging') return 'bad';
+    return 'flat';
+  }
+  function dirIcon(d) {
+    if (d === 'stormboy_winning') return '↑';
+    if (d === 'stormboy_lagging') return '↓';
+    return '→';
+  }
+  function frictionMapHtml(fm) {
+    if (!fm || fm.empty || !fm.items_ranked) {
+      return `<section class="v2-funnel-section"><div class="v2-empty">${escapeHtml(fm && fm.reason || 'No friction data yet.')}</div></section>`;
+    }
+    const items = fm.items_ranked;
+    const tlag = fm.top_lagging, twin = fm.top_winning;
+
+    // Headline cards: protect (top winning) + fix (top lagging)
+    function headlineCard(item, kind) {
+      if (!item) return `<div class="v2-funnel-summary-cell"><div class="v2-funnel-summary-cohort">${kind}</div><div class="v2-evid-body">No transition crosses the threshold yet.</div></div>`;
+      const accent = kind === 'PROTECT THIS' ? '#2d6a4f' : '#8a3024';
+      return `<div class="v2-funnel-summary-cell" style="border-left-color:${accent}">
+        <div class="v2-funnel-summary-cohort">${kind}</div>
+        <div class="v2-funnel-summary-flow"><strong>${escapeHtml(item.lost_at_prev_stage)} → ${escapeHtml(item.stage_name)}</strong></div>
+        <div class="v2-funnel-summary-rate">Stormboy ${fmtPct(item.stormboy_conversion_pct)} vs control ${fmtPct(item.control_conversion_pct)} · ${fmtPp(item.gap_pp_vs_control)} · ~${Math.round(item.estimated_impact_n)} deal-impact</div>
+      </div>`;
+    }
+
+    // Ranked transitions table
+    const rows = items.map((it, idx) => {
+      const tone = dirTone(it.direction);
+      const sbLoss = it.loss_reasons_at_stage.stormboy[0];
+      const ctLoss = it.loss_reasons_at_stage.control[0];
+      const fix = it.recommended_fix;
+      return `<tr class="v2-friction-row v2-friction-${tone}">
+        <td class="v2-friction-rank">#${idx + 1}</td>
+        <td class="v2-friction-stage">
+          <strong>${escapeHtml(it.lost_at_prev_stage)} → ${escapeHtml(it.stage_name)}</strong>
+          <div class="v2-friction-volume">${it.stormboy_volume_in_prev} SB · ${it.control_volume_in_prev} control at prev stage</div>
+        </td>
+        <td class="v2-friction-conv">
+          <div>SB <strong>${fmtPct(it.stormboy_conversion_pct)}</strong></div>
+          <div class="v2-friction-conv-sub">CT ${fmtPct(it.control_conversion_pct)}</div>
+        </td>
+        <td class="v2-friction-gap v2-friction-${tone}-cell">
+          <strong>${dirIcon(it.direction)} ${fmtPp(it.gap_pp_vs_control)}</strong>
+          <div class="v2-friction-impact">~${Math.round(it.estimated_impact_n)} deals</div>
+        </td>
+        <td class="v2-friction-action">
+          ${fix ? `<div class="v2-friction-fix"><strong>Fix:</strong> ${escapeHtml(fix.hint)}</div>
+                   <div class="v2-friction-fix-src"><code>patterns/${escapeHtml(fix.pattern_file)}</code></div>` : ''}
+          ${(sbLoss || ctLoss) ? `<div class="v2-friction-loss">
+            ${sbLoss ? `SB top loss: <em>${escapeHtml(sbLoss.reason)}</em> (${sbLoss.count})` : ''}
+            ${(sbLoss && ctLoss) ? '<br>' : ''}
+            ${ctLoss ? `CT top loss: <em>${escapeHtml(ctLoss.reason)}</em> (${ctLoss.count})` : ''}
+          </div>` : ''}
+        </td>
+      </tr>`;
+    }).join('');
+
+    // Cohort-level top loss reasons (overall, not per-stage — much
+    // denser data than per-stage since deal_stage_before_close is sparse)
+    const cohortReasonHtml = COHORTS.map(c => {
+      const reasons = (fm.loss_reasons_top && fm.loss_reasons_top[c.key]) || [];
+      const rs = reasons.length
+        ? reasons.map(r => `<li><strong>${r.pct_of_losses}%</strong> ${escapeHtml(r.reason)} <span class="v2-friction-loss-n">(n=${r.count})</span></li>`).join('')
+        : '<li class="v2-friction-loss-empty">No losses recorded.</li>';
+      return `<div class="v2-funnel-summary-cell" style="border-left-color:${c.accent}">
+        <div class="v2-funnel-summary-cohort">${escapeHtml(c.label)} loss reasons</div>
+        <ul class="v2-friction-reasons">${rs}</ul>
+      </div>`;
+    }).join('');
+
+    const hyg = fm.data_hygiene || {};
+    const hygNote = hyg.populated_pct != null
+      ? `Stage-specific loss reasons available for only <strong>${hyg.populated_pct}%</strong> of losses (${hyg.losses_with_stage_before_close}/${hyg.losses_with_stage_before_close + hyg.losses_without_stage_before_close}). HubSpot's <code>deal_stage_before_close</code> field is sparsely populated — worth a workflow to capture stage-at-close on transition. Cohort-level reasons below aggregate across stages and aren't affected.`
+      : '';
+
+    return `
+      <section class="v2-funnel-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">Where should we push next?</h2>
+          <div class="v2-funnel-sub">Pipeline-stage transitions ranked by impact (gap × prior-stage volume). The top of the list is the biggest lever for Stormboy efficacy. Closed deals only · LawrieCo carved out (shown for reference, not in the gap math).</div>
+        </header>
+        <div class="v2-funnel-summary">
+          ${headlineCard(twin, 'PROTECT THIS')}
+          ${headlineCard(tlag, 'FIX THIS FIRST')}
+        </div>
+        <table class="v2-friction-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Transition</th>
+              <th>Conversion</th>
+              <th>Gap vs control</th>
+              <th>What to do</th>
+            </tr>
+          </thead>
+          <tbody>${rows || `<tr><td colspan="5" class="v2-empty" style="padding:18px">No transitions cross the volume threshold yet.</td></tr>`}</tbody>
+        </table>
+        <header class="v2-funnel-head" style="margin-top:18px">
+          <h3 class="v2-funnel-title" style="font-size:14px">Top loss reasons by cohort</h3>
+          <div class="v2-funnel-sub">Aggregated across stages because per-stage HubSpot data is too sparse to be reliable (see hygiene note below). This is what's killing deals, by channel.</div>
+        </header>
+        <div class="v2-funnel-summary">${cohortReasonHtml}</div>
+        ${hygNote ? `<div class="v2-funnel-callout v2-funnel-callout-flat"><span class="v2-funnel-callout-label">Data hygiene</span><span class="v2-funnel-callout-body">${hygNote}</span></div>` : ''}
       </section>`;
   }
 
@@ -1447,8 +1794,11 @@
       <div id="stats-efficacy"><div class="v2-loading" style="padding:24px">Loading efficacy comparison…</div></div>
       <div id="stats-funnel"><div class="v2-loading" style="padding:24px">Loading cohort funnel…</div></div>
       <div id="stats-trajectory"><div class="v2-loading" style="padding:24px">Loading trajectory…</div></div>
+      <div id="stats-friction"><div class="v2-loading" style="padding:24px">Loading friction map…</div></div>
+      <div id="stats-velocity"><div class="v2-loading" style="padding:24px">Loading outreach funnel…</div></div>
       <div id="stats-evidence"><div class="v2-loading" style="padding:24px">Loading tactical evidence…</div></div>
       <div id="stats-projection"><div class="v2-loading" style="padding:24px">Loading 30k projection…</div></div>
+      <div id="stats-forecast"><div class="v2-loading" style="padding:24px">Loading forecast…</div></div>
       <div class="v2-section-header" style="margin-top:24px">
         <h2 class="v2-section-title">Detail · process refinement</h2>
         <p class="v2-section-sub">drill-downs by sub-tab — kept for cohort breakdowns; the redesigned story above is the primary view.</p>
@@ -1467,6 +1817,14 @@
       slot.innerHTML = trajectoryShellHtml(tr);
       if (tr && tr.weeks && tr.weeks.length) renderTrajectoryChart(tr);
     });
+    fetchFrictionMap().then(fm => {
+      const slot = document.getElementById('stats-friction');
+      if (slot) slot.innerHTML = frictionMapHtml(fm);
+    });
+    fetchFunnelVelocity().then(fv => {
+      const slot = document.getElementById('stats-velocity');
+      if (slot) slot.innerHTML = funnelVelocityHtml(fv);
+    });
     fetchEvidenceCards().then(ev => {
       const slot = document.getElementById('stats-evidence');
       if (slot) slot.innerHTML = evidenceCardsHtml(ev);
@@ -1474,6 +1832,10 @@
     fetchProjection().then(pj => {
       const slot = document.getElementById('stats-projection');
       if (slot) slot.innerHTML = projectionHtml(pj);
+    });
+    fetchForecast().then(fc => {
+      const slot = document.getElementById('stats-forecast');
+      if (slot) slot.innerHTML = forecastHtml(fc);
     });
     try {
       const res = await fetch('/api/stats/pipeline');
@@ -1488,7 +1850,7 @@
         </div>
         <div class="v2-stats-footer">Generated ${new Date(_data.generated_at).toLocaleString()} · Lifetime: ${_data.totals.all_won_lifetime} registered / ${_data.totals.all_lost_lifetime} not progressed / ${_data.totals.open_deals} open</div>`;
       document.querySelectorAll('.v2-stats-vtab').forEach(t => t.addEventListener('click', () => activateSubtab(t.dataset.tab)));
-      await activateSubtab('overview');
+      await activateSubtab('conversion');
     } catch (e) {
       document.getElementById('stats-content').innerHTML = `<div class="v2-empty" style="color:#a64545">Stats failed: ${escapeHtml(e.message)}</div>`;
     }

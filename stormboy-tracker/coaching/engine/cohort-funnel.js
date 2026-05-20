@@ -65,7 +65,8 @@ async function fetchClosedDeals(token, sinceMs, untilMs, stage) {
         ],
       }],
       properties: ['dealname', 'dealstage', 'createdate', 'closedate',
-                   'partner', 'lead_source', ...stageProps],
+                   'partner', 'lead_source', 'closed_lost_reason', 'deal_stage_before_close',
+                   ...stageProps],
       sorts: [{ propertyName: 'closedate', direction: 'ASCENDING' }],
       limit: 100,
     };
@@ -127,14 +128,34 @@ function dealEnteredStage(deal, stageId) {
 function buildFunnel(deals, cohortOf) {
   const cohorts = ['stormboy', 'control', 'lawrieco'];
   const counts = {};
-  cohorts.forEach(c => { counts[c] = { lost: 0 }; STAGES.forEach(s => { counts[c][s.id] = 0; }); });
+  // Loss reason tally: lossReasons[cohort][stageName][reason] = count
+  // Also aggregate "overall" per cohort under the synthetic '__all__' key.
+  const lossReasons = {};
+  cohorts.forEach(c => {
+    counts[c] = { lost: 0 };
+    STAGES.forEach(s => { counts[c][s.id] = 0; });
+    lossReasons[c] = { __all__: {} };
+  });
+  const STAGE_NAME_BY_ID = STAGES.reduce((m, s) => (m[s.id] = s.name, m), {});
+
   deals.forEach(d => {
     const c = cohortOf.get(d.id);
     if (!c) return;
     STAGES.forEach(s => {
       if (dealEnteredStage(d, s.id)) counts[c][s.id]++;
     });
-    if (d.properties.dealstage === LOST_STAGE_ID) counts[c].lost++;
+    if (d.properties.dealstage === LOST_STAGE_ID) {
+      counts[c].lost++;
+      const rawReason = (d.properties.closed_lost_reason || '').trim();
+      const reason = rawReason || '(unspecified)';
+      // Map stage-before-close (which can be an internal stage label) onto
+      // our named stages; HubSpot stores the human label in
+      // deal_stage_before_close, e.g. "Strategy Call".
+      const stageBefore = (d.properties.deal_stage_before_close || '').trim() || '(unknown stage)';
+      lossReasons[c].__all__[reason] = (lossReasons[c].__all__[reason] || 0) + 1;
+      if (!lossReasons[c][stageBefore]) lossReasons[c][stageBefore] = {};
+      lossReasons[c][stageBefore][reason] = (lossReasons[c][stageBefore][reason] || 0) + 1;
+    }
   });
   // Build per-stage rows with drop-off rate calc
   const stages = STAGES.map((s, idx) => {
@@ -176,7 +197,26 @@ function buildFunnel(deals, cohortOf) {
       biggestDelta = { stage_name: stages[i].name, delta_pp: Math.round(d * 10) / 10, stage_index: i };
     }
   }
-  return { stages, summary, biggest_delta: biggestDelta };
+  // Top-3 loss reasons per cohort (across all stages) — used by friction-map.
+  const topLossReasons = {};
+  cohorts.forEach(c => {
+    const entries = Object.entries(lossReasons[c].__all__)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([reason, count]) => ({ reason, count }));
+    const total = entries.reduce((s, e) => s + e.count, 0);
+    topLossReasons[c] = entries.map(e => ({
+      ...e,
+      pct_of_losses: total ? Math.round((e.count / total) * 1000) / 10 : 0,
+    }));
+  });
+
+  return {
+    stages, summary,
+    biggest_delta: biggestDelta,
+    loss_reasons_full: lossReasons,
+    loss_reasons_top: topLossReasons,
+  };
 }
 
 function readCache() {
@@ -241,6 +281,8 @@ async function run({ windowMonths, force = false } = {}) {
     stages: funnel.stages,
     summary: funnel.summary,
     biggest_delta: funnel.biggest_delta,
+    loss_reasons_full: funnel.loss_reasons_full,
+    loss_reasons_top: funnel.loss_reasons_top,
     caveats: [
       'Closed deals only (won + lost). Open deals not in this snapshot.',
       'Stage entry counts use hs_v2_date_entered_<stage_id> — a deal "entered" a stage if it ever passed through, even briefly.',

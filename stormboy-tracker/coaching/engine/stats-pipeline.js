@@ -322,24 +322,38 @@ async function run() {
 
   // -------------------- Multi-era breakdown --------------------
   // Same shape as era_comparison but for 3+ eras. Used in Era & Channel sub-tab.
+  // Includes terminal win-rate (wins / wins+losses) and share-of-hectares
+  // so the compounding-across-eras story is visible.
+  const totalProjectHaAllEras = won.reduce((s, d) => s + num(d.properties.estimated_project_ha), 0);
   const multiEra = ERAS.map(e => {
-    const subset = won.filter(d => {
+    const subsetWon = won.filter(d => {
       const c = d.properties.closedate;
       return c && c >= e.start && c <= e.end + 'T23:59:59Z';
     });
-    const ttcs = subset
+    const subsetLost = lost.filter(d => {
+      const c = d.properties.closedate;
+      return c && c >= e.start && c <= e.end + 'T23:59:59Z';
+    });
+    const ttcs = subsetWon
       .map(d => daysBetween(d.properties.createdate, d.properties.closedate))
       .filter(x => x !== null);
-    const projectHa = subset.reduce((s, d) => s + num(d.properties.estimated_project_ha), 0);
+    const projectHa = subsetWon.reduce((s, d) => s + num(d.properties.estimated_project_ha), 0);
+    const totalClosed = subsetWon.length + subsetLost.length;
     return {
       key: e.key,
       name: e.name,
       window: `${e.start} → ${e.end === '9999-12-31' ? 'now' : e.end}`,
-      n: subset.length,
+      n: subsetWon.length,
+      n_lost: subsetLost.length,
+      n_closed: totalClosed,
+      win_rate_pct: totalClosed === 0 ? null : Math.round((subsetWon.length / totalClosed) * 1000) / 10,
       median_days: percentile(ttcs, 0.5),
       p25_days: percentile(ttcs, 0.25),
       p75_days: percentile(ttcs, 0.75),
       project_ha: Math.round(projectHa),
+      share_of_ha_pct: totalProjectHaAllEras === 0
+        ? null
+        : Math.round((projectHa / totalProjectHaAllEras) * 1000) / 10,
     };
   });
 
