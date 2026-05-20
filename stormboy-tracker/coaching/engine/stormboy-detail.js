@@ -281,9 +281,23 @@ async function enrichContact(token, c) {
   const lastname = c.properties.lastname;
   const stage = c.properties.contact_lead_stage_storm_boy;
 
-  const lastNote = await fetchLastNote(token, c.id);
+  // Reuse the last-note fetch if snapshot-state stashed it (avoids a
+  // duplicate HubSpot call when both code paths ran on this contact)
+  const lastNote = c.__snapshot_last_note || await fetchLastNote(token, c.id);
   const callDistillate = summariseDistillate(matchCallDistillate(firstname, lastname));
   const heat = scoreHeat(c, lastNote, stage);
+
+  // For Farm Visit completed: prefer evidence-driven snapshot state
+  // next-step over heat-based template. Heat reasoning is still
+  // shown — it's complementary, not redundant.
+  let nextStep = heat.next_step;
+  let nextStepShort = heat.next_step_short;
+  let snapshotState = null;
+  if (c.__snapshot_state) {
+    snapshotState = c.__snapshot_state;
+    nextStep = snapshotState.next_step;
+    nextStepShort = snapshotState.next_step_short;
+  }
 
   return {
     id: c.id,
@@ -296,6 +310,7 @@ async function enrichContact(token, c) {
     last_contacted: c.properties.notes_last_contacted,
     days_since_contact: daysSince(c.properties.notes_last_contacted),
     horizon_snapshot_created: c.properties.storm_boy__horizon_snapshot_created,
+    proceed_to_kct: c.properties.storm_boy__proceed_to_kct_stage,
     last_note: lastNote ? {
       text: truncate(stripHtml(lastNote.body), NOTE_TRUNCATE),
       timestamp: lastNote.timestamp,
@@ -304,8 +319,12 @@ async function enrichContact(token, c) {
     call_distillate: callDistillate,
     heat: heat.heat,
     heat_reasoning: heat.reasoning,
-    next_step: heat.next_step,
-    next_step_short: heat.next_step_short,
+    next_step: nextStep,
+    next_step_short: nextStepShort,
+    snapshot_state: snapshotState ? {
+      state: snapshotState.state,
+      evidence: snapshotState.evidence,
+    } : null,
     hubspot_url: 'https://app.hubspot.com/contacts/24224559/contact/' + c.id,
   };
 }
@@ -318,8 +337,30 @@ async function run(stage) {
   const contactsPage = await fetchContactsForStage(token, stage);
   const contacts = contactsPage.results || [];
 
+  // For Farm Visit completed: pre-compute snapshot-state across HubSpot
+  // emails + custom properties so the next-step text reflects ACTUAL
+  // state (snapshot sent? customer replied? willing to progress?)
+  // rather than a heat-based template. Adds ~2 batch API calls total
+  // — much faster than per-contact queries.
+  const cappedContacts = contacts.slice(0, 12);
+  let snapshotCoverage = null;
+  if (stage === 'Farm Visit completed') {
+    try {
+      const { enrichContactsWithSnapshotState, COVERAGE_CAVEATS } = require('./snapshot-state');
+      // Fetch last notes in parallel so snapshot-state can read them for sentiment
+      await Promise.all(cappedContacts.map(async c => {
+        const ln = await fetchLastNote(token, c.id);
+        c.__snapshot_last_note = ln;
+      }));
+      await enrichContactsWithSnapshotState(token, cappedContacts);
+      snapshotCoverage = { caveats: COVERAGE_CAVEATS };
+    } catch (e) {
+      console.warn('[stormboy-detail] snapshot-state enrichment failed:', e.message);
+    }
+  }
+
   const enriched = [];
-  for (const c of contacts.slice(0, 12)) { // cap to 12 for fast first paint
+  for (const c of cappedContacts) {
     try {
       enriched.push(await enrichContact(token, c));
     } catch (e) {
@@ -344,6 +385,7 @@ async function run(stage) {
       method: 'heuristic',
       rules: 'HOT/COLD/WARM derived from time since visit + last-contact age + keyword signals in last note. Transparent and editable per rep override. Phase 2: LLM-driven cross-source synthesis (Teams + email + transcripts).',
     },
+    snapshot_coverage: snapshotCoverage,
   };
 }
 

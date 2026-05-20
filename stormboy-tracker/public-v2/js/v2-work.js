@@ -359,6 +359,34 @@
     `;
   }
 
+  function snapshotStateBlock(s) {
+    if (!s || !s.state) return '';
+    // Map state → display label + colour class. The label sits above
+    // the next-step body so reps can verify the system's read of state
+    // before acting on the recommendation.
+    const labels = {
+      NOT_REQUESTED:        { text: 'No snapshot yet',           tone: 'bad'  },
+      REQUESTED_NO_EMAIL:   { text: 'Flag set, no email',        tone: 'warn' },
+      SENT_AWAITING_REPLY:  { text: 'Snapshot sent · awaiting',  tone: 'flat' },
+      SENT_NO_REPLY_STALE:  { text: 'Snapshot sent · no reply',  tone: 'warn' },
+      SENT_REPLIED:         { text: 'Customer replied',          tone: 'good' },
+      WILLING_TO_PROGRESS:  { text: 'Willing to progress · KCT', tone: 'good' },
+      COLD:                 { text: 'Cold',                       tone: 'bad'  },
+    };
+    const l = labels[s.state] || { text: s.state, tone: 'flat' };
+    const evidenceHtml = (s.evidence || [])
+      .map(e => `<li><span class="v2-snap-ev-kind">${e.kind}</span> ${e.detail}</li>`)
+      .join('');
+    return `
+      <div class="v2-snap-block v2-snap-tone-${l.tone}">
+        <div class="v2-snap-head">
+          <span class="v2-snap-state">${l.text}</span>
+          <span class="v2-snap-state-key">snapshot state</span>
+        </div>
+        ${evidenceHtml ? `<ul class="v2-snap-evidence">${evidenceHtml}</ul>` : '<div class="v2-snap-noev">No evidence found — fallback to default action.</div>'}
+      </div>`;
+  }
+
   function synthesisCard(c) {
     const visitDateStr = c.meeting_date
       ? new Date(c.meeting_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
@@ -376,6 +404,7 @@
         ${callDistillateBlock(c.call_distillate)}
         ${lastNoteBlock(c.last_note)}
         ${reasoningBlock(c.heat_reasoning)}
+        ${snapshotStateBlock(c.snapshot_state)}
 
         <div class="v2-synth-next">
           <span class="v2-synth-next-label">Next step</span>
@@ -589,7 +618,18 @@
       }
       const cache = (dxCache && dxCache.contacts) || {};
       const exemplars = d.contacts.map(c => contactToCompletedVisitExemplar(c, cache[c.id]));
+      // Snapshot-coverage banner: surface honestly which signal sources
+      // are wired in. Teams + Tickets aren't yet — reps need to know
+      // when "NOT_REQUESTED" might be wrong because the snapshot was
+      // discussed only in Teams.
+      const covBanner = d.snapshot_coverage
+        ? `<details class="v2-sb-coverage">
+            <summary>Snapshot state checked across <strong>HubSpot emails + custom flags</strong> · click for gaps</summary>
+            <ul>${d.snapshot_coverage.caveats.map(c => '<li>' + c + '</li>').join('')}</ul>
+          </details>`
+        : '';
       el.innerHTML =
+        covBanner +
         `<div style="font-size:11px;color:#888;margin-bottom:8px">${d.contacts.length} of ${d.total_in_stage} shown · sorted HOT first · ${d.heat_scoring.method} heat · expand for timeline + re-derive</div>` +
         exemplars.map(v2Exemplar.renderCard).join('');
       v2Exemplar.bindActions(el);
@@ -624,7 +664,23 @@
     const bits = [];
     if (c.days_since_visit !== null && c.days_since_visit !== undefined) bits.push(`visit ${c.days_since_visit}d ago`);
     if (c.days_since_contact !== null && c.days_since_contact !== undefined) bits.push(`last contact ${c.days_since_contact}d`);
-    if (c.horizon_snapshot_created === 'Yes') bits.push('HORIZON sent');
+    // Surface snapshot state in the subtitle so reps see the system's
+    // read at a glance even on a collapsed card. Replaces the binary
+    // "HORIZON sent" flag with the richer state when available.
+    if (c.snapshot_state && c.snapshot_state.state) {
+      const labels = {
+        NOT_REQUESTED:        'snapshot · not requested',
+        REQUESTED_NO_EMAIL:   'snapshot · flag set, no email',
+        SENT_AWAITING_REPLY:  'snapshot · sent, awaiting reply',
+        SENT_NO_REPLY_STALE:  'snapshot · sent, no reply (stale)',
+        SENT_REPLIED:         'snapshot · customer replied',
+        WILLING_TO_PROGRESS:  'snapshot · willing to progress to KCT',
+        COLD:                 'snapshot · cold path',
+      };
+      bits.push(labels[c.snapshot_state.state] || `snapshot · ${c.snapshot_state.state.toLowerCase()}`);
+    } else if (c.horizon_snapshot_created === 'Yes') {
+      bits.push('HORIZON sent');
+    }
     return bits.join(' · ');
   }
 
@@ -650,6 +706,40 @@
   }
 
   function contactToCompletedVisitExemplar(c, dx) {
+    // For Farm Visit completed, snapshot_state is the canonical next-step —
+    // it's checked against actual HubSpot email evidence + custom flags
+    // rather than a heat-based template. Cached LLM diagnoses (dx) often
+    // anchored on the old static "Send KCT or contract draft now" text;
+    // the snapshot-state output overrides that.
+    const ss = c.snapshot_state;
+    const nextStepShort = ss ? c.next_step_short : (dx ? dx.next_step_short : (c.next_step_short || c.next_step));
+    const nextStepQualifier = ss ? c.next_step : (dx ? dx.next_step_qualifier : buildQualifier(c));
+
+    // Build evidence array — snapshot-state findings first (most
+    // actionable), then call-distillate for context.
+    const evidence = [];
+    if (ss && ss.evidence) {
+      ss.evidence.forEach(e => {
+        const kindLabels = {
+          snapshot_sent: 'HubSpot email · snapshot sent',
+          customer_replied: 'HubSpot email · customer replied',
+          flag_set: 'HubSpot property · flag set',
+          kct_willing: 'HubSpot property · KCT willing',
+          positive_sentiment: 'Last note · sentiment',
+        };
+        evidence.push({
+          source: kindLabels[e.kind] || e.source || e.kind,
+          content: e.detail || '',
+        });
+      });
+    }
+    if (c.call_distillate) {
+      evidence.push({
+        source: 'Aircall · ' + (c.call_distillate.transcript_id || 'matched call'),
+        content: c.call_distillate.one_line || '',
+      });
+    }
+
     return {
       id: 'sb-visit-' + c.id,
       kind: 'completed_visit',
@@ -661,15 +751,12 @@
       heat: c.heat,
       assigned_to_id: c.owner_id,
       assigned_to_name: ownerName(c.owner_id),
-      next_step_short: dx ? dx.next_step_short : (c.next_step_short || c.next_step),
-      next_step_qualifier: dx ? dx.next_step_qualifier : buildQualifier(c),
+      next_step_short: nextStepShort,
+      next_step_qualifier: nextStepQualifier,
       diagnosis: dx ? dx.diagnosis : null,
       diagnosis_pending: false,
       counterfactual: null,
-      evidence: c.call_distillate ? [{
-        source: 'Aircall · ' + (c.call_distillate.transcript_id || 'matched call'),
-        content: c.call_distillate.one_line || '',
-      }] : [],
+      evidence,
       draft: null,
       one_question: null,
       actions: [
@@ -680,6 +767,7 @@
         assessment: dx.diagnosis_assessment,
         timeline_used: dx.timeline_used,
       } : null,
+      snapshot_state: ss ? ss.state : null,
     };
   }
 
