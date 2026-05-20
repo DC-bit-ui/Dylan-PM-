@@ -29,6 +29,34 @@ The Git repository **`DC-bit-ui/Dylan-PM-`** is Dylan's Claude Code memory + ski
 
 It is **not** the workstack. Notion is canonical for tasks (per `memory/decisions/2026-04-28-notion-canonical-workstack.md`).
 
+It IS **the source of truth for every Cowork scheduled-task prompt** (as of 2026-05-20). See §1a below.
+
+### 1a. Scheduled-task prompts live here — repo is canonical
+
+Every Cowork scheduled task has its `task_prompt` version-controlled in this repo at `.claude/skills/cowork-scheduled/<task-name>/SKILL.md`. The convention:
+
+```
+.claude/skills/cowork-scheduled/
+├── README.md                              ← active task inventory
+├── apex-morning-briefing/
+│   ├── SKILL.md                          ← the task_prompt verbatim
+│   └── PROVENANCE.md                     ← pull source, verification, patches, deploy log
+├── apex-eod-reconciliation/{SKILL,PROVENANCE}.md
+├── daily-enrichment-pipeline/{SKILL,PROVENANCE,VERIFY}.md
+├── process-intelligence-bundles/{SKILL,PROVENANCE}.md
+├── career-signal-capture/{SKILL,PROVENANCE}.md
+├── career-weekly-promote/{SKILL,PROVENANCE}.md
+└── career-audit-digest/{SKILL,PROVENANCE}.md
+```
+
+**Standing rule for any Cowork operator (human or Claude):**
+1. **Never edit `task_prompt` directly in Cowork chat.** Always edit `SKILL.md` in the repo, commit, then deploy via MCP.
+2. **Deploy via `mcp__scheduled-tasks__update_scheduled_task`**, reading the new prompt from the repo file. Record the deploy in `PROVENANCE.md` (date, change summary, deployer).
+3. **If you find drift** (Cowork's task_prompt differs from the repo file), **the repo wins** — overwrite Cowork's version, then investigate how the drift happened.
+4. **For new tasks not yet in the repo**, create the task in Cowork as usual, then on next session bring its `SKILL.md` into the repo as canonical (one-time bootstrap).
+
+This convention closes the "opaque production-prompt" loophole that allowed silent drift between intent and runtime behaviour.
+
 ---
 
 ## 2. How to access it
