@@ -130,6 +130,27 @@ Before surfacing any task in `/focus`, `/standup`, or stakeholder updates, **run
 
 Apex's EOD Reconciliation handles part of this on schedule (17:30 SAST) — `/reconcile` is the on-demand version, callable any time.
 
+### 6.3 Cowork scheduled-task prompts — repo is canonical (2026-05-20)
+
+Every Cowork scheduled task (Apex Morning Briefing, EOD Reconciliation, daily-enrichment-pipeline, process-intelligence-bundles, career-signal-capture, career-weekly-promote, career-audit-digest) has its `task_prompt` version-controlled in this repo at:
+
+```
+.claude/skills/cowork-scheduled/<task-name>/
+  ├── SKILL.md          ← canonical task_prompt (verbatim what Cowork runs)
+  ├── PROVENANCE.md     ← pull origin, verification status, patch queue, deploy log
+  └── VERIFY.md         ← (optional) Cowork-side verification prompt
+```
+
+**Standing rule:** edit-in-repo, deploy-via-MCP. Never edit a scheduled-task `task_prompt` directly in Cowork chat. Always:
+1. Edit `SKILL.md` here in the repo
+2. Commit to git
+3. Deploy via `mcp__scheduled-tasks__update_scheduled_task` (called from a Cowork session)
+4. Record the deploy in `PROVENANCE.md`
+
+**Why:** Before this convention (pre-2026-05-20), Cowork task prompts lived opaquely in Cowork's task-definition store with no version control, no diff, no review history. Bug fixes happened invisibly. This directory makes them legible.
+
+See `.claude/skills/cowork-scheduled/README.md` for the active task inventory + hot signals.
+
 ### External skill packs (live in Cowork, not this repo)
 `agriprove-pm`, `agriprove-backend`, `agriprove-design`, `soil-carbon-audit`, `soil-carbon-batch-audit`, `internal-comms`. See `memory/integrations/external-skills.md`. Where overlap exists with this repo's skills, **Cowork wins for execution; this repo wins for memory**.
 
