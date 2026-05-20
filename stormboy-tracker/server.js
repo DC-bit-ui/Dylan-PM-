@@ -394,6 +394,23 @@ app.get('/api/stats/stormboy-efficacy', async (req, res) => {
   }
 });
 
+// Cohort funnel — Section 2 of the STATS redesign. Side-by-side stage
+// conversion for Stormboy / direct control / LawrieCo. Same caching
+// as efficacy (4h disk). ?force=1 refreshes.
+app.get('/api/stats/cohort-funnel', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/cohort-funnel');
+    const result = await run({
+      windowMonths: req.query.months ? parseInt(req.query.months, 10) : undefined,
+      force: req.query.force === '1',
+    });
+    res.json(result);
+  } catch (e) {
+    console.error('cohort-funnel failed:', e);
+    res.status(500).json({ error: 'funnel failed', detail: e.message });
+  }
+});
+
 app.get('/api/stats/farm-visits', async (req, res) => {
   try {
     const { run } = require('./coaching/engine/farm-visit-metrics');

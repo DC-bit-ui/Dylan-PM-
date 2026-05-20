@@ -1020,17 +1020,131 @@
     } catch (_) { return null; }
   }
 
+  // ====== COHORT FUNNEL — Section 2 of the STATS redesign ======
+  // Side-by-side stage conversion for Stormboy / direct control / LawrieCo.
+  // Each cohort's bars normalised to its own top-of-funnel so the funnel
+  // shape is visible even when absolute volumes differ wildly.
+  async function fetchCohortFunnel() {
+    try {
+      const r = await fetch('/api/stats/cohort-funnel');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  const COHORTS = [
+    { key: 'stormboy', label: 'Stormboy', accent: '#2d6a4f' },
+    { key: 'control',  label: 'Direct control', accent: '#5a6878' },
+    { key: 'lawrieco', label: 'LawrieCo (carved out)', accent: '#a16207' },
+  ];
+  function fmtPct(p) {
+    if (p == null) return '—';
+    return Math.round(p * 10) / 10 + '%';
+  }
+  function fmtPp(pp) {
+    if (pp == null) return '—';
+    return (pp > 0 ? '+' : '') + (Math.round(pp * 10) / 10) + 'pp';
+  }
+  function deltaCls(pp) {
+    if (pp == null) return 'neutral';
+    if (Math.abs(pp) < 5) return 'flat';
+    return pp > 0 ? 'good' : 'bad';
+  }
+  function cohortFunnelHtml(fn) {
+    if (!fn || fn.empty) {
+      return `<section class="v2-funnel-section"><div class="v2-empty">${escapeHtml(fn && fn.reason || 'No funnel data yet.')}</div></section>`;
+    }
+    const summary = fn.summary || {};
+    const stages = fn.stages || [];
+    const since = (fn.window && fn.window.since_iso || '').slice(0, 10);
+    const until = (fn.window && fn.window.until_iso || '').slice(0, 10);
+    const bd = fn.biggest_delta || {};
+
+    // Headline summary row — entered → won across cohorts
+    const summaryHtml = COHORTS.map(c => {
+      const s = summary[c.key] || {};
+      return `
+        <div class="v2-funnel-summary-cell" style="border-left-color:${c.accent}">
+          <div class="v2-funnel-summary-cohort">${escapeHtml(c.label)}</div>
+          <div class="v2-funnel-summary-flow"><strong>${s.entered_pipeline || 0}</strong> entered → <strong>${s.reached_won || 0}</strong> won</div>
+          <div class="v2-funnel-summary-rate">${fmtPct(s.total_funnel_conversion_pct)} end-to-end · ${fmtPct(s.overall_win_rate_pct)} of closed</div>
+        </div>`;
+    }).join('');
+
+    // Stage rows — each row is one pipeline stage. Three columns, one per
+    // cohort. Bar width is count / cohort's top-of-funnel so funnel shape
+    // is visible even when absolute volumes differ wildly.
+    const stageRows = stages.map((stage, idx) => {
+      const cells = COHORTS.map(c => {
+        const count = stage[c.key] || 0;
+        const conv = stage[c.key + '_conversion_pct'];
+        const top = (summary[c.key] && summary[c.key].entered_pipeline) || 1;
+        const widthPct = Math.min(100, Math.max(2, (count / top) * 100));
+        const isFirst = idx === 0;
+        const convDisplay = isFirst
+          ? '<span class="v2-funnel-cell-conv-na">top of funnel</span>'
+          : `<span class="v2-funnel-cell-conv">${conv > 100 ? '↗' : '↓'} ${fmtPct(conv)}</span>`;
+        return `
+          <div class="v2-funnel-cell" style="--accent:${c.accent}">
+            <div class="v2-funnel-cell-bar-wrap">
+              <div class="v2-funnel-cell-bar" style="width:${widthPct}%;background:${c.accent}"></div>
+              <span class="v2-funnel-cell-count">${count}</span>
+            </div>
+            ${convDisplay}
+          </div>`;
+      }).join('');
+      // Stages with all-zero counts get muted styling
+      const allZero = COHORTS.every(c => (stage[c.key] || 0) === 0);
+      return `
+        <div class="v2-funnel-row${allZero ? ' v2-funnel-row-empty' : ''}">
+          <div class="v2-funnel-row-label">
+            <span class="v2-funnel-row-name">${escapeHtml(stage.name)}</span>
+            ${allZero ? '<span class="v2-funnel-row-note">stage rarely recorded</span>' : ''}
+          </div>
+          ${cells}
+        </div>`;
+    }).join('');
+
+    // Biggest stage-delta callout — where Stormboy diverges most from control
+    const bdHtml = bd && bd.stage_name
+      ? `<div class="v2-funnel-callout v2-funnel-callout-${deltaCls(bd.delta_pp)}">
+          <span class="v2-funnel-callout-label">Biggest Stormboy-vs-control delta</span>
+          <span class="v2-funnel-callout-body">${escapeHtml(bd.stage_name)} stage conversion · Stormboy ${fmtPp(bd.delta_pp)} ${bd.delta_pp > 0 ? 'higher' : 'lower'} than control</span>
+        </div>`
+      : '';
+
+    return `
+      <section class="v2-funnel-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">Where does Stormboy add value in the funnel?</h2>
+          <div class="v2-funnel-sub">Stage-by-stage cohort comparison · ${since} → ${until} · closed deals only. Each cohort's bars normalised to its own top-of-funnel so funnel shape is visible regardless of volume.</div>
+        </header>
+        <div class="v2-funnel-summary">${summaryHtml}</div>
+        ${bdHtml}
+        <div class="v2-funnel-grid">
+          <div class="v2-funnel-grid-header">
+            <div></div>
+            ${COHORTS.map(c => `<div class="v2-funnel-col-header" style="color:${c.accent}">${escapeHtml(c.label)}</div>`).join('')}
+          </div>
+          ${stageRows}
+        </div>
+      </section>`;
+  }
+
   async function render(container) {
     container.innerHTML = `
       <div id="stats-efficacy"><div class="v2-loading" style="padding:24px">Loading efficacy comparison…</div></div>
+      <div id="stats-funnel"><div class="v2-loading" style="padding:24px">Loading cohort funnel…</div></div>
       <div class="v2-section-header" style="margin-top:24px">
         <h2 class="v2-section-title">Detail · process refinement</h2>
-        <p class="v2-section-sub">drill-downs by sub-tab. Sections 2-5 of the STATS redesign will replace this nav with scrolled-narrative views.</p>
+        <p class="v2-section-sub">drill-downs by sub-tab. Sections 3-5 of the STATS redesign (trajectory · evidence · projection) will replace this nav next.</p>
       </div>
       <div id="stats-content"><div class="v2-loading">Loading from HubSpot…</div></div>`;
-    // Hero loads in parallel with detail
+    // Hero + funnel both load in parallel with detail
     fetchEfficacy().then(eff => {
       document.getElementById('stats-efficacy').innerHTML = efficacyHeroHtml(eff);
+    });
+    fetchCohortFunnel().then(fn => {
+      document.getElementById('stats-funnel').innerHTML = cohortFunnelHtml(fn);
     });
     try {
       const res = await fetch('/api/stats/pipeline');
