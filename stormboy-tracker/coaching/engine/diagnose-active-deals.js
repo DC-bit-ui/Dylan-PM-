@@ -73,26 +73,16 @@ function dealToDiagnoseInput(d) {
 async function diagnoseDeal(d) {
   const input = dealToDiagnoseInput(d);
   const result = await diagnose(input);
-  // Bundle path may return a pending sentinel — store that state in the cache
-  // so we know not to re-queue on the next batch pass, and so the UI can
-  // surface "queued for analysis" instead of stale heuristics.
+  // Bundle pending: the caller (runBatch) preserves any prior good cache
+  // entry and just stamps a refresh_in_flight marker. Returning _pending
+  // here signals "don't overwrite cache". This prevents the regression
+  // where every refresh would replace last-good diagnoses with stub text.
   if (result && result._pending) {
     return {
-      deal_id: d.deal_id,
-      deal_name: d.deal_name,
-      risk_class: d.risk_class,
-      risk_score: d.risk_score,
-      current_stage: d.current_stage,
-      days_in_current_stage: d.days_in_current_stage,
-      attribution: d.attribution,
-      diagnosis: [],
-      next_step_short: '(pending — bundle queued)',
-      next_step_qualifier: 'Cowork or Claude Code will process this bundle and the diagnosis will appear on the next batch run.',
-      diagnosis_assessment: 'pending',
+      _pending: true,
       bundle_id: result.bundle_id,
       queued_at: result.queued_at,
       timeline_used: result.timeline_used,
-      regenerated_at: new Date().toISOString(),
     };
   }
   return {
@@ -145,11 +135,33 @@ async function runBatch({ limit = 20 } = {}) {
       console.log(`[diagnose-batch] ${i + 1}/${deals.length} ${d.deal_name}`);
       try {
         const entry = await diagnoseDeal(d);
-        cache.deals[d.deal_id] = entry;
-        cache.generated_at = new Date().toISOString();
-        saveDiagnoses(cache);
-        _jobState.completed_count++;
-        console.log(`[diagnose-batch]   ✓ ${entry.diagnosis_assessment} · ${entry.next_step_short || '(no next step)'}`);
+        if (entry && entry._pending) {
+          // Preserve prior cache entry (don't overwrite a real diagnosis with
+          // a pending stub). Just stamp refresh_in_flight on existing entry
+          // so UI can show a "↻ refresh queued" badge alongside the prior
+          // insight. Deals with no prior entry are left absent from cache
+          // — UI shows its standard "Diagnosis generating…" fallback.
+          const existing = cache.deals[d.deal_id];
+          if (existing && existing.diagnosis_assessment && existing.diagnosis_assessment !== 'pending') {
+            cache.deals[d.deal_id] = {
+              ...existing,
+              refresh_in_flight: { bundle_id: entry.bundle_id, queued_at: entry.queued_at },
+            };
+            saveDiagnoses(cache);
+            _jobState.completed_count++;
+            console.log(`[diagnose-batch]   ⟳ bundle ${entry.bundle_id} queued, prior diagnosis preserved`);
+          } else {
+            // No prior good entry — don't write a stub. Bundle will fill it on completion.
+            _jobState.completed_count++;
+            console.log(`[diagnose-batch]   … bundle ${entry.bundle_id} queued, no prior entry to preserve`);
+          }
+        } else {
+          cache.deals[d.deal_id] = entry;
+          cache.generated_at = new Date().toISOString();
+          saveDiagnoses(cache);
+          _jobState.completed_count++;
+          console.log(`[diagnose-batch]   ✓ ${entry.diagnosis_assessment} · ${entry.next_step_short || '(no next step)'}`);
+        }
       } catch (e) {
         _jobState.failed_count++;
         _jobState.errors.push({ deal_id: d.deal_id, deal_name: d.deal_name, error: e.message });

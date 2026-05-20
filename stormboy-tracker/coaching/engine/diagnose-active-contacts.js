@@ -87,21 +87,15 @@ function contactToInput(c) {
 async function diagnoseContact(c) {
   const input = contactToInput(c);
   const result = await diagnose(input);
+  // Bundle pending: orchestrator preserves prior cache entry (or writes
+  // nothing) instead of overwriting with a stub. Returning _pending here
+  // signals "don't overwrite".
   if (result && result._pending) {
     return {
-      contact_id: c.id,
-      name: c.name,
-      stage: c.stage,
-      heat: c.heat,
-      owner_id: c.owner_id,
-      diagnosis: [],
-      next_step_short: '(pending — bundle queued)',
-      next_step_qualifier: 'Cowork or Claude Code will process this bundle; diagnosis appears on next batch run.',
-      diagnosis_assessment: 'pending',
+      _pending: true,
       bundle_id: result.bundle_id,
       queued_at: result.queued_at,
       timeline_used: result.timeline_used,
-      regenerated_at: new Date().toISOString(),
     };
   }
   return {
@@ -161,11 +155,27 @@ async function runBatch({ stages = ['Farm Visit completed', 'In Conversation'] }
       console.log(`[contact-batch] ${i + 1}/${all.length} ${c.name} (${c.stage})`);
       try {
         const entry = await diagnoseContact(c);
-        cache.contacts[c.id] = entry;
-        cache.generated_at = new Date().toISOString();
-        saveCache(cache);
-        _jobState.completed_count++;
-        console.log(`[contact-batch]   ✓ ${entry.diagnosis_assessment} · ${entry.next_step_short || '(no next step)'}`);
+        if (entry && entry._pending) {
+          const existing = cache.contacts[c.id];
+          if (existing && existing.diagnosis_assessment && existing.diagnosis_assessment !== 'pending') {
+            cache.contacts[c.id] = {
+              ...existing,
+              refresh_in_flight: { bundle_id: entry.bundle_id, queued_at: entry.queued_at },
+            };
+            saveCache(cache);
+            _jobState.completed_count++;
+            console.log(`[contact-batch]   ⟳ bundle ${entry.bundle_id} queued, prior diagnosis preserved`);
+          } else {
+            _jobState.completed_count++;
+            console.log(`[contact-batch]   … bundle ${entry.bundle_id} queued, no prior entry to preserve`);
+          }
+        } else {
+          cache.contacts[c.id] = entry;
+          cache.generated_at = new Date().toISOString();
+          saveCache(cache);
+          _jobState.completed_count++;
+          console.log(`[contact-batch]   ✓ ${entry.diagnosis_assessment} · ${entry.next_step_short || '(no next step)'}`);
+        }
       } catch (e) {
         _jobState.failed_count++;
         _jobState.errors.push({ contact_id: c.id, name: c.name, error: e.message });
