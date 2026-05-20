@@ -5124,3 +5124,53 @@ body.v2-ex-overlay-open {
   font-weight: 600;
 }
 .v2-snap-noev { font-size: 11px; color: #888; font-style: italic; margin-top: 4px; }
+
+/* ===== Snapshot coverage banner v2 (per-channel) ===== */
+.v2-sb-coverage-good { background: #ecf3eb; border-color: #b6cda8; color: #2a4a25; }
+.v2-sb-coverage-warn { background: #fdf6e3; border-color: #d8c69c; color: #6a5a1a; }
+.v2-sb-coverage-flat { background: #f0efe7; border-color: #d8d4be; color: #555; }
+.v2-sb-coverage summary strong { color: inherit; }
+.v2-sb-channels { list-style: none; margin: 10px 0 4px; padding: 0; }
+.v2-sb-channel {
+  display: grid;
+  grid-template-columns: 14px 1fr auto;
+  gap: 6px 10px;
+  align-items: baseline;
+  padding: 6px 0;
+  border-top: 1px dashed rgba(0,0,0,0.05);
+  font-size: 11.5px;
+}
+.v2-sb-channel:first-child { border-top: 0; }
+.v2-sb-channel-note {
+  grid-column: 2 / -1;
+  font-size: 10.5px;
+  color: rgba(0,0,0,0.6);
+  margin-top: 2px;
+  line-height: 1.45;
+}
+.v2-sb-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #aaa;
+  align-self: center;
+}
+.v2-sb-channel-enabled .v2-sb-dot { background: #2d6a4f; }
+.v2-sb-channel-partial .v2-sb-dot { background: #d8c69c; }
+.v2-sb-channel-disabled .v2-sb-dot { background: #8a2a2a; opacity: 0.6; }
+.v2-sb-channel-unknown .v2-sb-dot { background: #aaa; }
+.v2-sb-channel-state {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #777;
+  font-weight: 700;
+}
+.v2-sb-caveats-head {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #777;
+  font-weight: 700;
+  margin-top: 8px;
+}

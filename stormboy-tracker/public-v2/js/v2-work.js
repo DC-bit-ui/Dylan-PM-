@@ -618,15 +618,39 @@
       }
       const cache = (dxCache && dxCache.contacts) || {};
       const exemplars = d.contacts.map(c => contactToCompletedVisitExemplar(c, cache[c.id]));
-      // Snapshot-coverage banner: surface honestly which signal sources
-      // are wired in. Teams + Tickets aren't yet — reps need to know
-      // when "NOT_REQUESTED" might be wrong because the snapshot was
-      // discussed only in Teams.
+      // Snapshot-coverage banner: surfaces per-channel state with a
+      // colour-coded dot — green = fully wired, amber = partial,
+      // red = not configured. Lights up automatically when scopes are
+      // granted or env vars set (no code change needed).
       const covBanner = d.snapshot_coverage
-        ? `<details class="v2-sb-coverage">
-            <summary>Snapshot state checked across <strong>HubSpot emails + custom flags</strong> · click for gaps</summary>
-            <ul>${d.snapshot_coverage.caveats.map(c => '<li>' + c + '</li>').join('')}</ul>
-          </details>`
+        ? (() => {
+            const channels = d.snapshot_coverage.channels || [];
+            const enabledCount = channels.filter(c => c.state === 'enabled').length;
+            const partialCount = channels.filter(c => c.state === 'partial').length;
+            const disabledCount = channels.filter(c => c.state === 'disabled').length;
+            const headlineTone = enabledCount === channels.length
+              ? 'good'
+              : (partialCount > 0 || disabledCount === channels.length ? 'warn' : 'flat');
+            return `
+              <details class="v2-sb-coverage v2-sb-coverage-${headlineTone}">
+                <summary>
+                  <strong>Snapshot evidence sources:</strong>
+                  ${enabledCount} of ${channels.length} channels wired
+                  ${partialCount ? ` · ${partialCount} partial` : ''}
+                  ${disabledCount ? ` · ${disabledCount} disabled` : ''}
+                </summary>
+                <ul class="v2-sb-channels">
+                  ${channels.map(c => `
+                    <li class="v2-sb-channel v2-sb-channel-${c.state}">
+                      <span class="v2-sb-dot"></span>
+                      <span class="v2-sb-channel-name"><strong>${c.channel}</strong></span>
+                      <span class="v2-sb-channel-state">${c.state}</span>
+                      <div class="v2-sb-channel-note">${c.note}</div>
+                    </li>`).join('')}
+                </ul>
+                ${(d.snapshot_coverage.caveats || []).length ? `<div class="v2-sb-caveats-head">Other notes</div><ul>${d.snapshot_coverage.caveats.map(c => '<li>' + c + '</li>').join('')}</ul>` : ''}
+              </details>`;
+          })()
         : '';
       el.innerHTML =
         covBanner +
@@ -669,13 +693,17 @@
     // "HORIZON sent" flag with the richer state when available.
     if (c.snapshot_state && c.snapshot_state.state) {
       const labels = {
-        NOT_REQUESTED:        'snapshot · not requested',
-        REQUESTED_NO_EMAIL:   'snapshot · flag set, no email',
-        SENT_AWAITING_REPLY:  'snapshot · sent, awaiting reply',
-        SENT_NO_REPLY_STALE:  'snapshot · sent, no reply (stale)',
-        SENT_REPLIED:         'snapshot · customer replied',
-        WILLING_TO_PROGRESS:  'snapshot · willing to progress to KCT',
-        COLD:                 'snapshot · cold path',
+        NOT_REQUESTED:                'snapshot · not requested',
+        REQUESTED:                    'snapshot · requested · queued',
+        IN_PRODUCTION:                'snapshot · in production',
+        TICKET_EXISTS_STAGE_UNKNOWN:  'snapshot · ticket exists (stage unknown)',
+        REQUESTED_NO_EMAIL:           'snapshot · flag set, no email',
+        DISCUSSED_NOT_SENT:           'snapshot · discussed in Teams · unsent',
+        SENT_AWAITING_REPLY:          'snapshot · sent, awaiting reply',
+        SENT_NO_REPLY_STALE:          'snapshot · sent, no reply (stale)',
+        SENT_REPLIED:                 'snapshot · customer replied',
+        WILLING_TO_PROGRESS:          'snapshot · willing to progress to KCT',
+        COLD:                         'snapshot · cold path',
       };
       bits.push(labels[c.snapshot_state.state] || `snapshot · ${c.snapshot_state.state.toLowerCase()}`);
     } else if (c.horizon_snapshot_created === 'Yes') {

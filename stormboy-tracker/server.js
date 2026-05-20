@@ -425,6 +425,26 @@ app.get('/api/stats/forecast', async (req, res) => {
   }
 });
 
+// Snapshot-state integration health check — surfaces which channels
+// (HubSpot emails, HubSpot tickets, MS Teams) are wired in. Used by
+// the WORK page banner and for ops debugging.
+app.get('/api/snapshot/coverage', async (req, res) => {
+  try {
+    const { getCoverageStatus } = require('./coaching/engine/snapshot-state');
+    let teamsProbe = null;
+    try {
+      const teams = require('./coaching/engine/teams-graph');
+      teamsProbe = await teams.probe();
+    } catch (_) {}
+    res.json({
+      channels: getCoverageStatus(),
+      teams_probe: teamsProbe,
+    });
+  } catch (e) {
+    res.status(500).json({ error: 'coverage check failed', detail: e.message });
+  }
+});
+
 // Stormboy contact funnel velocity — Section 7 of the STATS redesign.
 // The outreach motion lives in the contact funnel (Identified → In
 // Conversation → Farm Visit booked → ... → Exited), not the deal

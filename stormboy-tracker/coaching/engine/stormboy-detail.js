@@ -346,14 +346,19 @@ async function run(stage) {
   let snapshotCoverage = null;
   if (stage === 'Farm Visit completed') {
     try {
-      const { enrichContactsWithSnapshotState, COVERAGE_CAVEATS } = require('./snapshot-state');
+      const { enrichContactsWithSnapshotState, getCoverageStatus, COVERAGE_CAVEATS } = require('./snapshot-state');
       // Fetch last notes in parallel so snapshot-state can read them for sentiment
       await Promise.all(cappedContacts.map(async c => {
         const ln = await fetchLastNote(token, c.id);
         c.__snapshot_last_note = ln;
       }));
       await enrichContactsWithSnapshotState(token, cappedContacts);
-      snapshotCoverage = { caveats: COVERAGE_CAVEATS };
+      // Coverage status is computed AFTER enrichment so it reflects
+      // actual scope availability (we probe by attempting a call)
+      snapshotCoverage = {
+        channels: getCoverageStatus(),
+        caveats: COVERAGE_CAVEATS,
+      };
     } catch (e) {
       console.warn('[stormboy-detail] snapshot-state enrichment failed:', e.message);
     }

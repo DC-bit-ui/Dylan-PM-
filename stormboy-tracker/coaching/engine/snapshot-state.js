@@ -72,6 +72,15 @@ const { hubspotFetch } = require('./hubspot-client');
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 const AWAIT_DAYS = 7;          // window to wait before chasing a sent snapshot
 const COLD_DAYS = 28;
+
+// Pipeline ID for the HORIZON Snapshot ticket pipeline. We don't have
+// it via API today (schema endpoint requires custom-object-read scope
+// which is also missing). The pipeline name is matched once the scope
+// is enabled and we can read pipelines. Until then we treat ANY
+// ticket associated to a Stormboy contact as a probable snapshot
+// ticket (the AgriProve org doesn't run other ticket workflows for
+// these contacts, so the false-positive rate is acceptably low).
+let _ticketScopeAvailable = null; // tri-state: null=unknown, true=accessible, false=403
 const POSITIVE_KEYWORDS = [
   'yes', 'sign', 'proceed', 'next step', 'ready', 'keen', 'happy',
   'agreed', 'go ahead', 'let\'s', 'lets do', 'sound good', 'sounds good',
@@ -89,6 +98,136 @@ async function hubspotPost(token, urlPath, body) {
     throw new Error(`HubSpot ${urlPath} → ${res.status}: ${text.slice(0, 300)}`);
   }
   return res.json();
+}
+
+// Soft-fail variant that returns null on 403 (missing-scope) so callers
+// can degrade gracefully. Logs once per process when the scope-missing
+// pattern is detected.
+async function hubspotPostSoft(token, urlPath, body, { scopeKey } = {}) {
+  const res = await hubspotFetch(HUBSPOT_BASE + urlPath, {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (res.status === 403 && scopeKey) {
+    if (scopeKey === 'tickets' && _ticketScopeAvailable !== false) {
+      console.warn('[snapshot-state] HubSpot tickets scope missing — falling back to association-only detection');
+      _ticketScopeAvailable = false;
+    }
+    return null;
+  }
+  if (!res.ok) {
+    console.warn(`[snapshot-state] HubSpot ${urlPath} → ${res.status}`);
+    return null;
+  }
+  if (scopeKey === 'tickets' && _ticketScopeAvailable !== true) {
+    console.log('[snapshot-state] HubSpot tickets scope is available — full detection enabled');
+    _ticketScopeAvailable = true;
+  }
+  return res.json();
+}
+
+async function hubspotGetSoft(token, urlPath, { scopeKey } = {}) {
+  const res = await hubspotFetch(HUBSPOT_BASE + urlPath, {
+    headers: { Authorization: 'Bearer ' + token },
+  });
+  if (res.status === 403 && scopeKey === 'tickets') {
+    _ticketScopeAvailable = false;
+    return null;
+  }
+  if (!res.ok) return null;
+  return res.json();
+}
+
+// Batch lookup of contact → ticket associations. Always 200 even
+// without the `tickets` scope — associations API is gated on the
+// SOURCE object's scope (contacts), not the target.
+// Returns { contactId: [ticketId, ...] }.
+async function fetchTicketAssociations(token, contactIds) {
+  if (!contactIds.length) return {};
+  const map = {};
+  for (let i = 0; i < contactIds.length; i += 100) {
+    const batch = contactIds.slice(i, i + 100);
+    try {
+      const data = await hubspotPost(token, '/crm/v4/associations/contacts/tickets/batch/read', {
+        inputs: batch.map(id => ({ id: String(id) })),
+      });
+      (data.results || []).forEach(r => {
+        const fromId = r.from && r.from.id;
+        if (!fromId) return;
+        map[fromId] = (r.to || []).map(t => String(t.toObjectId));
+      });
+    } catch (e) {
+      console.warn('[snapshot-state] ticket association batch failed:', e.message);
+    }
+  }
+  return map;
+}
+
+// Try to batch-read ticket properties. Returns null if scope unavailable.
+// When the `tickets` scope is granted to the Private App, this lights up
+// automatically and per-ticket pipeline/stage gets used for richer state
+// classification (REQUESTED vs IN_PRODUCTION vs SENT).
+async function fetchTicketsIfAccessible(token, ticketIds) {
+  if (!ticketIds.length) return null;
+  if (_ticketScopeAvailable === false) return null; // remembered from earlier 403
+  const map = {};
+  for (let i = 0; i < ticketIds.length; i += 100) {
+    const batch = ticketIds.slice(i, i + 100);
+    const data = await hubspotPostSoft(token, '/crm/v3/objects/tickets/batch/read', {
+      properties: ['subject', 'hs_pipeline', 'hs_pipeline_stage', 'hs_lastmodifieddate',
+                   'hs_pipeline_stage_label', 'createdate'],
+      inputs: batch.map(id => ({ id: String(id) })),
+    }, { scopeKey: 'tickets' });
+    if (data === null) return null;          // scope missing — bail
+    (data.results || []).forEach(t => { map[t.id] = t; });
+  }
+  return map;
+}
+
+// One-time discovery of the HORIZON Snapshot ticket pipeline. Once
+// scope is granted we cache the pipeline ID + stage labels so we can
+// match per-ticket. If scope is missing, returns null.
+let _horizonPipelineCache = null;
+async function discoverHorizonPipeline(token) {
+  if (_horizonPipelineCache) return _horizonPipelineCache;
+  if (_ticketScopeAvailable === false) return null;
+  const data = await hubspotGetSoft(token, '/crm/v3/pipelines/tickets', { scopeKey: 'tickets' });
+  if (!data) return null;
+  // Match by label — common patterns: "HORIZON Snapshot", "Horizon Snapshot Pipeline"
+  const match = (data.results || []).find(p => /horizon\s*snapshot|snapshot/i.test(p.label || ''));
+  if (!match) {
+    _horizonPipelineCache = { found: false };
+    return _horizonPipelineCache;
+  }
+  _horizonPipelineCache = {
+    found: true,
+    id: match.id,
+    label: match.label,
+    stages: (match.stages || []).map(s => ({ id: s.id, label: s.label, display_order: s.displayOrder })),
+  };
+  console.log('[snapshot-state] HORIZON pipeline discovered:', _horizonPipelineCache.label, '(', _horizonPipelineCache.stages.length, 'stages )');
+  return _horizonPipelineCache;
+}
+
+// Classify a ticket's pipeline-stage label into one of our snapshot
+// states. Heuristic — adapts to whatever stage names the org uses.
+function classifyTicketStage(ticket, pipeline) {
+  if (!ticket || !ticket.properties) return null;
+  const props = ticket.properties;
+  const stageId = props.hs_pipeline_stage;
+  const stageLabel = (props.hs_pipeline_stage_label || '').toLowerCase();
+  // Try to derive a label from the pipeline metadata if not embedded
+  let label = stageLabel;
+  if (!label && pipeline && pipeline.stages) {
+    const match = pipeline.stages.find(s => s.id === stageId);
+    if (match) label = (match.label || '').toLowerCase();
+  }
+  if (!label) return { stage: 'UNKNOWN', stage_label: stageId };
+  if (/sent|delivered|complete|closed|done/.test(label)) return { stage: 'SENT', stage_label: label };
+  if (/production|in progress|working|drafting|building/.test(label)) return { stage: 'IN_PRODUCTION', stage_label: label };
+  if (/request|new|backlog|queue|pending/.test(label)) return { stage: 'REQUESTED', stage_label: label };
+  return { stage: 'UNKNOWN', stage_label: label };
 }
 
 // Batch lookup of contact → email associations. Returns { contactId: [emailId, ...] }.
@@ -158,7 +297,17 @@ function daysSince(iso) {
   return Math.floor((Date.now() - ms) / (24 * 60 * 60 * 1000));
 }
 
-function classifyState(contact, emails, lastNote) {
+function classifyState(contact, emails, lastNote, ticketSignal, teamsSignal) {
+  // ticketSignal can be:
+  //   null                                       — scope missing, no info
+  //   { count: N, ticket_ids: [...] }            — association-only mode
+  //   { count: N, latest_stage: 'REQUESTED'      — full-read mode (scope OK)
+  //                            | 'IN_PRODUCTION' | 'SENT' | 'UNKNOWN',
+  //     latest_stage_label: '...', latest_modified: iso }
+  // teamsSignal can be:
+  //   null                                       — Teams not configured
+  //   { mentions: [{message_id, posted_at, snippet, posted_by}] } — has signals
+  //   { mentions: [] }                           — checked, none found
   // Sort emails ascending by timestamp
   const sorted = emails
     .map(e => ({
@@ -225,16 +374,91 @@ function classifyState(contact, emails, lastNote) {
       detail: 'Last note contains positive-progression keyword',
     });
   }
+  // Ticket signal — either association-only or full-read
+  if (ticketSignal && ticketSignal.count > 0) {
+    if (ticketSignal.latest_stage) {
+      evidence.push({
+        source: 'hubspot_ticket',
+        kind: 'ticket_' + ticketSignal.latest_stage.toLowerCase(),
+        detail: `HORIZON Snapshot ticket · stage "${ticketSignal.latest_stage_label}" · ${ticketSignal.count} ticket(s) associated`,
+      });
+    } else {
+      evidence.push({
+        source: 'hubspot_ticket',
+        kind: 'ticket_exists',
+        detail: `${ticketSignal.count} ticket(s) associated (ticket scope missing — cannot read stage; likely HORIZON Snapshot)`,
+      });
+    }
+  }
+  // Teams signal
+  if (teamsSignal && teamsSignal.mentions && teamsSignal.mentions.length) {
+    const latest = teamsSignal.mentions[0];
+    evidence.push({
+      source: 'teams_channel',
+      kind: 'teams_mention',
+      detail: `Mentioned in Operation Stormboy > Deals · "${latest.snippet}" · ${latest.posted_by} · ${latest.posted_at.slice(0, 10)}`,
+    });
+  }
 
   // ====== State decision tree ======
+  // Convenience: any signal that snapshot was discussed somewhere
+  const anyEvidenceOfSnapshot = !!(
+    lastOutboundSnapshot ||
+    snapshotProp === 'Yes' ||
+    (ticketSignal && ticketSignal.count > 0) ||
+    (teamsSignal && teamsSignal.mentions && teamsSignal.mentions.length)
+  );
+
   // 1) Cold — disengage path (preserve existing semantics)
   const isCold = (visitAge != null && visitAge >= COLD_DAYS) &&
                  (lastContactAge == null || lastContactAge >= COLD_DAYS);
-  if (isCold && !lastOutboundSnapshot && snapshotProp !== 'Yes') {
+  if (isCold && !anyEvidenceOfSnapshot) {
     return {
       state: 'COLD',
       next_step_short: 'Disengage politely',
-      next_step: `No snapshot evidence and ${lastContactAge ?? '∞'}d since last contact. Send "we're here when you're ready" close and stop active outreach.`,
+      next_step: `No snapshot evidence (email/ticket/Teams) and ${lastContactAge ?? '∞'}d since last contact. Send "we're here when you're ready" close and stop active outreach.`,
+      evidence,
+    };
+  }
+
+  // 1b) Ticket in PRODUCTION (scope-enabled mode)
+  if (ticketSignal && ticketSignal.latest_stage === 'IN_PRODUCTION' && !lastOutboundSnapshot) {
+    return {
+      state: 'IN_PRODUCTION',
+      next_step_short: 'Snapshot in production · Ben drafting',
+      next_step: `Snapshot ticket is in stage "${ticketSignal.latest_stage_label}". No outbound email yet — Ben (or whoever owns the ticket) is drafting it. Check ticket status; no rep action needed until ready.`,
+      evidence,
+    };
+  }
+
+  // 1c) Ticket REQUESTED but not yet in production (queue)
+  if (ticketSignal && ticketSignal.latest_stage === 'REQUESTED' && !lastOutboundSnapshot) {
+    return {
+      state: 'REQUESTED',
+      next_step_short: 'Snapshot requested · queued',
+      next_step: `Snapshot ticket exists in stage "${ticketSignal.latest_stage_label}". Sitting in the queue — nudge Ben if it's been there >3d.`,
+      evidence,
+    };
+  }
+
+  // 1c-bis) Ticket exists in association-only mode (scope missing). We
+  // know a ticket is linked to the contact but can't read its stage.
+  // Strong signal nonetheless — far better than saying NOT_REQUESTED.
+  if (ticketSignal && ticketSignal.count > 0 && !ticketSignal.latest_stage && !lastOutboundSnapshot && snapshotProp !== 'Yes') {
+    return {
+      state: 'TICKET_EXISTS_STAGE_UNKNOWN',
+      next_step_short: 'Snapshot ticket exists · check stage in HubSpot',
+      next_step: `Contact has ${ticketSignal.count} associated ticket(s) — likely HORIZON Snapshot. Stage not readable here (enable HubSpot Private App ticket scope to surface it). Open the contact in HubSpot to see ticket status; act based on stage.`,
+      evidence,
+    };
+  }
+
+  // 1d) Teams mention but no email yet (probably discussed but not sent)
+  if (teamsSignal && teamsSignal.mentions && teamsSignal.mentions.length && !lastOutboundSnapshot && snapshotProp !== 'Yes') {
+    return {
+      state: 'DISCUSSED_NOT_SENT',
+      next_step_short: 'Teams mention · confirm if snapshot exists',
+      next_step: `Discussed in Operation Stormboy > Deals on ${teamsSignal.mentions[0].posted_at.slice(0,10)} but no outbound email or ticket found. Confirm whether a snapshot was actually produced and sent.`,
       evidence,
     };
   }
@@ -305,6 +529,49 @@ function classifyState(contact, emails, lastNote) {
  * completed) with snapshot_state + override next_step / next_step_short
  * fields. Returns void.
  */
+// Helper: build a per-contact ticket signal from associations + (when
+// scope is enabled) per-ticket properties.
+function buildTicketSignal(ticketIds, ticketMap, pipeline) {
+  if (!ticketIds || !ticketIds.length) return null;
+  if (!ticketMap) {
+    // Scope missing — return association-only signal
+    return { count: ticketIds.length, ticket_ids: ticketIds };
+  }
+  // Pick the most recently modified ticket (likely the active one)
+  const tickets = ticketIds.map(id => ticketMap[id]).filter(Boolean);
+  if (!tickets.length) return null;
+  const sorted = tickets.slice().sort((a, b) => {
+    const aT = Date.parse(a.properties.hs_lastmodifieddate || a.properties.createdate || 0);
+    const bT = Date.parse(b.properties.hs_lastmodifieddate || b.properties.createdate || 0);
+    return bT - aT;
+  });
+  const latest = sorted[0];
+  // If we have a HORIZON pipeline match, only count tickets in it
+  if (pipeline && pipeline.found && latest.properties.hs_pipeline !== pipeline.id) {
+    const inPipeline = sorted.filter(t => t.properties.hs_pipeline === pipeline.id);
+    if (!inPipeline.length) return null;
+    const target = inPipeline[0];
+    const classified = classifyTicketStage(target, pipeline);
+    return {
+      count: inPipeline.length,
+      ticket_ids: inPipeline.map(t => t.id),
+      latest_stage: classified ? classified.stage : 'UNKNOWN',
+      latest_stage_label: classified ? classified.stage_label : '',
+      latest_modified: target.properties.hs_lastmodifieddate,
+      subject: target.properties.subject,
+    };
+  }
+  const classified = classifyTicketStage(latest, pipeline);
+  return {
+    count: tickets.length,
+    ticket_ids: tickets.map(t => t.id),
+    latest_stage: classified ? classified.stage : 'UNKNOWN',
+    latest_stage_label: classified ? classified.stage_label : '',
+    latest_modified: latest.properties.hs_lastmodifieddate,
+    subject: latest.properties.subject,
+  };
+}
+
 async function enrichContactsWithSnapshotState(token, contacts) {
   // Only do this for Farm Visit completed contacts
   const targets = contacts.filter(c =>
@@ -313,28 +580,102 @@ async function enrichContactsWithSnapshotState(token, contacts) {
   if (!targets.length) return;
 
   const contactIds = targets.map(c => c.id);
-  const emailAssoc = await fetchEmailAssociations(token, contactIds);
+
+  // Parallel: emails + tickets + Teams mentions
+  const [emailAssoc, ticketAssoc, teamsByContact] = await Promise.all([
+    fetchEmailAssociations(token, contactIds),
+    fetchTicketAssociations(token, contactIds),
+    fetchTeamsSignals(targets), // graceful no-op when MS Graph not configured
+  ]);
+
   const allEmailIds = Array.from(new Set(Object.values(emailAssoc).flat()));
-  const emailMap = await fetchEmails(token, allEmailIds);
+  const allTicketIds = Array.from(new Set(Object.values(ticketAssoc).flat()));
+
+  const [emailMap, ticketMap, pipeline] = await Promise.all([
+    fetchEmails(token, allEmailIds),
+    fetchTicketsIfAccessible(token, allTicketIds),    // null if scope missing
+    discoverHorizonPipeline(token),                    // null if scope missing
+  ]);
 
   for (const c of targets) {
     const emailIds = emailAssoc[c.id] || [];
     const emails = emailIds.map(id => emailMap[id]).filter(Boolean);
-    // For state detection we also need the last note text. The caller's
-    // stormboy-detail already fetched it — we pass through via a side
-    // channel: stash it on the contact object as __snapshot_last_note.
+    const ticketIds = ticketAssoc[c.id] || [];
+    const ticketSignal = buildTicketSignal(ticketIds, ticketMap, pipeline);
+    const teamsSignal = teamsByContact[c.id] || null;
     const lastNote = c.__snapshot_last_note || null;
-    const stateResult = classifyState(c, emails, lastNote);
-    // Stash on contact for downstream merge
+    const stateResult = classifyState(c, emails, lastNote, ticketSignal, teamsSignal);
     c.__snapshot_state = stateResult;
   }
 }
 
-const COVERAGE_CAVEATS = [
-  'Snapshot detection uses HubSpot emails + custom properties. The HORIZON Snapshot TICKET pipeline is NOT checked (HubSpot Private App token lacks ticket scope — would need `crm.objects.tickets.read` added).',
-  'Microsoft Teams channel "Operation Stormboy > Deals" is NOT checked (no MS Graph integration in this server). Snapshots discussed in Teams but never emailed will appear as NOT_REQUESTED.',
+// Pull Teams signals for a batch of contacts. Returns an empty map if
+// Teams integration isn't configured (graceful degradation). When
+// configured, returns { contactId: { mentions: [...] } }.
+async function fetchTeamsSignals(contacts) {
+  try {
+    const teams = require('./teams-graph');
+    if (!teams.isConfigured()) return {};
+    return await teams.findContactMentions(contacts, {
+      keywords: ['snapshot', 'horizon'],
+    });
+  } catch (e) {
+    if (!/cannot find module/i.test(e.message)) {
+      console.warn('[snapshot-state] Teams signal fetch failed:', e.message);
+    }
+    return {};
+  }
+}
+
+// Coverage status is recomputed per request so the caveat banner
+// reflects current capability. Lights up automatically when scopes
+// are granted or env vars are set.
+function getCoverageStatus() {
+  const items = [];
+  items.push({
+    channel: 'HubSpot emails',
+    state: 'enabled',
+    note: 'Outbound + inbound email matching /snapshot|horizon report/i via contact → emails associations.',
+  });
+  items.push({
+    channel: 'HubSpot custom flags',
+    state: 'enabled',
+    note: 'storm_boy__horizon_snapshot_created + storm_boy__proceed_to_kct_stage properties.',
+  });
+  items.push({
+    channel: 'HubSpot HORIZON ticket pipeline',
+    state: _ticketScopeAvailable === true
+            ? 'enabled'
+            : (_ticketScopeAvailable === false ? 'partial' : 'unknown'),
+    note: _ticketScopeAvailable === true
+            ? 'Full per-ticket stage detection (REQUESTED · IN_PRODUCTION · SENT).'
+            : (_ticketScopeAvailable === false
+                ? 'Ticket associations ARE accessible (we see which contacts have tickets), but ticket properties (pipeline/stage/subject) require the `tickets` scope on the HubSpot Private App. Enable in: HubSpot Settings → Integrations → Private Apps → AgriProve app → Scopes tab → toggle Tickets read.'
+                : 'Will be probed on first request.'),
+  });
+  let teamsState = 'disabled';
+  let teamsNote = 'Set MS_GRAPH_TENANT_ID, MS_GRAPH_CLIENT_ID, MS_GRAPH_CLIENT_SECRET env vars + grant the Azure AD app `ChannelMessage.Read.All` Application permission to enable.';
+  try {
+    const teams = require('./teams-graph');
+    if (teams.isConfigured()) {
+      teamsState = 'enabled';
+      teamsNote = 'Operation Stormboy > Deals channel scanned for contact-name + snapshot-keyword matches via Microsoft Graph (client-credentials).';
+    }
+  } catch (_) { /* module not present yet — leave disabled */ }
+  items.push({ channel: 'Microsoft Teams · Operation Stormboy > Deals', state: teamsState, note: teamsNote });
+
+  return items;
+}
+
+// Back-compat: the old COVERAGE_CAVEATS array is still imported by
+// stormboy-detail. Return a string list derived from getCoverageStatus.
+const COVERAGE_CAVEATS_FALLBACK = [
   'Subject matching is case-insensitive regex /snapshot|horizon report/. False positives possible if a non-snapshot email uses these words.',
-  '"Customer replied" only checks email direction. A phone reply that\'s logged as a note won\'t trigger SENT_REPLIED — but the positive-sentiment keyword scan over the latest note will catch it for WILLING_TO_PROGRESS.',
+  '"Customer replied" only checks email direction. A phone reply logged as a note won\'t trigger SENT_REPLIED — the positive-sentiment keyword scan over the latest note catches it for WILLING_TO_PROGRESS.',
 ];
 
-module.exports = { enrichContactsWithSnapshotState, COVERAGE_CAVEATS };
+module.exports = {
+  enrichContactsWithSnapshotState,
+  getCoverageStatus,
+  COVERAGE_CAVEATS: COVERAGE_CAVEATS_FALLBACK,
+};
