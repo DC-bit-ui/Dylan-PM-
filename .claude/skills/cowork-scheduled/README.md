@@ -41,9 +41,11 @@ Each scheduled task gets one folder. The `SKILL.md` filename matches what Cowork
 
 4. **Snapshots are proof, not source.** The `uploads/SKILL.md` files on disk are useful for initial pull and as a comparison anchor — but they're never the source of truth once a task has a repo folder. The repo wins.
 
-## Active tasks (as of 2026-05-20)
+## Active tasks (as of 2026-05-21)
 
 > **⚠️ Snapshot-date semantics:** the "Last edit" column below shows when each SKILL.md was last *edited* (the uploads/ snapshot only re-materialises on prompt changes), NOT when the task last *fired*. Do not infer firing failures from old snapshot dates. See [`memory/learnings/2026-05/2026-05-20-cowork-uploads-snapshot-semantics.md`](../../../memory/learnings/2026-05/2026-05-20-cowork-uploads-snapshot-semantics.md).
+
+> **⚠️ Inventory completeness:** the uploads/ enumeration was INCOMPLETE — it returned 8 tasks (7 active + 1 stub), but a live `mcp__scheduled-tasks__list_scheduled_tasks` call on 2026-05-20 found **14 active tasks**. The 7 listed below are pulled; 7 more are pending pull (see "Pending pull" section). See [`memory/learnings/2026-05/2026-05-21-cowork-uploads-incomplete-inventory.md`](../../../memory/learnings/2026-05/2026-05-21-cowork-uploads-incomplete-inventory.md).
 
 | Task | Domain | Last edit | Status |
 |------|--------|-----------|--------|
@@ -55,7 +57,23 @@ Each scheduled task gets one folder. The `SKILL.md` filename matches what Cowork
 | career-weekly-promote | Career | 2026-05-12 | Pulled · should reference promoted career-sanitiser path after Tier 1 Skill 2 |
 | career-audit-digest | Career | 2026-05-12 | Pulled |
 
-**Retired:** `daily-briefing` — confirmed stub ("TBD" body, 0.1 KB). Superseded by `apex-morning-briefing`. Skip; can delete from Cowork.
+**Retraction (2026-05-21):** Earlier note that `daily-briefing` was retired was **wrong**. Cowork's live state (Prompt A response, 2026-05-20) shows `daily-briefing` is enabled and last ran today. The 0.1 KB "TBD" snapshot in uploads/ is stale — the canonical task_prompt has been updated since but no fresh snapshot was materialised because the materialisation only fires on task edits. Pull into the repo as part of the Tier 0e batch.
+
+## Pending pull (Tier 0e — discovered via Prompt A response 2026-05-20)
+
+Live `list_scheduled_tasks` returned 14 tasks total. The 7 above are pulled; these 7 are not yet tracked here:
+
+| Task | Cadence (per Cowork report) | Enabled | Notes |
+|------|----------------------------|---------|-------|
+| `daily-briefing` | (unknown — verify) | Yes | Ran today; uploads/ snapshot was a stale TBD stub |
+| `career-monthly-meta` | Monthly | Yes | Career-portfolio meta-pass |
+| `career-canary-reaudit` | Manual-only | Yes | Canary re-audit for career-sanitiser canary list |
+| `persona-supplements-refresh` | (was scheduled) | **No** | Marked SUPERSEDED by `daily-enrichment-pipeline`. Confirm + delete or keep as audit trail. |
+| `weekly-pattern-curation` | Friday 16:30 | Yes | Pattern pool curation (Stormboy bus) |
+| `weekly-system-retro` | Friday 16:45 | Yes | Weekly system retro |
+| `process-intelligence-bundles-afternoon` | 06:00 SAST daily | Yes | Afternoon bundle drain — paired with morning `process-intelligence-bundles` |
+
+Tier 0e prompt drafted to pull all 7. See conversation thread or `inbox/cowork/` (when filed).
 
 ## Hot signals from the pull (corrected 2026-05-20 after Prompt B response)
 
