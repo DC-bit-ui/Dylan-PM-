@@ -32,6 +32,7 @@ Each scheduled task gets one folder. The `SKILL.md` filename matches what Cowork
    - Edit `SKILL.md` here
    - Commit the change to git (PR if non-trivial)
    - Deploy via `mcp__scheduled-tasks__update_scheduled_task` from a Cowork session
+     — **strip the YAML frontmatter before sending** (Cowork auto-prepends frontmatter from task metadata; sending the full file produces doubled frontmatter). See [`memory/learnings/2026-05/2026-05-20-cowork-deploy-no-frontmatter.md`](../../../memory/learnings/2026-05/2026-05-20-cowork-deploy-no-frontmatter.md).
    - Record the deploy in `PROVENANCE.md`
 
 2. **Verify after every pull.** When a `SKILL.md` is pulled from Cowork's `uploads/` snapshot (e.g. when bringing a new task into the repo), run `VERIFY.md` from a Cowork session before treating the repo file as source of truth. Snapshots from `uploads/` may be stale.
