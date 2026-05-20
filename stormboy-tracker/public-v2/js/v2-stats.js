@@ -1130,21 +1130,350 @@
       </section>`;
   }
 
+  // ====== TRAJECTORY — Section 3 of the STATS redesign ======
+  // 12-week trailing win rate (line, left y-axis) and weekly hectares
+  // (filled area, right y-axis) on a shared time x-axis. Vertical
+  // annotation at Stormboy launch (2026-01-13) so the inflection is
+  // visible. LawrieCo excluded server-side so the trajectory reflects
+  // direct/Stormboy performance.
+  let _trajChart = null;
+  async function fetchTrajectory() {
+    try {
+      const r = await fetch('/api/stats/trajectory');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function trajectoryShellHtml(data) {
+    if (!data || !data.weeks || !data.weeks.length) {
+      return `<section class="v2-funnel-section"><div class="v2-empty">No trajectory data yet.</div></section>`;
+    }
+    const since = (data.window && data.window.since_iso || '').slice(0, 10);
+    const until = (data.window && data.window.until_iso || '').slice(0, 10);
+    const launch = data.stormboy_launch_date;
+    // Latest non-null rolling win rate
+    let latestWr = null, preLaunchWr = null;
+    for (let i = data.weeks.length - 1; i >= 0; i--) {
+      if (data.weeks[i].rolling_win_rate_pct != null) { latestWr = data.weeks[i]; break; }
+    }
+    // Pre-launch rolling win rate = the rolling value at the week before launch
+    const launchIdx = data.weeks.findIndex(w => w.week_start >= launch);
+    if (launchIdx > 0) {
+      for (let i = launchIdx - 1; i >= 0; i--) {
+        if (data.weeks[i].rolling_win_rate_pct != null) { preLaunchWr = data.weeks[i]; break; }
+      }
+    }
+    const wrDelta = (latestWr && preLaunchWr && latestWr.rolling_win_rate_pct != null && preLaunchWr.rolling_win_rate_pct != null)
+      ? Math.round((latestWr.rolling_win_rate_pct - preLaunchWr.rolling_win_rate_pct) * 10) / 10
+      : null;
+    // Post-launch hectares (sum of weeks on/after launch)
+    const postHa = data.weeks.filter(w => w.week_start >= launch).reduce((s, w) => s + (w.hectares || 0), 0);
+    const wks = data.weeks.filter(w => w.week_start >= launch).length;
+    const haPerWk = wks ? Math.round(postHa / wks) : 0;
+
+    const summary = `
+      <div class="v2-funnel-summary-cell" style="border-left-color:#2d6a4f">
+        <div class="v2-funnel-summary-cohort">12-week rolling win rate now</div>
+        <div class="v2-funnel-summary-flow"><strong>${latestWr ? fmtPct(latestWr.rolling_win_rate_pct) : '—'}</strong> · ${latestWr ? latestWr.rolling_won + '/' + latestWr.rolling_closed : '0/0'} in window</div>
+        <div class="v2-funnel-summary-rate">vs pre-launch ${preLaunchWr ? fmtPct(preLaunchWr.rolling_win_rate_pct) : '—'}${wrDelta != null ? ' · ' + fmtPp(wrDelta) : ''}</div>
+      </div>
+      <div class="v2-funnel-summary-cell" style="border-left-color:#5a6878">
+        <div class="v2-funnel-summary-cohort">Hectares enrolled post-launch</div>
+        <div class="v2-funnel-summary-flow"><strong>${Math.round(postHa).toLocaleString()}</strong> ha across ${wks} weeks</div>
+        <div class="v2-funnel-summary-rate">≈ ${haPerWk.toLocaleString()} ha/week average since 13 Jan</div>
+      </div>
+      <div class="v2-funnel-summary-cell" style="border-left-color:#a16207">
+        <div class="v2-funnel-summary-cohort">Annotation</div>
+        <div class="v2-funnel-summary-flow"><strong>13 Jan 2026</strong> — Stormboy launch</div>
+        <div class="v2-funnel-summary-rate">Vertical line on chart marks the inflection point</div>
+      </div>`;
+
+    return `
+      <section class="v2-funnel-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">Is the trajectory bending?</h2>
+          <div class="v2-funnel-sub">Trailing ${data.rolling_window_weeks}-week win rate and weekly hectares enrolled · ${since} → ${until} · LawrieCo excluded.</div>
+        </header>
+        <div class="v2-funnel-summary">${summary}</div>
+        <div class="v2-traj-chart-wrap"><canvas id="v2-traj-chart"></canvas></div>
+        <div class="v2-traj-legend">
+          <span class="v2-traj-key v2-traj-key-wr">Trailing 12-wk win rate (left axis)</span>
+          <span class="v2-traj-key v2-traj-key-ha">Weekly hectares enrolled (right axis)</span>
+          <span class="v2-traj-key v2-traj-key-pl">Direct pipeline entries / wk (right axis)</span>
+          <span class="v2-traj-key v2-traj-key-mk">— Stormboy launch (13 Jan 2026)</span>
+        </div>
+        <div class="v2-funnel-sub" style="margin-top:8px">${data.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}</div>
+      </section>`;
+  }
+  function renderTrajectoryChart(data) {
+    if (typeof Chart === 'undefined') return;
+    const canvas = document.getElementById('v2-traj-chart');
+    if (!canvas) return;
+    if (_trajChart) { _trajChart.destroy(); _trajChart = null; }
+    const labels = data.weeks.map(w => w.week_start);
+    const wrData = data.weeks.map(w => w.rolling_win_rate_pct);
+    const haData = data.weeks.map(w => Math.round(w.hectares || 0));
+    const plData = data.weeks.map(w => w.direct_pipeline_entries || 0);
+    const launchIdx = data.weeks.findIndex(w => w.week_start >= data.stormboy_launch_date);
+    const launchLabel = launchIdx >= 0 ? labels[launchIdx] : null;
+    _trajChart = new Chart(canvas.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: '12-wk win rate %',
+            data: wrData, yAxisID: 'y',
+            borderColor: '#2d6a4f', backgroundColor: 'rgba(45,106,79,0.12)',
+            tension: 0.25, borderWidth: 2.4, pointRadius: 0, pointHoverRadius: 4,
+            spanGaps: true, order: 1,
+          },
+          {
+            label: 'Hectares enrolled / wk',
+            data: haData, yAxisID: 'y1',
+            type: 'bar', backgroundColor: 'rgba(90,104,120,0.55)',
+            borderColor: 'rgba(90,104,120,0.55)', borderWidth: 0,
+            order: 3,
+          },
+          {
+            label: 'Direct pipeline entries / wk',
+            data: plData, yAxisID: 'y1',
+            type: 'line', borderColor: '#a16207', backgroundColor: 'rgba(161,98,7,0.12)',
+            borderDash: [4, 3], tension: 0.2, borderWidth: 1.6, pointRadius: 0,
+            order: 2,
+          },
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const v = ctx.parsed.y;
+                if (v == null) return ctx.dataset.label + ': —';
+                if (ctx.dataset.label.includes('win rate')) return `Win rate (rolling): ${v}%`;
+                if (ctx.dataset.label.includes('Hectares')) return `Hectares: ${v.toLocaleString()} ha`;
+                return `Pipeline entries: ${v}`;
+              },
+            },
+          },
+          annotation: {},
+        },
+        scales: {
+          x: {
+            ticks: { maxTicksLimit: 10, autoSkip: true, color: '#6a6a5a', font: { size: 10 } },
+            grid: { display: false },
+          },
+          y: {
+            position: 'left',
+            min: 0, max: 100,
+            ticks: { callback: (v) => v + '%', color: '#2d6a4f', font: { size: 10 } },
+            grid: { color: '#f0eedb' },
+            title: { display: true, text: 'Win rate', color: '#2d6a4f', font: { size: 10 } },
+          },
+          y1: {
+            position: 'right',
+            min: 0,
+            ticks: { color: '#5a6878', font: { size: 10 } },
+            grid: { drawOnChartArea: false },
+            title: { display: true, text: 'ha / entries', color: '#5a6878', font: { size: 10 } },
+          },
+        },
+      },
+      plugins: launchLabel ? [{
+        id: 'launchLine',
+        afterDraw: (chart) => {
+          const x = chart.scales.x.getPixelForValue(launchLabel);
+          if (x == null || Number.isNaN(x)) return;
+          const top = chart.chartArea.top, bot = chart.chartArea.bottom;
+          const ctx = chart.ctx;
+          ctx.save();
+          ctx.strokeStyle = '#c44'; ctx.setLineDash([4, 3]); ctx.lineWidth = 1.4;
+          ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bot); ctx.stroke();
+          ctx.fillStyle = '#c44'; ctx.font = '10px system-ui'; ctx.textAlign = 'left';
+          ctx.fillText('Stormboy launch', x + 4, top + 12);
+          ctx.restore();
+        },
+      }] : [],
+    });
+  }
+
+  // ====== EVIDENCE CARDS — Section 4 of the STATS redesign ======
+  // Reads /api/stats/evidence-cards which scans shared-growth-memory/patterns/
+  // for the team's distilled tactical patterns. Each card cites its
+  // source pattern file so claims are traceable.
+  async function fetchEvidenceCards() {
+    try {
+      const r = await fetch('/api/stats/evidence-cards');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function categoryLabel(cat) {
+    const m = {
+      tactical_framing: 'Tactical framing',
+      strategic_finding: 'Strategic finding',
+      tactical_play: 'Tactical play',
+    };
+    return m[cat] || (cat || 'pattern').replace(/_/g, ' ');
+  }
+  function evidenceCardsHtml(ev) {
+    if (!ev || !ev.cards || !ev.cards.length) {
+      return `<section class="v2-evid-section"><header class="v2-funnel-head">
+        <h2 class="v2-funnel-title">What's working in conversation?</h2>
+        <div class="v2-funnel-sub">No patterns in <code>shared-growth-memory/patterns/</code> yet.</div>
+      </header></section>`;
+    }
+    const cards = ev.cards.map(c => `
+      <article class="v2-evid-card" style="border-left-color:${c.accent}">
+        <div class="v2-evid-card-h">
+          <h3 class="v2-evid-title">${escapeHtml(c.title)}</h3>
+          <span class="v2-evid-tag" style="color:${c.accent}">${escapeHtml(categoryLabel(c.category))}</span>
+        </div>
+        <div class="v2-evid-body">${escapeHtml(c.headline_evidence || c.body_preview || '')}</div>
+        <div class="v2-evid-foot">
+          confidence ${escapeHtml(c.confidence)} · ${c.applicability_count} applicability case${c.applicability_count === 1 ? '' : 's'} ·
+          <code>patterns/${escapeHtml(c.source_file)}</code>
+        </div>
+      </article>`).join('');
+    return `
+      <section class="v2-evid-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">What's working in conversation?</h2>
+          <div class="v2-funnel-sub">Tactical patterns distilled from farm-visit transcripts, standup notes, and HubSpot loss data. Each card cites the source file in <code>shared-growth-memory/patterns/</code> — the team can read the full pattern there.</div>
+        </header>
+        <div class="v2-evid-grid">${cards}</div>
+      </section>`;
+  }
+
+  // ====== 30K HECTARE PROJECTION — Section 5 of the STATS redesign ======
+  // Reads /api/stats/projection. Renders a ring (registered vs target)
+  // and four side stats: registered/remaining/short pace/long pace, with
+  // projected hit-dates. Honest about the spread between short & long.
+  async function fetchProjection() {
+    try {
+      const r = await fetch('/api/stats/projection');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString('en-AU', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+  function projectionHtml(pj) {
+    if (!pj || pj.empty) {
+      return `<section class="v2-proj-section"><div class="v2-empty">No projection yet — needs trajectory data.</div></section>`;
+    }
+    const pct = Math.min(100, Math.max(0, pj.pct_of_target || 0));
+    const sweep = (pct / 100) * (Math.PI * 2);
+    const cx = 120, cy = 120, r = 96;
+    // SVG arc — start at top, sweep clockwise
+    const startX = cx, startY = cy - r;
+    const endX = cx + Math.sin(sweep) * r;
+    const endY = cy - Math.cos(sweep) * r;
+    const largeArc = sweep > Math.PI ? 1 : 0;
+    const arcPath = pct >= 100
+      ? `M ${cx} ${cy - r} A ${r} ${r} 0 1 1 ${cx - 0.01} ${cy - r} Z`
+      : `M ${startX} ${startY} A ${r} ${r} 0 ${largeArc} 1 ${endX.toFixed(2)} ${endY.toFixed(2)}`;
+    const short = pj.pace.short_window_weekly_ha;
+    const long = pj.pace.long_window_weekly_ha;
+    const needed = pj.pace.needed_weekly_ha_by_fy_end;
+    const shortEta = pj.projection.at_short_pace.eta;
+    const longEta  = pj.projection.at_long_pace.eta;
+    const sinceEta = pj.projection.at_since_anchor_pace.eta;
+
+    function paceTone(pace) {
+      if (!pace) return 'bad';
+      if (pace >= needed) return 'good';
+      if (pace >= needed * 0.5) return 'flat';
+      return 'bad';
+    }
+
+    return `
+      <section class="v2-proj-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">Will we hit 30k?</h2>
+          <div class="v2-funnel-sub">Hectares registered since ${escapeHtml(pj.target_set_date)} (target-set anchor) vs 30,000 ha goal · LawrieCo excluded so this reflects direct/Stormboy pace specifically (header tile shows all-channel; values can differ).</div>
+        </header>
+        <div class="v2-proj-layout">
+          <div class="v2-proj-ring-wrap">
+            <svg viewBox="0 0 240 240" width="240" height="240">
+              <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#ece8cd" stroke-width="14" />
+              <path d="${arcPath}" fill="none" stroke="#2d6a4f" stroke-width="14" stroke-linecap="round" />
+            </svg>
+            <div class="v2-proj-ring-center">
+              <div class="v2-proj-pct">${pct.toFixed(1)}%</div>
+              <div class="v2-proj-pct-sub">${(pj.registered_hectares || 0).toLocaleString()} / ${pj.target_hectares.toLocaleString()} ha</div>
+            </div>
+          </div>
+          <div class="v2-proj-stats">
+            <div class="v2-proj-stat">
+              <div class="v2-proj-stat-label">Remaining</div>
+              <div class="v2-proj-stat-val">${(pj.remaining_hectares || 0).toLocaleString()} ha</div>
+              <div class="v2-proj-stat-sub">to 30k target</div>
+            </div>
+            <div class="v2-proj-stat">
+              <div class="v2-proj-stat-label">Needed by 30 Jun</div>
+              <div class="v2-proj-stat-val">${needed.toLocaleString()} ha/wk</div>
+              <div class="v2-proj-stat-sub">FY26 stretch pace</div>
+            </div>
+            <div class="v2-proj-stat">
+              <div class="v2-proj-stat-label">${pj.pace.short_window_weeks}-week pace</div>
+              <div class="v2-proj-stat-val ${paceTone(short)}">${short.toLocaleString()} ha/wk</div>
+              <div class="v2-proj-stat-sub">ETA at this pace: ${fmtDate(shortEta)}</div>
+            </div>
+            <div class="v2-proj-stat">
+              <div class="v2-proj-stat-label">${pj.pace.long_window_weeks}-week pace</div>
+              <div class="v2-proj-stat-val ${paceTone(long)}">${long.toLocaleString()} ha/wk</div>
+              <div class="v2-proj-stat-sub">ETA at this pace: ${fmtDate(longEta)}</div>
+            </div>
+          </div>
+        </div>
+        <div class="v2-funnel-sub" style="margin-top:14px">
+          Since-anchor pace: <strong>${pj.pace.since_anchor_weekly_ha} ha/wk</strong> across ${pj.weeks_since_anchor} weeks · projected hit at this rate: <strong>${fmtDate(sinceEta)}</strong><br>
+          ${pj.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}
+        </div>
+      </section>`;
+  }
+
   async function render(container) {
     container.innerHTML = `
       <div id="stats-efficacy"><div class="v2-loading" style="padding:24px">Loading efficacy comparison…</div></div>
       <div id="stats-funnel"><div class="v2-loading" style="padding:24px">Loading cohort funnel…</div></div>
+      <div id="stats-trajectory"><div class="v2-loading" style="padding:24px">Loading trajectory…</div></div>
+      <div id="stats-evidence"><div class="v2-loading" style="padding:24px">Loading tactical evidence…</div></div>
+      <div id="stats-projection"><div class="v2-loading" style="padding:24px">Loading 30k projection…</div></div>
       <div class="v2-section-header" style="margin-top:24px">
         <h2 class="v2-section-title">Detail · process refinement</h2>
-        <p class="v2-section-sub">drill-downs by sub-tab. Sections 3-5 of the STATS redesign (trajectory · evidence · projection) will replace this nav next.</p>
+        <p class="v2-section-sub">drill-downs by sub-tab — kept for cohort breakdowns; the redesigned story above is the primary view.</p>
       </div>
       <div id="stats-content"><div class="v2-loading">Loading from HubSpot…</div></div>`;
-    // Hero + funnel both load in parallel with detail
+    // Hero + funnel + trajectory + evidence + projection all load in parallel with detail
     fetchEfficacy().then(eff => {
       document.getElementById('stats-efficacy').innerHTML = efficacyHeroHtml(eff);
     });
     fetchCohortFunnel().then(fn => {
       document.getElementById('stats-funnel').innerHTML = cohortFunnelHtml(fn);
+    });
+    fetchTrajectory().then(tr => {
+      const slot = document.getElementById('stats-trajectory');
+      if (!slot) return;
+      slot.innerHTML = trajectoryShellHtml(tr);
+      if (tr && tr.weeks && tr.weeks.length) renderTrajectoryChart(tr);
+    });
+    fetchEvidenceCards().then(ev => {
+      const slot = document.getElementById('stats-evidence');
+      if (slot) slot.innerHTML = evidenceCardsHtml(ev);
+    });
+    fetchProjection().then(pj => {
+      const slot = document.getElementById('stats-projection');
+      if (slot) slot.innerHTML = projectionHtml(pj);
     });
     try {
       const res = await fetch('/api/stats/pipeline');

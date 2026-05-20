@@ -411,6 +411,52 @@ app.get('/api/stats/cohort-funnel', async (req, res) => {
   }
 });
 
+// 30k hectare projection — Section 5 of the STATS redesign. Builds on
+// cached trajectory data and computes projected target hit-dates at
+// 4-week / 12-week / since-anchor paces.
+app.get('/api/stats/projection', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/stormboy-projection');
+    res.json(await run());
+  } catch (e) {
+    console.error('stormboy-projection failed:', e);
+    res.status(500).json({ error: 'projection failed', detail: e.message });
+  }
+});
+
+// Evidence cards — Section 4 of the STATS redesign. Reads pattern files
+// from shared-growth-memory/patterns/ and surfaces each as a tactical
+// card with title + headline stat + category + source file. 5-min
+// in-memory cache.
+app.get('/api/stats/evidence-cards', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/evidence-cards');
+    res.json(run());
+  } catch (e) {
+    console.error('evidence-cards failed:', e);
+    res.status(500).json({ error: 'evidence failed', detail: e.message });
+  }
+});
+
+// Trajectory time-series — Section 3 of the STATS redesign. Trailing
+// 12-week running win-rate + weekly hectares + weekly direct pipeline
+// entries, with Stormboy launch (2026-01-13) annotated. LawrieCo
+// excluded so the trajectory reflects direct/Stormboy performance.
+// 4h disk cache; ?force=1 refreshes.
+app.get('/api/stats/trajectory', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/stormboy-trajectory');
+    const result = await run({
+      windowMonths: req.query.months ? parseInt(req.query.months, 10) : undefined,
+      force: req.query.force === '1',
+    });
+    res.json(result);
+  } catch (e) {
+    console.error('stormboy-trajectory failed:', e);
+    res.status(500).json({ error: 'trajectory failed', detail: e.message });
+  }
+});
+
 app.get('/api/stats/farm-visits', async (req, res) => {
   try {
     const { run } = require('./coaching/engine/farm-visit-metrics');
