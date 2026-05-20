@@ -24,7 +24,7 @@
 
 **History:** Flagged on 2026-04-29 in `memory/integrations/cowork/apex-eod-reconciliation-prompt-2026-04-29.md` (three-source disagreement noted). Source-of-truth was clarified in `memory/integrations/cowork.md` §2 (12:00 SAST claim marked superseded). Never deployed.
 
-**Fix (pending Dylan deploy):** Update `cronExpression` to `30 1 * * 2-6` via `mcp__scheduled-tasks__update_scheduled_task`. SKILL.md content does not change. Log the cron change in the Deploy history below.
+**Fix (DEPLOYED 2026-05-21):** Updated `cronExpression` from `0 12 * * 1-5` to `30 1 * * 2-6` via `mcp__scheduled-tasks__update_scheduled_task`. SKILL.md content unchanged. See Deploy history row below.
 
 ## Adjacent items queued for later
 
@@ -35,4 +35,4 @@
 
 | Date | Change | Deployer | Verified by |
 |------|--------|----------|-------------|
-| _(none yet)_ | | | |
+| 2026-05-21 | cron: `0 12 * * 1-5` → `30 1 * * 2-6` (04:00 SAST → 17:30 SAST) | Cowork session hopeful-admiring-dijkstra | next_run_at verified 2026-05-20T15:38:12Z (= 17:38:12 SAST Wed, in 17:30-17:50 SAST Mon-Fri window) |
