@@ -42,27 +42,25 @@ Each scheduled task gets one folder. The `SKILL.md` filename matches what Cowork
 
 ## Active tasks (as of 2026-05-20)
 
-| Task | Domain | Last fired | Status |
+> **⚠️ Snapshot-date semantics:** the "Last edit" column below shows when each SKILL.md was last *edited* (the uploads/ snapshot only re-materialises on prompt changes), NOT when the task last *fired*. Do not infer firing failures from old snapshot dates. See [`memory/learnings/2026-05/2026-05-20-cowork-uploads-snapshot-semantics.md`](../../../memory/learnings/2026-05/2026-05-20-cowork-uploads-snapshot-semantics.md).
+
+| Task | Domain | Last edit | Status |
 |------|--------|-----------|--------|
-| daily-enrichment-pipeline | Team Bus | 2026-05-20 | Pulled · 4 patches queued in PROVENANCE |
+| daily-enrichment-pipeline | Team Bus | 2026-05-18 | Pulled · 4 patches applied (Prompt A will deploy) |
 | apex-morning-briefing | Personal PM | 2026-05-20 | Pulled |
-| apex-eod-reconciliation | Personal PM | **2026-04-29** | Pulled · **may not be firing** — investigate |
-| process-intelligence-bundles | Team Bus | 2026-05-19 | Pulled · queue jammed (80 pending, 0 results — bus-path blocker) |
-| career-signal-capture | Career | 2026-05-12 | Pulled · check Friday firings since signoff |
+| apex-eod-reconciliation | Personal PM | 2026-04-29 | Pulled · **cron expression wrong** — fires at 04:00 SAST instead of 17:30 SAST. Fix in PROVENANCE.md. |
+| process-intelligence-bundles | Team Bus | 2026-05-19 | Pulled · queue jammed (80 pending, 0 results — confirmed by daily-enrichment audit, not by snapshot date) |
+| career-signal-capture | Career | 2026-05-12 | Pulled · firing status TBD via Prompt C |
 | career-weekly-promote | Career | 2026-05-12 | Pulled · should reference promoted career-sanitiser path after Tier 1 Skill 2 |
 | career-audit-digest | Career | 2026-05-12 | Pulled |
 
 **Retired:** `daily-briefing` — confirmed stub ("TBD" body, 0.1 KB). Superseded by `apex-morning-briefing`. Skip; can delete from Cowork.
 
-## Hot signals from the pull
+## Hot signals from the pull (corrected 2026-05-20 after Prompt B response)
 
-The proof-by-execution pull surfaced three issues that didn't come out in the original audit:
-
-1. **apex-eod-reconciliation last fired 2026-04-29** — three weeks of missed EOD runs if true. Either the task is disabled, the cron expression is wrong, or the snapshot timestamp is misleading.
-2. **process-intelligence-bundles is queue-jammed** — 80 bundles pending, 0 in `results/`. Tied to the same bus-path mount race that daily-enrichment hit.
-3. **Career portfolio cadence unclear** — three career tasks last fired on compliance signoff day (2026-05-12). The Friday 2026-05-15 weekly promote + audit digest may or may not have run.
-
-These need a separate verification pass.
+1. **apex-eod-reconciliation cron is wrong** — task IS firing daily, but at 04:00 SAST (before workday) instead of 17:30 SAST (true EOD). It reconciles nothing today's-work because today hasn't happened yet. Pending fix: change cron from `0 12 * * 1-5` to `30 1 * * 2-6`. See task's PROVENANCE.md.
+2. **process-intelligence-bundles is queue-jammed** — 80 bundles pending, 0 in `results/`. Confirmed by daily-enrichment audit "scanned=0" evidence (independent of snapshot date). Expected to clear after junction install + bus-path fix on next bundle-processor run.
+3. **Career portfolio firing status TBD** — three career tasks last *edited* on signoff day 2026-05-12. Whether they're actually firing as scheduled is unconfirmed; Prompt C will tell.
 
 ## Related
 
