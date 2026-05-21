@@ -425,6 +425,20 @@ app.get('/api/stats/forecast', async (req, res) => {
   }
 });
 
+// Call analytics — connect rate, outcome breakdown, time-of-day
+// heat map, per-rep daily leaderboard. Built on HubSpot call
+// engagement object (Aircall already syncs disposition + duration).
+// 30-min disk cache.
+app.get('/api/stats/call-analytics', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/call-analytics');
+    res.json(await run({ force: req.query.force === '1' }));
+  } catch (e) {
+    console.error('call-analytics failed:', e);
+    res.status(500).json({ error: 'call-analytics failed', detail: e.message });
+  }
+});
+
 // Snapshot-state integration health check — surfaces which channels
 // (HubSpot emails, HubSpot tickets, MS Teams) are wired in. Used by
 // the WORK page banner and for ops debugging.
