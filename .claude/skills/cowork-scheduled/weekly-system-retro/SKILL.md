@@ -20,6 +20,35 @@ Resolve `{current-windows-user}` via `os.homedir()` or `%USERPROFILE%`. If `$env
 2. Write an error file to `C:\Dylan PM\inbox\cowork\{YYYY-MM-DD}-apex-retro-bus-missing.md`
 3. Abort the run
 
+## Step 0.5 · Validate supplement provenance (added 2026-05-21)
+
+Before generating the retro, sweep `{BUS_ROOT}/{deal,contact,persona}-supplements/**/*` and audit provenance front-matter compliance per `memory/decisions/2026-05-21-supplement-provenance-schema.md`.
+
+For each supplement file:
+1. Parse the leading YAML front-matter (`.md`) or top-level `_provenance` key (`.json`)
+2. Check required fields: `source`, `source_id`, `fetched_at`, `fetched_by`, `supplement_schema_version`
+3. Categorise:
+   - **v1-compliant** — required fields present + `supplement_schema_version: 1`
+   - **v0-legacy** — no front-matter (pre-2026-05-21 writes; tolerated indefinitely per migration decision)
+   - **malformed** — front-matter present but missing required fields (write bug)
+   - **duplicate-id** — same `source_id` in multiple files (write bug — should be idempotent overwrite)
+
+Write the audit summary to `{BUS_ROOT}/system-retros/_provenance-audit-{YYYY}-W{nn}.json`:
+```json
+{
+  "audit_date": "<ISO 8601>",
+  "iso_week": "{YYYY}-W{nn}",
+  "totals": { "v1_compliant": <int>, "v0_legacy": <int>, "malformed": <int>, "duplicate_id": <int> },
+  "by_source": { "teams": {...}, "granola": {...}, "confluence": {...}, "hubspot": {...} },
+  "malformed_files": [<path>, ...],
+  "duplicate_ids": [{"source_id": <id>, "files": [<path>, ...]}, ...]
+}
+```
+
+Include the headline numbers in the retro markdown (Step 1 below) under a new `## Provenance compliance` section.
+
+If `malformed` > 0 OR `duplicate_id` > 0: surface in chat as a `⚠` warning — these indicate a pipeline bug needing investigation.
+
 ## Step 1 · Generate the retro
 
 Try the dashboard endpoint first:

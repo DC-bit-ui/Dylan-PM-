@@ -1,6 +1,6 @@
 ---
 date: 2026-05-21
-status: PROPOSED — awaiting Dylan review
+status: ACCEPTED 2026-05-21 — schema as drafted; validation nightly via weekly-system-retro; no backfill
 supersedes: N/A — first formal provenance schema
 tags: [data-architecture, provenance, supplements, shared-growth-memory]
 authors: [Dylan + Claude Code Tier 1 data audit]

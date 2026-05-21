@@ -41,6 +41,89 @@ OneDrive sync is sensitive to partial writes — readers across the team can see
 
 JSON files: pretty-printed (2-space indent). Markdown: LF line endings.
 
+## Provenance front-matter — REQUIRED on every supplement write
+
+Every file written to `{BUS_ROOT}/{deal,contact,persona}-supplements/...` MUST begin with a YAML front-matter block (markdown) or `_provenance` top-level key (JSON) matching the schema in `memory/decisions/2026-05-21-supplement-provenance-schema.md`.
+
+### Required fields (every supplement)
+
+```yaml
+---
+source: <canonical-system-name>            # one of: teams, granola, confluence, hubspot, outlook, sharepoint, aircall, jira, notion
+source_id: <stable-external-id>            # see per-source format below
+fetched_at: <ISO 8601 UTC>                 # exact UTC timestamp of fetch
+fetched_by: <pipeline>:<run-timestamp>     # e.g. "daily-enrichment-pipeline:2026-05-21T03:00:00Z"
+supplement_schema_version: 1
+---
+```
+
+### Required for query-based sources (Teams, Granola, Confluence, Outlook)
+
+```yaml
+source_query: <verbatim query>
+source_window_start: <ISO 8601>
+source_window_end: <ISO 8601>
+```
+
+### Required when source returns multiple records
+
+```yaml
+filtered_from_count: <int>
+included_count: <int>
+filter_reason: <string>
+```
+
+### Per-source `source_id` formats
+
+| Source | Format |
+|---|---|
+| teams | `teams:msg:<channelId>:<messageId>` (or `teams:msg:<channelId>:<timestamp>:<from-name-hash>` if MCP doesn't expose stable IDs) |
+| granola | `granola:meeting:<meetingId>` |
+| confluence | `confluence:page:<pageId>:rev:<revisionNumber>` |
+| confluence (Aircall derivative) | `confluence:page:<pageId>:rev:<rev>:aircall_call_id:<callId>` |
+| hubspot (engagement rollup) | `hubspot:<objectType>:<id>:rollup:<YYYY-MM-DD>` |
+| hubspot (record) | `hubspot:<objectType>:<id>:<lastModified>` |
+| outlook | `outlook:msg:<MessageId>` |
+| sharepoint | `sharepoint:item:<driveId>:<itemId>:etag:<etag>` |
+
+### JSON example (engagement rollup)
+
+```json
+{
+  "_provenance": {
+    "source": "hubspot",
+    "source_id": "hubspot:deal:269686763993:rollup:2026-05-21",
+    "fetched_at": "2026-05-21T03:00:12Z",
+    "fetched_by": "daily-enrichment-pipeline:2026-05-21T03:00:00Z",
+    "supplement_schema_version": 1
+  },
+  "source": "hubspot-engagement-rollup",
+  "snapshot_date": "2026-05-21",
+  "deal_id": "269686763993",
+  "...": "..."
+}
+```
+
+### Markdown example (Aircall transcript)
+
+```markdown
+---
+source: confluence
+source_id: confluence:page:577123456:rev:7:aircall_call_id:8901234567
+fetched_at: 2026-05-21T03:05:42Z
+fetched_by: daily-enrichment-pipeline:2026-05-21T03:00:00Z
+supplement_schema_version: 1
+source_query: "text ~ \"Routed to Hobbs\" AND type = page AND space = \"AG\" AND lastModified >= now('-3d')"
+source_window_start: 2026-05-18T03:00:00Z
+source_window_end: 2026-05-21T03:00:00Z
+---
+
+# Aircall Transcript — {Contact Name}
+...
+```
+
+Validation runs nightly via `weekly-system-retro` Step 0.5. Non-compliant writes will surface as `malformed_files` in the weekly retro audit.
+
 ## Read before acting
 
 1. `{BUS_ROOT}\deal-supplements\README.md`

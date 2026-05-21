@@ -23,6 +23,17 @@ Source: 2026-05-20 daily-enrichment-pipeline audit (run completed today). Deploy
 3. ✅ **Step 3b (Hobbs 404 contradiction):** Deleted "Daily check" paragraph and following CQL block. Rule 16 is the truth; new sources flow via persona-registry.json + §3c.
 4. ✅ **Rule 13 (budget priority):** Added explicit deferral order — Step 6 → Step 4 low-signal channels → Step 3 N=10 cap → Step 2 contact engagement. Step 1 + Step 2 deal engagement protected as never-drop. Documented queued JSONL refactor for Step 2.
 
+## 2026-05-21 patch batch 2 — applied to repo, NOT yet deployed to Cowork
+
+Source: 2026-05-21 data architecture audit + accepted provenance schema.
+
+1. ✅ **Provenance front-matter REQUIRED on every supplement write.** New dedicated section added to SKILL.md between "Atomic writes" and "Read before acting" defining the schema (per-source `source_id` formats, required vs optional fields, JSON + markdown examples). See `memory/decisions/2026-05-21-supplement-provenance-schema.md`.
+
+Decisions implemented (per Dylan 2026-05-21):
+- Schema as drafted in the decision doc (no field changes)
+- Validation cadence: nightly via `weekly-system-retro` Step 0.5 (NOT a daily step in this pipeline — kept budget light)
+- Migration: no backfill; existing supplements stay as `supplement_schema_version: 0` (consumers downgrade confidence in v0)
+
 ## Pending architectural refactors (Tier 1+ work)
 
 - **Step 2 → JSONL rollup.** 400 individual writes per run is the primary budget pressure. Move to `_rollup/hubspot-engagement-{deal,contact}-rollup-{YYYY-MM-DD}.jsonl` (one line per entity). Requires dashboard read-side coordination. See Task #9 in main session.
