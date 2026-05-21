@@ -17,6 +17,8 @@ The Dylan PM repo lives at `C:\Dylan PM\`, which is inside a folder OneDrive act
 
 2. **Working-tree file truncation.** Cowork's 2026-05-21 cron-fix run found `PROVENANCE.md` on disk at 1299 bytes, truncated mid-line, while `git show HEAD:…` returned the full 2722-byte content. The truncation pre-dated Cowork's session — almost certainly a OneDrive partial-sync write that left the working tree in an invalid state. Cowork worked around it by rebuilding from `git show HEAD:` + intended edits and writing atomically (`.tmp` + `mv`).
 
+   **Update 2026-05-21 (incident #4):** Cowork's Prompt F deploy session hit the same truncation pattern on BOTH `daily-enrichment-pipeline/SKILL.md` (truncated at "Never write withou") and `weekly-system-retro/SKILL.md` (truncated at "probes_created={"). HEAD was clean (444 lines / 115 lines respectively), working tree was missing ~30 lines from each. **Cowork halted on hash-check, refusing to deploy a truncated prompt** — correct behaviour. By the time Dylan re-checked ~15 minutes later, OneDrive had resynced and the files were intact again. **The corruption is transient AND self-healing**, which is in some ways worse than persistent corruption: tools that read mid-sync see broken state, but a later `git status` shows clean. Migration urgency now critical — this is the 4th distinct incident.
+
 3. **Sandbox cannot delete files in OneDrive-synced paths.** Even when Cowork's session has the connected-folder grant, it can only create + read + append to OneDrive-synced files, not delete or rename. This breaks any tooling that expects standard POSIX file semantics (including git itself for lock cleanup).
 
 ## Why these happen
@@ -65,7 +67,9 @@ Every Cowork prompt that commits to git must expect index.lock failure, surface 
 
 ## Recommendation
 
-**Option A.** The friction tax of B + C compounds; A is a one-time fix.
+**Option A — and now this is urgent, not just recommended.** Four incidents in two days. Latest one (Cowork Prompt F deploy 2026-05-21) was actively *blocked* by the corruption — the deploy halted because Cowork read truncated files. We got lucky the hash-check caught it; without that safety, a truncated SKILL.md would have been deployed to Cowork's task store and the next scheduled run would have aborted mid-step.
+
+The friction tax of B + C compounds; A is a one-time fix.
 
 The migration playbook is roughly:
 1. Clone the GitHub repo to `C:\dev\Dylan PM\` (or wherever)
