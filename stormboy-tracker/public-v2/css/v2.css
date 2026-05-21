@@ -5475,3 +5475,50 @@ body.v2-ex-overlay-open {
 .v2-snp-row-empty td { color: #aaa; }
 .v2-snp-row-empty .v2-snp-dot { opacity: 0.3; }
 .v2-snp-noex { color: #aaa; }
+
+/* ===== Lead-response histogram ===== */
+.v2-lr-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0 4px;
+}
+.v2-lr-bar-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 50px;
+  align-items: center;
+  gap: 10px;
+}
+.v2-lr-bar-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #3a3a3a;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.v2-lr-bar-track {
+  height: 22px;
+  background: #efedda;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.v2-lr-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  min-width: 28px;
+  color: #fff;
+}
+.v2-lr-bar-count {
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.v2-lr-bar-pct {
+  font-size: 11px;
+  color: #6a6a5a;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}

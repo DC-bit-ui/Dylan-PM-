@@ -453,6 +453,32 @@ app.get('/api/stats/call-analytics', async (req, res) => {
   }
 });
 
+// Snapshot ticket SLA — distribution of how long tickets dwell in
+// each HORIZON Snapshot pipeline stage. Surfaces drafting bottlenecks
+// + completion trend. 30-min disk cache; ?force=1 refreshes.
+app.get('/api/stats/snapshot-ticket-sla', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/snapshot-ticket-sla');
+    res.json(await run({ force: req.query.force === '1' }));
+  } catch (e) {
+    console.error('snapshot-ticket-sla failed:', e);
+    res.status(500).json({ error: 'snapshot-ticket-sla failed', detail: e.message });
+  }
+});
+
+// Lead-response-time distribution — speed-to-lead metric. For new
+// Stormboy contacts: time from createdate → first outbound touch.
+// 30-min disk cache.
+app.get('/api/stats/lead-response-time', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/lead-response-time');
+    res.json(await run({ force: req.query.force === '1' }));
+  } catch (e) {
+    console.error('lead-response-time failed:', e);
+    res.status(500).json({ error: 'lead-response-time failed', detail: e.message });
+  }
+});
+
 // Snapshot pipeline — STATS section. Throughput view of the snapshot
 // workflow across Farm Visit completed contacts. Surfaces drafting
 // bottlenecks, reply-wait stalls, KCT-handoff queue. 15-min cache.

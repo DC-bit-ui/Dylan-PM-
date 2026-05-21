@@ -1937,6 +1937,135 @@
     });
   }
 
+  // ====== SNAPSHOT TICKET SLA ======
+  // Renders below the snapshot pipeline visual. Per-stage age distribution
+  // surfaces drafting bottlenecks; completion cycle distribution shows
+  // overall workflow health.
+  async function fetchTicketSla() {
+    try {
+      const r = await fetch('/api/stats/snapshot-ticket-sla');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function fmtDays(d) { return d == null ? '—' : d + 'd'; }
+  function ticketSlaHtml(sla) {
+    if (!sla || !sla.stages) {
+      return '<div class="v2-empty">No ticket SLA data.</div>';
+    }
+    const tone = /bottleneck/.test(sla.headline) ? 'bad' : (sla.open_total > 20 ? 'flat' : 'good');
+    const stageRows = sla.stages.map(s => {
+      const oldest = (s.oldest_stuck || []).map(t =>
+        `<a href="${t.hubspot_url}" target="_blank">${escapeHtml((t.subject||'').slice(0,40))}</a> · ${t.age_d}d`
+      ).join(' · ');
+      return `<tr class="${s.is_open ? '' : 'v2-snp-row-empty'}">
+        <td><strong>${escapeHtml(s.stage_label)}</strong>${s.is_open ? '' : ' <span style="font-size:9px;color:#888;letter-spacing:0.4px;text-transform:uppercase">closed</span>'}</td>
+        <td class="num strong">${s.count}</td>
+        <td class="num">${fmtDays(s.median_age_d)}</td>
+        <td class="num meta">${fmtDays(s.p75_age_d)}</td>
+        <td class="num meta">${fmtDays(s.max_age_d)}</td>
+        <td class="meta">${oldest || '—'}</td>
+      </tr>`;
+    }).join('');
+    const c = sla.completion;
+    return `
+      <div style="margin-top:18px">
+        <header class="v2-funnel-head">
+          <h3 class="v2-funnel-title" style="font-size:14px">Ticket SLA · how long do they dwell in each stage?</h3>
+          <div class="v2-funnel-sub">${sla.total_tickets} total tickets · ${sla.open_total} open · ${sla.closed_total} closed</div>
+        </header>
+        <div class="v2-funnel-callout v2-funnel-callout-${tone}">
+          <span class="v2-funnel-callout-label">SLA read</span>
+          <span class="v2-funnel-callout-body">${escapeHtml(sla.headline)}</span>
+        </div>
+        <table class="v2-stats-era-table" style="margin-top:8px">
+          <thead><tr>
+            <th>Stage</th><th class="num">Count</th>
+            <th class="num">Median age</th><th class="num">P75</th><th class="num">Max</th>
+            <th>Oldest currently stuck</th>
+          </tr></thead>
+          <tbody>${stageRows}</tbody>
+        </table>
+        <div class="v2-funnel-summary" style="margin-top:14px">
+          <div class="v2-funnel-summary-cell" style="border-left-color:#2d6a4f">
+            <div class="v2-funnel-summary-cohort">Completion cycle (closed tickets)</div>
+            <div class="v2-funnel-summary-flow"><strong>${fmtDays(c.median_d)}</strong> median · ${fmtDays(c.p75_d)} p75 · ${fmtDays(c.p90_d)} p90</div>
+            <div class="v2-funnel-summary-rate">n=${c.count} · max ${fmtDays(c.max_d)}</div>
+          </div>
+        </div>
+        <div class="v2-funnel-sub" style="margin-top:8px">${sla.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}</div>
+      </div>`;
+  }
+
+  // ====== LEAD-RESPONSE-TIME DISTRIBUTION ======
+  // Industry-standard speed-to-lead metric. Renders as a histogram +
+  // booked-vs-not-booked comparison. Lives near funnel velocity (the
+  // related "is the motion working" section).
+  async function fetchLeadResponse() {
+    try {
+      const r = await fetch('/api/stats/lead-response-time');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function leadResponseHtml(lr) {
+    if (!lr || !lr.buckets) {
+      return '<section class="v2-funnel-section"><div class="v2-empty">No lead-response data.</div></section>';
+    }
+    const tone = /never had|far above/i.test(lr.headline) ? 'bad' : (/correlates/i.test(lr.headline) ? 'good' : 'flat');
+    const maxCount = Math.max(...lr.buckets.map(b => b.count), 1);
+    const bucketBars = lr.buckets.map(b => {
+      const widthPct = (b.count / maxCount) * 100;
+      const fill = b.label === 'no-touch'
+        ? '#8a2a2a'
+        : (['<1h','1-24h','1-3d'].includes(b.label) ? '#2d6a4f' : '#a16207');
+      return `<div class="v2-lr-bar-row">
+        <div class="v2-lr-bar-label">${b.label}</div>
+        <div class="v2-lr-bar-track">
+          <div class="v2-lr-bar-fill" style="width:${Math.max(2, widthPct)}%;background:${fill}">
+            <span class="v2-lr-bar-count">${b.count}</span>
+          </div>
+        </div>
+        <div class="v2-lr-bar-pct">${b.pct}%</div>
+      </div>`;
+    }).join('');
+
+    const bk = lr.by_outcome.booked_visit;
+    const nb = lr.by_outcome.no_visit;
+    const delta = (bk.median_h != null && nb.median_h != null) ? nb.median_h - bk.median_h : null;
+
+    return `
+      <section class="v2-funnel-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">How fast do we respond to new contacts?</h2>
+          <div class="v2-funnel-sub">Time from contact creation to first outbound touch. Speed-to-lead is a leading indicator for booking rate — industry benchmark is &lt;1 hour for B2B (agricultural sales can be more forgiving, but the trend is what matters).</div>
+        </header>
+        <div class="v2-funnel-callout v2-funnel-callout-${tone}">
+          <span class="v2-funnel-callout-label">Headline</span>
+          <span class="v2-funnel-callout-body">${escapeHtml(lr.headline)}</span>
+        </div>
+        <div class="v2-lr-bars">${bucketBars}</div>
+        <div class="v2-funnel-summary" style="margin-top:14px">
+          <div class="v2-funnel-summary-cell" style="border-left-color:#5a6878">
+            <div class="v2-funnel-summary-cohort">Overall (touched)</div>
+            <div class="v2-funnel-summary-flow"><strong>${lr.overall.median_h}h</strong> median · ${lr.overall.p75_h}h p75</div>
+            <div class="v2-funnel-summary-rate">n=${lr.overall.n} · p90 ${lr.overall.p90_h}h</div>
+          </div>
+          <div class="v2-funnel-summary-cell" style="border-left-color:#2d6a4f">
+            <div class="v2-funnel-summary-cohort">Booked a visit</div>
+            <div class="v2-funnel-summary-flow"><strong>${bk.median_h != null ? bk.median_h + 'h' : '—'}</strong> median response</div>
+            <div class="v2-funnel-summary-rate">n=${bk.n}</div>
+          </div>
+          <div class="v2-funnel-summary-cell" style="border-left-color:#8a3024">
+            <div class="v2-funnel-summary-cohort">No visit booked</div>
+            <div class="v2-funnel-summary-flow"><strong>${nb.median_h != null ? nb.median_h + 'h' : '—'}</strong> median response</div>
+            <div class="v2-funnel-summary-rate">n=${nb.n}${delta != null ? ` · Δ ${delta}h` : ''}</div>
+          </div>
+        </div>
+        <div class="v2-funnel-sub" style="margin-top:8px">${lr.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}</div>
+      </section>`;
+  }
+
   // ====== SNAPSHOT-STATE PIPELINE — Section 6b ======
   // Throughput view of the snapshot workflow across Farm Visit completed
   // contacts. Different question from Section 7 (outreach motion funnel)
@@ -2196,6 +2325,7 @@
       <div id="stats-friction"><div class="v2-loading" style="padding:24px">Loading friction map…</div></div>
       <div id="stats-funnel"><div class="v2-loading" style="padding:24px">Loading cohort funnel…</div></div>
       <div id="stats-velocity"><div class="v2-loading" style="padding:24px">Loading outreach funnel…</div></div>
+      <div id="stats-lead-response"><div class="v2-loading" style="padding:24px">Loading lead-response distribution…</div></div>
       <div id="stats-snapshot-pipeline"><div class="v2-loading" style="padding:24px">Loading snapshot workflow…</div></div>
       <div id="stats-callmon"><div class="v2-loading" style="padding:24px">Loading team call monitor…</div></div>
       <div id="stats-callquality"><div class="v2-loading" style="padding:24px">Loading call quality + heatmap…</div></div>
@@ -2234,9 +2364,16 @@
       const slot = document.getElementById('stats-velocity');
       if (slot) slot.innerHTML = funnelVelocityHtml(fv);
     });
-    fetchSnapshotPipeline().then(sp => {
+    // Lead-response sits alongside the outreach funnel velocity — same
+    // question (is the motion working?), different angle (timing).
+    fetchLeadResponse().then(lr => {
+      const slot = document.getElementById('stats-lead-response');
+      if (slot) slot.innerHTML = leadResponseHtml(lr);
+    });
+    // Snapshot pipeline + SLA render together (same data domain)
+    Promise.all([fetchSnapshotPipeline(), fetchTicketSla()]).then(([sp, sla]) => {
       const slot = document.getElementById('stats-snapshot-pipeline');
-      if (slot) slot.innerHTML = snapshotPipelineHtml(sp);
+      if (slot) slot.innerHTML = snapshotPipelineHtml(sp) + ticketSlaHtml(sla);
     });
     fetchCallMonitoring().then(cm => {
       const slot = document.getElementById('stats-callmon');
