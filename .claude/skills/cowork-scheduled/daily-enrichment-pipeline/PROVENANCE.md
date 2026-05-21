@@ -11,6 +11,7 @@
 ## Verification status
 
 - [x] **Verified 2026-05-20** — pre-deploy canonical SHA256 `21bd60b3c2e6dac974bc06460862dcc88c7caff85658bc647a42fe118f0af488` (18,569 bytes / 358 lines) matched the 2026-05-18 snapshot. Diff against repo showed only the 4 documented patches — no unexpected drift. Post-deploy SHA256 `ee5e575bc6e85700ad3e2c48a1218286344595c31e488c79bd7b7d4f27eb4661` (20,114 bytes / 362 lines) byte-identical to repo SKILL.md.
+- [x] **Verified 2026-05-21 (batch 2)** — repo body SHA256 `52501623fa354bf87a5aead6883c09dda0c8540eaf4a958d6583d03369569cdf` (22,673 bytes body / 444-line file). Pre-deploy Cowork body SHA256 `83e12fc0a4f0d1e33baf0318eb1bff9b2b2832dfc11d6398badd0cf4a8c5550f` (19,809 bytes body / 362-line file — pre-batch-2 state). Initial deploy produced 1-byte drift due to Cowork's auto-separator (extra leading newline); redeployed body-only without leading newline. Post-deploy materialised body matches repo body SHA byte-identical (file: 446 lines with `---\n...---\n\n<content>` structure).
 
 ## Patch history
 
@@ -23,7 +24,7 @@ Source: 2026-05-20 daily-enrichment-pipeline audit (run completed today). Deploy
 3. ✅ **Step 3b (Hobbs 404 contradiction):** Deleted "Daily check" paragraph and following CQL block. Rule 16 is the truth; new sources flow via persona-registry.json + §3c.
 4. ✅ **Rule 13 (budget priority):** Added explicit deferral order — Step 6 → Step 4 low-signal channels → Step 3 N=10 cap → Step 2 contact engagement. Step 1 + Step 2 deal engagement protected as never-drop. Documented queued JSONL refactor for Step 2.
 
-## 2026-05-21 patch batch 2 — applied to repo, NOT yet deployed to Cowork
+## 2026-05-21 patch batch 2 — deployed to Cowork
 
 Source: 2026-05-21 data architecture audit + accepted provenance schema.
 
@@ -44,3 +45,4 @@ Decisions implemented (per Dylan 2026-05-21):
 | Date | Change | Deployer | Verified by |
 |------|--------|----------|-------------|
 | 2026-05-20 | Patch batch 1 (Rule 2, Step 0 junction-first + mount-race retry, Step 3b Rule-16 reframe, Rule 13 budget priority + Step 2 JSONL note) | Cowork session `zealous-fervent-meitner` | SHA256 match post-deploy: `ee5e575bc6e85700ad3e2c48a1218286344595c31e488c79bd7b7d4f27eb4661` (20,114 bytes / 362 lines). Required two `update_scheduled_task` calls — first attempt left leading YAML frontmatter in the prompt and produced doubled frontmatter (Cowork auto-prepends from task metadata); second attempt sent body-only and byte-matched the repo. |
+| 2026-05-21 | Patch batch 2: provenance front-matter required on every supplement write | Cowork session `vibrant-laughing-fermat` | SHA256 match post-deploy: `52501623fa354bf87a5aead6883c09dda0c8540eaf4a958d6583d03369569cdf` (22,673 bytes body / 444-line file). Required two `update_scheduled_task` calls — first attempt sent body with leading newline → Cowork auto-separator produced 1-byte drift; second attempt sent body without leading newline and byte-matched the repo. |
