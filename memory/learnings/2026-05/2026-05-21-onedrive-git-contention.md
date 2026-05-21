@@ -100,9 +100,47 @@ If the contention disappears, hypothesis confirmed. If it persists, investigate 
 
 `Add-MpPreference -ExclusionPath "C:\Dylan PM"` via elevated PowerShell — returned SUCCESS. Corp-managed policy prevents reading exclusion list back even when elevated, but the cmdlet's success implies the exclusion is in place.
 
-**Hypothesis confirmation deferred to next Cowork deploy.** If the next 2–3 deploys complete without truncation symptoms, Defender was the cause. If truncation recurs, next investigation: Windows Search indexer (`Control Panel → Indexing Options → Modify → uncheck C:\Dylan PM`).
+## Hypothesis update: Defender was ALSO not the (only) cause — Cowork sandbox is
 
-**Defensive layer retained:** Prompt F-v2 onward includes a pre-flight integrity check that halts deploy if any SKILL.md ends mid-sentence. This is belt-and-braces — even if Defender exclusion didn't fix it, broken prompts can't ship.
+**Prompt F-v2 deploy (2026-05-21, AFTER Defender exclusion was added) STILL hit the truncation symptom in Cowork's bash mount.** Cowork session `vibrant-laughing-fermat` reported:
+
+> *"The bash mount is showing a stale/truncated view (~20114 bytes ending mid rule 2 vs the full 444-line file). Read tool reads work via a separate code path and see the full files correctly."*
+
+This invalidates the Defender hypothesis. The "truncation" is **specific to Cowork's bash sandbox mount**, NOT a Windows-side problem:
+- Claude Code session here reads the files correctly (444 / 115 lines, intact sentinels)
+- Cowork's Read tool reads the files correctly (same)
+- Cowork's bash mount returns a stale view (snapshotted ~2026-05-20 13:13/14:22)
+- My session's bash (via the harness) also reads the files correctly
+
+**Real root cause hypothesis (3rd attempt):** Cowork's bash sandbox uses a snapshot of the connected folder that's not coherent with the live filesystem. The snapshot refreshes... sometimes? Cause TBD — could be sandbox lifecycle, sync interval, or a coherence bug in how Cowork mounts host folders into the Linux sandbox.
+
+## Defensive layer that actually saved us
+
+The pre-flight integrity check via **Read tool** (NOT bash) in Prompt F-v2 caught the discrepancy:
+- bash mount said file ended mid rule 2 (~20k bytes)
+- Read tool said file ended at rule 18 (sentinel ✓, 22,978 bytes)
+
+Cowork correctly used the Read-tool view to compute SHA, deployed the right content, and refused to `git add` the SKILL.md files (which would have committed the truncated bash view back to git).
+
+## Rules going forward
+
+1. **In Cowork sessions: never use bash for content of repo files.** Always use Read tool. Bash is OK for path checks, git ops, and shell glue — not for file content.
+2. **Pre-flight integrity check (Read-tool-based) is mandatory** on any deploy touching repo SKILL.md.
+3. **The Defender exclusion stays** — it's cheap insurance even if it didn't fix this particular issue. May help with `.git/index.lock` contention from a different angle (Defender holding the index file mid-scan).
+4. **The Cowork sandbox staleness issue is upstream** — not fixable from this side. File as `inbox/cowork/<date>-cowork-bash-mount-staleness.md` if it keeps biting.
+
+## Verification log (2026-05-21)
+
+| Test | Result | Inference |
+|---|---|---|
+| `(Get-Item "C:\Dylan PM").Attributes` | `Directory` only | Not a junction/symlink |
+| `fsutil reparsepoint query` | "not a reparse point" | Confirms |
+| OneDrive process | Running | Active but not relevant unless syncing the path |
+| OneDrive mount points | OneDrive-AgriProve, OneDriveCloudTemp, AgriProve-Documents | `C:\Dylan PM` not among them |
+| File attributes on `.git/index`, `CLAUDE.md`, etc. | `Archive` only | No cloud-sync flags |
+| Defender RealtimeMonitoring | Enabled, repo not excluded | Mitigated; was NOT the cause |
+| Defender exclusion added | `Add-MpPreference` returned success | Cowork bash mount still stale → Defender innocent |
+| Cowork bash mount vs Read tool | Disagrees (bash sees truncation; Read sees full file) | **Cowork sandbox is the actual issue** |
 
 The migration playbook is roughly:
 1. Clone the GitHub repo to `C:\dev\Dylan PM\` (or wherever)
