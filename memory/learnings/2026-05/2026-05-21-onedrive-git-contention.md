@@ -1,11 +1,14 @@
 ---
 date: 2026-05-21
 source: Cowork response to apex-eod-reconciliation cron fix prompt, 2026-05-21
-tags: [infrastructure, git, onedrive, sharepoint, claude-code]
+revised: 2026-05-21 — root-cause hypothesis WRONG (see verification at bottom)
+tags: [infrastructure, git, onedrive, defender, claude-code]
 severity: moderate-recurring
 ---
 
-# OneDrive vs git contention — `C:\Dylan PM` is exposed to sync corruption
+# Windows real-time scanning interference — NOT OneDrive
+
+> **RETRACTION 2026-05-21:** The original framing of this learning attributed the corruption to OneDrive. Verification ran 2026-05-21 (`memory/jobs/76c4d1c9/verify-onedrive.ps1` — actually the inline tests) proved `C:\Dylan PM\` is NOT under any OneDrive sync root, not a junction, not a reparse point, and its files carry no cloud-sync attributes. **OneDrive is innocent.** Likely actual cause: Microsoft Defender real-time scanning (running, repo not excluded). The original analysis below is preserved for the symptom catalogue; the fix is Defender exclusion, not migration.
 
 ## The trap
 
@@ -65,11 +68,33 @@ Every Cowork prompt that commits to git must expect index.lock failure, surface 
 - Sandbox restrictions compound the friction
 - Doesn't scale as scheduled-task automation grows
 
-## Recommendation
+## Recommendation (REVISED 2026-05-21)
 
-**Option A — and now this is urgent, not just recommended.** Four incidents in two days. Latest one (Cowork Prompt F deploy 2026-05-21) was actively *blocked* by the corruption — the deploy halted because Cowork read truncated files. We got lucky the hash-check caught it; without that safety, a truncated SKILL.md would have been deployed to Cowork's task store and the next scheduled run would have aborted mid-step.
+~~Option A — migrate out of OneDrive.~~ **Wrong.** Verification proved OneDrive is not syncing this path.
 
-The friction tax of B + C compounds; A is a one-time fix.
+**Correct fix: exclude `C:\Dylan PM` from Microsoft Defender real-time scanning.** Run in elevated PowerShell:
+
+```powershell
+Add-MpPreference -ExclusionPath "C:\Dylan PM"
+```
+
+Then verify:
+```powershell
+(Get-MpPreference).ExclusionPath
+```
+
+If the contention disappears, hypothesis confirmed. If it persists, investigate Windows Search indexer next (`Control Panel → Indexing Options → Modify → uncheck C:\Dylan PM`).
+
+## Verification log (2026-05-21)
+
+| Test | Result | Inference |
+|---|---|---|
+| `(Get-Item "C:\Dylan PM").Attributes` | `Directory` only | Not a junction/symlink |
+| `fsutil reparsepoint query` | "not a reparse point" | Confirms |
+| OneDrive process | Running | Active but not relevant unless syncing the path |
+| OneDrive mount points | OneDrive-AgriProve, OneDriveCloudTemp, AgriProve-Documents | `C:\Dylan PM` not among them |
+| File attributes on `.git/index`, `CLAUDE.md`, etc. | `Archive` only | No cloud-sync flags |
+| Defender RealtimeMonitoring | Enabled, repo not excluded | Most likely culprit |
 
 The migration playbook is roughly:
 1. Clone the GitHub repo to `C:\dev\Dylan PM\` (or wherever)
