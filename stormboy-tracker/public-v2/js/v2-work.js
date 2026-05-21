@@ -696,6 +696,7 @@
         NOT_REQUESTED:                'snapshot · not requested',
         REQUESTED:                    'snapshot · requested · queued',
         IN_PRODUCTION:                'snapshot · in production',
+        SENT_VIA_TICKET:              'snapshot · sent (via Ben) · follow up',
         TICKET_EXISTS_STAGE_UNKNOWN:  'snapshot · ticket exists (stage unknown)',
         REQUESTED_NO_EMAIL:           'snapshot · flag set, no email',
         DISCUSSED_NOT_SENT:           'snapshot · discussed in Teams · unsent',

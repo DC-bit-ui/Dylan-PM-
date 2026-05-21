@@ -453,6 +453,43 @@ app.get('/api/stats/call-analytics', async (req, res) => {
   }
 });
 
+// Bus rebuild — manually trigger rep-queue rebuild + team-pulse write.
+// Useful when the team wants their Claude Code workspaces to reflect
+// the latest dashboard state without waiting for the 5am scheduler.
+// Heavy: pulls live HubSpot data to enrich Farm Visit completed cards
+// with current snapshot-state.
+app.post('/api/bus/rebuild', async (req, res) => {
+  try {
+    const repQueues = require('./coaching/engine/rep-queues');
+    const teamPulse = require('./coaching/engine/team-pulse');
+    const queues = await repQueues.buildQueues();
+    const pulse = await teamPulse.build();
+    res.json({
+      ok: true,
+      queues: {
+        generated_at: queues.generated_at,
+        reps: queues.reps,
+      },
+      team_pulse: pulse,
+    });
+  } catch (e) {
+    console.error('bus rebuild failed:', e);
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+app.get('/api/bus/rebuild', async (req, res) => {
+  // Allow GET for easy manual triggering from a browser
+  try {
+    const repQueues = require('./coaching/engine/rep-queues');
+    const teamPulse = require('./coaching/engine/team-pulse');
+    const queues = await repQueues.buildQueues();
+    const pulse = await teamPulse.build();
+    res.json({ ok: true, queues: queues, team_pulse: pulse });
+  } catch (e) {
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
 // Snapshot-state integration health check — surfaces which channels
 // (HubSpot emails, HubSpot tickets, MS Teams) are wired in. Used by
 // the WORK page banner and for ops debugging.

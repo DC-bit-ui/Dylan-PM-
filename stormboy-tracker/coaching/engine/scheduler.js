@@ -99,6 +99,15 @@ async function fire() {
     report.steps.push({ step: 'build-rep-queues', ok: false, error: e.message });
   }
 
+  // Team pulse — single team-level briefing for Claude Code consumers
+  try {
+    const teamPulse = require('./team-pulse');
+    const r = await teamPulse.build();
+    report.steps.push({ step: 'build-team-pulse', ok: true, sources_ok: r.sources_ok });
+  } catch (e) {
+    report.steps.push({ step: 'build-team-pulse', ok: false, error: e.message });
+  }
+
   // Step 6: refresh persona profiles. Runs every ~48 hours (timestamp-gated)
   // so the cadence holds regardless of which day of the week the daily fire
   // lands on. Manual refresh available via POST /api/brain/refresh-persona/:slug.

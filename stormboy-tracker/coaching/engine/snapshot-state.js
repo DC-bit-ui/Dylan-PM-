@@ -441,6 +441,20 @@ function classifyState(contact, emails, lastNote, ticketSignal, teamsSignal) {
     };
   }
 
+  // 1c-2) Ticket marked SENT but no outbound snapshot email visible in
+  // HubSpot. Snapshot was almost certainly sent via Ben directly (his
+  // personal Outlook, or Teams) rather than through HubSpot's mail tool
+  // — common pattern. The customer DID receive the snapshot; the rep
+  // should follow up rather than re-request.
+  if (ticketSignal && ticketSignal.latest_stage === 'SENT' && !lastOutboundSnapshot) {
+    return {
+      state: 'SENT_VIA_TICKET',
+      next_step_short: 'Snapshot sent (via Ben) · follow up',
+      next_step: `Snapshot ticket is in stage "${ticketSignal.latest_stage_label}" but no outbound email visible in HubSpot — likely sent by Ben directly (Outlook/Teams). Customer has the snapshot; follow up to gauge response and propose KCT next step.`,
+      evidence,
+    };
+  }
+
   // 1c-bis) Ticket exists in association-only mode (scope missing). We
   // know a ticket is linked to the contact but can't read its stage.
   // Strong signal nonetheless — far better than saying NOT_REQUESTED.

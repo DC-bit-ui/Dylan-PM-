@@ -76,6 +76,9 @@ async function fetchDealOwners(dealIds) {
 }
 
 function dealDiagnosisToCard(dx, ownerId) {
+  // Card-format version is bumped to 1.1 to signal new shape with
+  // evidence array, snapshot_state hooks, and refresh_in_flight marker
+  // for the rep's Claude Code consumers (see README + INTEGRATION).
   return {
     card_id: 'deal-' + dx.deal_id,
     kind: 'stuck_deal',
@@ -91,15 +94,61 @@ function dealDiagnosisToCard(dx, ownerId) {
     diagnosis: dx.diagnosis || [],
     diagnosis_assessment: dx.diagnosis_assessment,
     diagnosis_generated_at: dx.regenerated_at,
+    risk_score: dx.risk_score,
+    risk_class: dx.risk_class,
+    current_stage: dx.current_stage,
+    days_in_current_stage: dx.days_in_current_stage,
+    attribution: dx.attribution,
+    refresh_in_flight: dx.refresh_in_flight || null,
+    evidence: [],   // dashboard-side deal diagnoses don't carry the same
+                    // signal channels as contacts (snapshot/ticket/Teams)
+                    // — populated for contacts only. Reserved for future.
   };
 }
 
-function contactDiagnosisToCard(dx) {
+// Build a contact card. If snapshotByContactId is provided (Farm Visit
+// completed only), the card's next-step is overridden with the
+// evidence-driven snapshot-state output, and the evidence array is
+// populated for the rep's Claude Code to consume.
+function contactDiagnosisToCard(dx, { snapshotByContactId = {} } = {}) {
   const kindByStage = {
     'Farm Visit completed': 'completed_visit',
     'Farm Visit booked':    'upcoming_visit',
     'In Conversation':      'stalled_call',
   };
+  const ss = snapshotByContactId[dx.contact_id] || null;
+  // Snapshot-state wins for Farm Visit completed contacts because it's
+  // evidence-driven (across HubSpot emails + tickets + custom flags +
+  // optional Teams Graph). The cached LLM diagnosis often anchored on
+  // the old "Send KCT or contract draft now" template input — out of
+  // step with reality.
+  const nextStepShort = ss ? ss.next_step_short : dx.next_step_short;
+  const nextStepQualifier = ss ? ss.next_step : dx.next_step_qualifier;
+
+  // Build evidence array from snapshot-state + any other rich context.
+  const evidence = [];
+  if (ss && Array.isArray(ss.evidence)) {
+    const kindLabels = {
+      snapshot_sent: 'HubSpot email · snapshot sent',
+      customer_replied: 'HubSpot email · customer replied',
+      flag_set: 'HubSpot property · flag set',
+      kct_willing: 'HubSpot property · KCT willing',
+      positive_sentiment: 'Last note · sentiment',
+      ticket_requested: 'HubSpot ticket · requested',
+      ticket_in_production: 'HubSpot ticket · in production',
+      ticket_sent: 'HubSpot ticket · sent',
+      ticket_exists: 'HubSpot ticket · exists (stage hidden)',
+      teams_mention: 'Microsoft Teams · channel mention',
+    };
+    ss.evidence.forEach(e => {
+      evidence.push({
+        source: kindLabels[e.kind] || e.source || e.kind,
+        kind: e.kind,
+        detail: e.detail || '',
+      });
+    });
+  }
+
   return {
     card_id: 'contact-' + dx.contact_id,
     kind: kindByStage[dx.stage] || 'contact',
@@ -107,14 +156,22 @@ function contactDiagnosisToCard(dx) {
     lookup_id: dx.contact_id,
     hubspot_url: `https://app.hubspot.com/contacts/24224559/contact/${dx.contact_id}`,
     title: dx.name,
-    subtitle: `${dx.stage}${dx.heat ? ' · heat ' + dx.heat : ''}`,
+    subtitle: `${dx.stage}${dx.heat ? ' · heat ' + dx.heat : ''}${ss ? ' · ' + ss.state : ''}`,
     heat: dx.heat,
     owner_id: dx.owner_id || null,
-    next_step_short: dx.next_step_short,
-    next_step_qualifier: dx.next_step_qualifier,
+    next_step_short: nextStepShort,
+    next_step_qualifier: nextStepQualifier,
     diagnosis: dx.diagnosis || [],
     diagnosis_assessment: dx.diagnosis_assessment,
     diagnosis_generated_at: dx.regenerated_at,
+    snapshot_state: ss ? {
+      state: ss.state,
+      evidence: ss.evidence || [],
+    } : null,
+    horizon_snapshot_created: dx.horizon_snapshot_created || null,
+    proceed_to_kct: dx.proceed_to_kct || null,
+    evidence,
+    refresh_in_flight: dx.refresh_in_flight || null,
   };
 }
 
@@ -126,9 +183,102 @@ function atomicWrite(filePath, content) {
   fs.renameSync(tmp, filePath);
 }
 
+// Enrich Farm Visit completed contact records with live snapshot-state
+// at build time. Reads HubSpot emails + tickets + (optional) Teams +
+// custom properties. Returns { contactId: snapshot_state }.
+async function enrichSnapshotStateForFarmVisitCompleted(contactCache) {
+  try {
+    const token = process.env.HUBSPOT_TOKEN;
+    if (!token) return {};
+    const fvcContactIds = Object.entries(contactCache.contacts || {})
+      .filter(([_, dx]) => dx.stage === 'Farm Visit completed')
+      .map(([id]) => id);
+    if (!fvcContactIds.length) return {};
+
+    // Fetch contact records with the properties snapshot-state needs
+    // (one batch call rather than per-contact). Then prime the
+    // __snapshot_last_note hook with a per-contact last-note fetch.
+    const props = [
+      'firstname', 'lastname', 'contact_lead_stage_storm_boy',
+      'storm_boy__date_called', 'storm_boy__meeting_date',
+      'storm_boy__horizon_snapshot_created',
+      'storm_boy__proceed_to_kct_stage',
+      'notes_last_contacted',
+    ];
+    const batchBody = {
+      properties: props,
+      inputs: fvcContactIds.map(id => ({ id: String(id) })),
+    };
+    const batchRes = await hubspotFetch('https://api.hubapi.com/crm/v3/objects/contacts/batch/read', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(batchBody),
+    });
+    if (!batchRes.ok) throw new Error('contact batch read: ' + batchRes.status);
+    const batchData = await batchRes.json();
+    const contacts = (batchData.results || []);
+
+    // Fetch each contact's last note (sequential — small N).
+    const fetchLastNote = require('./stormboy-detail').__fetchLastNote
+      || (async (_t, _id) => null);
+    // stormboy-detail doesn't export fetchLastNote — quick re-implementation
+    async function getLastNoteLocal(contactId) {
+      try {
+        const assocRes = await hubspotFetch(
+          `https://api.hubapi.com/crm/v4/objects/contacts/${contactId}/associations/notes?limit=10`,
+          { headers: { Authorization: 'Bearer ' + token } });
+        if (!assocRes.ok) return null;
+        const assoc = await assocRes.json();
+        const noteIds = (assoc.results || []).map(r => r.toObjectId).filter(Boolean);
+        if (!noteIds.length) return null;
+        const latest = noteIds.sort((a, b) => Number(b) - Number(a))[0];
+        const noteRes = await hubspotFetch(
+          'https://api.hubapi.com/crm/v3/objects/notes/batch/read',
+          {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              inputs: [{ id: String(latest) }],
+              properties: ['hs_note_body', 'hs_timestamp'],
+            }),
+          });
+        if (!noteRes.ok) return null;
+        const noteData = await noteRes.json();
+        const note = (noteData.results || [])[0];
+        if (!note) return null;
+        return {
+          body: note.properties.hs_note_body || '',
+          timestamp: note.properties.hs_timestamp,
+        };
+      } catch (_) { return null; }
+    }
+
+    for (const c of contacts) {
+      c.__snapshot_last_note = await getLastNoteLocal(c.id);
+    }
+
+    const { enrichContactsWithSnapshotState } = require('./snapshot-state');
+    await enrichContactsWithSnapshotState(token, contacts);
+
+    const out = {};
+    contacts.forEach(c => {
+      if (c.__snapshot_state) out[c.id] = c.__snapshot_state;
+    });
+    return out;
+  } catch (e) {
+    console.warn('[rep-queues] snapshot-state enrichment failed:', e.message);
+    return {};
+  }
+}
+
 async function buildQueues() {
   const dealCache = loadDealDiagnoses();
   const contactCache = loadContactDiagnoses();
+
+  // Enrich Farm Visit completed contacts with live snapshot-state so
+  // each rep's queue card reflects the evidence-driven next-step, not
+  // the cached LLM diagnosis (which may have anchored on stale text).
+  const snapshotByContactId = await enrichSnapshotStateForFarmVisitCompleted(contactCache);
 
   // Fetch deal owners (cache doesn't store them; need HubSpot lookup)
   const dealIds = Object.keys(dealCache.deals || {});
@@ -156,7 +306,9 @@ async function buildQueues() {
   // Contacts (owner_id already in the diagnosis cache)
   for (const [id, dx] of Object.entries(contactCache.contacts || {})) {
     const slug = ownerSlug(dx.owner_id);
-    ensure(slug, dx.owner_id).cards.push(contactDiagnosisToCard(dx));
+    ensure(slug, dx.owner_id).cards.push(
+      contactDiagnosisToCard(dx, { snapshotByContactId })
+    );
   }
 
   // Sort each bucket: HOT first, then by recency
@@ -177,12 +329,19 @@ async function buildQueues() {
   for (const [slug, bucket] of Object.entries(buckets)) {
     const filePath = path.join(QUEUES_DIR, slug, 'work-cards.json');
     const payload = {
-      version: 'rep-queue-1.0',
+      version: 'rep-queue-1.1',
       generated_at: new Date().toISOString(),
       rep_slug: slug,
       owner_id: bucket.owner_id,
       card_count: bucket.cards.length,
       cards: bucket.cards,
+      // Card-shape changelog so consumers (Claudia's Claude Code,
+      // any other reader) can adapt. Bumped from 1.0 → 1.1 on
+      // 2026-05-21 with the addition of snapshot_state, evidence[],
+      // and proceed_to_kct fields.
+      shape_changelog: [
+        '1.0 → 1.1 (2026-05-21): contact cards gain snapshot_state, evidence[], proceed_to_kct, horizon_snapshot_created. deal cards gain risk_score, risk_class, current_stage, days_in_current_stage, attribution, refresh_in_flight, evidence[] (reserved). subtitle now includes snapshot state for Farm Visit completed.',
+      ],
     };
     atomicWrite(filePath, JSON.stringify(payload, null, 2));
     summary.reps[slug] = {
