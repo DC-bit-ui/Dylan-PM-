@@ -453,6 +453,19 @@ app.get('/api/stats/call-analytics', async (req, res) => {
   }
 });
 
+// Snapshot pipeline — STATS section. Throughput view of the snapshot
+// workflow across Farm Visit completed contacts. Surfaces drafting
+// bottlenecks, reply-wait stalls, KCT-handoff queue. 15-min cache.
+app.get('/api/stats/snapshot-pipeline', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/snapshot-pipeline');
+    res.json(await run({ force: req.query.force === '1' }));
+  } catch (e) {
+    console.error('snapshot-pipeline failed:', e);
+    res.status(500).json({ error: 'snapshot-pipeline failed', detail: e.message });
+  }
+});
+
 // Bus rebuild — manually trigger rep-queue rebuild + team-pulse write.
 // Useful when the team wants their Claude Code workspaces to reflect
 // the latest dashboard state without waiting for the 5am scheduler.

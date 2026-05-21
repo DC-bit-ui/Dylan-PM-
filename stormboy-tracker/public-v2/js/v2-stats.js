@@ -1937,6 +1937,172 @@
     });
   }
 
+  // ====== SNAPSHOT-STATE PIPELINE — Section 6b ======
+  // Throughput view of the snapshot workflow across Farm Visit completed
+  // contacts. Different question from Section 7 (outreach motion funnel)
+  // and Section 2 (cohort deal funnel). This is: of contacts who reached
+  // post-visit, where is the snapshot workflow stalling them?
+  async function fetchSnapshotPipeline() {
+    try {
+      const r = await fetch('/api/stats/snapshot-pipeline');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function snapshotPipelineHtml(sp) {
+    if (!sp || !sp.counts) {
+      return `<section class="v2-funnel-section"><div class="v2-empty">No snapshot pipeline data.</div></section>`;
+    }
+    const total = sp.total_on_pipeline || 1;
+    // Colour mapping per state — left side red (no-action), right side green (KCT-ready)
+    const stateColour = {
+      NOT_REQUESTED:       '#a4524a',
+      REQUESTED:           '#c98a40',
+      IN_PRODUCTION:       '#d8a040',
+      SENT_VIA_TICKET:     '#7a9a3a',
+      SENT_AWAITING_REPLY: '#5a8a6e',
+      SENT_NO_REPLY_STALE: '#a16207',
+      SENT_REPLIED:        '#3a7a5a',
+      WILLING_TO_PROGRESS: '#2d6a4f',
+    };
+    const stateLabel = {
+      NOT_REQUESTED:       'Not requested',
+      REQUESTED:           'Requested',
+      IN_PRODUCTION:       'In production',
+      SENT_VIA_TICKET:     'Sent (via Ben)',
+      SENT_AWAITING_REPLY: 'Sent · awaiting',
+      SENT_NO_REPLY_STALE: 'Sent · stale',
+      SENT_REPLIED:        'Customer replied',
+      WILLING_TO_PROGRESS: 'Ready · KCT',
+    };
+    const offLabel = {
+      TICKET_EXISTS_STAGE_UNKNOWN: 'Ticket exists, stage unknown',
+      REQUESTED_NO_EMAIL:          'Flag set, no email evidence',
+      DISCUSSED_NOT_SENT:          'Teams mention, no email/ticket',
+      COLD:                        'Cold',
+    };
+
+    // Stacked horizontal bar (each segment width = count / total)
+    const segs = sp.pipeline_order.map(state => {
+      const count = sp.counts[state] || 0;
+      if (count === 0) return '';
+      const pct = (count / total) * 100;
+      return `<div class="v2-snp-seg" style="flex:${pct};background:${stateColour[state]};color:#fff" title="${escapeHtml(stateLabel[state])}: ${count}">
+        <span class="v2-snp-seg-count">${count}</span>
+        <span class="v2-snp-seg-label">${escapeHtml(stateLabel[state])}</span>
+      </div>`;
+    }).join('');
+
+    // Numerical breakdown grid (clearer than just the bar for sparse states)
+    const onRows = sp.pipeline_order.map(state => {
+      const count = sp.counts[state] || 0;
+      const exs = (sp.examples[state] || []).map(e => `<a href="${e.hubspot_url}" target="_blank">${escapeHtml(e.name)}</a>`).join(' · ');
+      return `<tr class="${count === 0 ? 'v2-snp-row-empty' : ''}">
+        <td><span class="v2-snp-dot" style="background:${stateColour[state]}"></span> <strong>${escapeHtml(stateLabel[state])}</strong></td>
+        <td class="num strong">${count}</td>
+        <td class="meta">${exs || '<span class="v2-snp-noex">—</span>'}</td>
+      </tr>`;
+    }).join('');
+
+    const offRows = sp.off_pipeline_states.map(state => {
+      const count = sp.counts[state] || 0;
+      if (count === 0) return '';
+      const exs = (sp.examples[state] || []).map(e => `<a href="${e.hubspot_url}" target="_blank">${escapeHtml(e.name)}</a>`).join(' · ');
+      return `<tr>
+        <td><span class="v2-snp-dot" style="background:#8a8a7a"></span> ${escapeHtml(offLabel[state] || state)}</td>
+        <td class="num strong">${count}</td>
+        <td class="meta">${exs || ''}</td>
+      </tr>`;
+    }).filter(Boolean).join('');
+
+    return `
+      <section class="v2-funnel-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">Snapshot workflow · what's flowing through?</h2>
+          <div class="v2-funnel-sub">${sp.total_completed_visits} Farm Visit completed contacts, distributed across the snapshot workflow. Different question from the deal funnel: this is post-visit throughput specifically.</div>
+        </header>
+        <div class="v2-funnel-callout v2-funnel-callout-${sp.stuck_in_production_pct > 30 ? 'bad' : (sp.ready_for_kct_count > 0 ? 'good' : 'flat')}">
+          <span class="v2-funnel-callout-label">Headline</span>
+          <span class="v2-funnel-callout-body">${escapeHtml(sp.headline)}</span>
+        </div>
+        <div class="v2-snp-bar">${segs || '<div class="v2-empty" style="padding:18px">No contacts on the pipeline yet.</div>'}</div>
+        <table class="v2-stats-era-table" style="margin-top:14px">
+          <thead><tr><th>State</th><th class="num">Count</th><th>Examples</th></tr></thead>
+          <tbody>${onRows}</tbody>
+        </table>
+        ${offRows ? `
+          <header class="v2-funnel-head" style="margin-top:14px">
+            <h3 class="v2-funnel-title" style="font-size:13px">Off-pipeline (need attention but don't fit the linear flow)</h3>
+          </header>
+          <table class="v2-stats-era-table">
+            <thead><tr><th>State</th><th class="num">Count</th><th>Examples</th></tr></thead>
+            <tbody>${offRows}</tbody>
+          </table>` : ''}
+        <div class="v2-funnel-sub" style="margin-top:8px">${sp.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}</div>
+      </section>`;
+  }
+
+  // ====== HOUR × DAY CONNECT-RATE HEATMAP ======
+  // Visual 7×24 grid using call-analytics heatmap.grid data. Cell
+  // background = connect rate (red→green), cell opacity = sample
+  // volume so sparsely-sampled cells fade out (small-n caveat shown
+  // visually). Hover for detail.
+  function heatmapHtml(ca) {
+    if (!ca || !ca.heatmap || !ca.heatmap.grid) {
+      return '<div class="v2-empty">No heatmap data.</div>';
+    }
+    const grid = ca.heatmap.grid;
+    // Find max total for opacity scaling (don't let one massive cell
+    // crush the rest — use p90 instead of max as the saturation point)
+    const totals = grid.flatMap(r => r.hours.map(h => h.total)).sort((a, b) => a - b);
+    const p90 = totals[Math.floor(totals.length * 0.9)] || 1;
+
+    function cellStyle(cell) {
+      if (cell.total === 0) return 'background:#f5f3df;opacity:0.4';
+      const rate = cell.connect_rate_pct || 0;
+      // 0–50% → red gradient, 50–80% → amber, 80–100% → green
+      let r, g, b;
+      if (rate < 50) {
+        const t = rate / 50;       // 0..1 in red zone
+        r = 200; g = 80 + 100 * t; b = 80;
+      } else if (rate < 80) {
+        const t = (rate - 50) / 30; // 0..1 in amber zone
+        r = 220 - 80 * t; g = 180 - 40 * t; b = 60;
+      } else {
+        const t = (rate - 80) / 20; // 0..1 in green zone
+        r = 100 - 50 * t; g = 160 + 30 * t; b = 100 - 20 * t;
+      }
+      const opacity = Math.min(1, 0.35 + 0.65 * Math.min(1, cell.total / p90));
+      return `background:rgb(${Math.round(r)},${Math.round(g)},${Math.round(b)});opacity:${opacity.toFixed(2)}`;
+    }
+
+    const hours = Array.from({ length: 24 }, (_, i) => i);
+    const hourLabels = hours.map(h => h % 6 === 0 ? `${h}` : '');
+    return `
+      <div class="v2-hm-wrap">
+        <div class="v2-hm-grid">
+          <div class="v2-hm-corner"></div>
+          ${hourLabels.map(l => `<div class="v2-hm-col-label">${l}</div>`).join('')}
+          ${grid.map(row => `
+            <div class="v2-hm-row-label">${row.day_label}</div>
+            ${row.hours.map(cell => {
+              const tooltip = cell.total > 0
+                ? `${row.day_label} ${cell.hour}:00 — ${cell.connected}/${cell.total} connected (${cell.connect_rate_pct}%)`
+                : `${row.day_label} ${cell.hour}:00 — no calls`;
+              return `<div class="v2-hm-cell" style="${cellStyle(cell)}" title="${escapeHtml(tooltip)}"></div>`;
+            }).join('')}
+          `).join('')}
+        </div>
+        <div class="v2-hm-legend">
+          <span>Connect rate:</span>
+          <span class="v2-hm-legend-cell" style="background:rgb(200,80,80)"></span><span class="v2-hm-legend-label">&lt;50%</span>
+          <span class="v2-hm-legend-cell" style="background:rgb(180,160,60)"></span><span class="v2-hm-legend-label">50–80%</span>
+          <span class="v2-hm-legend-cell" style="background:rgb(70,180,90)"></span><span class="v2-hm-legend-label">80%+</span>
+          <span class="v2-hm-legend-meta">· cell opacity = sample volume (faded = small-n)</span>
+        </div>
+      </div>`;
+  }
+
   // Call Quality strip — supplements Will's dashboard with connect
   // rate, best-connect windows, and per-rep leaderboard. These add the
   // "are calls quality" dimension that Will's reach-focused dashboard
@@ -1992,7 +2158,11 @@
             <div class="v2-funnel-summary-rate">Generated ${new Date(ca.generated_at).toLocaleString()}</div>
           </div>
         </div>
-        <div class="v2-cm-quality-grid">
+        <div>
+          <h3 class="v2-cm-subhead" style="margin-top:18px">When do calls connect? · hour × day heat map (AEST)</h3>
+          ${heatmapHtml(ca)}
+        </div>
+        <div class="v2-cm-quality-grid" style="margin-top:18px">
           <div>
             <h3 class="v2-cm-subhead">Best connect windows · top 5 hour-cells (≥10 call sample)</h3>
             ${windows.length
@@ -2010,39 +2180,42 @@
   }
 
   async function render(container) {
+    // Restructured 2026-05-21 to follow the natural question hierarchy:
+    //   1. Is it working?           → efficacy hero
+    //   2. Are we going to hit it?  → 30k projection + forward forecast (merged)
+    //   3. Is the bend real?        → trajectory time-series
+    //   4. Where do I push next?    → friction map (+ inline evidence callouts)
+    //   5. What does the motion look like? → cohort funnel + outreach funnel velocity
+    //   6. What's flowing post-visit?       → snapshot workflow pipeline (new)
+    //   7. How is the team executing?       → Will's call monitor + call quality + heatmap
+    //   8. What's working tactically?       → evidence cards (full bus pattern list)
     container.innerHTML = `
-      <div id="stats-callmon"><div class="v2-loading" style="padding:24px">Loading team call monitor…</div></div>
-      <div id="stats-callquality"><div class="v2-loading" style="padding:24px">Loading call quality strip…</div></div>
       <div id="stats-efficacy"><div class="v2-loading" style="padding:24px">Loading efficacy comparison…</div></div>
-      <div id="stats-funnel"><div class="v2-loading" style="padding:24px">Loading cohort funnel…</div></div>
+      <div id="stats-pace-forecast"><div class="v2-loading" style="padding:24px">Loading 30k pace + forecast…</div></div>
       <div id="stats-trajectory"><div class="v2-loading" style="padding:24px">Loading trajectory…</div></div>
       <div id="stats-friction"><div class="v2-loading" style="padding:24px">Loading friction map…</div></div>
+      <div id="stats-funnel"><div class="v2-loading" style="padding:24px">Loading cohort funnel…</div></div>
       <div id="stats-velocity"><div class="v2-loading" style="padding:24px">Loading outreach funnel…</div></div>
+      <div id="stats-snapshot-pipeline"><div class="v2-loading" style="padding:24px">Loading snapshot workflow…</div></div>
+      <div id="stats-callmon"><div class="v2-loading" style="padding:24px">Loading team call monitor…</div></div>
+      <div id="stats-callquality"><div class="v2-loading" style="padding:24px">Loading call quality + heatmap…</div></div>
       <div id="stats-evidence"><div class="v2-loading" style="padding:24px">Loading tactical evidence…</div></div>
-      <div id="stats-projection"><div class="v2-loading" style="padding:24px">Loading 30k projection…</div></div>
-      <div id="stats-forecast"><div class="v2-loading" style="padding:24px">Loading forecast…</div></div>
       <div class="v2-section-header" style="margin-top:24px">
         <h2 class="v2-section-title">Detail · process refinement</h2>
         <p class="v2-section-sub">drill-downs by sub-tab — kept for cohort breakdowns; the redesigned story above is the primary view.</p>
       </div>
       <div id="stats-content"><div class="v2-loading">Loading from HubSpot…</div></div>`;
-    // Call monitor (Section 0) + call quality strip
-    fetchCallMonitoring().then(cm => {
-      const slot = document.getElementById('stats-callmon');
-      if (!slot) return;
-      slot.innerHTML = callMonitoringShellHtml(cm);
-      if (cm && cm.daily && cm.daily.length) renderCallMonitorChart(cm);
-    });
-    fetchCallAnalytics().then(ca => {
-      const slot = document.getElementById('stats-callquality');
-      if (slot) slot.innerHTML = callQualityHtml(ca);
-    });
-    // Hero + funnel + trajectory + evidence + projection all load in parallel with detail
+    // All sections load in parallel. Order in container ≠ order of
+    // resolution — the slots above define the visual order; these
+    // fetches just fill them as they complete.
     fetchEfficacy().then(eff => {
       document.getElementById('stats-efficacy').innerHTML = efficacyHeroHtml(eff);
     });
-    fetchCohortFunnel().then(fn => {
-      document.getElementById('stats-funnel').innerHTML = cohortFunnelHtml(fn);
+    // Pace + Forecast merged into one section (they answer "are we going to hit it?")
+    Promise.all([fetchProjection(), fetchForecast()]).then(([pj, fc]) => {
+      const slot = document.getElementById('stats-pace-forecast');
+      if (!slot) return;
+      slot.innerHTML = projectionHtml(pj) + forecastHtml(fc);
     });
     fetchTrajectory().then(tr => {
       const slot = document.getElementById('stats-trajectory');
@@ -2054,21 +2227,30 @@
       const slot = document.getElementById('stats-friction');
       if (slot) slot.innerHTML = frictionMapHtml(fm);
     });
+    fetchCohortFunnel().then(fn => {
+      document.getElementById('stats-funnel').innerHTML = cohortFunnelHtml(fn);
+    });
     fetchFunnelVelocity().then(fv => {
       const slot = document.getElementById('stats-velocity');
       if (slot) slot.innerHTML = funnelVelocityHtml(fv);
     });
+    fetchSnapshotPipeline().then(sp => {
+      const slot = document.getElementById('stats-snapshot-pipeline');
+      if (slot) slot.innerHTML = snapshotPipelineHtml(sp);
+    });
+    fetchCallMonitoring().then(cm => {
+      const slot = document.getElementById('stats-callmon');
+      if (!slot) return;
+      slot.innerHTML = callMonitoringShellHtml(cm);
+      if (cm && cm.daily && cm.daily.length) renderCallMonitorChart(cm);
+    });
+    fetchCallAnalytics().then(ca => {
+      const slot = document.getElementById('stats-callquality');
+      if (slot) slot.innerHTML = callQualityHtml(ca);
+    });
     fetchEvidenceCards().then(ev => {
       const slot = document.getElementById('stats-evidence');
       if (slot) slot.innerHTML = evidenceCardsHtml(ev);
-    });
-    fetchProjection().then(pj => {
-      const slot = document.getElementById('stats-projection');
-      if (slot) slot.innerHTML = projectionHtml(pj);
-    });
-    fetchForecast().then(fc => {
-      const slot = document.getElementById('stats-forecast');
-      if (slot) slot.innerHTML = forecastHtml(fc);
     });
     try {
       const res = await fetch('/api/stats/pipeline');
