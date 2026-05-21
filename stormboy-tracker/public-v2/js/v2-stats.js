@@ -2171,6 +2171,131 @@
       </section>`;
   }
 
+  // ====== PROPERTY-SIZE × CYCLE × WIN-RATE ======
+  // Tests "do larger prospects take longer + convert less?" — turns
+  // out the answer is "medium are the sweet spot, very large is
+  // hardest" in current data.
+  async function fetchPropertySize() {
+    try {
+      const r = await fetch('/api/stats/property-size');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function propertySizeHtml(ps) {
+    if (!ps || !ps.buckets) {
+      return '<section class="v2-funnel-section"><div class="v2-empty">No property-size data.</div></section>';
+    }
+    const maxN = Math.max(...ps.buckets.map(b => b.n), 1);
+    const maxWin = Math.max(...ps.buckets.map(b => b.win_rate_pct || 0), 1);
+    const rows = ps.buckets.map(b => {
+      const isWinning = ps.sweet_spot && ps.sweet_spot.key === b.key;
+      const isWorst = ps.worst_bucket && ps.worst_bucket.key === b.key;
+      const tone = isWinning ? 'good' : (isWorst ? 'bad' : 'flat');
+      const widthN = (b.n / maxN) * 100;
+      const widthWin = ((b.win_rate_pct || 0) / maxWin) * 100;
+      return `<tr class="v2-ps-row v2-ps-row-${tone}">
+        <td>
+          <strong>${escapeHtml(b.label)}</strong>
+          <div class="meta">${escapeHtml(b.sub)}</div>
+        </td>
+        <td class="num">
+          <div class="v2-ps-bar-wrap"><div class="v2-ps-bar" style="width:${widthN}%;background:#5a6878">${b.n}</div></div>
+        </td>
+        <td class="num"><strong>${b.won}</strong>w · ${b.lost}l</td>
+        <td class="num">
+          <div class="v2-ps-bar-wrap"><div class="v2-ps-bar" style="width:${widthWin}%;background:${tone==='good'?'#2d6a4f':tone==='bad'?'#8a3024':'#a16207'}">${b.win_rate_pct != null ? b.win_rate_pct+'%' : '—'}</div></div>
+        </td>
+        <td class="num">${b.median_cycle_d || '—'}d</td>
+        <td class="num">${b.total_hectares_won.toLocaleString()} ha</td>
+      </tr>`;
+    }).join('');
+
+    return `
+      <section class="v2-funnel-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">Does property size predict outcome?</h2>
+          <div class="v2-funnel-sub">Closed deals (LawrieCo excluded) over ${ps.window_months} months, bucketed by estimated_project_ha. Tests the "large prospects take longer + convert less" hypothesis.</div>
+        </header>
+        <div class="v2-funnel-callout v2-funnel-callout-flat">
+          <span class="v2-funnel-callout-label">Read</span>
+          <span class="v2-funnel-callout-body">${escapeHtml(ps.headline)}</span>
+        </div>
+        <table class="v2-stats-era-table" style="margin-top:8px">
+          <thead><tr>
+            <th>Size</th><th class="num">Sample</th><th class="num">W/L</th>
+            <th class="num">Win rate</th><th class="num">Median cycle</th><th class="num">Hectares won</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="v2-funnel-sub" style="margin-top:8px">${ps.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}</div>
+      </section>`;
+  }
+
+  // ====== GEOGRAPHIC INSIGHTS (state-level) ======
+  async function fetchGeographic() {
+    try {
+      const r = await fetch('/api/stats/geographic');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function geographicHtml(geo) {
+    if (!geo || !geo.states) {
+      return '<section class="v2-funnel-section"><div class="v2-empty">No geographic data.</div></section>';
+    }
+    const known = geo.states.filter(s => s.state !== '(unverified)');
+    const unverified = geo.states.find(s => s.state === '(unverified)');
+    const maxContacts = Math.max(...known.map(s => s.contact_count), 1);
+
+    const rows = known.map(s => {
+      const widthC = (s.contact_count / maxContacts) * 100;
+      const hasOutcomes = (s.won + s.lost) > 0;
+      return `<tr>
+        <td><strong>${escapeHtml(s.state)}</strong></td>
+        <td class="num">
+          <div class="v2-ps-bar-wrap"><div class="v2-ps-bar" style="width:${widthC}%;background:#5a6878">${s.contact_count}</div></div>
+        </td>
+        <td class="num">${s.contacts_with_visits}</td>
+        <td class="num">${s.deals_count}</td>
+        <td class="num">${hasOutcomes ? `<strong>${s.win_rate_pct}%</strong> (${s.won}w/${s.lost}l)` : '<span class="meta">—</span>'}</td>
+        <td class="num">${s.median_cycle_d || '—'}${s.median_cycle_d ? 'd' : ''}</td>
+        <td class="num">${s.won_hectares > 0 ? s.won_hectares.toLocaleString() + ' ha' : '<span class="meta">—</span>'}</td>
+      </tr>`;
+    }).join('');
+
+    const hygieneTone = geo.pct_with_state < 30 ? 'bad' : (geo.pct_with_state < 60 ? 'flat' : 'good');
+
+    return `
+      <section class="v2-funnel-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">Where (geographically) is Stormboy working?</h2>
+          <div class="v2-funnel-sub">State-level performance breakdown. Contact distribution + deal outcomes. NRM-region granularity not yet wired (needs postcode → ABS NRM lookup).</div>
+        </header>
+        <div class="v2-funnel-callout v2-funnel-callout-flat">
+          <span class="v2-funnel-callout-label">Read</span>
+          <span class="v2-funnel-callout-body">${escapeHtml(geo.headline)}</span>
+        </div>
+        <div class="v2-funnel-callout v2-funnel-callout-${hygieneTone}">
+          <span class="v2-funnel-callout-label">Data hygiene</span>
+          <span class="v2-funnel-callout-body">${geo.contacts_with_state} of ${geo.total_contacts} contacts (${geo.pct_with_state}%) have a valid state populated. ${unverified ? `${unverified.contact_count} contacts have a value in the state field that isn't a recognised Australian state — usually a city or town. CRM clean-up would unlock per-state targeting.` : ''}</span>
+        </div>
+        <table class="v2-stats-era-table" style="margin-top:8px">
+          <thead><tr>
+            <th>State</th>
+            <th class="num">Contacts</th>
+            <th class="num">With visits</th>
+            <th class="num">Closed deals</th>
+            <th class="num">Win rate</th>
+            <th class="num">Median cycle</th>
+            <th class="num">Hectares won</th>
+          </tr></thead>
+          <tbody>${rows || `<tr><td colspan="7" class="v2-empty">No states with contacts yet.</td></tr>`}</tbody>
+        </table>
+        <div class="v2-funnel-sub" style="margin-top:8px">${geo.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}</div>
+      </section>`;
+  }
+
   // ====== HOUR × DAY CONNECT-RATE HEATMAP ======
   // Visual 7×24 grid using call-analytics heatmap.grid data. Cell
   // background = connect rate (red→green), cell opacity = sample
@@ -2329,6 +2454,8 @@
       <div id="stats-snapshot-pipeline"><div class="v2-loading" style="padding:24px">Loading snapshot workflow…</div></div>
       <div id="stats-callmon"><div class="v2-loading" style="padding:24px">Loading team call monitor…</div></div>
       <div id="stats-callquality"><div class="v2-loading" style="padding:24px">Loading call quality + heatmap…</div></div>
+      <div id="stats-property-size"><div class="v2-loading" style="padding:24px">Loading property-size insights…</div></div>
+      <div id="stats-geographic"><div class="v2-loading" style="padding:24px">Loading geographic insights…</div></div>
       <div id="stats-evidence"><div class="v2-loading" style="padding:24px">Loading tactical evidence…</div></div>
       <div class="v2-section-header" style="margin-top:24px">
         <h2 class="v2-section-title">Detail · process refinement</h2>
@@ -2384,6 +2511,14 @@
     fetchCallAnalytics().then(ca => {
       const slot = document.getElementById('stats-callquality');
       if (slot) slot.innerHTML = callQualityHtml(ca);
+    });
+    fetchPropertySize().then(ps => {
+      const slot = document.getElementById('stats-property-size');
+      if (slot) slot.innerHTML = propertySizeHtml(ps);
+    });
+    fetchGeographic().then(geo => {
+      const slot = document.getElementById('stats-geographic');
+      if (slot) slot.innerHTML = geographicHtml(geo);
     });
     fetchEvidenceCards().then(ev => {
       const slot = document.getElementById('stats-evidence');

@@ -453,6 +453,29 @@ app.get('/api/stats/call-analytics', async (req, res) => {
   }
 });
 
+// Property-size × cycle-time × win-rate correlation. Tests "do larger
+// prospects take longer + convert less?" 1h cache.
+app.get('/api/stats/property-size', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/property-size-insights');
+    res.json(await run({ force: req.query.force === '1' }));
+  } catch (e) {
+    console.error('property-size-insights failed:', e);
+    res.status(500).json({ error: 'property-size failed', detail: e.message });
+  }
+});
+
+// Geographic insights — state-level performance. 1h cache.
+app.get('/api/stats/geographic', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/geographic-insights');
+    res.json(await run({ force: req.query.force === '1' }));
+  } catch (e) {
+    console.error('geographic-insights failed:', e);
+    res.status(500).json({ error: 'geographic failed', detail: e.message });
+  }
+});
+
 // Snapshot ticket SLA — distribution of how long tickets dwell in
 // each HORIZON Snapshot pipeline stage. Surfaces drafting bottlenecks
 // + completion trend. 30-min disk cache; ?force=1 refreshes.

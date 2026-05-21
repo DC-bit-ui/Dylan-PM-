@@ -5522,3 +5522,26 @@ body.v2-ex-overlay-open {
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
+
+/* ===== Property-size correlation table ===== */
+.v2-ps-bar-wrap {
+  background: #efedda;
+  border-radius: 3px;
+  overflow: hidden;
+  height: 22px;
+  position: relative;
+}
+.v2-ps-bar {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 3px;
+  min-width: 30px;
+  font-variant-numeric: tabular-nums;
+}
+.v2-ps-row-good { background: rgba(45, 106, 79, 0.04); }
+.v2-ps-row-bad  { background: rgba(138, 42, 36, 0.04); }
