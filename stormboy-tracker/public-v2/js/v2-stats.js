@@ -1968,12 +1968,18 @@
       </tr>`;
     }).join('');
     const c = sla.completion;
+    const rw = sla.real_worked || {};
+    const an = sla.automation_noise || {};
     return `
       <div style="margin-top:18px">
         <header class="v2-funnel-head">
           <h3 class="v2-funnel-title" style="font-size:14px">Ticket SLA · how long do they dwell in each stage?</h3>
-          <div class="v2-funnel-sub">${sla.total_tickets} total tickets · ${sla.open_total} open · ${sla.closed_total} closed</div>
+          <div class="v2-funnel-sub">${sla.total_tickets} total tickets · ${rw.total || 0} real-worked (past auto-create) · ${an.new_count || 0} in auto-create stage</div>
         </header>
+        <div class="v2-funnel-callout v2-funnel-callout-flat">
+          <span class="v2-funnel-callout-label">⚠ Noise</span>
+          <span class="v2-funnel-callout-body">${escapeHtml(an.note || 'See caveats.')}</span>
+        </div>
         <div class="v2-funnel-callout v2-funnel-callout-${tone}">
           <span class="v2-funnel-callout-label">SLA read</span>
           <span class="v2-funnel-callout-body">${escapeHtml(sla.headline)}</span>
@@ -2241,56 +2247,62 @@
     } catch (_) { return null; }
   }
   function geographicHtml(geo) {
-    if (!geo || !geo.states) {
+    if (!geo || !geo.regions) {
       return '<section class="v2-funnel-section"><div class="v2-empty">No geographic data.</div></section>';
     }
-    const known = geo.states.filter(s => s.state !== '(unverified)');
-    const unverified = geo.states.find(s => s.state === '(unverified)');
-    const maxContacts = Math.max(...known.map(s => s.contact_count), 1);
+    const regions = geo.regions || [];
+    const maxClosed = Math.max(...regions.map(r => r.closed_deals), 1);
+    const maxHa = Math.max(...regions.map(r => r.won_hectares), 1);
 
-    const rows = known.map(s => {
-      const widthC = (s.contact_count / maxContacts) * 100;
-      const hasOutcomes = (s.won + s.lost) > 0;
+    const rows = regions.map(r => {
+      const widthC = (r.closed_deals / maxClosed) * 100;
+      const widthH = (r.won_hectares / maxHa) * 100;
+      const hasOutcomes = r.closed_deals > 0;
+      const sample = (r.sample_won_deals || []).slice(0, 2).join(' · ');
+      const winTone = r.win_rate_pct >= 25 ? '#2d6a4f' : (r.win_rate_pct >= 15 ? '#a16207' : '#8a3024');
       return `<tr>
-        <td><strong>${escapeHtml(s.state)}</strong></td>
-        <td class="num">
-          <div class="v2-ps-bar-wrap"><div class="v2-ps-bar" style="width:${widthC}%;background:#5a6878">${s.contact_count}</div></div>
+        <td>
+          <strong>${escapeHtml(r.nrm_region)}</strong>
+          <div class="meta">${escapeHtml(r.state)}${sample ? ' · '+escapeHtml(sample) : ''}</div>
         </td>
-        <td class="num">${s.contacts_with_visits}</td>
-        <td class="num">${s.deals_count}</td>
-        <td class="num">${hasOutcomes ? `<strong>${s.win_rate_pct}%</strong> (${s.won}w/${s.lost}l)` : '<span class="meta">—</span>'}</td>
-        <td class="num">${s.median_cycle_d || '—'}${s.median_cycle_d ? 'd' : ''}</td>
-        <td class="num">${s.won_hectares > 0 ? s.won_hectares.toLocaleString() + ' ha' : '<span class="meta">—</span>'}</td>
+        <td class="num">
+          <div class="v2-ps-bar-wrap"><div class="v2-ps-bar" style="width:${widthC}%;background:#5a6878">${r.closed_deals}</div></div>
+        </td>
+        <td class="num">${hasOutcomes ? `<strong style="color:${winTone}">${r.win_rate_pct}%</strong> <span class="meta">(${r.won}w/${r.lost}l)</span>` : '<span class="meta">—</span>'}</td>
+        <td class="num">${r.median_cycle_d ? r.median_cycle_d + 'd' : '<span class="meta">—</span>'}</td>
+        <td class="num">
+          <div class="v2-ps-bar-wrap"><div class="v2-ps-bar" style="width:${widthH}%;background:#2d6a4f">${r.won_hectares.toLocaleString()}</div></div>
+        </td>
+        <td class="num">${r.open_deals}${r.open_hectares > 0 ? ' <span class="meta">('+r.open_hectares.toLocaleString()+'ha)</span>' : ''}</td>
       </tr>`;
     }).join('');
 
-    const hygieneTone = geo.pct_with_state < 30 ? 'bad' : (geo.pct_with_state < 60 ? 'flat' : 'good');
+    const hygieneTone = geo.pct_with_region < 30 ? 'bad' : (geo.pct_with_region < 70 ? 'flat' : 'good');
 
     return `
       <section class="v2-funnel-section">
         <header class="v2-funnel-head">
-          <h2 class="v2-funnel-title">Where (geographically) is Stormboy working?</h2>
-          <div class="v2-funnel-sub">State-level performance breakdown. Contact distribution + deal outcomes. NRM-region granularity not yet wired (needs postcode → ABS NRM lookup).</div>
+          <h2 class="v2-funnel-title">Which NRM regions are we winning in?</h2>
+          <div class="v2-funnel-sub">Australian NRM region performance. Derived from deal-level postcode → AU NRM lookup. Each NRM body covers a relatively homogeneous land type (rangelands, wheatbelt, high-rainfall pasture) — the granularity that aligns with carbon-project viability.</div>
         </header>
         <div class="v2-funnel-callout v2-funnel-callout-flat">
           <span class="v2-funnel-callout-label">Read</span>
           <span class="v2-funnel-callout-body">${escapeHtml(geo.headline)}</span>
         </div>
         <div class="v2-funnel-callout v2-funnel-callout-${hygieneTone}">
-          <span class="v2-funnel-callout-label">Data hygiene</span>
-          <span class="v2-funnel-callout-body">${geo.contacts_with_state} of ${geo.total_contacts} contacts (${geo.pct_with_state}%) have a valid state populated. ${unverified ? `${unverified.contact_count} contacts have a value in the state field that isn't a recognised Australian state — usually a city or town. CRM clean-up would unlock per-state targeting.` : ''}</span>
+          <span class="v2-funnel-callout-label">Data coverage</span>
+          <span class="v2-funnel-callout-body">${geo.deals_with_region} of ${geo.total_deals_in_window} deals (${geo.pct_with_region}%) classified to an NRM region. ${geo.deals_without_any_postcode} have no postcode at all (deal OR associated contact) — CRM hygiene gap.</span>
         </div>
         <table class="v2-stats-era-table" style="margin-top:8px">
           <thead><tr>
-            <th>State</th>
-            <th class="num">Contacts</th>
-            <th class="num">With visits</th>
+            <th>NRM region</th>
             <th class="num">Closed deals</th>
             <th class="num">Win rate</th>
             <th class="num">Median cycle</th>
             <th class="num">Hectares won</th>
+            <th class="num">Open pipeline</th>
           </tr></thead>
-          <tbody>${rows || `<tr><td colspan="7" class="v2-empty">No states with contacts yet.</td></tr>`}</tbody>
+          <tbody>${rows || `<tr><td colspan="6" class="v2-empty">No regions classified yet.</td></tr>`}</tbody>
         </table>
         <div class="v2-funnel-sub" style="margin-top:8px">${geo.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}</div>
       </section>`;

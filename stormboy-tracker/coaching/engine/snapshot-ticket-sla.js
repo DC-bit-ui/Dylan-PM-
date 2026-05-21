@@ -202,19 +202,26 @@ async function run({ force = false } = {}) {
       median_cycle_d: median(days) ? Math.round(median(days) * 10) / 10 : null,
     }));
 
-  // Headline narrative
+  // HubSpot has a workflow that auto-creates a ticket in "New HORIZON
+  // Snapshot Request" stage when a contact moves to Farm Visit
+  // completed. That means MOST tickets in "New" are noise — only the
+  // ones a human moved past "New" represent actual demand.
+  // Reframe the headline to use "real worked" tickets (past New stage).
   const openStuck = stagesOut.filter(s => s.is_open).reduce((sum, s) => sum + s.count, 0);
   const newStage = stagesOut.find(s => /new|request/i.test(s.stage_label));
   const prodStage = stagesOut.find(s => /progress|production/i.test(s.stage_label));
+  const sentStage = stagesOut.find(s => /sent|complete/i.test(s.stage_label));
+  const newCount = newStage ? newStage.count : 0;
+  const inProgressCount = prodStage ? prodStage.count : 0;
+  const completedCount = sentStage ? sentStage.count : 0;
+  const realWorkedTotal = inProgressCount + completedCount; // past-New = real demand
   let headline;
-  if (newStage && newStage.median_age_d > 7) {
-    headline = `New requests sitting median ${newStage.median_age_d}d before being picked up — drafter queue is the bottleneck.`;
-  } else if (prodStage && prodStage.median_age_d > 5) {
-    headline = `Tickets in production for median ${prodStage.median_age_d}d — drafting is the bottleneck.`;
-  } else if (openStuck > 20) {
-    headline = `${openStuck} open snapshot tickets — backlog growing.`;
+  if (prodStage && prodStage.count > 0 && prodStage.median_age_d > 5) {
+    headline = `${realWorkedTotal} real-worked tickets (past auto-create stage). ${inProgressCount} in production at median ${prodStage.median_age_d}d — drafting is the bottleneck.`;
+  } else if (realWorkedTotal > 0) {
+    headline = `${realWorkedTotal} real-worked tickets (past auto-create stage): ${inProgressCount} in progress · ${completedCount} completed (median cycle ${median(completionDays) ? Math.round(median(completionDays)*10)/10+'d' : '?'}). The ${newCount} in "New" are largely HubSpot automation artifacts.`;
   } else {
-    headline = `Snapshot pipeline cycling — ${openStuck} open · median completion ${median(completionDays) ? Math.round(median(completionDays)*10)/10+'d' : '?'}.`;
+    headline = `No tickets advanced past auto-create stage yet. ${newCount} sit in "New" but those are automation-generated, not demand signal.`;
   }
 
   const result = {
@@ -233,7 +240,17 @@ async function run({ force = false } = {}) {
     },
     weekly_completion_trend: weeklyTrend,
     headline,
+    real_worked: {
+      total: realWorkedTotal,
+      in_progress: inProgressCount,
+      completed: completedCount,
+    },
+    automation_noise: {
+      new_count: newCount,
+      note: 'A HubSpot workflow auto-creates a ticket in "New" stage when a contact moves to Farm Visit Completed. Tickets in "New" are largely automation artifacts, not actual demand.',
+    },
     caveats: [
+      'A HubSpot workflow auto-creates tickets in "New" stage on every Farm Visit Completed transition, so "New" stage counts + dwell times are automation noise rather than demand signal. Real demand = tickets advanced past "New" (In Progress or Complete & Sent). Future improvement: wire a backend signal (HORIZON production-request log) for true demand.',
       'Stage age uses createdate (total ticket age) — for accurate "time in current stage", HubSpot needs the property history endpoint, which isn\'t exposed without an additional scope. Stage age ≈ total ticket age for tickets that haven\'t bounced between stages, which is the common case.',
       'Completion cycle time = createdate → hs_lastmodifieddate for tickets in a CLOSED stage. Same caveat: assumes the close event is the last modification, which is typically true.',
     ],

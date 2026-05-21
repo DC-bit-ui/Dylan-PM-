@@ -1,33 +1,29 @@
 /**
- * Geographic insights — per-Australian-state performance breakdown
- * for Storm Boy contacts + associated deals.
+ * Geographic insights — NRM region performance for AgriProve.
  *
- * Why not NRM regions? HubSpot doesn't have a formal NRM region
- * property; deriving NRM from postcode requires the ABS NRM region
- * shapefile (or equivalent lookup). Out of scope for this round —
- * state-level granularity is the practical first step that uses
- * data we already have.
+ * Replaced the state-level v1 (2026-05-21 — Dylan: "State level signal
+ * is definitely not enough — NRM is requirement"). NRM region is the
+ * granularity that aligns with carbon-project targeting decisions:
+ * each NRM body covers a relatively homogeneous agricultural land
+ * type (rangelands, wheatbelt, high-rainfall pasture, etc.) which
+ * predicts soil-carbon project viability.
  *
- * Data sources:
- *   - Storm Boy contacts (storm_boy_campaign_member = Yes) with
- *     state property populated (~18% of contacts in current data)
- *   - Their associated deals + outcomes
+ * Data source: deal-level `postal_code` (HubSpot property, populated
+ * for ~140 deals on 2026-05-21). Postcode → NRM mapping via
+ * nrm-regions.js (curated AU lookup — accurate at region centres,
+ * fuzzy at LGA-edge boundaries).
  *
- * Per state:
- *   - Contact count
- *   - Won deals + win rate (where deal data exists)
+ * Per NRM region:
+ *   - Closed deals count
+ *   - Wins + losses + win rate
  *   - Median cycle time
  *   - Total hectares enrolled (sum of project_ha for won deals)
+ *   - Active deals (open pipeline) — count + hectares in play
  *
- * Normalizes state variants:
- *   - "NSW" / "New South Wales" → NSW
- *   - "VIC" / "Victoria" → VIC
- *   - "QLD" / "Queensland" → QLD
- *   - "SA" / "South Australia" → SA
- *   - "WA" / "Western Australia" → WA
- *   - "TAS" / "Tasmania" → TAS
- *   - "NT" / "Northern Territory" → NT
- *   - "ACT" / "Australian Capital Territory" → ACT
+ * Where deal postcode is missing, falls back to the associated
+ * contact's postal_code (if any contact in the deal has one).
+ *
+ * Excludes LawrieCo (partner channel — different motion entirely).
  *
  * 1-hour disk cache; ?force=1 refreshes.
  */
@@ -35,27 +31,13 @@
 const fs = require('fs');
 const path = require('path');
 const { hubspotFetch } = require('./hubspot-client');
+const { postcodeToNRM, normalizePostcode } = require('./nrm-regions');
 
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 const CACHE_PATH = path.join(__dirname, '..', 'cache', 'geographic-insights.json');
 const CACHE_TTL_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
-
-const STATE_NORMALIZE = (s) => {
-  if (!s) return null;
-  const k = s.trim().toLowerCase();
-  if (/^(nsw|new south wales)$/i.test(k))                              return 'NSW';
-  if (/^(vic|victoria)$/i.test(k))                                     return 'VIC';
-  if (/^(qld|queensland)$/i.test(k))                                   return 'QLD';
-  if (/^(sa|south australia)$/i.test(k))                               return 'SA';
-  if (/^(wa|western australia)$/i.test(k))                             return 'WA';
-  if (/^(tas|tasmania)$/i.test(k))                                     return 'TAS';
-  if (/^(nt|northern territory)$/i.test(k))                            return 'NT';
-  if (/^(act|australian capital territory)$/i.test(k))                 return 'ACT';
-  // Unknown — bucket as "(unverified)" rather than treating cities/garbage
-  // as states. The dashboard surfaces the data-hygiene gap honestly.
-  return '(unverified)';
-};
+const WINDOW_MONTHS = 24;
 
 async function hubspotPost(token, urlPath, body) {
   const res = await hubspotFetch(HUBSPOT_BASE + urlPath, {
@@ -67,43 +49,22 @@ async function hubspotPost(token, urlPath, body) {
   return res.json();
 }
 
-async function fetchContacts(token) {
-  const all = [];
-  let after;
-  while (all.length < 10000) {
-    const body = {
-      filterGroups: [{ filters: [
-        { propertyName: 'storm_boy_campaign_member', operator: 'EQ', value: 'Yes' },
-      ]}],
-      properties: ['firstname', 'lastname', 'state', 'state_region', 'city',
-                   'total_property_ha', 'contact_lead_stage_storm_boy',
-                   'storm_boy__meeting_date', 'storm_boy__meeting_completed'],
-      limit: 100,
-    };
-    if (after) body.after = after;
-    const page = await hubspotPost(token, '/crm/v3/objects/contacts/search', body);
-    all.push(...(page.results || []));
-    after = page.paging && page.paging.next && page.paging.next.after;
-    if (!after) break;
-  }
-  return all;
-}
-
-// Fetch closed deals so we can attribute outcomes per state via
-// associated contacts.
-async function fetchClosedDealsLastN(token, monthsBack) {
-  const sinceMs = Date.now() - monthsBack * 30 * DAY_MS;
+// Fetch deals (closed + open) in window with all geographic + size fields
+async function fetchDealsInWindow(token, sinceMs) {
   const out = [];
+  // Closed (won + lost)
   for (const stage of ['231921676', 'closedlost']) {
     let after;
-    while (out.length < 5000) {
+    while (out.length < 10000) {
       const body = {
         filterGroups: [{ filters: [
           { propertyName: 'dealstage', operator: 'EQ',  value: stage },
           { propertyName: 'closedate', operator: 'GTE', value: String(sinceMs) },
         ]}],
         properties: ['dealname', 'dealstage', 'createdate', 'closedate', 'partner',
-                     'estimated_project_ha', 'total_property_hectares'],
+                     'estimated_project_ha', 'total_property_hectares',
+                     'postal_code', 'street_address', 'address', 'region',
+                     'cecil_address'],
         limit: 100,
       };
       if (after) body.after = after;
@@ -113,10 +74,29 @@ async function fetchClosedDealsLastN(token, monthsBack) {
       if (!after) break;
     }
   }
+  // Active (open) — narrower property set
+  let after;
+  while (out.length < 15000) {
+    const body = {
+      filterGroups: [{ filters: [
+        { propertyName: 'pipeline', operator: 'EQ', value: 'default' },
+        { propertyName: 'dealstage', operator: 'IN', values: ['64066367','2929183214','64066368','64066369','1026535686'] },
+      ]}],
+      properties: ['dealname', 'dealstage', 'createdate', 'partner',
+                   'estimated_project_ha', 'postal_code', 'street_address'],
+      limit: 100,
+    };
+    if (after) body.after = after;
+    const page = await hubspotPost(token, '/crm/v3/objects/deals/search', body);
+    out.push(...(page.results || []).map(d => ({ ...d, __open: true })));
+    after = page.paging && page.paging.next && page.paging.next.after;
+    if (!after) break;
+  }
   return out;
 }
 
-async function fetchDealContactAssoc(token, dealIds) {
+// For deals without postcode, fall back to associated contact's postcode
+async function fetchDealContacts(token, dealIds) {
   if (!dealIds.length) return {};
   const map = {};
   for (let i = 0; i < dealIds.length; i += 100) {
@@ -131,7 +111,27 @@ async function fetchDealContactAssoc(token, dealIds) {
         map[fromId] = (r.to || []).map(t => String(t.toObjectId));
       });
     } catch (e) {
-      console.warn('[geographic-insights] deal assoc batch failed:', e.message);
+      console.warn('[geographic-insights] deal→contact assoc batch failed:', e.message);
+    }
+  }
+  return map;
+}
+async function fetchContactPostcodes(token, contactIds) {
+  if (!contactIds.length) return {};
+  const map = {};
+  for (let i = 0; i < contactIds.length; i += 100) {
+    const batch = contactIds.slice(i, i + 100);
+    try {
+      const data = await hubspotPost(token, '/crm/v3/objects/contacts/batch/read', {
+        properties: ['zip', 'postal_code', 'address'],
+        inputs: batch.map(id => ({ id: String(id) })),
+      });
+      (data.results || []).forEach(c => {
+        const pc = normalizePostcode(c.properties.zip || c.properties.postal_code);
+        if (pc) map[c.id] = pc;
+      });
+    } catch (e) {
+      console.warn('[geographic-insights] contact batch read failed:', e.message);
     }
   }
   return map;
@@ -167,122 +167,137 @@ async function run({ force = false } = {}) {
   const token = process.env.HUBSPOT_TOKEN;
   if (!token) throw new Error('HUBSPOT_TOKEN not set');
 
-  const [contacts, deals] = await Promise.all([
-    fetchContacts(token),
-    fetchClosedDealsLastN(token, 24),
-  ]);
+  const sinceMs = Date.now() - WINDOW_MONTHS * 30 * DAY_MS;
+  const deals = await fetchDealsInWindow(token, sinceMs);
+  console.log(`[geographic-insights] ${deals.length} deals fetched (closed + open)`);
 
-  // Build contact_id → state map
-  const contactState = {};
-  let contactsWithState = 0;
-  contacts.forEach(c => {
-    const raw = c.properties.state || c.properties.state_region;
-    const norm = STATE_NORMALIZE(raw);
-    if (norm) {
-      contactState[c.id] = norm;
-      contactsWithState++;
-    }
-  });
+  // Try direct postcode first. For deals without one, batch-fall-back
+  // to contact postcode.
+  const fallbackDealIds = deals
+    .filter(d => !normalizePostcode(d.properties.postal_code))
+    .map(d => d.id);
+  const fallbackAssoc = await fetchDealContacts(token, fallbackDealIds);
+  const allFallbackContactIds = Array.from(new Set(Object.values(fallbackAssoc).flat()));
+  const contactPostcodes = await fetchContactPostcodes(token, allFallbackContactIds);
 
-  // For each deal, attribute to a state via its associated contacts
-  // (exclude LawrieCo).
-  const dealsClean = deals.filter(d => (d.properties.partner || '').trim() !== 'LawrieCo');
-  const dealIds = dealsClean.map(d => d.id);
-  const dealContactMap = await fetchDealContactAssoc(token, dealIds);
+  // Build region buckets
+  const buckets = {};
+  let totalDeals = 0;
+  let dealsWithRegion = 0;
+  let dealsWithoutAnyPostcode = 0;
 
-  const stateData = {};
-  function ensureState(state) {
-    if (!stateData[state]) {
-      stateData[state] = {
-        state,
-        contact_count: 0,
-        contacts_with_visits: 0,
-        deals_count: 0,
-        won: 0,
-        lost: 0,
+  function ensureRegion(key, name, state) {
+    if (!buckets[key]) {
+      buckets[key] = {
+        key, name, state,
+        closed_count: 0, won: 0, lost: 0,
+        open_count: 0,
         cycle_days: [],
         won_hectares: 0,
-        sample_contact_names: [],
+        open_hectares: 0,
+        sample_won: [],   // names for tooltip
       };
     }
-    return stateData[state];
+    return buckets[key];
   }
-  contacts.forEach(c => {
-    const state = contactState[c.id];
-    if (!state) return;
-    const s = ensureState(state);
-    s.contact_count++;
-    if (c.properties.storm_boy__meeting_date) s.contacts_with_visits++;
-    if (s.sample_contact_names.length < 3) {
-      const name = [c.properties.firstname, c.properties.lastname].filter(Boolean).join(' ');
-      if (name) s.sample_contact_names.push(name);
-    }
-  });
 
-  dealsClean.forEach(d => {
+  deals.forEach(d => {
+    if ((d.properties.partner || '').trim() === 'LawrieCo') return;
+    totalDeals++;
+    let pc = normalizePostcode(d.properties.postal_code);
+    if (!pc) {
+      // Try associated contacts
+      const cids = fallbackAssoc[d.id] || [];
+      for (const cid of cids) {
+        if (contactPostcodes[cid]) { pc = contactPostcodes[cid]; break; }
+      }
+    }
+    if (!pc) { dealsWithoutAnyPostcode++; return; }
+    const nrm = postcodeToNRM(pc);
+    if (!nrm) return;
+    dealsWithRegion++;
+    const key = nrm.state + '|' + nrm.name;
+    const b = ensureRegion(key, nrm.name, nrm.state);
     const p = d.properties;
-    const associatedContacts = dealContactMap[d.id] || [];
-    // First associated contact with a state wins
-    let state = null;
-    for (const cid of associatedContacts) {
-      if (contactState[cid]) { state = contactState[cid]; break; }
-    }
-    if (!state) return;
-    const s = ensureState(state);
-    s.deals_count++;
-    if (p.dealstage === '231921676') {
-      s.won++;
-      s.won_hectares += parseFloat(p.estimated_project_ha || 0) || 0;
+    const projHa = parseFloat(p.estimated_project_ha || 0) || 0;
+
+    if (d.__open) {
+      b.open_count++;
+      b.open_hectares += projHa;
+    } else if (p.dealstage === '231921676') {
+      b.won++;
+      b.closed_count++;
+      b.won_hectares += projHa;
+      if (b.sample_won.length < 3 && p.dealname) {
+        b.sample_won.push(p.dealname.slice(0, 40));
+      }
+      const created = Date.parse(p.createdate || 0);
+      const closed = Date.parse(p.closedate || 0);
+      if (created && closed && closed > created) {
+        b.cycle_days.push((closed - created) / DAY_MS);
+      }
     } else {
-      s.lost++;
-    }
-    const created = Date.parse(p.createdate || 0);
-    const closed = Date.parse(p.closedate || 0);
-    if (created && closed && closed > created) {
-      s.cycle_days.push((closed - created) / DAY_MS);
+      b.lost++;
+      b.closed_count++;
     }
   });
 
-  // Roll up — sort by contact count
-  const states = Object.values(stateData)
-    .filter(s => s.contact_count > 0 || s.deals_count > 0)
-    .map(s => ({
-      state: s.state,
-      contact_count: s.contact_count,
-      contacts_with_visits: s.contacts_with_visits,
-      deals_count: s.deals_count,
-      won: s.won,
-      lost: s.lost,
-      win_rate_pct: (s.won + s.lost) > 0 ? Math.round((s.won / (s.won + s.lost)) * 1000) / 10 : null,
-      median_cycle_d: median(s.cycle_days) ? Math.round(median(s.cycle_days)) : null,
-      won_hectares: Math.round(s.won_hectares),
-      sample_contact_names: s.sample_contact_names,
-    }))
-    .sort((a, b) => b.contact_count - a.contact_count);
+  // Build output array, sorted by hectares won desc (then by deal count)
+  const regions = Object.values(buckets).map(b => ({
+    nrm_region: b.name,
+    state: b.state,
+    closed_deals: b.closed_count,
+    won: b.won,
+    lost: b.lost,
+    win_rate_pct: b.closed_count > 0 ? Math.round((b.won / b.closed_count) * 1000) / 10 : null,
+    median_cycle_d: median(b.cycle_days) ? Math.round(median(b.cycle_days)) : null,
+    won_hectares: Math.round(b.won_hectares),
+    open_deals: b.open_count,
+    open_hectares: Math.round(b.open_hectares),
+    sample_won_deals: b.sample_won,
+  }));
+  regions.sort((a, b) => {
+    if (b.won_hectares !== a.won_hectares) return b.won_hectares - a.won_hectares;
+    return b.closed_deals - a.closed_deals;
+  });
 
-  // Headline — highest hectares-won, or best win-rate among states with material n
+  // Top performer / weakest performer (by win rate, requires material n)
+  const materialRegions = regions.filter(r => r.closed_deals >= 5);
+  const topWin = materialRegions.slice().sort((a, b) => b.win_rate_pct - a.win_rate_pct)[0];
+  const weakestWin = materialRegions.slice().sort((a, b) => a.win_rate_pct - b.win_rate_pct)[0];
+  const topHectares = regions[0];
+
+  // Headline narrative
   let headline;
-  const matStates = states.filter(s => (s.won + s.lost) >= 5);
-  if (matStates.length) {
-    const topWin = matStates.slice().sort((a, b) => b.win_rate_pct - a.win_rate_pct)[0];
-    const topHa = states.slice().sort((a, b) => b.won_hectares - a.won_hectares)[0];
-    headline = `${topHa.state} leads in hectares enrolled (${topHa.won_hectares.toLocaleString()} ha across ${topHa.won} wins). ${topWin.state} has the highest win rate (${topWin.win_rate_pct}% on ${topWin.won + topWin.lost} closed).`;
+  if (topHectares && topWin) {
+    const lead = `${topHectares.nrm_region} (${topHectares.state}) leads in hectares enrolled (${topHectares.won_hectares.toLocaleString()} ha across ${topHectares.won} wins).`;
+    const best = (topWin && topWin.win_rate_pct >= 25)
+      ? ` ${topWin.nrm_region} has the strongest win rate (${topWin.win_rate_pct}% on ${topWin.closed_deals} closed).`
+      : '';
+    headline = lead + best;
+  } else if (dealsWithRegion < 10) {
+    headline = `Only ${dealsWithRegion} deals have a usable postcode — too thin for regional signal. Push CRM hygiene to populate postal_code on more deals.`;
   } else {
-    headline = `${contactsWithState} of ${contacts.length} contacts (${Math.round((contactsWithState/contacts.length)*100)}%) have state populated — geographic signal is thin. Most contacts need state data filled in to unlock this view.`;
+    headline = `NRM-region distribution computed across ${dealsWithRegion} deals.`;
   }
 
   const result = {
     generated_at: new Date().toISOString(),
-    total_contacts: contacts.length,
-    contacts_with_state: contactsWithState,
-    pct_with_state: contacts.length > 0 ? Math.round((contactsWithState/contacts.length)*1000)/10 : 0,
-    states,
+    window_months: WINDOW_MONTHS,
+    total_deals_in_window: totalDeals,
+    deals_with_region: dealsWithRegion,
+    deals_without_any_postcode: dealsWithoutAnyPostcode,
+    pct_with_region: totalDeals > 0 ? Math.round((dealsWithRegion / totalDeals) * 1000) / 10 : 0,
+    regions,
+    top_performer_by_hectares: topHectares,
+    top_performer_by_win_rate: topWin,
+    weakest_performer: weakestWin,
     headline,
     caveats: [
-      `Only ${contactsWithState}/${contacts.length} (${Math.round((contactsWithState/contacts.length)*100)}%) of Storm Boy contacts have state populated. Geographic signal is thin until this is filled in.`,
-      `Deal-state attribution uses the first associated contact with a state — multi-contact deals may misattribute.`,
-      `Excludes LawrieCo (partner channel — different motion).`,
-      `State-level only. NRM region breakdown requires postcode → ABS NRM lookup; not implemented this round.`,
+      `${dealsWithRegion}/${totalDeals} (${totalDeals > 0 ? Math.round((dealsWithRegion/totalDeals)*100) : 0}%) of deals have a usable postcode (or one inherited from an associated contact). Improve coverage by populating deal-level postal_code on remaining ${dealsWithoutAnyPostcode}.`,
+      `NRM region inferred via postcode → AU NRM lookup. Boundaries are approximate (NRM regions follow LGA lines, not postcodes; ~20% of postcodes straddle two regions and are attributed to the agriculturally dominant one).`,
+      `Excludes LawrieCo (partner-channel — different motion entirely).`,
+      `"Won hectares" sums estimated_project_ha for won deals; for partial-postcode-coverage regions, the totals are LOWER bounds on actual enrolment.`,
     ],
     from_cache: false,
   };

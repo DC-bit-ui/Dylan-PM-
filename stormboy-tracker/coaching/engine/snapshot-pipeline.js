@@ -86,14 +86,22 @@ async function run({ force = false } = {}) {
   const stuckPct = total > 0 ? Math.round((stuckInProduction / total) * 1000) / 10 : 0;
   const readyForKct = counts.WILLING_TO_PROGRESS;
 
-  // Headline narrative — picks the dominant story
+  // Headline narrative — picks the dominant story.
+  //
+  // Important: HubSpot auto-creates tickets in "New" stage on Farm
+  // Visit Completed transitions, so REQUESTED state primarily reflects
+  // "auto-ticket exists, no one has picked it up". IN_PRODUCTION
+  // (Ben advanced it manually) is the cleaner signal of real demand.
+  // Reframe the headline to NOT call REQUESTED a bottleneck.
   let headline;
   if (counts.NOT_REQUESTED > total * 0.4) {
-    headline = `${counts.NOT_REQUESTED} of ${total} completed visits have NO snapshot request yet — the team isn't kicking the workflow off after farm visits.`;
-  } else if (stuckPct > 30) {
-    headline = `${stuckInProduction} of ${total} (${stuckPct}%) sitting in REQUESTED or IN_PRODUCTION — production bottleneck.`;
+    headline = `${counts.NOT_REQUESTED} of ${total} completed visits have no snapshot signal at all — neither HubSpot ticket nor email.`;
+  } else if (counts.IN_PRODUCTION > 0 && counts.IN_PRODUCTION >= total * 0.2) {
+    headline = `${counts.IN_PRODUCTION} of ${total} actively in production (Ben drafting). ${counts.REQUESTED} more have auto-created tickets waiting to be picked up.`;
   } else if (readyForKct > 0) {
     headline = `${readyForKct} contact(s) ready to hand to KCT pipeline now.`;
+  } else if (counts.REQUESTED > total * 0.5) {
+    headline = `${counts.REQUESTED} of ${total} sitting in auto-created "Requested" stage. The HubSpot workflow creates these on every farm visit; treat the count as backlog-of-noise rather than queued demand until a real-backend signal is wired in.`;
   } else if ((counts.SENT_AWAITING_REPLY + counts.SENT_NO_REPLY_STALE) > total * 0.3) {
     headline = `Most contacts are post-send awaiting reply — system is throughputting but customers aren't responding fast.`;
   } else {
@@ -119,6 +127,7 @@ async function run({ force = false } = {}) {
     caveats: [
       'Counts only contacts at stage "Farm Visit completed" — earlier stages do not have snapshot-state data yet.',
       'States are derived from HubSpot emails + tickets + custom flags + (optional) Teams Graph; see Section 0b coverage banner for which channels are active.',
+      'IMPORTANT: HubSpot has a workflow that auto-creates a ticket in "New HORIZON Snapshot Request" on every Farm Visit Completed transition. The REQUESTED state therefore counts both real demand AND automation artifacts. IN_PRODUCTION is the cleaner signal of actual work because it requires a human to advance the ticket. Looking to wire a real backend production-request log signal in a follow-up.',
       'Off-pipeline states (TICKET_EXISTS_STAGE_UNKNOWN, REQUESTED_NO_EMAIL, DISCUSSED_NOT_SENT, COLD) shown separately because they don\'t fit the linear workflow but still need attention.',
     ],
     from_cache: false,
