@@ -91,21 +91,33 @@ async function fire() {
     report.steps.push({ step: 'brain-sync', ok: false, error: e.message });
   }
 
-  try {
-    const r = await repQueues.buildQueues();
-    const counts = Object.fromEntries(Object.entries(r.reps).map(([k, v]) => [k, v.card_count]));
-    report.steps.push({ step: 'build-rep-queues', ok: true, counts });
-  } catch (e) {
-    report.steps.push({ step: 'build-rep-queues', ok: false, error: e.message });
-  }
-
-  // Team pulse — single team-level briefing for Claude Code consumers
-  try {
-    const teamPulse = require('./team-pulse');
-    const r = await teamPulse.build();
-    report.steps.push({ step: 'build-team-pulse', ok: true, sources_ok: r.sources_ok });
-  } catch (e) {
-    report.steps.push({ step: 'build-team-pulse', ok: false, error: e.message });
+  // Bus writes (rep queues + team pulse) are gated behind BUS_WRITES_ENABLED
+  // because the system is not yet operational in prod (2026-05-21). Once
+  // released, flip the env var to true and the scheduler will publish to
+  // the SharePoint bus that the Growth team's Claude Code workspaces read.
+  // Until then: manual /api/bus/rebuild endpoint still works for testing.
+  const busWritesEnabled = process.env.BUS_WRITES_ENABLED === 'true';
+  if (busWritesEnabled) {
+    try {
+      const r = await repQueues.buildQueues();
+      const counts = Object.fromEntries(Object.entries(r.reps).map(([k, v]) => [k, v.card_count]));
+      report.steps.push({ step: 'build-rep-queues', ok: true, counts });
+    } catch (e) {
+      report.steps.push({ step: 'build-rep-queues', ok: false, error: e.message });
+    }
+    try {
+      const teamPulse = require('./team-pulse');
+      const r = await teamPulse.build();
+      report.steps.push({ step: 'build-team-pulse', ok: true, sources_ok: r.sources_ok });
+    } catch (e) {
+      report.steps.push({ step: 'build-team-pulse', ok: false, error: e.message });
+    }
+  } else {
+    report.steps.push({
+      step: 'bus-writes-skipped',
+      ok: true,
+      reason: 'BUS_WRITES_ENABLED is not true; system not yet released to the Growth team. Set BUS_WRITES_ENABLED=true in .env to enable nightly bus writes. Manual /api/bus/rebuild endpoint remains available for testing.',
+    });
   }
 
   // Step 6: refresh persona profiles. Runs every ~48 hours (timestamp-gated)
