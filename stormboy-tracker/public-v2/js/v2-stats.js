@@ -1789,8 +1789,230 @@
       </section>`;
   }
 
+  // ====== CALL MONITORING — Section 0 of the STATS redesign ======
+  // Matches Will's "Storm Boy call monitoring" Teams dashboard.
+  // Weekly target hero + 12 tiles + daily engagement chart. Pairs
+  // with a "Call Quality" supplementary strip showing connect rate +
+  // best windows + per-rep leaderboard.
+  let _callChart = null;
+  async function fetchCallMonitoring() {
+    try {
+      const r = await fetch('/api/stats/call-monitoring');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  async function fetchCallAnalytics() {
+    try {
+      const r = await fetch('/api/stats/call-analytics');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function formatHaTile(label, value, sub) {
+    return `<div class="v2-cm-tile">
+      <div class="v2-cm-tile-label">${escapeHtml(label)}</div>
+      <div class="v2-cm-tile-value">${value}</div>
+      ${sub ? `<div class="v2-cm-tile-sub">${escapeHtml(sub)}</div>` : ''}
+    </div>`;
+  }
+  function callMonitoringShellHtml(cm) {
+    if (!cm) {
+      return `<section class="v2-funnel-section"><div class="v2-empty">No call-monitoring data yet.</div></section>`;
+    }
+    const tw = cm.this_week;
+    const vt = cm.volume_tiles;
+    const et = cm.efficacy_tiles;
+    const pctClass = tw.pct_of_target >= 100 ? 'good' : (tw.pct_of_target >= 75 ? 'flat' : 'bad');
+    const barWidth = Math.min(100, tw.pct_of_target);
+
+    // 6 volume tiles
+    const volTiles = [
+      formatHaTile('Unique contacts engaged', vt.unique_contacts_engaged.toLocaleString()),
+      formatHaTile('Via date called',         vt.via_date_called.toLocaleString()),
+      formatHaTile('Via last-contacted only', vt.via_last_contacted_only.toLocaleString()),
+      formatHaTile('Storm Boy calls (volume)', vt.storm_boy_call_volume.toLocaleString()),
+      formatHaTile('All outbound (volume)',   vt.all_outbound_volume.toLocaleString()),
+      formatHaTile('Other campaigns',         vt.other_campaigns_volume.toLocaleString()),
+    ].join('');
+
+    const fmtRange = (a, b) => {
+      const da = new Date(a), db = new Date(b);
+      const fmt = d => d.toLocaleDateString('en-AU', { month: 'short', day: 'numeric' });
+      return `${fmt(da)} → ${fmt(db)}`;
+    };
+    const effTiles = [
+      formatHaTile('Visits booked',           et.visits_booked.toLocaleString()),
+      formatHaTile('Calls / visit booked',    (et.calls_per_visit_booked ?? '—').toString()),
+      formatHaTile('Visits per 100 calls',    (et.visits_per_100_calls ?? '—').toString()),
+      formatHaTile('Tasks completed',         et.tasks_completed.toLocaleString()),
+      formatHaTile('Avg touches / contact',   (et.avg_touches_per_contact ?? '—').toString()),
+      formatHaTile('First / last engagement', fmtRange(et.first_engagement, et.last_engagement)),
+    ].join('');
+
+    return `
+      <section class="v2-funnel-section v2-cm-section">
+        <header class="v2-cm-hero">
+          <div class="v2-cm-hero-label">This week vs target · team total</div>
+          <div class="v2-cm-hero-row">
+            <div class="v2-cm-hero-pct v2-cm-${pctClass}">
+              <strong>${tw.storm_boy_connected}</strong><span class="v2-cm-hero-slash">/</span>${tw.target}
+              <span class="v2-cm-hero-pct-sub">(${tw.pct_of_target}% of Storm Boy target)</span>
+            </div>
+            <div class="v2-cm-hero-meta">
+              Total outbound connected this week: <strong>${tw.total_connected}</strong>
+              (${tw.other_campaigns_connected} on other campaigns)
+            </div>
+            <div class="v2-cm-hero-remaining">${tw.remaining} Storm Boy calls remaining</div>
+          </div>
+          <div class="v2-cm-bar-wrap"><div class="v2-cm-bar v2-cm-${pctClass}" style="width:${barWidth}%"></div></div>
+        </header>
+        <div class="v2-cm-tiles">${volTiles}</div>
+        <div class="v2-cm-tiles">${effTiles}</div>
+        <div class="v2-cm-chart-wrap"><canvas id="v2-cm-chart"></canvas></div>
+        <div class="v2-cm-chart-legend">
+          <span class="v2-cm-key v2-cm-key-cum">Cumulative unique contacts</span>
+          <span class="v2-cm-key v2-cm-key-dc">Date Called</span>
+          <span class="v2-cm-key v2-cm-key-lc">Last Contacted only</span>
+        </div>
+        <div class="v2-funnel-sub" style="margin-top:6px">${cm.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}</div>
+      </section>`;
+  }
+  function renderCallMonitorChart(cm) {
+    if (typeof Chart === 'undefined') return;
+    const canvas = document.getElementById('v2-cm-chart');
+    if (!canvas) return;
+    if (_callChart) { _callChart.destroy(); _callChart = null; }
+    const labels = cm.daily.map(d => d.date);
+    const dc = cm.daily.map(d => d.via_date_called);
+    const lc = cm.daily.map(d => d.via_last_contacted);
+    const cum = cm.daily.map(d => d.cumulative_unique);
+    _callChart = new Chart(canvas.getContext('2d'), {
+      data: {
+        labels,
+        datasets: [
+          { type: 'bar', label: 'Date Called', data: dc, yAxisID: 'y',
+            backgroundColor: 'rgba(58, 110, 165, 0.78)', borderColor: 'rgba(58, 110, 165, 0.78)',
+            stack: 'engagement', order: 2 },
+          { type: 'bar', label: 'Last Contacted only', data: lc, yAxisID: 'y',
+            backgroundColor: 'rgba(217, 165, 32, 0.85)', borderColor: 'rgba(217, 165, 32, 0.85)',
+            stack: 'engagement', order: 3 },
+          { type: 'line', label: 'Cumulative unique contacts', data: cum, yAxisID: 'y1',
+            borderColor: '#2d6a4f', backgroundColor: 'rgba(45,106,79,0.16)',
+            tension: 0.2, borderWidth: 2.4, pointRadius: 0, pointHoverRadius: 4,
+            fill: true, order: 1 },
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const v = ctx.parsed.y;
+                if (v == null) return ctx.dataset.label + ': —';
+                return `${ctx.dataset.label}: ${v}`;
+              },
+            },
+          },
+        },
+        scales: {
+          x: { ticks: { maxTicksLimit: 14, autoSkip: true, color: '#6a6a5a', font: { size: 10 } }, grid: { display: false } },
+          y: {
+            position: 'left', stacked: true, beginAtZero: true,
+            ticks: { color: '#3a6ea5', font: { size: 10 } },
+            grid: { color: '#f0eedb' },
+            title: { display: true, text: 'New contacts engaged / day', color: '#3a6ea5', font: { size: 10 } },
+          },
+          y1: {
+            position: 'right', beginAtZero: true,
+            ticks: { color: '#2d6a4f', font: { size: 10 } },
+            grid: { drawOnChartArea: false },
+            title: { display: true, text: 'Cumulative unique contacts', color: '#2d6a4f', font: { size: 10 } },
+          },
+        },
+      },
+    });
+  }
+
+  // Call Quality strip — supplements Will's dashboard with connect
+  // rate, best-connect windows, and per-rep leaderboard. These add the
+  // "are calls quality" dimension that Will's reach-focused dashboard
+  // doesn't surface.
+  function callQualityHtml(ca) {
+    if (!ca || !ca.totals) {
+      return `<section class="v2-funnel-section"><div class="v2-empty">No call quality data.</div></section>`;
+    }
+    const t = ca.totals;
+    const lb = (ca.leaderboard_30d || []).filter(r => r.calls > 0);
+    const windows = ca.heatmap && ca.heatmap.best_windows || [];
+
+    const outcomeChips = Object.entries(t.by_outcome || {})
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([k, v]) => `<span class="v2-cm-chip"><strong>${v}</strong> ${escapeHtml(k)}</span>`)
+      .join('');
+
+    const lbRows = lb.map(r => `<tr>
+      <td><strong>${escapeHtml(r.name)}</strong>${r.is_sales_rep ? '' : ' <span class="v2-cm-tag-ops">ops</span>'}</td>
+      <td class="num">${r.calls}</td>
+      <td class="num">${r.per_day}</td>
+      <td class="num strong">${r.connect_rate_pct != null ? r.connect_rate_pct + '%' : '—'}</td>
+    </tr>`).join('');
+
+    const winRows = windows.map((w, i) => `<tr>
+      <td><strong>#${i + 1}</strong></td>
+      <td><strong>${escapeHtml(w.day_label)}</strong> ${w.hour_aest}:00 AEST</td>
+      <td class="num strong">${w.connect_rate_pct}%</td>
+      <td class="num meta">${w.connected} / ${w.total} connected</td>
+    </tr>`).join('');
+
+    return `
+      <section class="v2-funnel-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">Call quality · supplementary insights</h2>
+          <div class="v2-funnel-sub">Connect-rate + when-to-call patterns + per-rep cadence — the dimensions Will's reach dashboard doesn't surface. ${ca.window_days}-day window · all team outbound · AEST.</div>
+        </header>
+        <div class="v2-funnel-summary">
+          <div class="v2-funnel-summary-cell" style="border-left-color:#2d6a4f">
+            <div class="v2-funnel-summary-cohort">Connect rate (overall)</div>
+            <div class="v2-funnel-summary-flow"><strong>${t.connect_rate_pct}%</strong> · ${t.connected}/${t.calls}</div>
+            <div class="v2-funnel-summary-rate">${outcomeChips}</div>
+          </div>
+          <div class="v2-funnel-summary-cell" style="border-left-color:#5a6878">
+            <div class="v2-funnel-summary-cohort">Connected duration (median)</div>
+            <div class="v2-funnel-summary-flow"><strong>${ca.duration_connected_s ? ca.duration_connected_s.median_s : '—'}s</strong></div>
+            <div class="v2-funnel-summary-rate">p75 ${ca.duration_connected_s ? ca.duration_connected_s.p75_s : '—'}s · p90 ${ca.duration_connected_s ? ca.duration_connected_s.p90_s : '—'}s</div>
+          </div>
+          <div class="v2-funnel-summary-cell" style="border-left-color:#a16207">
+            <div class="v2-funnel-summary-cohort">Sample window</div>
+            <div class="v2-funnel-summary-flow"><strong>${ca.window_days}</strong> days</div>
+            <div class="v2-funnel-summary-rate">Generated ${new Date(ca.generated_at).toLocaleString()}</div>
+          </div>
+        </div>
+        <div class="v2-cm-quality-grid">
+          <div>
+            <h3 class="v2-cm-subhead">Best connect windows · top 5 hour-cells (≥10 call sample)</h3>
+            ${windows.length
+              ? `<table class="v2-stats-era-table"><thead><tr><th>#</th><th>When</th><th class="num">Connect rate</th><th class="num">Sample</th></tr></thead><tbody>${winRows}</tbody></table>`
+              : '<div class="v2-empty">Not enough data yet — need ≥10 calls per hour-cell.</div>'}
+          </div>
+          <div>
+            <h3 class="v2-cm-subhead">Per-rep leaderboard · rolling 30 days</h3>
+            ${lb.length
+              ? `<table class="v2-stats-era-table"><thead><tr><th>Rep</th><th class="num">Calls (30d)</th><th class="num">Per day</th><th class="num">Connect %</th></tr></thead><tbody>${lbRows}</tbody></table>`
+              : '<div class="v2-empty">No reps with calls in window.</div>'}
+          </div>
+        </div>
+      </section>`;
+  }
+
   async function render(container) {
     container.innerHTML = `
+      <div id="stats-callmon"><div class="v2-loading" style="padding:24px">Loading team call monitor…</div></div>
+      <div id="stats-callquality"><div class="v2-loading" style="padding:24px">Loading call quality strip…</div></div>
       <div id="stats-efficacy"><div class="v2-loading" style="padding:24px">Loading efficacy comparison…</div></div>
       <div id="stats-funnel"><div class="v2-loading" style="padding:24px">Loading cohort funnel…</div></div>
       <div id="stats-trajectory"><div class="v2-loading" style="padding:24px">Loading trajectory…</div></div>
@@ -1804,6 +2026,17 @@
         <p class="v2-section-sub">drill-downs by sub-tab — kept for cohort breakdowns; the redesigned story above is the primary view.</p>
       </div>
       <div id="stats-content"><div class="v2-loading">Loading from HubSpot…</div></div>`;
+    // Call monitor (Section 0) + call quality strip
+    fetchCallMonitoring().then(cm => {
+      const slot = document.getElementById('stats-callmon');
+      if (!slot) return;
+      slot.innerHTML = callMonitoringShellHtml(cm);
+      if (cm && cm.daily && cm.daily.length) renderCallMonitorChart(cm);
+    });
+    fetchCallAnalytics().then(ca => {
+      const slot = document.getElementById('stats-callquality');
+      if (slot) slot.innerHTML = callQualityHtml(ca);
+    });
     // Hero + funnel + trajectory + evidence + projection all load in parallel with detail
     fetchEfficacy().then(eff => {
       document.getElementById('stats-efficacy').innerHTML = efficacyHeroHtml(eff);

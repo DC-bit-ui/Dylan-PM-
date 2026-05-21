@@ -5174,3 +5174,181 @@ body.v2-ex-overlay-open {
   font-weight: 700;
   margin-top: 8px;
 }
+
+/* ===== STATS Section 0 — Call monitoring (Will's dashboard) ===== */
+.v2-cm-section { padding-top: 18px; }
+.v2-cm-hero {
+  background: #fbfaf3;
+  border: 1px solid #ece8cd;
+  border-radius: 5px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+}
+.v2-cm-hero-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6a6a5a;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.v2-cm-hero-row {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.v2-cm-hero-pct {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  font-variant-numeric: tabular-nums;
+  color: #8a2a2a;
+}
+.v2-cm-hero-pct.v2-cm-good { color: #2d6a4f; }
+.v2-cm-hero-pct.v2-cm-flat { color: #6a5a1a; }
+.v2-cm-hero-pct.v2-cm-bad  { color: #8a2a2a; }
+.v2-cm-hero-pct strong { font-weight: 700; }
+.v2-cm-hero-slash { color: #aaa; margin: 0 4px; font-weight: 400; }
+.v2-cm-hero-pct-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6a6a5a;
+  letter-spacing: 0;
+  margin-left: 10px;
+}
+.v2-cm-hero-meta {
+  font-size: 12px;
+  color: #3a3a3a;
+}
+.v2-cm-hero-meta strong { font-variant-numeric: tabular-nums; }
+.v2-cm-hero-remaining {
+  margin-left: auto;
+  font-size: 12px;
+  color: #6a6a5a;
+  font-weight: 500;
+}
+.v2-cm-bar-wrap {
+  margin-top: 10px;
+  height: 8px;
+  background: #efedda;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.v2-cm-bar { height: 100%; border-radius: 4px; background: #8a2a2a; transition: width 0.4s ease; }
+.v2-cm-bar.v2-cm-good { background: #2d6a4f; }
+.v2-cm-bar.v2-cm-flat { background: #d8a040; }
+.v2-cm-bar.v2-cm-bad  { background: #8a2a2a; }
+
+.v2-cm-tiles {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.v2-cm-tile {
+  background: #fbfaf3;
+  border: 1px solid #ece8cd;
+  border-radius: 4px;
+  padding: 10px 12px;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.v2-cm-tile-label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6a6a5a;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.v2-cm-tile-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2a2a2a;
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+  margin-top: 4px;
+  line-height: 1.05;
+}
+.v2-cm-tile-sub { font-size: 10.5px; color: #888; margin-top: 2px; }
+
+.v2-cm-chart-wrap {
+  position: relative;
+  height: 280px;
+  margin: 14px 0 6px;
+  background: #fbfaf3;
+  border: 1px solid #ece8cd;
+  border-radius: 5px;
+  padding: 10px 14px 6px;
+}
+.v2-cm-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 11px;
+  color: #555;
+  padding: 4px 4px 0;
+}
+.v2-cm-key { display: inline-flex; align-items: center; }
+.v2-cm-key::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 6px;
+}
+.v2-cm-key-cum::before { background: rgba(45,106,79,0.16); border: 2px solid #2d6a4f; height: 3px; }
+.v2-cm-key-dc::before { background: rgba(58, 110, 165, 0.78); }
+.v2-cm-key-lc::before { background: rgba(217, 165, 32, 0.85); }
+
+/* Call quality strip */
+.v2-cm-chip {
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #e0dcc4;
+  border-radius: 10px;
+  padding: 2px 8px;
+  margin: 2px 4px 0 0;
+  font-size: 10.5px;
+  color: #3a3a3a;
+}
+.v2-cm-chip strong { font-weight: 700; color: #2a2a2a; font-variant-numeric: tabular-nums; }
+.v2-cm-quality-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+  margin-top: 14px;
+}
+.v2-cm-subhead {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2a2a2a;
+  letter-spacing: -0.1px;
+}
+.v2-cm-tag-ops {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #6a6a5a;
+  background: #f0eeda;
+  border: 1px solid #e0dcc4;
+  padding: 1px 5px;
+  border-radius: 6px;
+  margin-left: 4px;
+  font-weight: 700;
+}
+
+@media (max-width: 960px) {
+  .v2-cm-tiles { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 560px) {
+  .v2-cm-tiles { grid-template-columns: repeat(2, 1fr); }
+  .v2-cm-hero-row { flex-direction: column; gap: 6px; }
+  .v2-cm-hero-remaining { margin-left: 0; }
+}

@@ -425,6 +425,20 @@ app.get('/api/stats/forecast', async (req, res) => {
   }
 });
 
+// Call monitoring — matches Will's "Storm Boy call monitoring"
+// dashboard from the Operation Storm Boy Teams channel. Weekly target
+// progress + volume tiles + efficacy tiles + daily engagement chart.
+// 15-min disk cache; ?force=1 refreshes.
+app.get('/api/stats/call-monitoring', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/call-monitoring');
+    res.json(await run({ force: req.query.force === '1' }));
+  } catch (e) {
+    console.error('call-monitoring failed:', e);
+    res.status(500).json({ error: 'call-monitoring failed', detail: e.message });
+  }
+});
+
 // Call analytics — connect rate, outcome breakdown, time-of-day
 // heat map, per-rep daily leaderboard. Built on HubSpot call
 // engagement object (Aircall already syncs disposition + duration).
