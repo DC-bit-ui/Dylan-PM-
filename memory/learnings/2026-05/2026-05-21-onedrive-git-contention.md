@@ -96,6 +96,14 @@ If the contention disappears, hypothesis confirmed. If it persists, investigate 
 | File attributes on `.git/index`, `CLAUDE.md`, etc. | `Archive` only | No cloud-sync flags |
 | Defender RealtimeMonitoring | Enabled, repo not excluded | Most likely culprit |
 
+## Mitigation applied 2026-05-21
+
+`Add-MpPreference -ExclusionPath "C:\Dylan PM"` via elevated PowerShell — returned SUCCESS. Corp-managed policy prevents reading exclusion list back even when elevated, but the cmdlet's success implies the exclusion is in place.
+
+**Hypothesis confirmation deferred to next Cowork deploy.** If the next 2–3 deploys complete without truncation symptoms, Defender was the cause. If truncation recurs, next investigation: Windows Search indexer (`Control Panel → Indexing Options → Modify → uncheck C:\Dylan PM`).
+
+**Defensive layer retained:** Prompt F-v2 onward includes a pre-flight integrity check that halts deploy if any SKILL.md ends mid-sentence. This is belt-and-braces — even if Defender exclusion didn't fix it, broken prompts can't ship.
+
 The migration playbook is roughly:
 1. Clone the GitHub repo to `C:\dev\Dylan PM\` (or wherever)
 2. Copy any uncommitted local state from old `C:\Dylan PM\` (use `git status` + `git stash`)
