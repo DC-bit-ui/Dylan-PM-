@@ -1,10 +1,20 @@
 ---
 date: 2026-05-21
-status: PROPOSED — design draft, awaiting Dylan review on 4 open questions
+status: ACCEPTED 2026-05-21 — Q1=12mo, Q2=contradicted label, Q3=separate audit log, Q4=drop unattributed
 tags: [data-architecture, feedback-loop, pattern-confidence, refinement]
 authors: [Dylan + Claude Code Tier 1 data audit]
 depends-on: [memory/decisions/2026-05-21-supplement-provenance-schema.md]
 ---
+
+## Locked decisions (2026-05-21)
+
+| Question | Decision |
+|---|---|
+| Q1. Rolling window | **12 months** — outcomes older than `now - 365d` excluded from current-confidence recompute. Historical counts preserved for audit. |
+| Q2. Score < 0.20 AND denom >= 10 | **Demote to `contradicted` label** (new confidence label, alongside high/moderate/low/preliminary). Pattern stays; archival is a separate decision by existing curation logic. |
+| Q3. Per-pattern outcome traceability | **Separate audit log** at `patterns/_outcomes/<pattern-slug>.jsonl` — one line per outcome. Pattern file stays clean. |
+| Q4. Probes without `cited_patterns` | **Drop** — count as "unattributed" in run logs, exclude from feedback pass. No heuristic matching. |
+
 
 # Wire feedback loop: probe-outcomes → pattern confidence
 
@@ -147,23 +157,36 @@ Separate audit log keeps the pattern file clean while preserving full traceabili
 
 Drop is safest. Migration cost is bounded (one-time pool of unattributed legacy probes); going forward all probes should include `cited_patterns`.
 
-## Implementation outline
+## Implementation outline (locked)
 
-Once Q1–Q4 are settled:
+### File-level changes
 
-1. **Schema updates** to probe-outcome + pattern (markdown / JSON files — write-side change only, no DB migration)
-2. **New code** in `coaching/engine/pattern-curator.js`:
-   - `adjustConfidenceFromProbeOutcomes()` — the function above
-   - `getActiveOutcomeWindow(pattern)` — returns `outcome_window_start`
-3. **Call site:** existing `weekly-pattern-curation` calls this BEFORE the existing archive step (chained, not parallel — confidence must update before archive decisions)
-4. **Migration script:** one-time pass that adds default fields to all existing patterns + probe-outcomes
-5. **Tests:** at minimum:
-   - Happy path: pattern goes from preliminary → high after 5 confirms
-   - Contradiction path: pattern goes from high → low → contradicted after contradictions accumulate
-   - Out-of-window exclusion: old outcomes don't influence current label
-   - Unattributed probe: probe without `cited_patterns` is counted but doesn't influence any pattern
+1. **`stormboy-tracker/coaching/engine/shared-bus.js`** — enforce `cited_patterns` on `writeProbeOutcome()` (line 201). New writes without it fail loudly. (Existing `probe-outcomes/` directory is empty per `Glob`, so no historical migration needed.)
+2. **`stormboy-tracker/coaching/engine/curate-patterns.js`** — add new functions:
+   - `adjustConfidenceFromProbeOutcomes()` — the main feedback pass (Section "Proposed mechanism" above). Uses existing `parseFrontMatter()`.
+   - `getActiveOutcomeWindow(pattern)` — returns `outcome_window_start` (`now - 365d`).
+   - `appendOutcomeAuditLog(patternSlug, outcomeRecord)` — appends to `patterns/_outcomes/<slug>.jsonl`. Atomic via tmp+rename through `shared-bus.js`.
+3. **`stormboy-tracker/coaching/engine/curate-patterns.js`** — modify entry point: feedback pass runs BEFORE existing archive logic, so demote/promote decisions reflect the latest scoring.
+4. **Pattern file schema** — add `confirmations`, `contradictions`, `partials`, `confidence_score`, `confidence_last_updated`, `outcome_window_start` to YAML front-matter.
+5. **Pattern migration** — one-time pass adds default values (`0`, `0`, `0`, `null`, `<now>`, `<now - 365d>`) to existing patterns in `shared-growth-memory/patterns/`. Run once, idempotent.
+6. **Cowork-side `weekly-pattern-curation` SKILL.md** — update to mention the new feedback pass (informational; the JS implementation is what actually runs). Patch via the standing edit-in-repo, deploy-via-MCP flow.
 
-Estimate: 1–2 days code + 2 hours migration + tests.
+### New confidence labels
+
+`preliminary` (denom < 5) | `low` (0.20 ≤ score < 0.40) | `moderate` (0.40 ≤ score < 0.75) | `high` (score ≥ 0.75) | `contradicted` (score < 0.20 AND denom ≥ 10)
+
+### Tests required (at minimum)
+
+- Happy path: pattern goes from `preliminary` → `high` after 5 confirms, 0 contradictions
+- Demotion: pattern goes from `high` → `moderate` → `low` → `contradicted` as contradictions accumulate
+- Out-of-window exclusion: outcome older than 365d doesn't influence current label, but counts preserved in history
+- Unattributed probe: probe without `cited_patterns` is logged but doesn't influence any pattern
+- Audit log: each outcome event produces exactly one line in `patterns/_outcomes/<slug>.jsonl`
+- Atomicity: tmp+rename via `shared-bus.js`; never write directly
+
+### Estimate
+
+~7 hours focused: code (3h) + migration (1h) + tests (2h) + Cowork SKILL.md update + deploy (1h).
 
 ## Compounds with other foundations
 
