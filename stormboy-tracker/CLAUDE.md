@@ -23,7 +23,7 @@ Live HubSpot pipeline dashboard for AgriProve's sales team. Tracks conversion ti
 - Stormboy funnel: `contact_lead_stage_storm_boy` custom property (Identified → In Conversation → Farm Visit Booked → Farm Visit Complete → In Sales Pipeline → Exited)
 
 ## Environment variables
-- `HUBSPOT_TOKEN` — HubSpot Private App token (scopes: crm.objects.contacts.read, crm.objects.deals.read)
+- `HUBSPOT_TOKEN` — HubSpot Private App token (scopes: crm.objects.contacts.read, crm.objects.deals.read, crm.objects.tickets.read — tickets scope verified live 2026-05-21)
 - `ANTHROPIC_API_KEY` — Anthropic API key for AI analysis features
 - `PORT` — Server port (default 3000)
 

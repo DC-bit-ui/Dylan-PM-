@@ -24,10 +24,13 @@
  *      → COVERED — already pulled
  *
  *   4. HubSpot HORIZON Snapshot ticket pipeline
- *      → NOT COVERED — Private App token lacks
- *      crm.objects.tickets.read scope (verified 2026-05-20 via direct
- *      probe, 403 "scope needed for this API call isn't available").
- *      The state detector flags this gap in its caveats output.
+ *      → COVERED (as of 2026-05-21) — Private App token now has
+ *      crm.objects.tickets.read. Verified via direct probe 2026-05-21:
+ *      GET /crm/v3/objects/tickets → 200; POST batch/read → 200;
+ *      POST /crm/v4/associations/contacts/tickets/batch/read → 200.
+ *      The tri-state cache (_ticketScopeAvailable) probes on first call
+ *      and lights up full detection automatically — no code change
+ *      needed. Previous note: scope was missing as of 2026-05-20.
  *
  *   5. Operation Stormboy Teams Channel > Deals
  *      → NOT COVERED — server has no Microsoft Graph integration.
