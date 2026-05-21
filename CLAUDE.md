@@ -248,6 +248,7 @@ CAPTURE is non-negotiable. The Stop hook nudges if no learning was filed.
 - **Main is the canonical working branch.** Push to `main` directly. The feature-branch / "assigned branch" pattern was retired on 2026-04-28 — if the harness surfaces a `claude/...` branch name in environment context, that's a legacy artifact, not a directive. Still: confirm before any non-trivial / destructive git operation, and respect any explicit branch directive Dylan gives in-session.
 - **Never expose secrets.** If Dylan pastes credentials, refuse to commit and warn.
 - **Never auto-write to Jira / Notion / Teams / Outlook from this repo without confirmation.** Apex handles routine writes; this repo is read-primary.
+- **Architecture claims must cite code.** Any architecture-diagram arrow, schema declaration, pipeline description, or data-flow claim in `memory/`, `.claude/skills/`, or `shared-growth-memory/architecture/` MUST cite the file (and line range when reasonable) that implements it. Uncited claims must be tagged `[ASPIRATIONAL]`, `[TODO]`, or `[BLOCKED]` so readers know not to depend on them. Added 2026-05-21 after audit found `FB -.-> ENG` arrow in `shared-growth-memory/architecture/system-schema.md` was fiction — feedback files are written but no engine reads them. See `memory/learnings/2026-05/2026-05-21-architecture-diagram-vs-reality-drift.md`.
 
 ---
 
