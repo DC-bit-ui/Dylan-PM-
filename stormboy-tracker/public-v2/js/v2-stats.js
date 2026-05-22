@@ -2177,6 +2177,116 @@
       </section>`;
   }
 
+  // ====== HOBBS FARM-VISIT CALENDAR ======
+  // Forward-focused calendar view of Hobbs's past + booked visits so
+  // the team can see how positioned they are moving forward. Each
+  // day cell shows visit count + chips for individual visits.
+  async function fetchHobbsCalendar() {
+    try {
+      const r = await fetch('/api/stats/hobbs-calendar');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function hobbsCalendarHtml(c) {
+    if (!c || !c.weeks) {
+      return '<section class="v2-funnel-section"><div class="v2-empty">No farm visit data.</div></section>';
+    }
+    const t = c.totals;
+    const tone = c.totals.scheduled === 0 && c.totals.completed === 0
+      ? 'bad'
+      : (c.totals.scheduled < 3 ? 'flat' : 'good');
+
+    // Day-of-week header row
+    const dowHeader = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      .map(d => `<div class="v2-cal-dow">${d}</div>`)
+      .join('');
+
+    // Week rows
+    const weekRows = c.weeks.map(w => {
+      const cells = w.days.map(d => {
+        const cls = [
+          'v2-cal-day',
+          d.is_today ? 'v2-cal-today' : '',
+          d.is_past ? 'v2-cal-past' : '',
+          d.is_future ? 'v2-cal-future' : '',
+          d.visit_count > 0 ? 'v2-cal-has-visits' : 'v2-cal-empty',
+        ].filter(Boolean).join(' ');
+        const visits = (d.visits || []).map(v => {
+          const visitCls = [
+            'v2-cal-chip',
+            v.completed ? 'v2-cal-chip-done' : '',
+            v.is_no_show ? 'v2-cal-chip-noshow' : '',
+            (!v.is_past) ? 'v2-cal-chip-booked' : '',
+          ].filter(Boolean).join(' ');
+          const sub = [v.meeting_local_time, v.nrm_region || v.state || v.city].filter(Boolean).join(' · ');
+          return `<a href="${v.hubspot_url}" target="_blank" class="${visitCls}" title="${escapeHtml(v.name + ' · ' + sub)}">
+            <span class="v2-cal-chip-name">${escapeHtml(v.name)}</span>
+            ${sub ? `<span class="v2-cal-chip-sub">${escapeHtml(sub)}</span>` : ''}
+          </a>`;
+        }).join('');
+        return `<div class="${cls}">
+          <div class="v2-cal-day-head">
+            <span class="v2-cal-day-num">${d.day_of_month}</span>
+            ${d.visit_count > 0 ? `<span class="v2-cal-day-count">${d.visit_count}</span>` : ''}
+          </div>
+          <div class="v2-cal-visits">${visits}</div>
+        </div>`;
+      }).join('');
+      return `<div class="v2-cal-week${w.is_current_week ? ' v2-cal-week-current' : ''}">${cells}</div>`;
+    }).join('');
+
+    // Per-week summary bars on the side
+    const upcomingBars = (c.visits_per_upcoming_week || []).map(u => {
+      const widthPct = Math.min(100, (u.booked / 5) * 100); // assume 5 visits/wk healthy
+      return `<div class="v2-cal-sidebar-row">
+        <div class="v2-cal-sidebar-label">${u.week_start.slice(5)}</div>
+        <div class="v2-cal-sidebar-bar">
+          <div class="v2-cal-sidebar-fill" style="width:${Math.max(2, widthPct)}%">${u.booked}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `
+      <section class="v2-funnel-section">
+        <header class="v2-funnel-head">
+          <h2 class="v2-funnel-title">Hobbs · farm visit calendar</h2>
+          <div class="v2-funnel-sub">${escapeHtml(c.window.since_iso)} → ${escapeHtml(c.window.until_iso)} · 2 weeks past + ${c.window.future_weeks} weeks forward. Monitoring how the on-the-ground motion is positioned.</div>
+        </header>
+        <div class="v2-funnel-callout v2-funnel-callout-${tone}">
+          <span class="v2-funnel-callout-label">Pipeline read</span>
+          <span class="v2-funnel-callout-body">${escapeHtml(c.headline)}</span>
+        </div>
+        <div class="v2-funnel-summary">
+          <div class="v2-funnel-summary-cell" style="border-left-color:#2d6a4f">
+            <div class="v2-funnel-summary-cohort">Completed</div>
+            <div class="v2-funnel-summary-flow"><strong>${t.completed}</strong></div>
+          </div>
+          <div class="v2-funnel-summary-cell" style="border-left-color:#3a6ea5">
+            <div class="v2-funnel-summary-cohort">Booked forward</div>
+            <div class="v2-funnel-summary-flow"><strong>${t.scheduled}</strong></div>
+          </div>
+          <div class="v2-funnel-summary-cell" style="border-left-color:#8a3024">
+            <div class="v2-funnel-summary-cohort">Past, no completion logged</div>
+            <div class="v2-funnel-summary-flow"><strong>${t.no_show}</strong></div>
+            <div class="v2-funnel-summary-rate">May be unmarked rather than no-show</div>
+          </div>
+        </div>
+        <div class="v2-cal-layout">
+          <div class="v2-cal-grid">
+            <div class="v2-cal-dow-row">${dowHeader}</div>
+            ${weekRows}
+          </div>
+          <aside class="v2-cal-sidebar">
+            <div class="v2-cal-sidebar-head">Booked / wk forward</div>
+            ${upcomingBars}
+            <div class="v2-cal-sidebar-foot">Bar at 5 = healthy weekly cadence</div>
+          </aside>
+        </div>
+        <div class="v2-funnel-sub" style="margin-top:8px">${c.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}</div>
+      </section>`;
+  }
+
   // ====== PROPERTY-SIZE × CYCLE × WIN-RATE ======
   // Tests "do larger prospects take longer + convert less?" — turns
   // out the answer is "medium are the sweet spot, very large is
@@ -2469,6 +2579,7 @@
       { id: 'stats-snapshot-pipeline',  label: 'Snapshot workflow' },
       { id: 'stats-callmon',            label: 'Team calls' },
       { id: 'stats-callquality',        label: 'Call quality' },
+      { id: 'stats-hobbs-calendar',     label: 'Hobbs calendar' },
       { id: 'stats-property-size',      label: 'Property size' },
       { id: 'stats-geographic',         label: 'NRM regions' },
       { id: 'stats-evidence',           label: 'Tactical evidence' },
@@ -2490,6 +2601,7 @@
       <div id="stats-snapshot-pipeline"><div class="v2-loading" style="padding:24px">Loading snapshot workflow…</div></div>
       <div id="stats-callmon"><div class="v2-loading" style="padding:24px">Loading team call monitor…</div></div>
       <div id="stats-callquality"><div class="v2-loading" style="padding:24px">Loading call quality + heatmap…</div></div>
+      <div id="stats-hobbs-calendar"><div class="v2-loading" style="padding:24px">Loading Hobbs farm visit calendar…</div></div>
       <div id="stats-property-size"><div class="v2-loading" style="padding:24px">Loading property-size insights…</div></div>
       <div id="stats-geographic"><div class="v2-loading" style="padding:24px">Loading geographic insights…</div></div>
       <div id="stats-evidence"><div class="v2-loading" style="padding:24px">Loading tactical evidence…</div></div>
@@ -2547,6 +2659,10 @@
     fetchCallAnalytics().then(ca => {
       const slot = document.getElementById('stats-callquality');
       if (slot) slot.innerHTML = callQualityHtml(ca);
+    });
+    fetchHobbsCalendar().then(hc => {
+      const slot = document.getElementById('stats-hobbs-calendar');
+      if (slot) slot.innerHTML = hobbsCalendarHtml(hc);
     });
     fetchPropertySize().then(ps => {
       const slot = document.getElementById('stats-property-size');

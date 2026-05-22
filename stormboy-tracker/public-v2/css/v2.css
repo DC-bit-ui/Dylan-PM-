@@ -5713,3 +5713,183 @@ body.v2-ex-overlay-open {
   .v2-cbu-bar-label { font-size: 8px; }
   .v2-cbu-bar-total { font-size: 8px; }
 }
+
+/* ===== Hobbs farm visit calendar ===== */
+.v2-cal-layout {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 18px;
+  margin-top: 14px;
+}
+.v2-cal-grid {
+  background: #fbfaf3;
+  border: 1px solid #ece8cd;
+  border-radius: 5px;
+  padding: 10px;
+}
+.v2-cal-dow-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.v2-cal-dow {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  font-weight: 700;
+  text-align: center;
+  padding: 2px 0;
+}
+.v2-cal-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.v2-cal-week-current { /* could highlight if needed */ }
+.v2-cal-day {
+  background: #fff;
+  border: 1px solid #e8e5d0;
+  border-radius: 3px;
+  min-height: 78px;
+  padding: 4px 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.v2-cal-empty { opacity: 0.55; }
+.v2-cal-past { background: #f5f3df; }
+.v2-cal-future.v2-cal-has-visits { background: #ecf3eb; border-color: #b6cda8; }
+.v2-cal-today {
+  border: 2px solid #2d6a4f;
+  background: #fff;
+  font-weight: 600;
+}
+.v2-cal-day-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.v2-cal-day-num {
+  font-size: 11px;
+  color: #888;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.v2-cal-today .v2-cal-day-num { color: #2d6a4f; font-weight: 700; }
+.v2-cal-day-count {
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  background: #2d6a4f;
+  border-radius: 8px;
+  padding: 1px 5px;
+  letter-spacing: 0.3px;
+}
+.v2-cal-past .v2-cal-day-count { background: #8a8a7a; }
+.v2-cal-visits {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 2px;
+}
+.v2-cal-chip {
+  display: block;
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-size: 9.5px;
+  background: #e8f0e2;
+  border-left: 2px solid #2d6a4f;
+  color: #2a4a25;
+  text-decoration: none;
+  line-height: 1.2;
+}
+.v2-cal-chip:hover { background: #dceedc; }
+.v2-cal-chip-done {
+  background: #ecf3eb;
+  border-left-color: #2d6a4f;
+}
+.v2-cal-chip-noshow {
+  background: #f4e2e2;
+  border-left-color: #8a3024;
+  color: #6a2a24;
+}
+.v2-cal-chip-booked {
+  background: #d8eed4;
+  border-left-color: #2d6a4f;
+  color: #1f4f30;
+  font-weight: 600;
+}
+.v2-cal-chip-name {
+  display: block;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 10px;
+}
+.v2-cal-chip-sub {
+  display: block;
+  font-size: 8.5px;
+  color: rgba(0,0,0,0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 400;
+}
+.v2-cal-sidebar {
+  background: #fbfaf3;
+  border: 1px solid #ece8cd;
+  border-radius: 5px;
+  padding: 12px;
+}
+.v2-cal-sidebar-head {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6a6a5a;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.v2-cal-sidebar-row {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.v2-cal-sidebar-label {
+  font-size: 10px;
+  color: #888;
+  font-variant-numeric: tabular-nums;
+}
+.v2-cal-sidebar-bar {
+  height: 16px;
+  background: #efedda;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.v2-cal-sidebar-fill {
+  height: 100%;
+  background: #2d6a4f;
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  border-radius: 2px;
+  min-width: 18px;
+}
+.v2-cal-sidebar-foot {
+  font-size: 9.5px;
+  color: #888;
+  margin-top: 8px;
+  font-style: italic;
+}
+@media (max-width: 860px) {
+  .v2-cal-layout { grid-template-columns: 1fr; }
+  .v2-cal-day { min-height: 60px; }
+}

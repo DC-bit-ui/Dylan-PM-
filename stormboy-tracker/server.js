@@ -453,6 +453,23 @@ app.get('/api/stats/call-analytics', async (req, res) => {
   }
 });
 
+// Hobbs's farm visit calendar — past + booked visits with a
+// forward-focused window so the team can monitor pipeline of visits.
+// 15-min cache.
+app.get('/api/stats/hobbs-calendar', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/hobbs-calendar');
+    res.json(await run({
+      pastWeeks: req.query.past ? parseInt(req.query.past, 10) : undefined,
+      futureWeeks: req.query.future ? parseInt(req.query.future, 10) : undefined,
+      force: req.query.force === '1',
+    }));
+  } catch (e) {
+    console.error('hobbs-calendar failed:', e);
+    res.status(500).json({ error: 'hobbs-calendar failed', detail: e.message });
+  }
+});
+
 // Property-size × cycle-time × win-rate correlation. Tests "do larger
 // prospects take longer + convert less?" 1h cache.
 app.get('/api/stats/property-size', async (req, res) => {
