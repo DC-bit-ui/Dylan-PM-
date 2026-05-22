@@ -30,7 +30,27 @@ Check all sources for items that arrived AFTER the morning briefing:
 
 a) Jira — recently updated: jql = "project = AP AND updated >= -8h ORDER BY updated DESC" (captures the Australian team's afternoon work)
 b) Granola — today's meetings: use list_meetings with time_range "this_week", filter to today's date. Then use query_granola_meetings: "What action items and commitments came from today's meetings?"
-c) Teams — afternoon messages: use chat_message_search for messages from the last 8 hours that contain action items or requests
+c) Teams — afternoon channel posts: **use `mcp__claude_ai_Microsoft_365__read_resource` per channel URI** (NOT `chat_message_search` — it's DM-only and silently returns zero results for channel posts). Filter client-side by `createdDateTime` for the last 8 hours. Reference: `memory/integrations/cowork/apex-data-sources.md`.
+
+   Required channels (Tier 1 — all must be read):
+
+   **Operation Stormboy team** (groupId `560034d9-961e-44dc-9f25-93fe08bb19ef`):
+   - OSB Deals: `teams:///teams/560034d9-961e-44dc-9f25-93fe08bb19ef/channels/19:a987e623bc9e43c5bd47ff3955424c33@thread.tacv2/messages/`
+   - OSB General: `teams:///teams/560034d9-961e-44dc-9f25-93fe08bb19ef/channels/19:9ZFencCSMMkAQYnRJBQpounrI9gHqfSoJ5lZc8BKjAM1@thread.tacv2/messages/`
+   - OSB Standup: `teams:///teams/560034d9-961e-44dc-9f25-93fe08bb19ef/channels/19:ee468569d8c8470ca543c59821faed64@thread.tacv2/messages/`
+   - OSB Top of Funnel: `teams:///teams/560034d9-961e-44dc-9f25-93fe08bb19ef/channels/19:ba231945226e4e378172839f651a3a7b@thread.tacv2/messages/`
+
+   **Product team** (groupId `6257a7df-cdec-4e2b-874d-c673782caabb`):
+   - General: `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:2ydR2PMGWfJeohnDjbsBUvg5GLX2AP8bupBpJG2IYiY1@thread.tacv2/messages/`
+   - Epics: `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:7e0584c8b8d2408193030bb436730e4e@thread.tacv2/messages/`
+   - Stand up: `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:54b5f5aba6b64653a19e48eecb6c8e5e@thread.tacv2/messages/`
+   - bugs: `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:b37cfa878d304a0cad5ce8710396a729@thread.tacv2/messages/`
+   - Tech: `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:248262429ed346549a3d79331424eeae@thread.tacv2/messages/`
+   - Platform notifications: `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:b44a2798cd814a4db0cbeefeda2b3596@thread.tacv2/messages/`
+
+   For DMs: `chat_message_search` is correct (DMs are searchable). Run it separately for the last 8 hours filtering on @mentions of Dylan.
+
+   Extract action items, requests, decisions affecting tasks. Cross-reference against Notion task list from Step 1.
 d) Confluence — use searchConfluenceUsingCql: "type = page AND lastModified >= now('-8h')"
 
 ## STEP 3: HANDLE CARRYOVERS

@@ -41,26 +41,18 @@ T0 + T1 are mandatory. T2 + T3 are best-effort.
 | OSB Standup | `teams:///teams/560034d9-961e-44dc-9f25-93fe08bb19ef/channels/19:ee468569d8c8470ca543c59821faed64@thread.tacv2/messages/` | Structured standups, action items, weekly recaps |
 | OSB Top of Funnel | `teams:///teams/560034d9-961e-44dc-9f25-93fe08bb19ef/channels/19:ba231945226e4e378172839f651a3a7b@thread.tacv2/messages/` | Data reconciliation, property identity checks |
 
-### Product Team — Tier 1 (REQUIRED) — `groupId: <PENDING — Dylan to provide>`
+### Product Team — Tier 1 (REQUIRED) — `groupId: 6257a7df-cdec-4e2b-874d-c673782caabb`
 
-**Pending Dylan's input.** Dylan flagged Product Team channels as critical — "almost all sub-channels". This section needs the groupId + channel IDs + names before the contract can be considered complete.
-
-To discover, run from any Cowork session:
-```
-Search Teams channels for "Product" team:
-  mcp__claude_ai_Microsoft_365__chat_message_search with team_name filter (or browse Teams app)
-  → capture: groupId + each channel name + channelId
-```
-
-Or Dylan can list them directly. Placeholder structure (fill in after discovery):
+Inventory captured 2026-05-22 from Dylan's Teams channel URLs.
 
 | Channel | URI | Signal |
 |---|---|---|
-| <name> | `teams:///teams/<productGroupId>/channels/<channelId>/messages/` | <what kind of signal this gives> |
-| <name> | ... | ... |
-| <name> | ... | ... |
-
-Until populated, Apex SKILL.md patches will read OSB channels only, with a `<TODO: add Product Team channels>` comment so the gap is visible.
+| General | `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:2ydR2PMGWfJeohnDjbsBUvg5GLX2AP8bupBpJG2IYiY1@thread.tacv2/messages/` | Main Product team chat — decisions, broad announcements, cross-functional context |
+| Epics | `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:7e0584c8b8d2408193030bb436730e4e@thread.tacv2/messages/` | **Highest PM-relevant signal** — epic-level discussion, scope, blockers |
+| Stand up | `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:54b5f5aba6b64653a19e48eecb6c8e5e@thread.tacv2/messages/` | Product team standups, action items, weekly recaps |
+| bugs | `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:b37cfa878d304a0cad5ce8710396a729@thread.tacv2/messages/` | Bug tracking, prod issues, customer-facing breakage |
+| Tech | `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:248262429ed346549a3d79331424eeae@thread.tacv2/messages/` | Technical discussion among devs — architecture, implementation choices |
+| Platform notifications | `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:b44a2798cd814a4db0cbeefeda2b3596@thread.tacv2/messages/` | Automated platform alerts — higher volume, lower per-message signal, but flags incidents |
 
 ### Growth — Tier 2 — `groupId: 2d72f724-ba52-4088-ac22-07ab382bd9cc`
 

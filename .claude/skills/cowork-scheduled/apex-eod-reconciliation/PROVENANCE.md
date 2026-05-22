@@ -31,6 +31,16 @@
 - **Filename normalisation in `memory/retros/session/`:** mix of `<date>-eod.md` and `<date>-apex-eod.md`. Memory-curator sweep.
 - **Notion `Origin` taxonomy:** EOD writes land under `Apex · Reconciliation` (the enum doesn't include `Apex · EOD`). If finer filterability matters, add the enum and update the SKILL.md to use it.
 
+## 2026-05-22 patch batch 1 — applied to repo, NOT yet deployed to Cowork
+
+Source: companion to apex-morning-briefing batch 1 fix. Dylan flagged 2026-05-22 that Apex was missing Teams channel signal. EOD Step 2c had the same `chat_message_search` bug as morning Step 4.
+
+1. ✅ **Step 2c rewritten — replace `chat_message_search` with `read_resource` per channel URI.** All 4 Operation Stormboy channels + all 6 Product Team channels enumerated inline. DMs still use `chat_message_search` (correct for DMs). Lookback window -8h (afternoon coverage). Reference: `memory/integrations/cowork/apex-data-sources.md`.
+
+Companion patches:
+- `apex-morning-briefing/SKILL.md` Step 4 — same fix, -18h window
+- `memory/learnings/2026-05/2026-05-22-apex-teams-blind.md` — discovery + impact
+
 ## Deploy history
 
 | Date | Change | Deployer | Verified by |
