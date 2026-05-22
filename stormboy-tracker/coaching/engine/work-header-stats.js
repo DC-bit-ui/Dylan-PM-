@@ -124,31 +124,65 @@ async function run() {
   const token = process.env.HUBSPOT_TOKEN;
   if (!token) throw new Error('HUBSPOT_TOKEN not set');
 
-  // ---- 1. Farm-visit contacts (Stormboy contacts with a meeting date) ----
-  const visitContacts = await searchAll(
+  // ---- 1. Farm-visit MEETING ENGAGEMENTS ----
+  //
+  // Reworked 2026-05-22 — original sourced from storm_boy__meeting_date
+  // on the contact, but that field is sparsely populated (Hobbs's team
+  // doesn't fill it in) so completed_this_week was returning 0 even
+  // though visits were happening. Truth lives in HubSpot meeting
+  // engagements (calendar invites): all team-owned meetings whose
+  // title contains "farm visit". Outcome enum
+  // (SCHEDULED/COMPLETED/RESCHEDULED/NO_SHOW/CANCELED) + the
+  // start_time relative to now lets us classify reliably.
+  //
+  //   booked_this_week    = team farm-visit meetings with start_time
+  //                         in this ISO week (regardless of outcome,
+  //                         excluding CANCELED)
+  //   completed_this_week = same, but only those whose start_time is
+  //                         already past AND outcome ≠ NO_SHOW/CANCELED
+  //                         (i.e., it happened — either explicitly
+  //                         COMPLETED or implicitly via past + SCHEDULED
+  //                         since the team rarely flips the outcome)
+  //   lifetime_booked     = all team farm-visit meetings ever (excluding CANCELED)
+  const STORMBOY_TEAM_OWNERS = ['76812243', '78272376', '361236574', '361823546'];
+  const thisWeek = currentWeekStart();
+  const nowMs = Date.now();
+  // Pull meetings owned by the team in a 2-year window (lifetime stat needs
+  // history; this-week filter handles the recent slice).
+  const yearAgo = nowMs - 365 * 2 * 24 * 60 * 60 * 1000;
+  const farmVisitMeetings = await searchAll(
     token,
-    '/crm/v3/objects/contacts/search',
+    '/crm/v3/objects/meetings/search',
     [{
       filters: [
-        { propertyName: 'storm_boy_campaign_member', operator: 'EQ', value: 'Yes' },
-        { propertyName: 'storm_boy__meeting_date', operator: 'HAS_PROPERTY' },
+        { propertyName: 'hubspot_owner_id', operator: 'IN', values: STORMBOY_TEAM_OWNERS },
+        { propertyName: 'hs_meeting_start_time', operator: 'GTE', value: String(yearAgo) },
       ],
     }],
-    ['storm_boy__meeting_date', 'storm_boy__meeting_completed'],
+    ['hs_meeting_title', 'hs_meeting_start_time', 'hs_meeting_outcome', 'hubspot_owner_id'],
+    [{ propertyName: 'hs_meeting_start_time', direction: 'DESCENDING' }],
   );
-
-  const thisWeek = currentWeekStart();
   let lifetimeBooked = 0;
   let bookedThisWeek = 0;
   let completedThisWeek = 0;
-  visitContacts.forEach(c => {
-    const md = c.properties.storm_boy__meeting_date;
-    if (!md) return;
+  farmVisitMeetings.forEach(m => {
+    const p = m.properties || {};
+    const title = (p.hs_meeting_title || '').toLowerCase();
+    if (!title.includes('farm visit')) return;     // only farm visits
+    const outcome = (p.hs_meeting_outcome || '').toUpperCase();
+    if (outcome === 'CANCELED') return;            // exclude cancellations
+    const startMs = Date.parse(p.hs_meeting_start_time || '');
+    if (!startMs) return;
     lifetimeBooked++;
-    const w = weekStart(md);
+    const w = weekStart(p.hs_meeting_start_time);
     if (w === thisWeek) {
       bookedThisWeek++;
-      if (c.properties.storm_boy__meeting_completed === 'Yes') completedThisWeek++;
+      // Completed = past AND not no-show (and not canceled, which we
+      // already filtered out above). Past + SCHEDULED counts because
+      // the team rarely toggles the outcome after the visit.
+      if (startMs < nowMs && outcome !== 'NO_SHOW') {
+        completedThisWeek++;
+      }
     }
   });
 
