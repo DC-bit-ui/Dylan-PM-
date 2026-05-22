@@ -296,12 +296,103 @@
     _container.querySelector('#brain-dist-count').textContent = `${filtered.length} of ${all.length}`;
   }
 
+  // Team workshopping — surfaces recent standup transcripts (Mon/Fri
+  // cadence) with parsed sections + diff against prior. Workshopping
+  // and decisions naturally belong in the BRAIN, not STATS — these
+  // are team-knowledge artifacts, not metrics.
+  async function fetchStandupSummary() {
+    try {
+      const r = await fetch('/api/stats/standup-summary');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (_) { return null; }
+  }
+  function teamWorkshoppingHtml(ss) {
+    if (!ss || !ss.standups || !ss.standups.length) {
+      return `<div class="v2-empty" style="padding:18px">No standup transcripts found on the bus yet.</div>`;
+    }
+    const latest = ss.standups[0];
+    const ageD = latest ? Math.floor((Date.now() - Date.parse(latest.meeting_date + 'T00:00:00Z')) / (24*60*60*1000)) : 999;
+    const tone = ageD <= 2 ? 'good' : ageD <= 5 ? 'flat' : 'bad';
+
+    const cards = ss.standups.map((su, idx) => {
+      const sectionsHtml = su.sections.map(sec => {
+        if (!sec.bullets.length) return '';
+        const items = sec.bullets.slice(0, 8).map(b => {
+          const html = escapeHtml(b).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+          return `<li>${html}</li>`;
+        }).join('');
+        const more = sec.bullets.length > 8 ? `<li class="v2-su-more">+${sec.bullets.length - 8} more</li>` : '';
+        return `<div class="v2-su-section">
+          <div class="v2-su-section-name">${escapeHtml(sec.section)}</div>
+          <ul class="v2-su-bullets">${items}${more}</ul>
+        </div>`;
+      }).join('');
+
+      const diffHtml = (su.diff_vs_previous && su.diff_vs_previous.length)
+        ? `<div class="v2-su-diff">
+            <div class="v2-su-diff-head">New since previous standup (${su.diff_vs_previous.length})</div>
+            <ul class="v2-su-diff-bullets">${su.diff_vs_previous.slice(0, 6).map(d => {
+              const html = escapeHtml(d.bullet).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+              return `<li><span class="v2-su-diff-tag">${escapeHtml(d.section)}</span> ${html}</li>`;
+            }).join('')}${su.diff_vs_previous.length > 6 ? '<li class="v2-su-more">+'+(su.diff_vs_previous.length-6)+' more</li>' : ''}</ul>
+          </div>`
+        : '';
+
+      const dateMs = Date.parse(su.meeting_date + 'T00:00:00Z');
+      const ageThisCard = Math.floor((Date.now() - dateMs) / (24*60*60*1000));
+      const fileLabel = `persona-supplements/${su.rep_folder}/${su.file_name}`;
+
+      return `<article class="v2-su-card${idx === 0 ? ' v2-su-card-latest' : ''}">
+        <header class="v2-su-card-head">
+          <div>
+            <span class="v2-su-date">${su.meeting_date}</span>
+            <span class="v2-su-weekday v2-su-weekday-${su.weekday.toLowerCase()}">${escapeHtml(su.weekday)}</span>
+            <span class="v2-su-age">${ageThisCard === 0 ? 'today' : ageThisCard + 'd ago'}</span>
+          </div>
+          <div class="v2-su-title">${escapeHtml(su.title)}</div>
+        </header>
+        ${su.participants ? `<div class="v2-su-participants">${escapeHtml(su.participants)}</div>` : ''}
+        <div class="v2-su-sections">${sectionsHtml || '<div class="v2-su-empty">No structured bullets parsed from this transcript.</div>'}</div>
+        ${diffHtml}
+        <div class="v2-su-source"><code>${escapeHtml(fileLabel)}</code></div>
+      </article>`;
+    }).join('');
+
+    return `
+      <div class="v2-funnel-callout v2-funnel-callout-${tone}" style="margin-bottom:12px">
+        <span class="v2-funnel-callout-label">${ageD <= 2 ? 'Fresh' : ageD <= 5 ? 'Recent' : 'Stale'}</span>
+        <span class="v2-funnel-callout-body">${escapeHtml(ss.headline)}</span>
+      </div>
+      <div class="v2-su-cards">${cards}</div>
+    `;
+  }
+
+  async function loadTeamWorkshopping() {
+    const slot = document.getElementById('brain-team-workshopping');
+    if (!slot) return;
+    try {
+      const ss = await fetchStandupSummary();
+      slot.innerHTML = teamWorkshoppingHtml(ss);
+    } catch (e) {
+      slot.innerHTML = `<div class="v2-empty" style="padding:18px;color:#a64545">Standup summary failed: ${escapeHtml(e.message)}</div>`;
+    }
+  }
+
   function render(container) {
     _container = container;
     container.innerHTML = `
       <div class="v2-section-header">
         <h2 class="v2-section-title">Brain</h2>
-        <p class="v2-section-sub">browse the captured intelligence. profiles tell you what the team does; distillates show what's happened in the field.</p>
+        <p class="v2-section-sub">browse the captured intelligence. team workshopping shows what's been decided; profiles tell you what each rep does; distillates show what's happened in the field.</p>
+      </div>
+
+      <div class="v2-brain-dist-section">
+        <div class="v2-brain-dist-head-section">
+          <h3>Team workshopping · standup decisions and new directions</h3>
+          <span class="v2-brain-dist-count">Mon/Fri standups, parsed</span>
+        </div>
+        <div id="brain-team-workshopping"><div class="v2-loading" style="padding:18px">Loading recent standup summaries…</div></div>
       </div>
 
       <div class="v2-brain-filter-bar">
@@ -386,6 +477,7 @@
     paint();
     paintObjectionCards();
     paintDistillates();
+    loadTeamWorkshopping();
   }
 
   v2Shell.register('brain', render);

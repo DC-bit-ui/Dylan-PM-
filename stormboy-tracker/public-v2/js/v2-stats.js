@@ -2177,89 +2177,6 @@
       </section>`;
   }
 
-  // ====== STANDUP SUMMARY ======
-  // Surfaces latest Mon/Fri standup transcripts with section-parsed
-  // key bullets + a "what's new since previous standup" diff. Renders
-  // near the top of STATS because recent team intel is high-leverage
-  // context for everything below.
-  async function fetchStandupSummary() {
-    try {
-      const r = await fetch('/api/stats/standup-summary');
-      if (!r.ok) return null;
-      return await r.json();
-    } catch (_) { return null; }
-  }
-  function standupSummaryHtml(ss) {
-    if (!ss || !ss.standups || !ss.standups.length) {
-      return `<section class="v2-funnel-section"><div class="v2-empty">No standup transcripts found on the bus yet.</div></section>`;
-    }
-
-    // Tone based on freshness
-    const latest = ss.standups[0];
-    const ageD = latest ? Math.floor((Date.now() - Date.parse(latest.meeting_date + 'T00:00:00Z')) / (24*60*60*1000)) : 999;
-    const tone = ageD <= 2 ? 'good' : ageD <= 5 ? 'flat' : 'bad';
-
-    const cards = ss.standups.map((su, idx) => {
-      const sectionsHtml = su.sections.map(sec => {
-        if (!sec.bullets.length) return '';
-        // Clean up bullet text — strip leading markdown bolding for headers, etc.
-        const items = sec.bullets.slice(0, 8).map(b => {
-          // Render simple bold (**text**) inline
-          const html = escapeHtml(b).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-          return `<li>${html}</li>`;
-        }).join('');
-        const more = sec.bullets.length > 8 ? `<li class="v2-su-more">+${sec.bullets.length - 8} more</li>` : '';
-        return `<div class="v2-su-section">
-          <div class="v2-su-section-name">${escapeHtml(sec.section)}</div>
-          <ul class="v2-su-bullets">${items}${more}</ul>
-        </div>`;
-      }).join('');
-
-      const diffHtml = (su.diff_vs_previous && su.diff_vs_previous.length)
-        ? `<div class="v2-su-diff">
-            <div class="v2-su-diff-head">New since previous standup (${su.diff_vs_previous.length})</div>
-            <ul class="v2-su-diff-bullets">${su.diff_vs_previous.slice(0, 6).map(d => {
-              const html = escapeHtml(d.bullet).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-              return `<li><span class="v2-su-diff-tag">${escapeHtml(d.section)}</span> ${html}</li>`;
-            }).join('')}${su.diff_vs_previous.length > 6 ? '<li class="v2-su-more">+'+(su.diff_vs_previous.length-6)+' more</li>' : ''}</ul>
-          </div>`
-        : '';
-
-      const dateMs = Date.parse(su.meeting_date + 'T00:00:00Z');
-      const ageThisCard = Math.floor((Date.now() - dateMs) / (24*60*60*1000));
-      const fileLabel = `persona-supplements/${su.rep_folder}/${su.file_name}`;
-
-      return `<article class="v2-su-card${idx === 0 ? ' v2-su-card-latest' : ''}">
-        <header class="v2-su-card-head">
-          <div>
-            <span class="v2-su-date">${su.meeting_date}</span>
-            <span class="v2-su-weekday v2-su-weekday-${su.weekday.toLowerCase()}">${escapeHtml(su.weekday)}</span>
-            <span class="v2-su-age">${ageThisCard === 0 ? 'today' : ageThisCard + 'd ago'}</span>
-          </div>
-          <div class="v2-su-title">${escapeHtml(su.title)}</div>
-        </header>
-        ${su.participants ? `<div class="v2-su-participants">${escapeHtml(su.participants)}</div>` : ''}
-        <div class="v2-su-sections">${sectionsHtml || '<div class="v2-su-empty">No structured bullets parsed from this transcript.</div>'}</div>
-        ${diffHtml}
-        <div class="v2-su-source"><code>${escapeHtml(fileLabel)}</code></div>
-      </article>`;
-    }).join('');
-
-    return `
-      <section class="v2-funnel-section">
-        <header class="v2-funnel-head">
-          <h2 class="v2-funnel-title">Recent standups · what's been decided</h2>
-          <div class="v2-funnel-sub">Monday + Friday Storm Boy standup transcripts, parsed for key bullets and "what's new since last time". Sourced from Granola transcripts synced to the bus.</div>
-        </header>
-        <div class="v2-funnel-callout v2-funnel-callout-${tone}">
-          <span class="v2-funnel-callout-label">${ageD <= 2 ? 'Fresh' : ageD <= 5 ? 'Recent' : 'Stale'}</span>
-          <span class="v2-funnel-callout-body">${escapeHtml(ss.headline)}</span>
-        </div>
-        <div class="v2-su-cards">${cards}</div>
-        <div class="v2-funnel-sub" style="margin-top:8px">${ss.caveats.map(c => '· ' + escapeHtml(c)).join('<br>')}</div>
-      </section>`;
-  }
-
   // ====== HOBBS FARM-VISIT CALENDAR ======
   // Forward-focused calendar view of Hobbs's past + booked visits so
   // the team can see how positioned they are moving forward. Each
@@ -2684,7 +2601,6 @@
     // wrapper rendering. Modules are wrapped in a draggable + collapsible
     // shell — user reorder + collapse state persists to localStorage.
     const PILLS_DEFAULT = [
-      { id: 'stats-standup',            label: 'Latest standups',     loading: 'Loading latest standups…' },
       { id: 'stats-efficacy',           label: 'Efficacy',            loading: 'Loading efficacy comparison…' },
       { id: 'stats-pace-forecast',      label: '30k pace + forecast', loading: 'Loading 30k pace + forecast…' },
       { id: 'stats-trajectory',         label: 'Trajectory',          loading: 'Loading trajectory…' },
@@ -2903,10 +2819,6 @@
     // All sections load in parallel. Order in container ≠ order of
     // resolution — the slots above define the visual order; these
     // fetches just fill them as they complete.
-    fetchStandupSummary().then(ss => {
-      const slot = document.getElementById('stats-standup');
-      if (slot) slot.innerHTML = standupSummaryHtml(ss);
-    });
     fetchEfficacy().then(eff => {
       document.getElementById('stats-efficacy').innerHTML = efficacyHeroHtml(eff);
     });
