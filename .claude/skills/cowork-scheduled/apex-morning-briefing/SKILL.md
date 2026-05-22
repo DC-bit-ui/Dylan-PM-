@@ -83,9 +83,35 @@ Pay special attention to:
 - Recurring topics — signals something isn't getting resolved
 - Standup action items — quick wins that get buried
 
-## STEP 4: SCAN TEAMS — STRUCTURED OUTPUT (REWRITTEN 2026-05-20)
+## STEP 4: SCAN TEAMS — STRUCTURED OUTPUT (REWRITTEN 2026-05-22)
 
-Pull the last 18 hours of Teams activity via chat_message_search. Do NOT blend results into a flat list — produce four distinct buckets, each with thread context.
+**CRITICAL — `read_resource` for channels, NOT `chat_message_search`.** `chat_message_search` is blind to channel posts — it only sees DMs and silently returns zero results for channels. This bug existed in v2026-05-20 and caused every Apex run since 2026-04-29 to have ZERO Teams channel visibility. Use `mcp__claude_ai_Microsoft_365__read_resource` per channel URI below; filter client-side by `createdDateTime` to the last 18 hours.
+
+Source contract: `memory/integrations/cowork/apex-data-sources.md`. Channel inventory mirrored here for runtime convenience.
+
+### Required channel inventory (Tier 1 — all must be read)
+
+**Operation Stormboy team** (groupId: `560034d9-961e-44dc-9f25-93fe08bb19ef`):
+- OSB Deals: `teams:///teams/560034d9-961e-44dc-9f25-93fe08bb19ef/channels/19:a987e623bc9e43c5bd47ff3955424c33@thread.tacv2/messages/` — richest signal
+- OSB General: `teams:///teams/560034d9-961e-44dc-9f25-93fe08bb19ef/channels/19:9ZFencCSMMkAQYnRJBQpounrI9gHqfSoJ5lZc8BKjAM1@thread.tacv2/messages/`
+- OSB Standup: `teams:///teams/560034d9-961e-44dc-9f25-93fe08bb19ef/channels/19:ee468569d8c8470ca543c59821faed64@thread.tacv2/messages/`
+- OSB Top of Funnel: `teams:///teams/560034d9-961e-44dc-9f25-93fe08bb19ef/channels/19:ba231945226e4e378172839f651a3a7b@thread.tacv2/messages/`
+
+**Product team** (groupId: `6257a7df-cdec-4e2b-874d-c673782caabb`):
+- General: `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:2ydR2PMGWfJeohnDjbsBUvg5GLX2AP8bupBpJG2IYiY1@thread.tacv2/messages/`
+- Epics: `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:7e0584c8b8d2408193030bb436730e4e@thread.tacv2/messages/` — **highest PM signal**
+- Stand up: `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:54b5f5aba6b64653a19e48eecb6c8e5e@thread.tacv2/messages/`
+- bugs: `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:b37cfa878d304a0cad5ce8710396a729@thread.tacv2/messages/`
+- Tech: `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:248262429ed346549a3d79331424eeae@thread.tacv2/messages/`
+- Platform notifications: `teams:///teams/6257a7df-cdec-4e2b-874d-c673782caabb/channels/19:b44a2798cd814a4db0cbeefeda2b3596@thread.tacv2/messages/` — higher volume, filter aggressively
+
+### DM coverage (separate)
+
+For Teams DMs (1:1 chats), `chat_message_search` IS correct (DMs ARE searchable). Run it for the last 18 hours, filtering for @mentions of Dylan.
+
+### Bucketise the union
+
+Across the union of channel reads + DM search results, produce four distinct buckets — do NOT blend into a flat list:
 
 ### 4a. MENTIONS OF ME
 

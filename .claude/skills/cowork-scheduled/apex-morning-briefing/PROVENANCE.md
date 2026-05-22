@@ -14,12 +14,20 @@
 - [x] **Proof-by-execution:** This is the SKILL.md that Cowork's session uploaded into its working directory at run time. The most recent invocation was 2026-05-20.
 - [ ] **Diff against canonical task_prompt** — not feasible from Claude Code (cross-surface limit). Trust-but-verify on next deploy.
 
-## Pending patches
+## 2026-05-22 patch batch 1 — applied to repo, NOT yet deployed to Cowork
 
-_(None surfaced. Audit at next significant change.)_
+Source: Dylan flagged 2026-05-22 that Apex was missing Teams channel signal (the richest data source for task accuracy). Investigation confirmed Step 4 used `chat_message_search` which is DM-only and silently returns zero results for channel posts.
+
+1. ✅ **Step 4 rewritten — replace `chat_message_search` with `read_resource` per channel URI.** All 4 Operation Stormboy channels + all 6 Product Team channels enumerated inline. DMs still use `chat_message_search` (correct for DMs). Reference: `memory/integrations/cowork/apex-data-sources.md`.
+
+Source contract: `memory/integrations/cowork/apex-data-sources.md` (canonical channel inventory).
+
+Companion patches:
+- `apex-eod-reconciliation/SKILL.md` Step 2c — same fix
+- `memory/learnings/2026-05/2026-05-22-apex-teams-blind.md` — discovery + impact
 
 ## Deploy history
 
 | Date | Change | Deployer | Verified by |
 |------|--------|----------|-------------|
-| _(none yet)_ | | | |
+| _(none yet — pending Prompt G deploy via Cowork)_ | | | |
