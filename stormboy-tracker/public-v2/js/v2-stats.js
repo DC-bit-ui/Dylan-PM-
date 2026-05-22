@@ -2455,7 +2455,31 @@
     //   6. What's flowing post-visit?       → snapshot workflow pipeline (new)
     //   7. How is the team executing?       → Will's call monitor + call quality + heatmap
     //   8. What's working tactically?       → evidence cards (full bus pattern list)
+    // Pill nav — quick-jump to any section. Sticks to top under the
+    // global header; active section auto-highlights as the reader
+    // scrolls (IntersectionObserver wired below).
+    const PILLS = [
+      { id: 'stats-efficacy',           label: 'Efficacy' },
+      { id: 'stats-pace-forecast',      label: '30k pace + forecast' },
+      { id: 'stats-trajectory',         label: 'Trajectory' },
+      { id: 'stats-friction',           label: 'Friction map' },
+      { id: 'stats-funnel',             label: 'Cohort funnel' },
+      { id: 'stats-velocity',           label: 'Outreach motion' },
+      { id: 'stats-lead-response',      label: 'Speed-to-lead' },
+      { id: 'stats-snapshot-pipeline',  label: 'Snapshot workflow' },
+      { id: 'stats-callmon',            label: 'Team calls' },
+      { id: 'stats-callquality',        label: 'Call quality' },
+      { id: 'stats-property-size',      label: 'Property size' },
+      { id: 'stats-geographic',         label: 'NRM regions' },
+      { id: 'stats-evidence',           label: 'Tactical evidence' },
+    ];
+    const pillsHtml = PILLS.map(p =>
+      `<a href="#${p.id}" class="v2-stats-pill" data-target="${p.id}">${escapeHtml(p.label)}</a>`
+    ).join('');
     container.innerHTML = `
+      <nav class="v2-stats-pillnav" id="v2-stats-pillnav">
+        <div class="v2-stats-pillnav-scroller">${pillsHtml}</div>
+      </nav>
       <div id="stats-efficacy"><div class="v2-loading" style="padding:24px">Loading efficacy comparison…</div></div>
       <div id="stats-pace-forecast"><div class="v2-loading" style="padding:24px">Loading 30k pace + forecast…</div></div>
       <div id="stats-trajectory"><div class="v2-loading" style="padding:24px">Loading trajectory…</div></div>
@@ -2536,6 +2560,64 @@
       const slot = document.getElementById('stats-evidence');
       if (slot) slot.innerHTML = evidenceCardsHtml(ev);
     });
+
+    // ===== Pillnav wiring =====
+    // Smooth-scroll on click + auto-highlight active section as the
+    // reader scrolls. IntersectionObserver watches each section; the
+    // pill whose target is most-visible gets the .v2-stats-pill-active
+    // class. Click handler offsets for the sticky nav height so the
+    // section header isn't hidden under the bar.
+    const STICKY_OFFSET = 110; // px — sticky pillnav + global header
+    const pillNav = document.getElementById('v2-stats-pillnav');
+    if (pillNav) {
+      pillNav.querySelectorAll('.v2-stats-pill').forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.getElementById(pill.dataset.target);
+          if (!target) return;
+          const top = target.getBoundingClientRect().top + window.scrollY - STICKY_OFFSET;
+          window.scrollTo({ top, behavior: 'smooth' });
+        });
+      });
+
+      // Observe each section; whichever is closest to top of viewport wins.
+      const visible = new Map();
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          visible.set(entry.target.id, entry.intersectionRatio);
+        });
+        // Pick the section with highest visibility within the top 60% of viewport
+        let activeId = null;
+        let bestRatio = 0;
+        visible.forEach((ratio, id) => {
+          if (ratio > bestRatio) { bestRatio = ratio; activeId = id; }
+        });
+        // Also bias toward the first section that is near the top of viewport
+        const candidates = Array.from(document.querySelectorAll('[id^="stats-"]'))
+          .filter(el => PILLS.some(p => p.id === el.id))
+          .filter(el => {
+            const r = el.getBoundingClientRect();
+            return r.top <= STICKY_OFFSET + 80 && r.bottom > STICKY_OFFSET;
+          });
+        if (candidates.length) activeId = candidates[0].id;
+        if (activeId) {
+          pillNav.querySelectorAll('.v2-stats-pill').forEach(p => {
+            p.classList.toggle('v2-stats-pill-active', p.dataset.target === activeId);
+          });
+        }
+      }, {
+        // Trigger when sections cross into the upper portion of viewport
+        rootMargin: `-${STICKY_OFFSET}px 0px -55% 0px`,
+        threshold: [0, 0.25, 0.5, 0.75, 1.0],
+      });
+      PILLS.forEach(p => {
+        const el = document.getElementById(p.id);
+        if (el) observer.observe(el);
+      });
+      // First section gets active by default
+      pillNav.querySelector('.v2-stats-pill')?.classList.add('v2-stats-pill-active');
+    }
+
     try {
       const res = await fetch('/api/stats/pipeline');
       if (!res.ok) throw new Error('HTTP ' + res.status);

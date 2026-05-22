@@ -843,6 +843,7 @@
       </div>
 
       <div id="work-call-cadence" class="v2-call-cadence-host"></div>
+      <div id="work-calls-by-user" class="v2-calls-by-user-host"></div>
 
       <div class="v2-work-layout">
         <aside class="v2-work-rail-left">
@@ -915,6 +916,7 @@
     if (window.v2Scoreboard && window.v2Scoreboard.refresh) window.v2Scoreboard.refresh();
 
     loadCallCadence();
+    loadCallsByUser();
 
     // Upcoming visits rail — render all booked visits (server filters
     // completed-over-24h-ago and sorts by next-proximal); panel scrolls
@@ -1046,6 +1048,100 @@
       target.innerHTML = renderCallCadenceCard(d);
     } catch (e) {
       target.innerHTML = `<div class="v2-empty" style="color:#a64545;padding:10px 0">Call cadence unavailable: ${e.message}</div>`;
+    }
+  }
+
+  // ===========================================================================
+  // Calls-by-user 12-week chart — summary of who's dialling, week over week.
+  // Stacked bars per week with each rep as a coloured band. Complements the
+  // this-week cadence card by showing the trend (catching slip-and-recovery
+  // patterns the snapshot can't show).
+  // ===========================================================================
+  // Deterministic colour palette — same rep keeps the same colour across runs
+  const REP_COLOURS = {
+    Ben:     '#2d6a4f',
+    Claudia: '#a16207',
+    Hobbs:   '#5a6878',
+    Will:    '#8a3024',
+    // Fallback list cycled for unknown reps
+  };
+  const FALLBACK_COLOURS = ['#7a6da3', '#d8a040', '#3a7a9a', '#b86e58', '#6b8e44'];
+  function repColour(name, idx) {
+    return REP_COLOURS[name] || FALLBACK_COLOURS[idx % FALLBACK_COLOURS.length];
+  }
+  function renderCallsByUserChart(d) {
+    const trend = d.trend || [];
+    if (!trend.length) return '';
+    // Collect rep ordering (most-active first across the whole window)
+    const repTotals = {};
+    trend.forEach(w => (w.by_owner || []).forEach(o => {
+      repTotals[o.owner] = (repTotals[o.owner] || 0) + o.calls;
+    }));
+    const reps = Object.entries(repTotals).sort((a, b) => b[1] - a[1]).map(e => e[0]);
+    if (!reps.length) return '';
+    const maxWeekTotal = Math.max(...trend.map(w => w.calls), 1);
+    const weekColWidthPct = 100 / trend.length;
+
+    // Build stacked bar columns
+    const cols = trend.map(w => {
+      const total = w.calls || 0;
+      const ownerMap = (w.by_owner || []).reduce((m, o) => { m[o.owner] = o.calls; return m; }, {});
+      const heightPct = (total / maxWeekTotal) * 100;
+      const segments = reps.map((rep, i) => {
+        const n = ownerMap[rep] || 0;
+        if (n === 0) return '';
+        const segPct = total > 0 ? (n / total) * 100 : 0;
+        return `<div class="v2-cbu-seg" style="height:${segPct}%;background:${repColour(rep, i)}" title="${escapeHtml(rep)}: ${n} (${w.week_start})"></div>`;
+      }).join('');
+      const dateLabel = w.week_start.slice(5); // MM-DD
+      return `<div class="v2-cbu-col" style="width:${weekColWidthPct}%" title="${w.week_start} · ${total} calls">
+        <div class="v2-cbu-bar-wrap">
+          <div class="v2-cbu-bar" style="height:${Math.max(2, heightPct)}%">${segments}</div>
+          <div class="v2-cbu-bar-total">${total}</div>
+        </div>
+        <div class="v2-cbu-bar-label">${dateLabel}</div>
+      </div>`;
+    }).join('');
+
+    // Legend with per-rep totals + share
+    const grandTotal = Object.values(repTotals).reduce((s, v) => s + v, 0);
+    const legend = reps.map((rep, i) => {
+      const n = repTotals[rep];
+      const share = grandTotal > 0 ? Math.round((n / grandTotal) * 1000) / 10 : 0;
+      return `<span class="v2-cbu-legend-item">
+        <span class="v2-cbu-legend-dot" style="background:${repColour(rep, i)}"></span>
+        ${escapeHtml(rep)} · <strong>${n}</strong> · ${share}%
+      </span>`;
+    }).join('');
+
+    const dateRange = trend.length > 0
+      ? `${trend[0].week_start} → ${trend[trend.length - 1].week_start}`
+      : '';
+
+    return `
+      <div class="v2-calls-by-user-card">
+        <div class="v2-cbu-head">
+          <div>
+            <div class="v2-cbu-title">Calls by rep · last ${trend.length} weeks</div>
+            <div class="v2-cbu-sub">${escapeHtml(dateRange)} · ${grandTotal} total calls · stacked by rep contribution per week</div>
+          </div>
+          <div class="v2-cbu-legend">${legend}</div>
+        </div>
+        <div class="v2-cbu-chart">${cols}</div>
+      </div>
+    `;
+  }
+
+  async function loadCallsByUser() {
+    const target = document.getElementById('work-calls-by-user');
+    if (!target) return;
+    try {
+      const res = await fetch('/api/stats/call-efficiency');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const d = await res.json();
+      target.innerHTML = renderCallsByUserChart(d);
+    } catch (e) {
+      target.innerHTML = `<div class="v2-empty" style="color:#a64545;padding:10px 0">Calls-by-user chart unavailable: ${e.message}</div>`;
     }
   }
 
