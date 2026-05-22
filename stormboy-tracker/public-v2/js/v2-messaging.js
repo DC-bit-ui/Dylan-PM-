@@ -247,26 +247,51 @@
       `).join('');
     }
 
-    const themesHtml = themes.map(t => `
+    // Marketing-grade theme card. Leads with the campaign-ready
+    // assets (headline candidate, marketing angle, supporting quote)
+    // and pushes the source-evidence detail into a collapsed section
+    // so the card reads as "here's what to use" not "here's a tag
+    // cloud of phrases".
+    const themesHtml = themes.map(t => {
+      const hasMarketing = t.marketing_angle || t.headline_candidate || t.supporting_quote;
+      const headline = t.headline_candidate
+        ? `<div class="msg-theme-headline">"${escapeHtml(t.headline_candidate)}"</div>`
+        : '';
+      const angle = t.marketing_angle
+        ? `<div class="msg-theme-angle"><span class="msg-theme-angle-label">Campaign hook</span> ${escapeHtml(t.marketing_angle)}</div>`
+        : '';
+      const supporting = t.supporting_quote
+        ? `<div class="msg-theme-supporting"><span class="msg-theme-supporting-label">Customer voice</span> "${escapeHtml(t.supporting_quote)}"</div>`
+        : '';
+      const fallbackVoice = !hasMarketing
+        ? `<div class="msg-theme-voice">${customerVoiceCard(t.customer_positions, t.quotes)}</div>`
+        : '';
+      return `
       <div class="msg-theme-card ${t.land_rate >= 75 ? 'lands' : (t.friction_count ? 'frictionful' : 'mixed')}">
         <div class="msg-theme-head">
           <div>
             <div class="msg-theme-title">${escapeHtml(t.theme)}</div>
-            <div class="msg-theme-sub">${t.member_label_count || 1} label variant${(t.member_label_count || 1) === 1 ? '' : 's'} · ${t.occurrences} occurrence${t.occurrences === 1 ? '' : 's'} · surfaced by ${(t.reps || ['mixed']).join(', ')}</div>
+            <div class="msg-theme-sub">${t.occurrences} occurrence${t.occurrences === 1 ? '' : 's'} · surfaced by ${(t.reps || ['mixed']).join(', ')}</div>
           </div>
           ${landBadge(t)}
         </div>
-        <div class="msg-theme-voice">
-          ${customerVoiceCard(t.customer_positions, t.quotes)}
-        </div>
-        ${(t.member_labels || []).length > 1 ? `
-          <details class="msg-theme-variants">
-            <summary>Show ${t.member_labels.length} topic-label variants</summary>
-            <ul>${t.member_labels.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>
-          </details>
-        ` : ''}
+        ${headline}
+        ${angle}
+        ${supporting}
+        ${fallbackVoice}
+        <details class="msg-theme-variants">
+          <summary>Source evidence (${(t.customer_positions || []).length} customer positions${(t.member_labels || []).length > 1 ? ' · ' + t.member_labels.length + ' topic variants' : ''})</summary>
+          ${hasMarketing ? `<div class="msg-theme-voice">${customerVoiceCard(t.customer_positions, t.quotes)}</div>` : ''}
+          ${(t.member_labels || []).length > 1 ? `
+            <div class="msg-theme-variants-list">
+              <div class="msg-theme-variants-label">Topic-label variants the clustering merged:</div>
+              <ul>${t.member_labels.map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>
+            </div>
+          ` : ''}
+        </details>
       </div>
-    `).join('') || '<div class="v2-empty" style="padding:24px">No themes match the current filter/view.</div>';
+    `;
+    }).join('') || '<div class="v2-empty" style="padding:24px">No themes match the current filter/view.</div>';
 
     host.innerHTML = `
       <div class="msg-summary-row">
@@ -293,7 +318,7 @@
 
       <div class="v2-stats-honesty" style="margin-top:18px">
         <span class="v2-stats-honesty-label">How marketing should use this</span>
-        <span>Strong-landing themes (top of the list, high land rate) are messaging the campaign should anchor on — these are claims the team can credibly make because the customer is already responding. Friction zones are objections marketing should pre-empt in copy. Customer voice quotes are real landholder phrasings — borrow tone, not just content.</span>
+        <span>Each card surfaces the landholder concern + a campaign-ready headline + the verbatim customer line that makes it credible. Strong-landing themes anchor positive campaign claims; friction themes are objections to pre-empt in copy. Rep-mechanic topics (cold-open style, visit-framing phrases) are intentionally excluded — they have no marketing reapplication.</span>
       </div>
     `;
 

@@ -170,20 +170,69 @@ function groupByTheme(distillates) {
 // cluster them into ~15-25 broader themes once, cache the mapping, and rebuild
 // only when new distillates land (cache invalidates when label count changes).
 
-const CLUSTER_SYSTEM = `You are clustering sales-conversation topic labels into broader marketing themes for an Australian soil-carbon company (AgriProve). The input is a list of topic labels surfaced by reps in real farm-visit and call distillates. The output groups them into 12-22 broader themes that marketing can use to anchor campaign messaging.
+const CLUSTER_SYSTEM = `You are extracting MARKETING-GRADE themes from real sales conversations between AgriProve reps and Australian landholders considering soil-carbon projects. The goal is to produce themes that marketing can use as CAMPAIGN ANCHORS, not a list of call mechanics.
 
-Rules:
-- Each cluster MUST have a short, concrete theme label (4-8 words). Not generic ("trust"); concrete ("track record and operator credibility").
-- Labels that mean the same thing belong together — e.g. "25% revenue split" and "Revenue share / 25% framing" → one cluster.
-- Customer-objection topics ("we'd do this anyway", "permanence concerns") get their own clusters — distinct from positive-framing topics.
-- Order clusters by likely marketing utility (start with what's landing most widely).
-- Do not omit any label — every label must appear in exactly one cluster.`;
+Each input topic comes with:
+- A topic label (what a rep tagged the topic as)
+- 1–2 sample customer positions (verbatim things the landholder said)
+- A land/friction outcome
+
+YOUR JOB
+Cluster these into 12–18 LANDHOLDER-CENTRIC themes that drive marketing reapplication.
+
+CRITICAL FRAMING — what counts as a marketing theme
+
+  KEEP — landholder concern, belief, fear, motivation, or desired outcome:
+    - "25% revenue split as risk transfer, not commission"
+    - "Cycle-grazing already aligned — soil-carbon is the missing monetisation"
+    - "ACCU price volatility worries vs guaranteed pipeline of credits"
+    - "25-year permanence concerns and exit-clause friction"
+    - "Methodology liability transfer over 25 years"
+    - "Neighbour adoption / peer FOMO"
+    - "Carbon credits as a financial product, not a moral one"
+    - "ERF regulator legitimacy and government-backing reassurance"
+    - "Family succession and intergenerational asset framing"
+
+  DROP — rep-mechanic, procedural, or housekeeping topics. These have ZERO marketing value:
+    - "Cold open", "cold-open as your favorite American", "warm intro", "fellowship frame"
+    - "Visit framing", "scheduling the next call", "follow-up timing"
+    - "Internal handoffs", "introducing the team", "first-name + AgriProve"
+    - "Greeting style", "rapport-building", "introducing geographic ties"
+
+  If a candidate cluster is ONLY about how the rep started or framed a conversation, DROP IT entirely — don't include it in the output.
+
+RULES
+- 4–10 word theme name. Concrete, landholder-perspective.
+- Friction themes get their own clusters — counter-arguments are campaign gold.
+- For each cluster, ALSO produce:
+  - marketing_angle: 1-sentence campaign hook this theme could anchor
+  - headline_candidate: punchy 4–12 word headline draft
+  - supporting_quote: the single best verbatim customer line from the inputs (their exact words)
+- Order by marketing utility — most-resonant + most-actionable first.
+
+OUTPUT (strict JSON):
+{
+  "clusters": [
+    {
+      "theme": "concrete landholder-perspective theme (4-10 words)",
+      "marketing_angle": "1-sentence campaign hook",
+      "headline_candidate": "punchy 4-12 word headline",
+      "supporting_quote": "best verbatim customer line",
+      "member_indices": [0, 3, 8]
+    }
+  ]
+}
+
+DO NOT include rep-mechanic clusters. DO NOT pad. Better fewer concrete themes than many shallow ones.`;
 
 // Queue (or check) clustering as an intelligence bundle.
 // Returns one of:
 //   { status: 'completed', clusters: [...] } — bundle result available
 //   { status: 'queued',    bundle_id: 'xyz' } — bundle waiting; no clusters yet
-function queueOrFetchClusters(labels, labelKey, cache) {
+//
+// themesPayload provides per-label context (customer_positions, outcomes)
+// so the LLM can cluster by landholder concern rather than rep-mechanic label.
+function queueOrFetchClusters(labels, labelKey, cache, themesPayload) {
   if (labels.length === 0) return { status: 'completed', clusters: [] };
 
   // If cache has a pending bundle for this labelKey, check the result
@@ -199,32 +248,39 @@ function queueOrFetchClusters(labels, labelKey, cache) {
     return { status: 'queued', bundle_id: cache.bundle_id };
   }
 
-  // No matching cache; create a new bundle
-  const numbered = labels.map((l, i) => `${i}. ${l}`).join('\n');
-  const user = `Cluster these ${labels.length} topic labels into 12-22 broader marketing themes. Return strict JSON only:
-{
-  "clusters": [
-    {
-      "theme": "concrete 4-8 word theme name",
-      "member_indices": [0, 3, 8, 19]
-    },
-    ...
-  ]
-}
+  // No matching cache; create a new bundle.
+  // Pass each label WITH 1-2 sample customer positions so the LLM can
+  // cluster by landholder concern rather than rep-mechanic label.
+  const numbered = labels.map((l, i) => {
+    const cp = (themesPayload && themesPayload[i] && themesPayload[i].customer_positions) || [];
+    const samples = cp.slice(0, 2)
+      .map(c => `   Customer said: "${(c.text || '').slice(0, 180).replace(/"/g, '\\"')}"`)
+      .join('\n');
+    const outcome = themesPayload && themesPayload[i] && themesPayload[i].landed_count > themesPayload[i].friction_count
+      ? '   Outcome: landed'
+      : (themesPayload && themesPayload[i] && themesPayload[i].friction_count > 0)
+      ? '   Outcome: friction'
+      : '';
+    return `${i}. ${l}\n${samples}${outcome ? '\n' + outcome : ''}`;
+  }).join('\n\n');
 
-LABELS:
+  const user = `Below are ${labels.length} topic clusters from real AgriProve sales conversations. Each has the rep's topic label + verbatim customer positions.
+
+Cluster these into 12–18 MARKETING-GRADE landholder-centric themes per the system prompt rules. Drop rep-mechanic clusters entirely. Return strict JSON only.
+
+TOPIC CLUSTERS:
 ${numbered}`;
 
   const meta = createBundle({
     purpose: 'customer-themes-cluster',
     system_prompt: CLUSTER_SYSTEM,
     input_data: user,
-    output_spec: 'Strict JSON: { "clusters": [ { "theme": "...", "member_indices": [...] }, ... ] }',
+    output_spec: 'Strict JSON: { "clusters": [ { "theme": "...", "marketing_angle": "...", "headline_candidate": "...", "supporting_quote": "...", "member_indices": [...] }, ... ] }',
     output_schema: 'json',
     model_hint: 'haiku',
-    target_kind: 'cluster',
+    target_kind: 'marketing-theme-cluster',
     target_file: 'coaching/cache/customer-themes-clusters.json',
-    input_summary: `Customer themes clustering · ${labels.length} labels`,
+    input_summary: `Marketing-grade landholder theme clustering · ${labels.length} input topics`,
     created_by: 'customer-themes.js',
   });
   return { status: 'queued', bundle_id: meta.id };
@@ -252,9 +308,11 @@ function saveClusterCache(c) {
 }
 
 async function clusterThemes(themes, force = false) {
-  // Use the canonical theme label (longest member) as the clustering input
+  // Use the canonical theme label (longest member) as the clustering input.
+  // v2 (2026-05-22) prefix: bumped to invalidate stale rep-mechanic clusters
+  // so the new marketing-grade prompt re-runs against existing data.
   const labels = themes.map(t => t.theme);
-  const labelKey = labels.length + ':' + labels.slice(0, 5).join('|').slice(0, 80);
+  const labelKey = 'v2:' + labels.length + ':' + labels.slice(0, 5).join('|').slice(0, 80);
   let cache = loadClusterCache();
 
   // Cache hit (completed) — use it
@@ -264,9 +322,12 @@ async function clusterThemes(themes, force = false) {
     return applyClusters(themes, cache.clusters);
   }
 
-  // Bundle path: queue or check
-  console.log(`[customer-themes] clustering ${labels.length} labels via bundle queue`);
-  const r = queueOrFetchClusters(labels, labelKey, cache);
+  // Bundle path: queue or check.
+  // Pass themesPayload so the bundle prompt can include customer_positions
+  // alongside each label — the LLM clusters by landholder concern, not by
+  // the rep-mechanic label text.
+  console.log(`[customer-themes] clustering ${labels.length} labels via bundle queue (v2 marketing-grade)`);
+  const r = queueOrFetchClusters(labels, labelKey, cache, themes);
 
   if (r.status === 'completed' && Array.isArray(r.clusters)) {
     cache = {
@@ -312,6 +373,11 @@ function applyClusters(themes, clusters) {
     members.forEach(m => (m.surfaces || []).forEach(r => surfaces.add(r)));
     return {
       theme: c.theme,
+      // NEW marketing-grade fields surfaced by the v2 clustering prompt
+      marketing_angle: c.marketing_angle || null,
+      headline_candidate: c.headline_candidate || null,
+      supporting_quote: c.supporting_quote || null,
+      // Existing fields
       member_labels: members.map(m => m.theme),
       member_label_count: members.length,
       occurrences: occ,

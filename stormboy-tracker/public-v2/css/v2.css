@@ -6175,3 +6175,80 @@ body.v2-ex-overlay-open {
   color: #2d6a4f;
   border-color: #b6b09a;
 }
+
+/* ===== Messaging · marketing-grade theme cards (v2) ===== */
+.msg-theme-headline {
+  font-size: 17px;
+  font-weight: 700;
+  color: #2a2a2a;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+  margin: 8px 0 10px;
+  padding: 8px 12px;
+  background: #fbfaf3;
+  border-left: 3px solid #2d6a4f;
+  border-radius: 3px;
+  font-style: italic;
+}
+.msg-theme-card.frictionful .msg-theme-headline { border-left-color: #8a3024; }
+.msg-theme-card.mixed .msg-theme-headline { border-left-color: #a16207; }
+.msg-theme-angle {
+  margin: 8px 0;
+  font-size: 12.5px;
+  color: #3a3a3a;
+  line-height: 1.5;
+}
+.msg-theme-angle-label {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #2d6a4f;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.msg-theme-card.frictionful .msg-theme-angle-label { color: #8a3024; }
+.msg-theme-card.mixed .msg-theme-angle-label { color: #a16207; }
+.msg-theme-supporting {
+  margin: 8px 0 4px;
+  padding: 8px 10px;
+  background: rgba(45, 106, 79, 0.05);
+  border-radius: 3px;
+  font-size: 12px;
+  color: #2a4a25;
+  line-height: 1.45;
+}
+.msg-theme-card.frictionful .msg-theme-supporting { background: rgba(138, 42, 36, 0.05); color: #6a2a24; }
+.msg-theme-card.mixed .msg-theme-supporting { background: rgba(161, 98, 7, 0.05); color: #6a4a18; }
+.msg-theme-supporting-label {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: inherit;
+  opacity: 0.6;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.msg-theme-variants details summary { cursor: pointer; }
+.msg-theme-variants-list {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #e0dcc4;
+}
+.msg-theme-variants-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  margin-bottom: 4px;
+}
+.msg-theme-variants-list ul {
+  margin: 0;
+  padding-left: 16px;
+  font-size: 11px;
+  color: #6a6a5a;
+}
