@@ -6066,3 +6066,112 @@ body.v2-ex-overlay-open {
   border-radius: 2px;
   font-size: 9.5px;
 }
+
+/* ===== STATS modular containers (collapsible + reorderable) ===== */
+#v2-stats-modules { display: flex; flex-direction: column; gap: 0; }
+.v2-stats-module {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.v2-stats-module + .v2-stats-module { margin-top: 4px; }
+.v2-stats-module.is-dragging {
+  opacity: 0.4;
+}
+.v2-stats-module.is-drag-over {
+  border-color: #2d6a4f;
+  background: rgba(45, 106, 79, 0.04);
+  box-shadow: inset 0 -3px 0 #2d6a4f;
+}
+.v2-mod-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  margin: 0 0 -4px;     /* tight against the section content */
+  background: rgba(0,0,0,0);
+  border-radius: 4px;
+  font-size: 11px;
+  color: #6a6a5a;
+  user-select: none;
+  position: relative;
+  z-index: 2;
+}
+.v2-stats-module:hover .v2-mod-head { background: rgba(45, 106, 79, 0.04); }
+.v2-mod-drag {
+  cursor: grab;
+  border: 0;
+  background: transparent;
+  font-size: 14px;
+  color: #b6b09a;
+  padding: 2px 4px;
+  line-height: 1;
+  letter-spacing: -2px;
+  font-weight: 700;
+}
+.v2-mod-drag:hover { color: #2d6a4f; }
+.v2-mod-drag:active { cursor: grabbing; }
+.v2-mod-label {
+  flex: 1;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  cursor: pointer;
+}
+.v2-stats-module:hover .v2-mod-label { color: #2d6a4f; }
+.v2-mod-up, .v2-mod-down, .v2-mod-toggle {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: #b6b09a;
+  font-size: 9px;
+  padding: 3px 5px;
+  line-height: 1;
+  border-radius: 3px;
+}
+.v2-mod-up:hover, .v2-mod-down:hover, .v2-mod-toggle:hover {
+  color: #2d6a4f;
+  background: rgba(45, 106, 79, 0.08);
+}
+.v2-mod-toggle { font-size: 11px; min-width: 22px; }
+.v2-mod-body {
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+.v2-stats-module.is-collapsed .v2-mod-body {
+  max-height: 0;
+  opacity: 0;
+}
+.v2-stats-module.is-collapsed .v2-mod-head {
+  background: #fbfaf3;
+  border: 1px solid #e0dcc4;
+  border-radius: 4px;
+  margin-bottom: 0;
+  padding: 8px 12px;
+}
+.v2-stats-module.is-collapsed .v2-mod-label { color: #3a3a3a; }
+
+/* Reset link beside pillnav */
+.v2-stats-pillnav { display: flex; align-items: center; gap: 10px; }
+.v2-stats-pillnav-scroller { flex: 1; }
+.v2-stats-pillnav-actions { flex-shrink: 0; }
+.v2-stats-reset {
+  border: 1px solid #d8d4be;
+  background: #fff;
+  color: #6a6a5a;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  letter-spacing: -0.1px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.v2-stats-reset:hover {
+  background: #fbfaf3;
+  color: #2d6a4f;
+  border-color: #b6b09a;
+}

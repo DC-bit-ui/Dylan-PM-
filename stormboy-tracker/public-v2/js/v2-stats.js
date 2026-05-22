@@ -2679,50 +2679,227 @@
     // Pill nav — quick-jump to any section. Sticks to top under the
     // global header; active section auto-highlights as the reader
     // scrolls (IntersectionObserver wired below).
-    const PILLS = [
-      { id: 'stats-standup',            label: 'Latest standups' },
-      { id: 'stats-efficacy',           label: 'Efficacy' },
-      { id: 'stats-pace-forecast',      label: '30k pace + forecast' },
-      { id: 'stats-trajectory',         label: 'Trajectory' },
-      { id: 'stats-friction',           label: 'Friction map' },
-      { id: 'stats-funnel',             label: 'Cohort funnel' },
-      { id: 'stats-velocity',           label: 'Outreach motion' },
-      { id: 'stats-lead-response',      label: 'Speed-to-lead' },
-      { id: 'stats-snapshot-pipeline',  label: 'Snapshot workflow' },
-      { id: 'stats-callmon',            label: 'Team calls' },
-      { id: 'stats-callquality',        label: 'Call quality' },
-      { id: 'stats-hobbs-calendar',     label: 'Hobbs calendar' },
-      { id: 'stats-property-size',      label: 'Property size' },
-      { id: 'stats-geographic',         label: 'NRM regions' },
-      { id: 'stats-evidence',           label: 'Tactical evidence' },
+    // Each section is a module with a stable id + label + default loading text.
+    // The PILLS list drives both the jump-to-section nav AND the per-section
+    // wrapper rendering. Modules are wrapped in a draggable + collapsible
+    // shell — user reorder + collapse state persists to localStorage.
+    const PILLS_DEFAULT = [
+      { id: 'stats-standup',            label: 'Latest standups',     loading: 'Loading latest standups…' },
+      { id: 'stats-efficacy',           label: 'Efficacy',            loading: 'Loading efficacy comparison…' },
+      { id: 'stats-pace-forecast',      label: '30k pace + forecast', loading: 'Loading 30k pace + forecast…' },
+      { id: 'stats-trajectory',         label: 'Trajectory',          loading: 'Loading trajectory…' },
+      { id: 'stats-friction',           label: 'Friction map',        loading: 'Loading friction map…' },
+      { id: 'stats-funnel',             label: 'Cohort funnel',       loading: 'Loading cohort funnel…' },
+      { id: 'stats-velocity',           label: 'Outreach motion',     loading: 'Loading outreach funnel…' },
+      { id: 'stats-lead-response',      label: 'Speed-to-lead',       loading: 'Loading lead-response distribution…' },
+      { id: 'stats-snapshot-pipeline',  label: 'Snapshot workflow',   loading: 'Loading snapshot workflow…' },
+      { id: 'stats-callmon',            label: 'Team calls',          loading: 'Loading team call monitor…' },
+      { id: 'stats-callquality',        label: 'Call quality',        loading: 'Loading call quality + heatmap…' },
+      { id: 'stats-hobbs-calendar',     label: 'Hobbs calendar',      loading: 'Loading Hobbs farm visit calendar…' },
+      { id: 'stats-property-size',      label: 'Property size',       loading: 'Loading property-size insights…' },
+      { id: 'stats-geographic',         label: 'NRM regions',         loading: 'Loading geographic insights…' },
+      { id: 'stats-evidence',           label: 'Tactical evidence',   loading: 'Loading tactical evidence…' },
     ];
+
+    // ===== Load saved order + collapsed state =====
+    function loadSavedOrder() {
+      try {
+        const raw = localStorage.getItem('v2-stats-order');
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (_) { return null; }
+    }
+    function saveOrder(idsInOrder) {
+      try { localStorage.setItem('v2-stats-order', JSON.stringify(idsInOrder)); } catch (_) {}
+    }
+    function loadCollapsedState() {
+      try {
+        const raw = localStorage.getItem('v2-stats-collapsed');
+        return raw ? JSON.parse(raw) : {};
+      } catch (_) { return {}; }
+    }
+    function saveCollapsedState(state) {
+      try { localStorage.setItem('v2-stats-collapsed', JSON.stringify(state)); } catch (_) {}
+    }
+    function resolveSectionOrder() {
+      // Apply saved order; append any new sections not in the saved order
+      // (so a new section gets added without wiping the user's customisation)
+      const saved = loadSavedOrder();
+      const defaultIds = PILLS_DEFAULT.map(p => p.id);
+      if (!saved) return PILLS_DEFAULT.slice();
+      const savedFiltered = saved.filter(id => defaultIds.includes(id));
+      const missing = defaultIds.filter(id => !savedFiltered.includes(id));
+      return [...savedFiltered, ...missing].map(id => PILLS_DEFAULT.find(p => p.id === id));
+    }
+
+    const PILLS = resolveSectionOrder();
+    const collapsedState = loadCollapsedState();
     const pillsHtml = PILLS.map(p =>
-      `<a href="#${p.id}" class="v2-stats-pill" data-target="${p.id}">${escapeHtml(p.label)}</a>`
+      `<a href="#mod-${p.id}" class="v2-stats-pill" data-target="${p.id}">${escapeHtml(p.label)}</a>`
     ).join('');
+
+    // Module wrapper template: drag handle + label + collapse toggle,
+    // body div retains the original section id so existing fetch().then(slot.innerHTML=...) keeps working.
+    function moduleHtml(p) {
+      const isCollapsed = !!collapsedState[p.id];
+      return `<section class="v2-stats-module ${isCollapsed ? 'is-collapsed' : ''}"
+                       id="mod-${p.id}"
+                       data-section-id="${p.id}"
+                       draggable="true">
+        <header class="v2-mod-head">
+          <button class="v2-mod-drag" title="Drag to reorder" aria-label="Drag handle">⋮⋮</button>
+          <span class="v2-mod-label">${escapeHtml(p.label)}</span>
+          <button class="v2-mod-up" title="Move up" aria-label="Move up">▲</button>
+          <button class="v2-mod-down" title="Move down" aria-label="Move down">▼</button>
+          <button class="v2-mod-toggle" title="Collapse / expand" aria-label="Toggle collapse" aria-expanded="${!isCollapsed}">${isCollapsed ? '▸' : '▾'}</button>
+        </header>
+        <div class="v2-mod-body">
+          <div id="${p.id}"><div class="v2-loading" style="padding:24px">${escapeHtml(p.loading)}</div></div>
+        </div>
+      </section>`;
+    }
+    const modulesHtml = PILLS.map(moduleHtml).join('');
+
     container.innerHTML = `
       <nav class="v2-stats-pillnav" id="v2-stats-pillnav">
         <div class="v2-stats-pillnav-scroller">${pillsHtml}</div>
+        <div class="v2-stats-pillnav-actions">
+          <button class="v2-stats-reset" id="v2-stats-reset-order" title="Reset to default order + expand all">↻ reset</button>
+        </div>
       </nav>
-      <div id="stats-standup"><div class="v2-loading" style="padding:24px">Loading latest standups…</div></div>
-      <div id="stats-efficacy"><div class="v2-loading" style="padding:24px">Loading efficacy comparison…</div></div>
-      <div id="stats-pace-forecast"><div class="v2-loading" style="padding:24px">Loading 30k pace + forecast…</div></div>
-      <div id="stats-trajectory"><div class="v2-loading" style="padding:24px">Loading trajectory…</div></div>
-      <div id="stats-friction"><div class="v2-loading" style="padding:24px">Loading friction map…</div></div>
-      <div id="stats-funnel"><div class="v2-loading" style="padding:24px">Loading cohort funnel…</div></div>
-      <div id="stats-velocity"><div class="v2-loading" style="padding:24px">Loading outreach funnel…</div></div>
-      <div id="stats-lead-response"><div class="v2-loading" style="padding:24px">Loading lead-response distribution…</div></div>
-      <div id="stats-snapshot-pipeline"><div class="v2-loading" style="padding:24px">Loading snapshot workflow…</div></div>
-      <div id="stats-callmon"><div class="v2-loading" style="padding:24px">Loading team call monitor…</div></div>
-      <div id="stats-callquality"><div class="v2-loading" style="padding:24px">Loading call quality + heatmap…</div></div>
-      <div id="stats-hobbs-calendar"><div class="v2-loading" style="padding:24px">Loading Hobbs farm visit calendar…</div></div>
-      <div id="stats-property-size"><div class="v2-loading" style="padding:24px">Loading property-size insights…</div></div>
-      <div id="stats-geographic"><div class="v2-loading" style="padding:24px">Loading geographic insights…</div></div>
-      <div id="stats-evidence"><div class="v2-loading" style="padding:24px">Loading tactical evidence…</div></div>
+      <div id="v2-stats-modules">${modulesHtml}</div>
       <div class="v2-section-header" style="margin-top:24px">
         <h2 class="v2-section-title">Detail · process refinement</h2>
         <p class="v2-section-sub">drill-downs by sub-tab — kept for cohort breakdowns; the redesigned story above is the primary view.</p>
       </div>
       <div id="stats-content"><div class="v2-loading">Loading from HubSpot…</div></div>`;
+
+    // ===== Wire module controls (collapse + reorder) =====
+    const modulesRoot = document.getElementById('v2-stats-modules');
+    function persistOrderFromDOM() {
+      const ids = Array.from(modulesRoot.querySelectorAll('.v2-stats-module'))
+        .map(el => el.dataset.sectionId);
+      saveOrder(ids);
+      // Re-sync pillnav order to match
+      rebuildPillNavFromDOM(ids);
+    }
+    function rebuildPillNavFromDOM(ids) {
+      const pillnav = document.querySelector('.v2-stats-pillnav-scroller');
+      if (!pillnav) return;
+      const lookup = Object.fromEntries(PILLS_DEFAULT.map(p => [p.id, p]));
+      pillnav.innerHTML = ids
+        .map(id => lookup[id])
+        .filter(Boolean)
+        .map(p => `<a href="#mod-${p.id}" class="v2-stats-pill" data-target="${p.id}">${escapeHtml(p.label)}</a>`)
+        .join('');
+      wirePillNavClicks();
+    }
+
+    function wirePillNavClicks() {
+      const STICKY_OFFSET = 130;
+      document.querySelectorAll('.v2-stats-pill').forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.getElementById(pill.dataset.target);
+          const moduleEl = target ? target.closest('.v2-stats-module') : null;
+          if (!moduleEl) return;
+          // Auto-expand if collapsed
+          if (moduleEl.classList.contains('is-collapsed')) {
+            toggleCollapse(moduleEl, false);
+          }
+          const top = moduleEl.getBoundingClientRect().top + window.scrollY - STICKY_OFFSET;
+          window.scrollTo({ top, behavior: 'smooth' });
+        });
+      });
+    }
+
+    function toggleCollapse(moduleEl, forceState) {
+      const id = moduleEl.dataset.sectionId;
+      const newCollapsed = forceState !== undefined ? forceState : !moduleEl.classList.contains('is-collapsed');
+      moduleEl.classList.toggle('is-collapsed', newCollapsed);
+      const btn = moduleEl.querySelector('.v2-mod-toggle');
+      if (btn) {
+        btn.textContent = newCollapsed ? '▸' : '▾';
+        btn.setAttribute('aria-expanded', String(!newCollapsed));
+      }
+      const state = loadCollapsedState();
+      if (newCollapsed) state[id] = true;
+      else delete state[id];
+      saveCollapsedState(state);
+    }
+
+    // Click handlers on module headers (delegated)
+    modulesRoot.addEventListener('click', (e) => {
+      const moduleEl = e.target.closest('.v2-stats-module');
+      if (!moduleEl) return;
+      if (e.target.closest('.v2-mod-toggle') || e.target.closest('.v2-mod-label')) {
+        toggleCollapse(moduleEl);
+        return;
+      }
+      if (e.target.closest('.v2-mod-up')) {
+        const prev = moduleEl.previousElementSibling;
+        if (prev && prev.classList.contains('v2-stats-module')) {
+          modulesRoot.insertBefore(moduleEl, prev);
+          persistOrderFromDOM();
+        }
+        return;
+      }
+      if (e.target.closest('.v2-mod-down')) {
+        const next = moduleEl.nextElementSibling;
+        if (next && next.classList.contains('v2-stats-module')) {
+          modulesRoot.insertBefore(next, moduleEl);
+          persistOrderFromDOM();
+        }
+        return;
+      }
+    });
+
+    // Drag-and-drop reorder
+    let dragSrc = null;
+    modulesRoot.addEventListener('dragstart', (e) => {
+      const moduleEl = e.target.closest('.v2-stats-module');
+      if (!moduleEl) return;
+      // Only drag from the handle area — but accept drag from anywhere in head
+      // (some browsers don't constrain drag origin to the handle even with draggable=false)
+      dragSrc = moduleEl;
+      moduleEl.classList.add('is-dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', moduleEl.dataset.sectionId); } catch (_) {}
+    });
+    modulesRoot.addEventListener('dragend', () => {
+      if (dragSrc) dragSrc.classList.remove('is-dragging');
+      modulesRoot.querySelectorAll('.is-drag-over').forEach(el => el.classList.remove('is-drag-over'));
+      dragSrc = null;
+    });
+    modulesRoot.addEventListener('dragover', (e) => {
+      const moduleEl = e.target.closest('.v2-stats-module');
+      if (!moduleEl || moduleEl === dragSrc) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      modulesRoot.querySelectorAll('.is-drag-over').forEach(el => {
+        if (el !== moduleEl) el.classList.remove('is-drag-over');
+      });
+      moduleEl.classList.add('is-drag-over');
+    });
+    modulesRoot.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const target = e.target.closest('.v2-stats-module');
+      if (!target || !dragSrc || target === dragSrc) return;
+      // Insert before or after based on cursor position relative to target midpoint
+      const rect = target.getBoundingClientRect();
+      const after = e.clientY > rect.top + rect.height / 2;
+      modulesRoot.insertBefore(dragSrc, after ? target.nextSibling : target);
+      target.classList.remove('is-drag-over');
+      persistOrderFromDOM();
+    });
+
+    // Reset button
+    document.getElementById('v2-stats-reset-order')?.addEventListener('click', () => {
+      localStorage.removeItem('v2-stats-order');
+      localStorage.removeItem('v2-stats-collapsed');
+      // Reload to re-render from scratch — simpler than DOM reshuffle
+      window.location.reload();
+    });
     // All sections load in parallel. Order in container ≠ order of
     // resolution — the slots above define the visual order; these
     // fetches just fill them as they complete.
@@ -2796,58 +2973,44 @@
 
     // ===== Pillnav wiring =====
     // Smooth-scroll on click + auto-highlight active section as the
-    // reader scrolls. IntersectionObserver watches each section; the
+    // reader scrolls. IntersectionObserver watches each module; the
     // pill whose target is most-visible gets the .v2-stats-pill-active
-    // class. Click handler offsets for the sticky nav height so the
-    // section header isn't hidden under the bar.
-    const STICKY_OFFSET = 110; // px — sticky pillnav + global header
+    // class. Click handler offsets for the sticky nav height + auto-
+    // expands the target module if it's collapsed.
+    const STICKY_OFFSET = 130;
+    wirePillNavClicks();
     const pillNav = document.getElementById('v2-stats-pillnav');
     if (pillNav) {
-      pillNav.querySelectorAll('.v2-stats-pill').forEach(pill => {
-        pill.addEventListener('click', (e) => {
-          e.preventDefault();
-          const target = document.getElementById(pill.dataset.target);
-          if (!target) return;
-          const top = target.getBoundingClientRect().top + window.scrollY - STICKY_OFFSET;
-          window.scrollTo({ top, behavior: 'smooth' });
-        });
-      });
-
-      // Observe each section; whichever is closest to top of viewport wins.
+      // Observe each module wrapper. Active = module whose top edge has
+      // just crossed under the sticky nav.
       const visible = new Map();
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-          visible.set(entry.target.id, entry.intersectionRatio);
+          visible.set(entry.target.dataset.sectionId, entry.intersectionRatio);
         });
-        // Pick the section with highest visibility within the top 60% of viewport
-        let activeId = null;
-        let bestRatio = 0;
-        visible.forEach((ratio, id) => {
-          if (ratio > bestRatio) { bestRatio = ratio; activeId = id; }
-        });
-        // Also bias toward the first section that is near the top of viewport
-        const candidates = Array.from(document.querySelectorAll('[id^="stats-"]'))
-          .filter(el => PILLS.some(p => p.id === el.id))
+        const candidates = Array.from(document.querySelectorAll('.v2-stats-module'))
           .filter(el => {
             const r = el.getBoundingClientRect();
             return r.top <= STICKY_OFFSET + 80 && r.bottom > STICKY_OFFSET;
           });
-        if (candidates.length) activeId = candidates[0].id;
+        let activeId = candidates[0] ? candidates[0].dataset.sectionId : null;
+        if (!activeId) {
+          // Fall back to highest visibility
+          let bestRatio = 0;
+          visible.forEach((ratio, id) => {
+            if (ratio > bestRatio) { bestRatio = ratio; activeId = id; }
+          });
+        }
         if (activeId) {
           pillNav.querySelectorAll('.v2-stats-pill').forEach(p => {
             p.classList.toggle('v2-stats-pill-active', p.dataset.target === activeId);
           });
         }
       }, {
-        // Trigger when sections cross into the upper portion of viewport
         rootMargin: `-${STICKY_OFFSET}px 0px -55% 0px`,
         threshold: [0, 0.25, 0.5, 0.75, 1.0],
       });
-      PILLS.forEach(p => {
-        const el = document.getElementById(p.id);
-        if (el) observer.observe(el);
-      });
-      // First section gets active by default
+      document.querySelectorAll('.v2-stats-module').forEach(el => observer.observe(el));
       pillNav.querySelector('.v2-stats-pill')?.classList.add('v2-stats-pill-active');
     }
 
