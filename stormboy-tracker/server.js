@@ -453,6 +453,23 @@ app.get('/api/stats/call-analytics', async (req, res) => {
   }
 });
 
+// Standup summary — surfaces latest Mon/Fri standup transcripts with
+// key bullets, participants, and a "what's new since last time" diff.
+// Source: persona-supplements/<rep>/granola-*standup*.md on the bus.
+// 1-hour disk cache.
+app.get('/api/stats/standup-summary', async (req, res) => {
+  try {
+    const { run } = require('./coaching/engine/standup-summary');
+    res.json(await run({
+      limit: req.query.limit ? parseInt(req.query.limit, 10) : undefined,
+      force: req.query.force === '1',
+    }));
+  } catch (e) {
+    console.error('standup-summary failed:', e);
+    res.status(500).json({ error: 'standup-summary failed', detail: e.message });
+  }
+});
+
 // Hobbs's farm visit calendar — past + booked visits with a
 // forward-focused window so the team can monitor pipeline of visits.
 // 15-min cache.
