@@ -34,6 +34,7 @@
 
 const { hubspotFetch } = require('./hubspot-client');
 const { postcodeToNRM, normalizePostcode } = require('./nrm-regions');
+const transcriptMatcher = require('./transcript-matcher');
 
 const HUBSPOT_BASE = 'https://api.hubapi.com';
 const HOBBS_OWNER_ID = '361236574';
@@ -140,17 +141,35 @@ function contactName(c) {
   return (p.hs_full_name_or_email || '').trim() || ('contact #' + c.id);
 }
 
-function classifyOutcome(meeting, now) {
+function classifyOutcome(meeting, contact, now) {
   const startMs = Date.parse(meeting.properties.hs_meeting_start_time);
   const outcome = (meeting.properties.hs_meeting_outcome || '').toUpperCase();
   const isPast = startMs < now;
-  if (outcome === 'CANCELED') return { state: 'canceled', label: 'Canceled' };
-  if (outcome === 'NO_SHOW')  return { state: 'no_show',  label: 'No-show' };
-  if (outcome === 'COMPLETED') return { state: 'completed', label: 'Completed' };
-  if (outcome === 'RESCHEDULED') return { state: 'rescheduled', label: 'Rescheduled' };
+  if (outcome === 'CANCELED') return { state: 'canceled', label: 'Canceled', transcript: null };
+  if (outcome === 'NO_SHOW')  return { state: 'no_show',  label: 'No-show', transcript: null };
+  if (outcome === 'COMPLETED') return { state: 'completed', label: 'Completed', transcript: null };
+  if (outcome === 'RESCHEDULED') return { state: 'rescheduled', label: 'Rescheduled', transcript: null };
   // SCHEDULED (the default) — classify by time
-  if (isPast) return { state: 'likely_happened', label: 'Likely happened (unmarked)' };
-  return { state: 'booked', label: 'Booked' };
+  if (!isPast) return { state: 'booked', label: 'Booked', transcript: null };
+
+  // PAST + SCHEDULED — opportunistic transcript confirmation gate.
+  // If a farm-visit transcript exists on the bus matching the contact's
+  // name + visit date, elevate to "confirmed_via_transcript". Otherwise
+  // keep as "likely_happened" but flag for manual confirmation.
+  const cp = contact && contact.properties ? contact.properties : {};
+  const match = transcriptMatcher.findMatch({
+    first_name: cp.firstname,
+    last_name: cp.lastname,
+    meeting_iso: meeting.properties.hs_meeting_start_time,
+  });
+  if (match) {
+    return {
+      state: 'confirmed_via_transcript',
+      label: `Confirmed via transcript (${match.confidence})`,
+      transcript: match,
+    };
+  }
+  return { state: 'likely_happened', label: 'Likely happened (no transcript yet)', transcript: null };
 }
 
 async function run({ ownerId = HOBBS_OWNER_ID, pastWeeks = DEFAULT_PAST_WEEKS, futureWeeks = DEFAULT_FUTURE_WEEKS, force = false } = {}) {
@@ -175,14 +194,12 @@ async function run({ ownerId = HOBBS_OWNER_ID, pastWeeks = DEFAULT_PAST_WEEKS, f
   const contactMap = await fetchContactsBatch(token, allContactIds);
 
   const byDay = {};
-  let counts = { booked: 0, completed: 0, likely_happened: 0, no_show: 0, canceled: 0, rescheduled: 0 };
+  let counts = { booked: 0, completed: 0, confirmed_via_transcript: 0, likely_happened: 0, no_show: 0, canceled: 0, rescheduled: 0 };
   meetings.forEach(m => {
     const startMs = Date.parse(m.properties.hs_meeting_start_time);
     if (!startMs) return;
     const dayKey = isoDay(startMs);
     if (!byDay[dayKey]) byDay[dayKey] = [];
-    const outcomeInfo = classifyOutcome(m, now);
-    counts[outcomeInfo.state]++;
 
     // First associated contact wins for the visit label
     const contactIds = assoc[m.id] || [];
@@ -190,6 +207,8 @@ async function run({ ownerId = HOBBS_OWNER_ID, pastWeeks = DEFAULT_PAST_WEEKS, f
     for (const cid of contactIds) {
       if (contactMap[cid]) { primary = contactMap[cid]; break; }
     }
+    const outcomeInfo = classifyOutcome(m, primary, now);
+    counts[outcomeInfo.state]++;
     const name = primary ? contactName(primary) : (m.properties.hs_meeting_title || 'Farm visit');
     const cp = primary ? (primary.properties || {}) : {};
     const pc = normalizePostcode(cp.zip || cp.postal_code);
@@ -206,6 +225,7 @@ async function run({ ownerId = HOBBS_OWNER_ID, pastWeeks = DEFAULT_PAST_WEEKS, f
       outcome: m.properties.hs_meeting_outcome,
       state: outcomeInfo.state,
       state_label: outcomeInfo.label,
+      transcript_match: outcomeInfo.transcript,
       is_past: startMs < now,
       is_future: startMs >= now,
       stage: cp.contact_lead_stage_storm_boy,
@@ -290,6 +310,7 @@ async function run({ ownerId = HOBBS_OWNER_ID, pastWeeks = DEFAULT_PAST_WEEKS, f
       meetings: meetings.length,
       booked: counts.booked,
       completed: counts.completed,
+      confirmed_via_transcript: counts.confirmed_via_transcript,
       likely_happened: counts.likely_happened,
       no_show: counts.no_show,
       canceled: counts.canceled,
@@ -300,7 +321,8 @@ async function run({ ownerId = HOBBS_OWNER_ID, pastWeeks = DEFAULT_PAST_WEEKS, f
     headline,
     caveats: [
       `Sourced from HubSpot meeting engagements via /crm/v3/objects/meetings/search filtered by hubspot_owner_id = ${ownerId}. This is the authoritative source — Hobbs's calendar syncs here.`,
-      `Outcome classification: future + SCHEDULED = "booked"; past + COMPLETED = "completed"; past + SCHEDULED = "likely happened (unmarked)" because the team rarely updates outcome post-visit; explicit NO_SHOW / CANCELED honored.`,
+      `Outcome classification: future + SCHEDULED = "booked"; past + COMPLETED = "completed"; past + SCHEDULED = "likely happened" UNLESS a matching transcript is found on the bus (then elevated to "confirmed via transcript"); explicit NO_SHOW / CANCELED honored.`,
+      `Transcript-confirmation gate scans persona-supplements/hobbs/confluence-farmvisit-*.md for a contact-name match within ±3 days. Match confidence (high/medium/low) shown per visit when matched. Absence of a match does NOT downgrade — many visits don't have transcripts uploaded yet.`,
       `Contact name on each chip is the first associated contact. Where no contact association exists, falls back to meeting title.`,
     ],
     from_cache: false,

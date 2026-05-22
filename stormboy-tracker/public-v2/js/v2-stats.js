@@ -2213,15 +2213,38 @@
           d.visit_count > 0 ? 'v2-cal-has-visits' : 'v2-cal-empty',
         ].filter(Boolean).join(' ');
         const visits = (d.visits || []).map(v => {
-          const visitCls = [
-            'v2-cal-chip',
-            v.completed ? 'v2-cal-chip-done' : '',
-            v.is_no_show ? 'v2-cal-chip-noshow' : '',
-            (!v.is_past) ? 'v2-cal-chip-booked' : '',
-          ].filter(Boolean).join(' ');
-          const sub = [v.meeting_local_time, v.nrm_region || v.state || v.city].filter(Boolean).join(' · ');
-          return `<a href="${v.hubspot_url}" target="_blank" class="${visitCls}" title="${escapeHtml(v.name + ' · ' + sub)}">
-            <span class="v2-cal-chip-name">${escapeHtml(v.name)}</span>
+          // State-driven styling for past visits:
+          //   completed / confirmed_via_transcript → green (done)
+          //   likely_happened                       → amber (unconfirmed)
+          //   no_show                               → red
+          //   booked (future)                       → bright green
+          //   canceled / rescheduled                → grey
+          let stateCls = '';
+          let stateBadge = '';
+          if (v.state === 'completed' || v.state === 'confirmed_via_transcript') {
+            stateCls = 'v2-cal-chip-done';
+            if (v.state === 'confirmed_via_transcript' && v.transcript_match) {
+              stateBadge = `<span class="v2-cal-chip-badge v2-cal-badge-${v.transcript_match.confidence}" title="${escapeHtml('Transcript: ' + v.transcript_match.slug + ' · ' + v.transcript_match.reasons.join(' · '))}">✓ T${v.transcript_match.confidence === 'high' ? '' : v.transcript_match.confidence === 'medium' ? '?' : '·'}</span>`;
+            }
+          } else if (v.state === 'likely_happened') {
+            stateCls = 'v2-cal-chip-unconfirmed';
+            stateBadge = `<span class="v2-cal-chip-badge v2-cal-badge-unconfirmed" title="Past but no completion outcome marked + no transcript match. Verify with Hobbs.">?</span>`;
+          } else if (v.state === 'no_show') {
+            stateCls = 'v2-cal-chip-noshow';
+          } else if (v.state === 'booked') {
+            stateCls = 'v2-cal-chip-booked';
+          } else if (v.state === 'canceled' || v.state === 'rescheduled') {
+            stateCls = 'v2-cal-chip-canceled';
+          }
+          const visitCls = `v2-cal-chip ${stateCls}`;
+          const sub = [v.start_local_time, v.nrm_region || v.state_au || v.city].filter(Boolean).join(' · ');
+          const tooltipBase = v.name + ' · ' + sub + ' · ' + v.state_label;
+          const tooltip = v.transcript_match
+            ? tooltipBase + '\nTranscript: ' + v.transcript_match.slug + ' (' + v.transcript_match.confidence + ')'
+            : tooltipBase;
+          const href = v.hubspot_url || v.meeting_url;
+          return `<a href="${href}" target="_blank" class="${visitCls}" title="${escapeHtml(tooltip)}">
+            <span class="v2-cal-chip-name">${escapeHtml(v.name)}${stateBadge}</span>
             ${sub ? `<span class="v2-cal-chip-sub">${escapeHtml(sub)}</span>` : ''}
           </a>`;
         }).join('');
@@ -2260,17 +2283,22 @@
         <div class="v2-funnel-summary">
           <div class="v2-funnel-summary-cell" style="border-left-color:#2d6a4f">
             <div class="v2-funnel-summary-cohort">Completed</div>
-            <div class="v2-funnel-summary-flow"><strong>${t.completed}</strong></div>
+            <div class="v2-funnel-summary-flow"><strong>${(t.completed || 0) + (t.confirmed_via_transcript || 0)}</strong></div>
+            <div class="v2-funnel-summary-rate">${t.completed || 0} explicitly marked · ${t.confirmed_via_transcript || 0} confirmed via transcript</div>
           </div>
           <div class="v2-funnel-summary-cell" style="border-left-color:#3a6ea5">
             <div class="v2-funnel-summary-cohort">Booked forward</div>
-            <div class="v2-funnel-summary-flow"><strong>${t.scheduled}</strong></div>
+            <div class="v2-funnel-summary-flow"><strong>${t.booked || 0}</strong></div>
           </div>
-          <div class="v2-funnel-summary-cell" style="border-left-color:#8a3024">
-            <div class="v2-funnel-summary-cohort">Past, no completion logged</div>
-            <div class="v2-funnel-summary-flow"><strong>${t.no_show}</strong></div>
-            <div class="v2-funnel-summary-rate">May be unmarked rather than no-show</div>
+          <div class="v2-funnel-summary-cell" style="border-left-color:#a16207">
+            <div class="v2-funnel-summary-cohort">Past, unconfirmed</div>
+            <div class="v2-funnel-summary-flow"><strong>${t.likely_happened || 0}</strong></div>
+            <div class="v2-funnel-summary-rate">No outcome marked + no transcript on bus — verify with Hobbs</div>
           </div>
+          ${(t.no_show || t.canceled) ? `<div class="v2-funnel-summary-cell" style="border-left-color:#8a3024">
+            <div class="v2-funnel-summary-cohort">No-show / canceled</div>
+            <div class="v2-funnel-summary-flow"><strong>${(t.no_show || 0) + (t.canceled || 0)}</strong></div>
+          </div>` : ''}
         </div>
         <div class="v2-cal-layout">
           <div class="v2-cal-grid">
