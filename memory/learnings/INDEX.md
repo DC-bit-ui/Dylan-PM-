@@ -5,6 +5,10 @@
 ## Recent (last 30 days)
 | Date | Type | Title | File |
 |---|---|---|---|
+| 2026-05-22 | PM scope / auto-cancel | Auto-cancel must check Outlook sent items for commercial/vendor tasks before firing — Paniri Gen 6 work was complete when EOD cancelled it | `2026-05/2026-05-22-auto-cancel-check-commercial-tasks.md` |
+| 2026-05-22 | PM scope | DB permissions are Cadel's responsibility — do not create Notion tasks for Dylan to grant access | `2026-05/2026-05-22-db-permissions-cadels-responsibility.md` |
+| 2026-05-22 | PM scope | Jira ticket assignment — devs self-assign when ready; Dylan does not chase assignment; only flag to Cadel if deadline-critical and >2 sprints unassigned | `2026-05/2026-05-22-jira-ticket-assignment-not-dylan.md` |
+| 2026-05-21 | infrastructure / deploy-safety | OneDrive transiently truncates `.claude/skills/cowork-scheduled/*/SKILL.md` in the working tree — Cowork deploys must pre-flight-check sentinels + halt-don't-heal; incident #4 of OneDrive contention | `2026-05/2026-05-21-skill-md-onedrive-truncation.md` |
 | 2026-05-12 | durable compliance fact | Letter of Offer (220615) key clauses — verbatim text for cl 13.1, 19, 20, 21; corrects 5 interpretation errors from original handoff; basis for career-portfolio 9 Rules | `2026-05/2026-05-12-letter-of-offer-key-clauses.md` |
 | 2026-05-12 | business-intelligence | SLT 12 May — strategic pivot (two priorities May–Jul: recruit + Sch 2), cash discipline rules, entity structure live issue | `2026-05/2026-05-12-slt-strategic-pivot-and-cash-discipline.md` |
 | 2026-05-11 | compliance | Letter of Offer (220615) key clauses (cl 13.1, 19, 20, 21) + 5 interpretation shifts correcting handoff brief errors — durable compliance facts for career portfolio | `2026-05/2026-05-11-letter-of-offer-compliance-clauses.md` |
