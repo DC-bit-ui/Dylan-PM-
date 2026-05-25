@@ -44,11 +44,183 @@ const SOURCES = [
   { file: 'email_distillates.json',       label: 'Emails',             rep: null,   surface: 'email' },
 ];
 
+// Bus locations for evolving sources (interviews + standups + manual themes).
+// Auto-discovered — new files matching the patterns automatically flow in.
+const BUS_ROOT = process.env.BUS_PATH || require('path').join('C:', 'Dylan PM', 'shared-growth-memory');
+const PERSONA_SUPPLEMENTS_DIR = path.join(BUS_ROOT, 'persona-supplements');
+const INBOX_GRANOLA_DIR = path.join('C:', 'Dylan PM', 'inbox', 'granola');
+
+// Patterns we treat as marketing-resonance signal sources:
+//   manual-interview-*.md       — Dylan's team-member interviews (reflective syntheses, high signal)
+//   manual-hobbs-feedback-*.md  — peer feedback captured in interviews
+//   *-interview.md              — any other interview format (inbox or bus)
+//   granola-*standup*.md        — Mon/Fri standup transcripts (weekly resonance signals)
+//   manual-standup-*.md         — manual standup commitment captures
+//   resonance-*.md / theme-*.md — explicit resonance/theme notes (future-proofing)
+const EVOLVING_SOURCE_PATTERNS = [
+  { pattern: /^manual-interview-\d{4}-\d{2}-\d{2}\.md$/i,      surface: 'interview',  weight: 3 },
+  { pattern: /^manual-[a-z-]+-feedback-\d{4}-\d{2}-\d{2}\.md$/i, surface: 'interview', weight: 2 },
+  { pattern: /interview\.md$/i,                                  surface: 'interview',  weight: 3 },
+  { pattern: /granola.*standup.*\.md$/i,                         surface: 'standup',    weight: 2 },
+  { pattern: /^manual-standup-.*\.md$/i,                         surface: 'standup',    weight: 2 },
+  { pattern: /^(resonance|theme)-.*\.md$/i,                      surface: 'manual-note', weight: 3 },
+];
+
 function loadJson(p) {
   try {
     if (!fs.existsSync(p)) return null;
     return JSON.parse(fs.readFileSync(p, 'utf8'));
   } catch (_) { return null; }
+}
+
+// Parse a markdown interview / standup / theme note into synthetic
+// distillate records. Each H3 (`###`) becomes a topic; each bullet
+// beneath it becomes a customer_position. Strips emoji prefixes and
+// markdown bold for cleaner clustering input.
+//
+// Heuristic: bullets that look like rep-mechanics ("rapport", "open",
+// "intro") are DOWNWEIGHTED — we keep them so the cluster prompt can
+// see them, but the prompt's DROP rules will exclude them. Bullets
+// quoting a customer in italics or with quote chars get marked as
+// 'landed' (someone reflected they resonate).
+function parseInterviewMarkdown(filePath, opts) {
+  let text;
+  try { text = fs.readFileSync(filePath, 'utf8'); } catch (_) { return []; }
+  if (!text || text.length < 50) return [];
+  const fileName = path.basename(filePath);
+  const out = [];
+  const lines = text.split(/\r?\n/);
+  let currentH3 = null;
+  let currentTopic = null;
+  for (const raw of lines) {
+    const line = raw.replace(/\r$/, '');
+    // Detect H3 heading (### Topic name) — start of a new topic block
+    const h3 = line.match(/^###\s+(.+?)\s*$/);
+    if (h3) {
+      currentH3 = h3[1]
+        .replace(/^[^\w]+/, '')         // strip leading emoji/whitespace
+        .replace(/\*\*/g, '')           // strip markdown bold
+        .trim();
+      currentTopic = currentH3;
+      continue;
+    }
+    // Detect H2 (## Topic) as fallback
+    const h2 = line.match(/^##\s+(.+?)\s*$/);
+    if (h2) {
+      currentH3 = h2[1].replace(/^[^\w]+/, '').replace(/\*\*/g, '').trim();
+      currentTopic = currentH3;
+      continue;
+    }
+    // Bullets (- or *)
+    const bullet = line.match(/^\s*[-*]\s+(.+?)\s*$/);
+    if (!bullet || !currentTopic) continue;
+    let body = bullet[1].trim();
+    if (body.length < 15) continue;
+    // Detect quoted/italicised customer phrasing as a stronger signal
+    const hasQuote = /["“][^"”]{8,}["”]|[*_][^*_]{15,}[*_]/.test(body);
+    // Strip leading "**Label:**" or "**Term** —" decoration but keep the meat
+    body = body.replace(/^\*\*[^*]+\*\*\s*[—:-]\s*/, '');
+    // Skip pure rep-mechanic bullets — the cluster prompt drops these anyway
+    if (/^(intro|cold[\s-]?open|warm[\s-]?up|rapport|fellowship|greet)/i.test(body)) {
+      // Keep but mark as rep_mechanic so we can downweight later
+    }
+    out.push({
+      topic_label: currentTopic,
+      topic_normalised: normaliseTopic(currentTopic),
+      customer_position: body,
+      rep_response: '',
+      landed_or_friction: hasQuote ? 'landed' : 'landed', // interviews capture reflective insights — treat all as landed
+      quotable_phrasing: hasQuote ? body.slice(0, 280) : '',
+      confidence: 'high',
+      rep: opts.rep || null,
+      surface: opts.surface,
+      source_file: fileName,
+      source_path: filePath,
+      source_meta: { kind: opts.surface, weight: opts.weight || 1 },
+    });
+  }
+  return out;
+}
+
+// Auto-discover interview / standup / theme markdown files in:
+//   1. shared-growth-memory/persona-supplements/<rep>/
+//   2. inbox/granola/ (local — not yet synced to bus)
+//
+// Returns parsed distillates ready to merge with the JSON sources.
+//
+// Dedup strategy:
+//   - Standups land in EVERY rep's persona folder (4 copies of the same
+//     team meeting). Dedup by filename so each standup is ingested once.
+//   - Interviews are per-rep (Hobbs's interview ≠ Ben's interview) so
+//     they don't dedup by name. But the SAME file can appear at both an
+//     inbox path and a bus path → dedup by content hash of the first
+//     400 chars too.
+function loadEvolvingSources() {
+  const out = [];
+  const found = [];
+  const seenFileNames = new Set();   // standup dedup
+  const seenContentHashes = new Set(); // any-source content dedup
+
+  function contentHash(text) {
+    let h = 5381;
+    const sample = text.slice(0, 400);
+    for (let i = 0; i < sample.length; i++) h = ((h * 33) ^ sample.charCodeAt(i)) >>> 0;
+    return String(h);
+  }
+
+  function scanDir(dir, defaultRep) {
+    if (!fs.existsSync(dir)) return;
+    let files;
+    try { files = fs.readdirSync(dir); } catch (_) { return; }
+    for (const file of files) {
+      const fullPath = path.join(dir, file);
+      let stat;
+      try { stat = fs.statSync(fullPath); } catch (_) { continue; }
+      if (stat.isDirectory()) {
+        // Per-rep subdirs in persona-supplements/
+        scanDir(fullPath, file);
+        continue;
+      }
+      if (!file.endsWith('.md')) continue;
+      const match = EVOLVING_SOURCE_PATTERNS.find(p => p.pattern.test(file));
+      if (!match) continue;
+
+      // Standups are team-wide artifacts that get synced into every rep
+      // folder. Skip if we've seen this filename already — the first
+      // ingest wins (whichever rep folder iterated first).
+      if (match.surface === 'standup' && seenFileNames.has(file)) continue;
+
+      // Content-hash dedup for files that may appear at both inbox + bus paths
+      let text;
+      try { text = fs.readFileSync(fullPath, 'utf8'); } catch (_) { continue; }
+      const hash = contentHash(text);
+      if (seenContentHashes.has(hash)) continue;
+      seenContentHashes.add(hash);
+      if (match.surface === 'standup') seenFileNames.add(file);
+
+      const rep = defaultRep
+        ? (defaultRep.charAt(0).toUpperCase() + defaultRep.slice(1))
+        : null;
+      const parsed = parseInterviewMarkdown(fullPath, {
+        rep,
+        surface: match.surface,
+        weight: match.weight,
+      });
+      if (parsed.length) {
+        out.push(...parsed);
+        found.push({
+          file: path.relative(BUS_ROOT, fullPath).replace(/\\/g, '/'),
+          surface: match.surface,
+          rep,
+          distillates: parsed.length,
+        });
+      }
+    }
+  }
+
+  scanDir(PERSONA_SUPPLEMENTS_DIR, null);
+  scanDir(INBOX_GRANOLA_DIR, null);
+  return { distillates: out, sources_found: found };
 }
 
 function normaliseTopic(s) {
@@ -401,14 +573,27 @@ function applyClusters(themes, clusters) {
 async function run(opts = {}) {
   const allDistillates = [];
   const sourcesLoaded = [];
+
+  // 1) Structured distillate JSONs (existing path)
   SOURCES.forEach(s => {
     const p = path.join(CACHE_DIR, s.file);
     const data = loadJson(p);
     if (!data) return;
     const extracted = extractDistillates(data, s);
     allDistillates.push(...extracted);
-    sourcesLoaded.push({ file: s.file, label: s.label, distillates: extracted.length });
+    sourcesLoaded.push({ file: s.file, label: s.label, surface: s.surface, distillates: extracted.length });
   });
+
+  // 2) Evolving markdown sources — interviews, standups, manual theme notes.
+  // Auto-discovered from the bus + inbox so the surface grows whenever Dylan
+  // captures more material. Higher-weight sources (interviews especially)
+  // carry "reflective" signal — the rep's own synthesis of what's resonating.
+  const evolving = loadEvolvingSources();
+  allDistillates.push(...evolving.distillates);
+  evolving.sources_found.forEach(s => sourcesLoaded.push({
+    file: s.file, label: s.surface, surface: s.surface,
+    rep: s.rep, distillates: s.distillates,
+  }));
 
   const rawThemes = groupByTheme(allDistillates);
   const themes = await clusterThemes(rawThemes, !!opts.force);

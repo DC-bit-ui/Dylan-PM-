@@ -266,12 +266,35 @@
       const fallbackVoice = !hasMarketing
         ? `<div class="msg-theme-voice">${customerVoiceCard(t.customer_positions, t.quotes)}</div>`
         : '';
+      // Evidence-mix badge — shows which sources contributed.
+      // Interview / standup signal = the rep reflected this is resonating,
+      // higher confidence than transcript chunks alone.
+      const surfaces = t.surfaces || [];
+      const surfaceCounts = {};
+      (t.customer_positions || []).forEach(cp => {
+        const s = cp.surface || 'unknown';
+        surfaceCounts[s] = (surfaceCounts[s] || 0) + 1;
+      });
+      const evidencePills = Object.entries(surfaceCounts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([s, n]) => {
+          const cls = s === 'interview' ? 'msg-evidence-pill msg-ev-interview'
+                    : s === 'standup'   ? 'msg-evidence-pill msg-ev-standup'
+                    : s === 'farm visit' ? 'msg-evidence-pill msg-ev-visit'
+                    : s === 'call'       ? 'msg-evidence-pill msg-ev-call'
+                    : 'msg-evidence-pill';
+          return `<span class="${cls}" title="${escapeHtml(s)} (${n})">${escapeHtml(s)} · ${n}</span>`;
+        }).join('');
+      const reflectiveFlag = (surfaces.includes('interview') || surfaces.includes('standup'))
+        ? `<span class="msg-evidence-flag" title="Validated through team reflection — interview or standup mention, not just transcript chunk">✓ team-reflected</span>`
+        : '';
       return `
       <div class="msg-theme-card ${t.land_rate >= 75 ? 'lands' : (t.friction_count ? 'frictionful' : 'mixed')}">
         <div class="msg-theme-head">
           <div>
             <div class="msg-theme-title">${escapeHtml(t.theme)}</div>
-            <div class="msg-theme-sub">${t.occurrences} occurrence${t.occurrences === 1 ? '' : 's'} · surfaced by ${(t.reps || ['mixed']).join(', ')}</div>
+            <div class="msg-theme-sub">${t.occurrences} occurrence${t.occurrences === 1 ? '' : 's'} · ${(t.reps || ['mixed']).join(', ')}</div>
+            ${evidencePills ? `<div class="msg-evidence-row">${evidencePills}${reflectiveFlag}</div>` : ''}
           </div>
           ${landBadge(t)}
         </div>

@@ -6252,3 +6252,39 @@ body.v2-ex-overlay-open {
   font-size: 11px;
   color: #6a6a5a;
 }
+
+/* ===== Messaging · evidence mix pills ===== */
+.msg-evidence-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.msg-evidence-pill {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: #f0eeda;
+  color: #6a6a5a;
+  border: 1px solid #e0dcc4;
+  font-variant-numeric: tabular-nums;
+}
+.msg-ev-interview { background: #d8e5d2; color: #1f4f30; border-color: #b6cda8; }
+.msg-ev-standup   { background: #fef3df; color: #6a4a18; border-color: #e6c89c; }
+.msg-ev-visit     { background: #e8e0d2; color: #5a4a25; border-color: #d8c69c; }
+.msg-ev-call      { background: #e0e6ec; color: #2a4a6a; border-color: #b6c8d8; }
+.msg-evidence-flag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: #2d6a4f;
+  color: #fff;
+  margin-left: 2px;
+}
