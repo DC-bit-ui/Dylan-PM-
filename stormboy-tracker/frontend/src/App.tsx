@@ -9,7 +9,7 @@ import { HealthPage } from '@/pages/HealthPage';
 import { MessagingPage } from '@/pages/MessagingPage';
 import { BrainPage } from '@/pages/BrainPage';
 import { WorkPage } from '@/pages/WorkPage';
-import { PlaceholderPage } from '@/pages/PlaceholderPage';
+import { StatsPage } from '@/pages/StatsPage';
 
 // Root component. Per CPO guide: theme → ChakraProvider, global state
 // → ContextProvider, routing → react-router-dom v6 BrowserRouter.
@@ -24,7 +24,7 @@ export function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/ask" element={<AskPage />} />
               <Route path="/work" element={<WorkPage />} />
-              <Route path="/stats" element={<PlaceholderPage name="Stats" v2Anchor="stats" />} />
+              <Route path="/stats" element={<StatsPage />} />
               <Route path="/messaging" element={<MessagingPage />} />
               <Route path="/brain" element={<BrainPage />} />
               <Route path="/health" element={<HealthPage />} />
