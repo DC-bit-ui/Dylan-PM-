@@ -360,4 +360,26 @@ async function buildQueues() {
   return summary;
 }
 
-module.exports = { buildQueues, ownerSlug, OWNER_SLUGS };
+// Wrapper that respects the BUS_WRITES_ENABLED gate and swallows errors.
+// Call this from any code path that refreshes deal-diagnoses or contact-
+// diagnoses caches so the per-rep work-cards stay in sync with what the
+// dashboard renders. Without this, the bus only refreshes on the daily 5am
+// scheduler fire — UI-triggered cache refreshes left Ben's queue stale for
+// up to 24h (and indefinitely if the server restarted between fires).
+async function buildQueuesIfEnabled(reason) {
+  if (process.env.BUS_WRITES_ENABLED !== 'true') {
+    console.log(`[rep-queues] skipped (BUS_WRITES_ENABLED!=true) — reason: ${reason || 'unspecified'}`);
+    return { skipped: true };
+  }
+  try {
+    const r = await buildQueues();
+    const counts = Object.fromEntries(Object.entries(r.reps).map(([k, v]) => [k, v.card_count]));
+    console.log(`[rep-queues] rebuilt after ${reason || 'unspecified'}:`, counts);
+    return r;
+  } catch (e) {
+    console.error(`[rep-queues] rebuild after ${reason || 'unspecified'} failed:`, e.message);
+    return { error: e.message };
+  }
+}
+
+module.exports = { buildQueues, buildQueuesIfEnabled, ownerSlug, OWNER_SLUGS };

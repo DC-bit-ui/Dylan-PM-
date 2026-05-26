@@ -187,6 +187,7 @@ async function runBatch({ stages = ['Farm Visit completed', 'In Conversation'] }
     _jobState.finished_at = new Date().toISOString();
     _jobState.current_contact = null;
     console.log(`[contact-batch] DONE. ${_jobState.completed_count}/${_jobState.target_count} succeeded.`);
+    await require('./rep-queues').buildQueuesIfEnabled('diagnose-active-contacts batch');
   })().catch(e => {
     _jobState.running = false;
     _jobState.finished_at = new Date().toISOString();

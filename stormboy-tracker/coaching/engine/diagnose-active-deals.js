@@ -173,6 +173,7 @@ async function runBatch({ limit = 20 } = {}) {
     _jobState.finished_at = new Date().toISOString();
     _jobState.current_deal = null;
     console.log(`[diagnose-batch] DONE. ${_jobState.completed_count}/${_jobState.target_count} succeeded.`);
+    await require('./rep-queues').buildQueuesIfEnabled('diagnose-active-deals batch');
   })().catch(e => {
     _jobState.running = false;
     _jobState.finished_at = new Date().toISOString();
