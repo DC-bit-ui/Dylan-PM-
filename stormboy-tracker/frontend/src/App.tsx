@@ -8,6 +8,7 @@ import { AskPage } from '@/pages/AskPage';
 import { HealthPage } from '@/pages/HealthPage';
 import { MessagingPage } from '@/pages/MessagingPage';
 import { BrainPage } from '@/pages/BrainPage';
+import { WorkPage } from '@/pages/WorkPage';
 import { PlaceholderPage } from '@/pages/PlaceholderPage';
 
 // Root component. Per CPO guide: theme → ChakraProvider, global state
@@ -22,7 +23,7 @@ export function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/ask" element={<AskPage />} />
-              <Route path="/work" element={<PlaceholderPage name="Work" v2Anchor="work" />} />
+              <Route path="/work" element={<WorkPage />} />
               <Route path="/stats" element={<PlaceholderPage name="Stats" v2Anchor="stats" />} />
               <Route path="/messaging" element={<MessagingPage />} />
               <Route path="/brain" element={<BrainPage />} />
