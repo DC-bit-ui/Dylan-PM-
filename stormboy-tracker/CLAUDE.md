@@ -1,5 +1,15 @@
 # Stormboy Conversion Tracker
 
+## 🚧 Frontend rewrite in flight (decided 2026-05-26)
+
+The dashboard is being rewritten from vanilla JS to **React 18 + TypeScript + Vite + Chakra UI v2 + Apollo-shape hooks** so it can merge into AgriProve's main frontend (`frontend/src/`). All NEW frontend work must follow the CPO vibe-coding guide.
+
+- Standing rules: `../memory/decisions/2026-05-26-cpo-vibe-coding-guide.md` (canonical)
+- Rewrite plan + sequence: `../memory/decisions/2026-05-26-stormboy-tracker-frontend-rewrite.md`
+- Existing `public-v2/` remains live during the migration; new surfaces go in `frontend/` (TBC)
+
+**Backend stays Node/Express** per the guide's "tiny Express app as throwaway scaffolding" allowance. REST endpoints unchanged; Apollo `services/*Client.ts` files swap to GraphQL at merge time.
+
 ## What this is
 Live HubSpot pipeline dashboard for AgriProve's sales team. Tracks conversion times, era comparisons (Legacy → KCT → Stormboy v1/v2), loss analysis, Stormboy recruitment funnel, and AI-powered insights via Claude Haiku.
 

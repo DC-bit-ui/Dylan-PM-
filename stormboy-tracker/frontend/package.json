@@ -1,0 +1,38 @@
+{
+  "name": "stormboy-tracker-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Stormboy Tracker · React 18 + TS + Vite + Chakra v2 + Apollo. Per CPO vibe-coding guide (memory/decisions/2026-05-26-cpo-vibe-coding-guide.md).",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@apollo/client": "^3.11.10",
+    "@chakra-ui/icons": "^2.2.4",
+    "@chakra-ui/react": "^2.10.4",
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@fontsource/lato": "^5.1.0",
+    "@hookform/resolvers": "^3.9.1",
+    "framer-motion": "^11.13.1",
+    "graphql": "^16.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.54.0",
+    "react-router-dom": "^6.28.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}

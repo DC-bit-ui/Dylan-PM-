@@ -19,3 +19,5 @@
 | 2026-05-11 | 9 Portfolio Rules — standing compliance rules for all career-portfolio content creation (cl 19, 20, 21, HSE003, Privacy Act, draft policies) | Dylan | accepted | `2026-05-11-portfolio-rules.md` |
 | 2026-05-11 | No AgriProve proprietary data into external AI tools for portfolio creation — self-imposed pending organisational AI policy | Dylan | accepted | `2026-05-11-no-proprietary-data-in-ai-for-portfolio.md` |
 | 2026-05-12 | Career Portfolio — 9 Rules (standing rules synthesised from full AgriProve policy review + Letter of Offer verbatim) | Dylan | accepted | `2026-05-12-career-portfolio-9-rules.md` |
+| 2026-05-26 | CPO vibe-coding guide — React 18 + TS + Vite + Chakra UI v2 + Apollo for any frontend code meant to merge into `frontend/src/` | CPO (via Dylan) | accepted | `2026-05-26-cpo-vibe-coding-guide.md` |
+| 2026-05-26 | Stormboy Tracker frontend rewrite — migrate vanilla JS → React+TS+Chakra+Apollo to merge into AgriProve main frontend. Backend stays Node/Express until merge. | Dylan | accepted | `2026-05-26-stormboy-tracker-frontend-rewrite.md` |

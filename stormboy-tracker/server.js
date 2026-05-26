@@ -18,9 +18,16 @@ try {
 const app = express();
 app.use(express.json({ limit: '1mb' }));
 
-// v2 served at /v2 (exploration of new 4-tab restructure). Order matters: v2 mount
-// must be registered before the root static mount so /v2/* assets resolve there.
+// Static mounts (order matters — more-specific paths first so /v2/* and
+// /v3/* assets resolve before the root static fallback).
+//
+// /v2 → vanilla JS dashboard (current production, stays live during the
+//       React rewrite per memory/decisions/2026-05-26-stormboy-tracker-
+//       frontend-rewrite.md).
+// /v3 → React 18 + TS + Vite + Chakra v2 build (CPO vibe-coding guide).
+//       Built into public-react/ by `cd frontend && npm run build`.
 app.use('/v2', express.static(path.join(__dirname, 'public-v2')));
+app.use('/v3', express.static(path.join(__dirname, 'public-react')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const HUBSPOT_TOKEN = process.env.HUBSPOT_TOKEN;
@@ -1306,6 +1313,12 @@ app.post('/api/ai/analyze', async (req, res) => {
 // ---------------------------------------------------------------------------
 app.get('/v2*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public-v2', 'index.html'));
+});
+app.get('/v3*', (req, res) => {
+  // React SPA — react-router handles client-side routing; the server
+  // only needs to serve index.html for any /v3/* path that didn't
+  // match a static asset.
+  res.sendFile(path.join(__dirname, 'public-react', 'index.html'));
 });
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

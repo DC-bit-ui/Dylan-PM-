@@ -1,2 +1,11 @@
 node_modules/
 .env
+
+# React frontend build output (per memory/decisions/2026-05-26-stormboy-tracker-frontend-rewrite.md).
+# Vite emits the production build into public-react/ — generated artifact, not committed.
+public-react/
+
+# Vite dev caches
+frontend/dist/
+frontend/.vite/
+frontend/node_modules/.tmp/
