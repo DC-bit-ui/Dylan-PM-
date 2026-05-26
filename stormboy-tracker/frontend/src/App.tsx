@@ -4,6 +4,7 @@ import { theme } from '@/utils/theme';
 import { ContextProvider } from '@/utils/ContextProvider';
 import { AppShell } from '@/components/AppShell';
 import { HomePage } from '@/pages/HomePage';
+import { AskPage } from '@/pages/AskPage';
 import { PlaceholderPage } from '@/pages/PlaceholderPage';
 
 // Root component. Per CPO guide: theme → ChakraProvider, global state
@@ -17,7 +18,7 @@ export function App() {
           <AppShell>
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/ask" element={<PlaceholderPage name="Ask" v2Anchor="ask" />} />
+              <Route path="/ask" element={<AskPage />} />
               <Route path="/work" element={<PlaceholderPage name="Work" v2Anchor="work" />} />
               <Route path="/stats" element={<PlaceholderPage name="Stats" v2Anchor="stats" />} />
               <Route path="/messaging" element={<PlaceholderPage name="Messaging" v2Anchor="messaging" />} />

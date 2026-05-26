@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { useCurrentUser } from '@/utils/ContextProvider';
+import { useRouteTracker } from '@/hooks/useRouteTracker';
 import { TabNav } from './TabNav';
 
 // Top-level app shell — header bar with brand + color-mode toggle,
@@ -25,6 +26,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const headerBg = useColorModeValue('white', 'gray.900');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const user = useCurrentUser();
+  useRouteTracker();
 
   return (
     <Flex direction="column" minH="100vh">
