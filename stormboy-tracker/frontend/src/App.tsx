@@ -6,6 +6,7 @@ import { AppShell } from '@/components/AppShell';
 import { HomePage } from '@/pages/HomePage';
 import { AskPage } from '@/pages/AskPage';
 import { HealthPage } from '@/pages/HealthPage';
+import { MessagingPage } from '@/pages/MessagingPage';
 import { PlaceholderPage } from '@/pages/PlaceholderPage';
 
 // Root component. Per CPO guide: theme → ChakraProvider, global state
@@ -22,7 +23,7 @@ export function App() {
               <Route path="/ask" element={<AskPage />} />
               <Route path="/work" element={<PlaceholderPage name="Work" v2Anchor="work" />} />
               <Route path="/stats" element={<PlaceholderPage name="Stats" v2Anchor="stats" />} />
-              <Route path="/messaging" element={<PlaceholderPage name="Messaging" v2Anchor="messaging" />} />
+              <Route path="/messaging" element={<MessagingPage />} />
               <Route path="/brain" element={<PlaceholderPage name="Brain" v2Anchor="brain" />} />
               <Route path="/health" element={<HealthPage />} />
             </Routes>
