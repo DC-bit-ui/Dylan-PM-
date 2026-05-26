@@ -384,15 +384,7 @@
     container.innerHTML = `
       <div class="v2-section-header">
         <h2 class="v2-section-title">Brain</h2>
-        <p class="v2-section-sub">browse the captured intelligence. team workshopping shows what's been decided; profiles tell you what each rep does; distillates show what's happened in the field.</p>
-      </div>
-
-      <div class="v2-brain-dist-section">
-        <div class="v2-brain-dist-head-section">
-          <h3>Team workshopping · standup decisions and new directions</h3>
-          <span class="v2-brain-dist-count">Mon/Fri standups, parsed</span>
-        </div>
-        <div id="brain-team-workshopping"><div class="v2-loading" style="padding:18px">Loading recent standup summaries…</div></div>
+        <p class="v2-section-sub">browse the captured intelligence. profiles tell you what each rep does; objection plays + distillates show what's happened in the field; team workshopping (at the bottom) shows what's been recently decided.</p>
       </div>
 
       <div class="v2-brain-filter-bar">
@@ -424,6 +416,14 @@
           <span class="v2-brain-dist-count" id="brain-dist-count">…</span>
         </div>
         <div class="v2-brain-dist-grid" id="brain-dist-grid"><div class="v2-loading">Loading distillates…</div></div>
+      </div>
+
+      <div class="v2-brain-dist-section">
+        <div class="v2-brain-dist-head-section">
+          <h3>Team workshopping · standup decisions and new directions</h3>
+          <span class="v2-brain-dist-count">Mon/Fri standups, parsed</span>
+        </div>
+        <div id="brain-team-workshopping"><div class="v2-loading" style="padding:18px">Loading recent standup summaries…</div></div>
       </div>
     `;
 
