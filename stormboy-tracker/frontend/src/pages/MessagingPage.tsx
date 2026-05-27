@@ -28,6 +28,7 @@ import { RepeatIcon, SearchIcon } from '@chakra-ui/icons';
 import { useMemo, useState } from 'react';
 import { useCustomerThemes } from '@/hooks/useCustomerThemes';
 import { ThemeCard } from '@/components/messaging/ThemeCard';
+import { QueuedNotice } from '@/components/QueuedNotice';
 import type { CustomerTheme } from '@/types/customerThemes';
 
 type ViewMode = 'all' | 'landed' | 'friction';
@@ -104,6 +105,15 @@ export function MessagingPage() {
           <AlertIcon />
           Customer themes unavailable: {error.message}
         </Alert>
+      )}
+
+      {data?.clustering && (
+        <QueuedNotice
+          status={data.clustering.status}
+          asOf={data.clustering.clustered_at || data.generated_at}
+          resource="Themes"
+          bundleId={data.clustering.bundle_id}
+        />
       )}
 
       {/* Summary row */}

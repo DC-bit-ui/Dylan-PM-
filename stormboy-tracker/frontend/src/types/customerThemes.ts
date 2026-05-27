@@ -48,8 +48,15 @@ export interface CustomerThemesSummary {
   sources_loaded: ThemeSourceLoaded[];
 }
 
+export interface ClusteringStatus {
+  status: 'queued' | 'completed';
+  bundle_id: string | null;
+  clustered_at: string | null;
+}
+
 export interface CustomerThemesResponse {
   generated_at: string;
+  clustering?: ClusteringStatus;
   summary: CustomerThemesSummary;
   themes: CustomerTheme[];
   top_landed_themes: CustomerTheme[];

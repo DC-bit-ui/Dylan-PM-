@@ -20,6 +20,7 @@ import {
 } from '@chakra-ui/react';
 import { RepeatIcon } from '@chakra-ui/icons';
 import { useSystemHealth } from '@/hooks/useSystemHealth';
+import { useBundleQueueHealth } from '@/hooks/useBundleQueueHealth';
 import { HealthCard, type HealthStatus } from '@/components/health/HealthCard';
 import { HealthPill } from '@/components/health/HealthPill';
 import type {
@@ -89,12 +90,43 @@ function HealthWidgets({ data }: { data: SystemHealth }) {
     <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
       <BusWidget data={data} />
       <ApexWidget data={data} />
+      <BundleQueueWidget />
       <SupplementsWidget data={data} />
       <PatternsWidget data={data} />
       <ProbesWidget data={data} />
       <HeuristicErrorsWidget data={data} />
       <FeedbackWidget data={data} />
     </SimpleGrid>
+  );
+}
+
+// Intelligence-queue monitor — surfaces the subscription-compute bundle queue
+// (ported from v2). Since the metered API was removed, analytic refreshes flow
+// through this queue; a stalled processor shows up here before it causes stale
+// dashboards. Self-fetches from /api/intelligence/health.
+function BundleQueueWidget() {
+  const { data, loading, error } = useBundleQueueHealth();
+  if (loading && !data) return <Skeleton h="140px" rounded="md" />;
+  if (error || !data) {
+    return (
+      <HealthCard
+        title="Intelligence queue"
+        status="neutral"
+        big="—"
+        sub={error ? error.message : 'unavailable'}
+        meta="Subscription-compute bundle queue"
+      />
+    );
+  }
+  const status: HealthStatus = data.alert ? 'bad' : 'ok';
+  return (
+    <HealthCard
+      title="Intelligence queue"
+      status={status}
+      big={`${data.queued} queued`}
+      sub={`oldest ${data.oldest_queued_age_human} · ${data.completed} done · ${data.failed} failed · ${data.claimed} in-flight`}
+      meta={data.alert_reason || 'Bundle processor keeping up — subscription compute healthy'}
+    />
   );
 }
 
