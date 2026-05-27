@@ -19,6 +19,11 @@ interface StatsSectionProps {
   defaultOpen?: boolean;
   collapsedStorageKey?: string;
   children: ReactNode;
+  // Controlled mode: when `isOpen` is provided, the parent owns the open
+  // state (and its persistence). Used by StatsPage to gate per-section fetches
+  // on visibility. Falls back to internal self-managed state when omitted.
+  isOpen?: boolean;
+  onToggle?: () => void;
 }
 
 // Section wrapper. Persists open/closed state to localStorage so the user's
@@ -31,7 +36,10 @@ export function StatsSection({
   defaultOpen = true,
   collapsedStorageKey,
   children,
+  isOpen: isOpenProp,
+  onToggle: onToggleProp,
 }: StatsSectionProps) {
+  const controlled = isOpenProp !== undefined;
   const storageKey = collapsedStorageKey || `v3-stats-collapsed-${id}`;
   const initialOpen = (() => {
     try {
@@ -41,13 +49,16 @@ export function StatsSection({
     } catch {/* noop */}
     return defaultOpen;
   })();
-  const { isOpen, onToggle } = useDisclosure({ defaultIsOpen: initialOpen });
+  const disc = useDisclosure({ defaultIsOpen: initialOpen });
+  const isOpen = controlled ? (isOpenProp as boolean) : disc.isOpen;
+  const onToggle = controlled ? (onToggleProp ?? (() => {})) : disc.onToggle;
 
   useEffect(() => {
+    if (controlled) return; // parent owns persistence in controlled mode
     try {
-      localStorage.setItem(storageKey, (!isOpen).toString());
+      localStorage.setItem(storageKey, (!disc.isOpen).toString());
     } catch {/* noop */}
-  }, [isOpen, storageKey]);
+  }, [disc.isOpen, storageKey, controlled]);
 
   const bg = useColorModeValue('white', 'gray.800');
   const border = useColorModeValue('gray.200', 'gray.700');
