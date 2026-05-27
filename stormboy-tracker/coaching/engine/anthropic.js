@@ -15,6 +15,39 @@ const MODELS = {
   opus: 'claude-opus-4-7'
 };
 
+// ---------------------------------------------------------------------------
+// Metered-API kill switch (revised direction, Cadel standup 2026-05-18).
+// The shared ANTHROPIC_API_KEY is removed from scope: analytic synthesis now
+// routes through the intelligence-bundle substrate (flat-fee subscription
+// compute via Cowork / Claude Code). This direct client is DISABLED by default
+// and only re-enabled for emergency local debugging via USE_API_FALLBACK=1.
+// See briefings/api-to-subscription-migration-plan.md.
+// ---------------------------------------------------------------------------
+class ApiDisabledError extends Error {
+  constructor(message) {
+    super(message || 'Direct Anthropic API is disabled (USE_API_FALLBACK!=1). Route analytic work via intelligence bundles.');
+    this.name = 'ApiDisabledError';
+    this.code = 'API_DISABLED';
+  }
+}
+
+// True only when the operator has explicitly opted into the metered API AND a
+// key is present. Default (flag unset) is false — the dependency is removed.
+function isApiEnabled() {
+  return process.env.USE_API_FALLBACK === '1' && !!process.env.ANTHROPIC_API_KEY;
+}
+
+// Throw a typed, catchable error when the metered API is gated off. Callers
+// catch `err.code === 'API_DISABLED'` and degrade (serve cache / queue a bundle).
+function assertApiEnabled() {
+  if (process.env.USE_API_FALLBACK !== '1') {
+    throw new ApiDisabledError();
+  }
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw new ApiDisabledError('USE_API_FALLBACK=1 but ANTHROPIC_API_KEY is not set.');
+  }
+}
+
 /**
  * Call Claude with a prompt; expect strict JSON back.
  * @param {object} opts
@@ -29,8 +62,8 @@ const MODELS = {
  * @returns {Promise<object>} parsed JSON
  */
 async function callJson({ model, system, user, messages, maxTokens = 4096 }) {
+  assertApiEnabled();
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error('ANTHROPIC_API_KEY not configured');
   const modelId = MODELS[model] || model;
 
   const body = {
@@ -106,8 +139,8 @@ async function callJson({ model, system, user, messages, maxTokens = 4096 }) {
  * Plain-text completion (for narrative outputs like coaching messages).
  */
 async function callText({ model, system, user, maxTokens = 1024 }) {
+  assertApiEnabled();
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error('ANTHROPIC_API_KEY not configured');
   const modelId = MODELS[model] || model;
 
   const resp = await fetch(ANTHROPIC_URL, {
@@ -134,4 +167,4 @@ async function callText({ model, system, user, maxTokens = 1024 }) {
   return data.content && data.content[0] ? data.content[0].text : '';
 }
 
-module.exports = { callJson, callText, MODELS };
+module.exports = { callJson, callText, MODELS, ApiDisabledError, isApiEnabled, assertApiEnabled };

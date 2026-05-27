@@ -198,6 +198,24 @@ app.get('/api/intelligence/bundles', (req, res) => {
     res.json({ count: items.length, items, stats: ib.stats() });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
+// Queue health — lightweight monitoring/alerting surface for the bundle
+// substrate. Surfaces silent processor stalls before they cause stale data.
+app.get('/api/intelligence/health', (req, res) => {
+  try {
+    const ib = require('./coaching/engine/intelligence-bundles');
+    const opts = {};
+    if (req.query.maxQueued) opts.maxQueued = parseInt(req.query.maxQueued, 10);
+    if (req.query.maxOldestSeconds) opts.maxOldestSeconds = parseInt(req.query.maxOldestSeconds, 10);
+    res.json(ib.queueHealth(opts));
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+// Manual retention trigger (the scheduler also prunes nightly).
+app.post('/api/intelligence/prune', (req, res) => {
+  try {
+    const ib = require('./coaching/engine/intelligence-bundles');
+    res.json(ib.prune({ maxAgeDays: req.body && req.body.maxAgeDays }));
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
 app.get('/api/intelligence/bundles/:id', (req, res) => {
   try {
     const ib = require('./coaching/engine/intelligence-bundles');
@@ -1103,10 +1121,24 @@ app.post('/api/work/exemplar-action', (req, res) => {
 // Health check
 // ---------------------------------------------------------------------------
 app.get('/api/health', (req, res) => {
+  // Compact bundle-queue signal so a single /api/health poll surfaces a
+  // stalled processor. Tolerates a missing bundle dir (returns null).
+  let bundleQueue = null;
+  try {
+    const ib = require('./coaching/engine/intelligence-bundles');
+    const q = ib.queueHealth();
+    bundleQueue = { queued: q.queued, oldest_queued_age_seconds: q.oldest_queued_age_seconds, alert: q.alert };
+  } catch (_) { /* bundle dir may not exist yet */ }
   res.json({
     ok: true,
     hubspot: !!HUBSPOT_TOKEN,
-    ai: !!ANTHROPIC_API_KEY
+    // Analytic synthesis runs on subscription compute (intelligence bundles),
+    // not the metered API. `ai_direct_api` is the emergency-only fallback state.
+    ai_compute: 'intelligence-bundles',
+    ai_direct_api: process.env.USE_API_FALLBACK === '1' && !!ANTHROPIC_API_KEY,
+    // Back-compat field for older clients that read `ai`.
+    ai: process.env.USE_API_FALLBACK === '1' && !!ANTHROPIC_API_KEY,
+    bundle_queue: bundleQueue
   });
 });
 
@@ -1271,9 +1303,17 @@ app.post('/api/ai/analyze', async (req, res) => {
     }
   }
 
-  // ----- Legacy API path (deprecated) -----
+  // ----- Legacy API path (deprecated, emergency-only) -----
+  // Metered API removed from scope (Cadel direction, 2026-05-18). The direct
+  // path is gated behind USE_API_FALLBACK=1 so bundles are the default route.
+  if (process.env.USE_API_FALLBACK !== '1') {
+    return res.status(503).json({
+      error: 'Direct Anthropic API path disabled',
+      hint: 'Metered API is removed from scope. Call POST /api/ai/analyze?via=bundles to route via subscription compute. Set USE_API_FALLBACK=1 only for emergency local debugging.',
+    });
+  }
   if (!ANTHROPIC_API_KEY) {
-    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured', hint: 'Use ?via=bundles to route via subscription compute instead.' });
+    return res.status(500).json({ error: 'USE_API_FALLBACK=1 but ANTHROPIC_API_KEY is not configured', hint: 'Use ?via=bundles to route via subscription compute instead.' });
   }
   res.set('X-Deprecated', '/api/ai/analyze direct API path; migrate callers to ?via=bundles');
 
@@ -1330,7 +1370,8 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Stormboy Tracker running on http://localhost:${PORT}`);
   console.log(`  HubSpot:  ${HUBSPOT_TOKEN ? 'configured' : 'NOT SET — add HUBSPOT_TOKEN to .env'}`);
-  console.log(`  AI:       ${ANTHROPIC_API_KEY ? 'configured' : 'NOT SET — add ANTHROPIC_API_KEY to .env'}`);
+  const directApi = process.env.USE_API_FALLBACK === '1' && !!ANTHROPIC_API_KEY;
+  console.log(`  AI:       subscription compute via intelligence bundles${directApi ? ' (direct metered API ENABLED — emergency fallback)' : ' (metered API off — default)'}`);
   console.log(`  Bus path: ${process.env.BUS_PATH || 'C:\\Dylan PM\\shared-growth-memory (default)'}`);
   // Arm the daily scheduler if enabled via .env
   try {

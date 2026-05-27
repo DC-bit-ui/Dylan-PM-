@@ -200,6 +200,40 @@ function buildMessages(question, context, history) {
 async function ask({ question, context, history, model = 'haiku' }) {
   if (!question || !question.trim()) throw new Error('question required');
   const start = Date.now();
+
+  // Metered API removed from scope (Cadel direction, 2026-05-18). When the
+  // direct client is disabled (the default), route the question to subscription
+  // compute via an intelligence bundle rather than calling Anthropic. Callers
+  // get a queued response; the instant path is the ASK launcher (opens Claude
+  // Desktop with the bus pre-pointed), which the v3 frontend already uses.
+  if (!anthropic.isApiEnabled()) {
+    const bundles = require('./intelligence-bundles');
+    const meta = bundles.create({
+      purpose: 'brain-ask',
+      system_prompt: 'You are answering a question against the AgriProve growth team brain on the shared-growth-memory bus (profiles, distillates, objection plays). Read what you need from the bus, then answer. Lead with the answer, then evidence; cite source files inline.',
+      input_data: context ? `Context: ${context}\n\nQuestion: ${question}` : question,
+      output_spec: 'Return JSON: { "answer": string, "sources": string[], "confidence": "low" | "medium" | "high" }',
+      output_schema: 'json',
+      model_hint: model,
+      target_kind: 'brain-ask',
+      input_summary: `brain-ask · ${question.slice(0, 100).replace(/\s+/g, ' ')}`,
+      created_by: 'ask.js',
+    });
+    return {
+      question,
+      answer: '',
+      sources: [],
+      confidence: 'low',
+      status: 'queued',
+      bundle_id: meta.id,
+      note: 'Conversational ASK via the metered API is disabled (removed from scope). Question queued to subscription compute. For an instant answer, use the ASK launcher to open Claude Desktop with the bus pre-pointed.',
+      model_used: model,
+      history_turns_used: (history || []).slice(-MAX_HISTORY_TURNS).length,
+      latency_ms: Date.now() - start,
+      asked_at: new Date().toISOString(),
+    };
+  }
+
   const result = await anthropic.callJson({
     model,
     system: buildSystemBlocks(),

@@ -598,6 +598,16 @@ async function run(opts = {}) {
   const rawThemes = groupByTheme(allDistillates);
   const themes = await clusterThemes(rawThemes, !!opts.force);
 
+  // Surface the clustering status so the UI can tell the difference between
+  // final marketing-grade clusters and the ungrouped fallback shown while a
+  // re-cluster bundle is still being processed by subscription compute.
+  const clusterCache = loadClusterCache();
+  const clustering = {
+    status: clusterCache && clusterCache.status === 'queued' ? 'queued' : 'completed',
+    bundle_id: clusterCache ? (clusterCache.bundle_id || null) : null,
+    clustered_at: clusterCache && clusterCache.status !== 'queued' ? (clusterCache.generated_at || null) : null,
+  };
+
   // Compute high-level marketing signal
   const totalDistillates = allDistillates.length;
   const totalLanded = allDistillates.filter(d => d.landed_or_friction === 'landed').length;
@@ -607,6 +617,7 @@ async function run(opts = {}) {
 
   return {
     generated_at: new Date().toISOString(),
+    clustering,
     summary: {
       total_topic_distillates: totalDistillates,
       total_themes: themes.length,

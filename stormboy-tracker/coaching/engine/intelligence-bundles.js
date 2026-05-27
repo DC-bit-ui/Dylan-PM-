@@ -233,7 +233,73 @@ function stats() {
   };
 }
 
+const RETENTION_DAYS_DEFAULT = 14;
+
+// Remove completed/failed bundles (+ their result files) older than the
+// retention window. NEVER touches queued/claimed bundles — unprocessed work
+// is preserved. Bounds disk growth so listBundles()/stats() stay fast.
+function prune({ maxAgeDays } = {}) {
+  const days = Number.isFinite(maxAgeDays)
+    ? maxAgeDays
+    : (Number(process.env.BUNDLE_RETENTION_DAYS) || RETENTION_DAYS_DEFAULT);
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
+  const all = listBundles();
+  let pruned = 0;
+  for (const b of all) {
+    if (b.status !== 'completed' && b.status !== 'failed') continue;
+    const ts = Date.parse(b.completed_at || b.created_at || '');
+    if (!Number.isFinite(ts) || ts >= cutoff) continue;
+    for (const p of [bundleMdPath(b.id), bundleJsonPath(b.id), resultPath(b.id)]) {
+      try { if (fs.existsSync(p)) fs.unlinkSync(p); } catch (_) { /* best-effort */ }
+    }
+    pruned++;
+  }
+  return { pruned, kept: all.length - pruned, scanned: all.length, max_age_days: days };
+}
+
+function humanizeAge(seconds) {
+  if (seconds == null) return '—';
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return `${m}m`;
+  return `${seconds}s`;
+}
+
+// Queue-health snapshot for monitoring/alerting. Surfaces silent stalls in the
+// bundle processor (Cowork / Claude Code) before they cause stale dashboards.
+function queueHealth({ maxQueued = 20, maxOldestSeconds = 7200 } = {}) {
+  const all = listBundles();
+  const byStatus = { queued: 0, claimed: 0, completed: 0, failed: 0 };
+  all.forEach(b => { if (byStatus[b.status] != null) byStatus[b.status]++; });
+  const queuedBundles = all.filter(b => b.status === 'queued');
+  let oldest = null;
+  if (queuedBundles.length) {
+    const oldestTs = Math.min(...queuedBundles.map(b => Date.parse(b.created_at) || Date.now()));
+    oldest = Math.floor((Date.now() - oldestTs) / 1000);
+  }
+  const overCount = byStatus.queued > maxQueued;
+  const overAge = oldest != null && oldest > maxOldestSeconds;
+  let alertReason = null;
+  if (overCount && overAge) alertReason = `${byStatus.queued} queued (>${maxQueued}) and oldest ${humanizeAge(oldest)} (>${humanizeAge(maxOldestSeconds)})`;
+  else if (overCount) alertReason = `${byStatus.queued} bundles queued (threshold ${maxQueued})`;
+  else if (overAge) alertReason = `oldest queued ${humanizeAge(oldest)} (threshold ${humanizeAge(maxOldestSeconds)})`;
+  return {
+    queued: byStatus.queued,
+    claimed: byStatus.claimed,
+    completed: byStatus.completed,
+    failed: byStatus.failed,
+    total: all.length,
+    oldest_queued_age_seconds: oldest,
+    oldest_queued_age_human: humanizeAge(oldest),
+    alert: overCount || overAge,
+    alert_reason: alertReason,
+    thresholds: { max_queued: maxQueued, max_oldest_seconds: maxOldestSeconds },
+  };
+}
+
 module.exports = {
   create, readMeta, readMarkdown, listBundles, claim, submitResult, readResult, stats,
+  prune, queueHealth,
   VALID_PURPOSES, bundleMdPath, bundleJsonPath, resultPath,
 };

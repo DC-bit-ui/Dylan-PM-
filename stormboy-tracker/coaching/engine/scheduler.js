@@ -142,6 +142,17 @@ async function fire() {
     report.steps.push({ step: 'refresh-personas', ok: false, error: e.message });
   }
 
+  // Step 7: prune old completed/failed intelligence bundles (retention) so the
+  // queue directory stays bounded and listBundles()/stats()/queueHealth() stay
+  // fast. Queued/claimed bundles are never touched.
+  try {
+    const ib = require('./intelligence-bundles');
+    const r = ib.prune();
+    report.steps.push({ step: 'prune-bundles', ok: true, pruned: r.pruned, kept: r.kept });
+  } catch (e) {
+    report.steps.push({ step: 'prune-bundles', ok: false, error: e.message });
+  }
+
   _state.last_status = report;
   _state.last_error = null;
   console.log(`[scheduler] DONE — ${report.steps.filter(s => s.ok).length}/${report.steps.length} ok`);
