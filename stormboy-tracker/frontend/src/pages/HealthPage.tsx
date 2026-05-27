@@ -19,6 +19,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { RepeatIcon } from '@chakra-ui/icons';
+import { Link as RouterLink } from 'react-router-dom';
 import { useSystemHealth } from '@/hooks/useSystemHealth';
 import { useBundleQueueHealth } from '@/hooks/useBundleQueueHealth';
 import { HealthCard, type HealthStatus } from '@/components/health/HealthCard';
@@ -126,7 +127,11 @@ function BundleQueueWidget() {
       big={`${data.queued} queued`}
       sub={`oldest ${data.oldest_queued_age_human} · ${data.completed} done · ${data.failed} failed · ${data.claimed} in-flight`}
       meta={data.alert_reason || 'Bundle processor keeping up — subscription compute healthy'}
-    />
+    >
+      <Button as={RouterLink} to="/intelligence" size="xs" variant="link" colorScheme="brand" mt={3}>
+        Open intelligence queue →
+      </Button>
+    </HealthCard>
   );
 }
 
@@ -330,15 +335,14 @@ function FeedbackWidget({ data }: { data: SystemHealth }) {
         </Wrap>
       )}
       <Button
-        as="a"
-        href="/v2/#health"
-        target="_blank"
+        as={RouterLink}
+        to="/feedback"
         size="xs"
         variant="link"
         colorScheme="brand"
         mt={3}
       >
-        Open v2 health view →
+        Open feedback queue →
       </Button>
     </HealthCard>
   );

@@ -18,6 +18,8 @@ const MessagingPage = lazy(() => import('@/pages/MessagingPage').then((m) => ({ 
 const BrainPage = lazy(() => import('@/pages/BrainPage').then((m) => ({ default: m.BrainPage })));
 const WorkPage = lazy(() => import('@/pages/WorkPage').then((m) => ({ default: m.WorkPage })));
 const StatsPage = lazy(() => import('@/pages/StatsPage').then((m) => ({ default: m.StatsPage })));
+const IntelligencePage = lazy(() => import('@/pages/IntelligencePage').then((m) => ({ default: m.IntelligencePage })));
+const FeedbackPage = lazy(() => import('@/pages/FeedbackPage').then((m) => ({ default: m.FeedbackPage })));
 
 function PageFallback() {
   return (
@@ -42,6 +44,8 @@ export function App() {
                 <Route path="/messaging" element={<MessagingPage />} />
                 <Route path="/brain" element={<BrainPage />} />
                 <Route path="/health" element={<HealthPage />} />
+                <Route path="/intelligence" element={<IntelligencePage />} />
+                <Route path="/feedback" element={<FeedbackPage />} />
               </Routes>
             </Suspense>
           </AppShell>

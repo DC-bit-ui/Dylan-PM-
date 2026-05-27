@@ -12,6 +12,8 @@ const TABS = [
   { to: '/messaging',  label: 'Messaging' },
   { to: '/brain',      label: 'Brain' },
   { to: '/health',     label: 'Health' },
+  { to: '/intelligence', label: 'Intelligence' },
+  { to: '/feedback',   label: 'Feedback' },
 ];
 
 export function TabNav() {
