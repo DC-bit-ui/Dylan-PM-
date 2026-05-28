@@ -37,6 +37,8 @@ import { ProbeCard } from '@/components/work/ProbeCard';
 import { StormboyFunnel } from '@/components/work/StormboyFunnel';
 import { SynthesisCard } from '@/components/work/SynthesisCard';
 import { UpcomingVisitRow } from '@/components/work/UpcomingVisitRow';
+import { HobbsCalendar } from '@/components/stats/HobbsCalendar';
+import { useHobbsCalendar } from '@/hooks/useStats';
 import type { Exemplar } from '@/types/work';
 
 const HEAT_RANK: Record<string, number> = { HOT: 0, WARM: 1, COLD: 2 };
@@ -60,6 +62,7 @@ export function WorkPage() {
   const probes = useOpenProbes();
   const sb = useStormboySummary();
   const cd = useContactDiagnoses();
+  const hc = useHobbsCalendar();
   const [owner, setOwner] = useState<string>('all');
   const [query, setQuery] = useState('');
 
@@ -272,6 +275,27 @@ export function WorkPage() {
                 </SimpleGrid>
               );
             })()}
+          </Box>
+
+          {/* Hobbs · farm-visit diary (moved from Stats — operational planning) */}
+          <Box mt={8}>
+            <HStack justify="space-between" align="baseline" mb={3} flexWrap="wrap">
+              <Heading size="md" letterSpacing="-0.3px">Hobbs · farm-visit diary</Heading>
+              <Text fontSize="xs" color={headColor}>
+                Past + booked visits across the rolling window
+              </Text>
+            </HStack>
+            {hc.error && (
+              <Alert status="error" rounded="md" mb={3}>
+                <AlertIcon />
+                Calendar failed: {hc.error.message}
+              </Alert>
+            )}
+            {hc.loading && !hc.data ? (
+              <Skeleton h="320px" rounded="md" />
+            ) : (
+              <HobbsCalendar data={hc.data} />
+            )}
           </Box>
         </GridItem>
 

@@ -13,11 +13,9 @@ import {
   useEfficacy,
   useCohortFunnel,
   useTrajectory,
-  useCallMonitoring,
   useLeadResponse,
   useSnapshotPipeline,
   useGeographic,
-  useHobbsCalendar,
   useEvidenceCards,
   useFrictionMap,
   useProjection,
@@ -32,11 +30,9 @@ import { StatsSection } from '@/components/stats/StatsSection';
 import { EfficacyHero } from '@/components/stats/EfficacyHero';
 import { CohortFunnel } from '@/components/stats/CohortFunnel';
 import { TrajectoryChart } from '@/components/stats/TrajectoryChart';
-import { CallMonitoring } from '@/components/stats/CallMonitoring';
 import { LeadResponse } from '@/components/stats/LeadResponse';
 import { SnapshotPipeline } from '@/components/stats/SnapshotPipeline';
 import { Geographic } from '@/components/stats/Geographic';
-import { HobbsCalendar } from '@/components/stats/HobbsCalendar';
 import { EvidenceCards } from '@/components/stats/EvidenceCards';
 import { FrictionMap } from '@/components/stats/FrictionMap';
 import { Projection } from '@/components/stats/Projection';
@@ -47,7 +43,6 @@ import { PropertySize } from '@/components/stats/PropertySize';
 import { CallQuality } from '@/components/stats/CallQuality';
 
 const PILLS: StatsPill[] = [
-  { id: 'call-monitoring', label: 'Call monitoring' },
   { id: 'efficacy', label: 'Stormboy efficacy' },
   { id: 'cohort-funnel', label: 'Cohort funnel' },
   { id: 'trajectory', label: 'Trajectory' },
@@ -56,10 +51,9 @@ const PILLS: StatsPill[] = [
   { id: 'projection', label: '30K ha projection' },
   { id: 'funnel-velocity', label: 'Funnel velocity' },
   { id: 'forecast', label: 'Forecast' },
-  { id: 'snapshot-pipeline', label: 'Snapshot pipeline' },
+  { id: 'snapshot-pipeline', label: 'Snapshot bottleneck' },
   { id: 'ticket-sla', label: 'Ticket SLA' },
-  { id: 'lead-response', label: 'Lead-response' },
-  { id: 'hobbs-calendar', label: 'Hobbs calendar' },
+  { id: 'lead-response', label: 'Lead-response loss' },
   { id: 'property-size', label: 'Property size' },
   { id: 'geographic', label: 'NRM geographic' },
   { id: 'call-quality', label: 'Call quality' },
@@ -97,7 +91,6 @@ export function StatsPage() {
     });
 
   // Each hook fetches only when its section is open.
-  const cm = useCallMonitoring(openMap['call-monitoring']);
   const eff = useEfficacy(openMap['efficacy']);
   const cf = useCohortFunnel(openMap['cohort-funnel']);
   const traj = useTrajectory(openMap['trajectory']);
@@ -109,7 +102,6 @@ export function StatsPage() {
   const sp = useSnapshotPipeline(openMap['snapshot-pipeline']);
   const sla = useTicketSla(openMap['ticket-sla']);
   const lr = useLeadResponse(openMap['lead-response']);
-  const hc = useHobbsCalendar(openMap['hobbs-calendar']);
   const ps = usePropertySize(openMap['property-size']);
   const geo = useGeographic(openMap['geographic']);
   const cq = useCallAnalytics(openMap['call-quality']);
@@ -127,25 +119,15 @@ export function StatsPage() {
           Stats
         </Heading>
         <Text fontSize="sm" color={subColor}>
-          Where we are, where we're heading, and where the friction is. Each
-          section is collapsible — your choices persist across reloads, and
-          collapsed sections don't load until you open them.
+          Where the friction is and what to fix. Daily tracking lives on Home —
+          this page is for diagnosing why we're not faster. Each section is
+          collapsible; collapsed sections don't load until you open them.
         </Text>
       </Box>
 
       <StatsPills pills={PILLS} />
 
       <Stack spacing={4}>
-        <StatsSection {...sectionProps('call-monitoring')} title="Call monitoring" subtitle="Will's weekly dashboard · this-week target + tiles + daily engagement">
-          {cm.error && (
-            <Alert status="error" rounded="md">
-              <AlertIcon />
-              Call monitoring failed: {cm.error.message}
-            </Alert>
-          )}
-          {cm.loading && !cm.data ? <Skeleton h="320px" rounded="md" /> : <CallMonitoring data={cm.data} />}
-        </StatsSection>
-
         <StatsSection {...sectionProps('efficacy')} title="Is Stormboy working?" subtitle="Cohort comparison · Stormboy vs direct control · headline KPIs">
           {eff.error && (
             <Alert status="error" rounded="md">
@@ -201,7 +183,7 @@ export function StatsPage() {
           {fcst.loading && !fcst.data ? <Skeleton h="320px" rounded="md" /> : <Forecast data={fcst.data} />}
         </StatsSection>
 
-        <StatsSection {...sectionProps('snapshot-pipeline')} title="Snapshot workflow · what's flowing through?" subtitle="Post-visit HORIZON snapshot throughput across Farm Visit completed contacts">
+        <StatsSection {...sectionProps('snapshot-pipeline')} title="Where do deals stall in snapshot delivery?" subtitle="Post-visit HORIZON throughput · biggest stuck-state callout above the stacked bar">
           {sp.error && <Alert status="error" rounded="md"><AlertIcon />Snapshot pipeline failed: {sp.error.message}</Alert>}
           {sp.loading && !sp.data ? <Skeleton h="240px" rounded="md" /> : <SnapshotPipeline data={sp.data} />}
         </StatsSection>
@@ -211,14 +193,9 @@ export function StatsPage() {
           {sla.loading && !sla.data ? <Skeleton h="280px" rounded="md" /> : <TicketSla data={sla.data} />}
         </StatsSection>
 
-        <StatsSection {...sectionProps('lead-response')} title="How fast do we respond to new contacts?" subtitle="Time from contact creation to first outbound touch · histogram + booked-vs-not-booked split">
+        <StatsSection {...sectionProps('lead-response')} title="Are we losing bookings to slow response?" subtitle="Time-to-first-touch distribution · booked vs not-booked split — the diagnostic angle on response speed">
           {lr.error && <Alert status="error" rounded="md"><AlertIcon />Lead-response failed: {lr.error.message}</Alert>}
           {lr.loading && !lr.data ? <Skeleton h="240px" rounded="md" /> : <LeadResponse data={lr.data} />}
-        </StatsSection>
-
-        <StatsSection {...sectionProps('hobbs-calendar')} title="Hobbs · farm visit calendar" subtitle="Past + booked farm visits across the rolling window · HubSpot meeting engagements">
-          {hc.error && <Alert status="error" rounded="md"><AlertIcon />Hobbs calendar failed: {hc.error.message}</Alert>}
-          {hc.loading && !hc.data ? <Skeleton h="320px" rounded="md" /> : <HobbsCalendar data={hc.data} />}
         </StatsSection>
 
         <StatsSection {...sectionProps('property-size')} title="Does property size predict outcome?" subtitle="Property size × cycle time × win rate">

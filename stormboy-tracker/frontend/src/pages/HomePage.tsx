@@ -42,6 +42,15 @@ function fmtToday(): string {
   } catch { return ''; }
 }
 
+function fmtEta(iso?: string | null): string {
+  if (!iso) return '—';
+  try {
+    return new Date(iso + 'T00:00:00').toLocaleDateString(undefined, {
+      day: 'numeric', month: 'short', year: 'numeric',
+    });
+  } catch { return iso; }
+}
+
 function pickUpcomingVisits(weeks: { days: { date: string; is_past?: boolean; visits: HobbsVisit[] }[] }[] | undefined, limit = 6): HobbsVisit[] {
   if (!weeks) return [];
   const today = new Date().toISOString().slice(0, 10);
@@ -194,6 +203,59 @@ export function HomePage() {
           </Text>
         </Box>
       </SimpleGrid>
+
+      {/* Outlook strip — where we're headed (compact forward signal) */}
+      <Box bg={cardBg} border="1px solid" borderColor={cardBorder} rounded="md" px={4} py={3} mb={6}>
+        <HStack spacing={{ base: 4, md: 8 }} flexWrap="wrap" align="flex-start">
+          <Box>
+            <Text fontSize="2xs" color={subColor} textTransform="uppercase" letterSpacing="0.5px">
+              Projected hit-date · 30K
+            </Text>
+            <Skeleton isLoaded={!proj.loading} fitContent>
+              <Text fontSize="sm" fontWeight={700}>
+                {fmtEta(proj.data?.projection.at_short_pace.eta)}{' '}
+                <Text as="span" color={subColor} fontWeight={400}>
+                  at {proj.data?.pace.short_window_weeks ?? '—'}-wk pace
+                </Text>
+              </Text>
+            </Skeleton>
+          </Box>
+          <Box>
+            <Text fontSize="2xs" color={subColor} textTransform="uppercase" letterSpacing="0.5px">
+              Expected from pipeline
+            </Text>
+            <Skeleton isLoaded={!fcst.loading} fitContent>
+              <Text fontSize="sm" fontWeight={700}>
+                {fcst.data ? `${Math.round(fcst.data.expected_to_register_hectares).toLocaleString()} ha` : '—'}{' '}
+                <Text as="span" color={subColor} fontWeight={400}>
+                  of {fcst.data ? `${Math.round(fcst.data.open_pipeline_hectares).toLocaleString()} open` : '—'}
+                </Text>
+              </Text>
+            </Skeleton>
+          </Box>
+          <Box>
+            <Text fontSize="2xs" color={subColor} textTransform="uppercase" letterSpacing="0.5px">
+              Projected total vs 30K
+            </Text>
+            <Skeleton isLoaded={!fcst.loading} fitContent>
+              <Text fontSize="sm" fontWeight={700}>
+                {fcst.data ? `${Math.round(fcst.data.projected_total_hectares).toLocaleString()} ha` : '—'}{' '}
+                {fcst.data && (
+                  fcst.data.gap_direction === 'over' ? (
+                    <Text as="span" color="green.500" fontWeight={400}>
+                      · {Math.round(Math.abs(fcst.data.gap_to_30k_hectares)).toLocaleString()} ha buffer
+                    </Text>
+                  ) : (
+                    <Text as="span" color="red.500" fontWeight={400}>
+                      · {Math.round(fcst.data.gap_to_30k_hectares).toLocaleString()} ha gap
+                    </Text>
+                  )
+                )}
+              </Text>
+            </Skeleton>
+          </Box>
+        </HStack>
+      </Box>
 
       {/* Hobbs calendar + Call volume */}
       <Grid templateColumns={{ base: '1fr', lg: '1.4fr 1fr' }} gap={4} mb={6}>
