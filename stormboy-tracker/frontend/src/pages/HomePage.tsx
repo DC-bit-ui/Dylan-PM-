@@ -23,11 +23,13 @@ import {
   useHobbsCalendar,
   useProjection,
   useForecast,
+  useCallAnalytics,
 } from '@/hooks/useStats';
 import { useRecentWins } from '@/hooks/useWork';
 import { useBundleQueueHealth } from '@/hooks/useBundleQueueHealth';
 import { useFeedback } from '@/hooks/useFeedback';
-import { CalendarStrip } from '@/components/home/CalendarStrip';
+import { HobbsHomeGrid } from '@/components/home/HobbsHomeGrid';
+import { CallVolumeCard } from '@/components/home/CallVolumeCard';
 import { RecentWinRow } from '@/components/work/RecentWinRow';
 import type { HobbsVisit } from '@/types/stats';
 
@@ -68,24 +70,10 @@ function pickUpcomingVisits(weeks: { days: { date: string; is_past?: boolean; vi
   return out;
 }
 
-function Sparkline({ values, color }: { values: number[]; color: string }) {
-  const W = 200, H = 36;
-  if (!values.length) return null;
-  const max = Math.max(1, ...values);
-  const barW = W / values.length;
-  return (
-    <Box as="svg" viewBox={`0 0 ${W} ${H}`} w="100%" h={`${H}px`} display="block">
-      {values.map((v, i) => {
-        const bh = max > 0 ? Math.max(1, (v / max) * (H - 2)) : 0;
-        return <rect key={i} x={i * barW + 1} y={H - bh} width={Math.max(2, barW - 2)} height={bh} fill={color} rx={1} />;
-      })}
-    </Box>
-  );
-}
-
 export function HomePage() {
   const header = useHeaderStats();
   const cm = useCallMonitoring(true);
+  const ca = useCallAnalytics(true);
   const hc = useHobbsCalendar(true);
   const proj = useProjection(true);
   const fcst = useForecast(true);
@@ -98,7 +86,6 @@ export function HomePage() {
   const cardBg = useColorModeValue('white', 'gray.800');
   const cardBorder = useColorModeValue('gray.200', 'gray.700');
   const headColor = useColorModeValue('gray.600', 'gray.400');
-  const sparkColor = useColorModeValue('#3a7a5a', '#86c8a0');
   const linkColor = useColorModeValue('brand.600', 'brand.300');
 
   const hs = header.data;
@@ -107,7 +94,6 @@ export function HomePage() {
   const callsStormboy = cm.data?.this_week.storm_boy_connected ?? 0;
   const callsPct = cm.data?.this_week.pct_of_target ?? 0;
   const visitsBooked = cm.data?.efficacy_tiles.visits_booked ?? null;
-  const sparkDays = (cm.data?.days || []).slice(-7).map((d) => d.date_called_count || 0);
 
   const upcomingVisits = pickUpcomingVisits(hc.data?.weeks, 6);
   const atRiskCount = fcst.data?.at_risk?.count ?? 0;
@@ -144,7 +130,12 @@ export function HomePage() {
           </Skeleton>
           <Progress value={proj.data?.pct_of_target ?? 0} size="xs" colorScheme="brand" rounded="sm" mt={2} mb={1} />
           <Text fontSize="2xs" color={subColor}>
-            {proj.data ? `need ${Math.round(proj.data.pace.needed_weekly_ha_by_fy_end).toLocaleString()} ha/wk to 30 Jun · doing ${Math.round(proj.data.pace.short_window_weekly_ha).toLocaleString()}` : ' '}
+            {proj.data ? `need ${Math.round(proj.data.pace.needed_weekly_ha_by_fy_end).toLocaleString()}/wk · doing ${Math.round(proj.data.pace.short_window_weekly_ha).toLocaleString()}` : ' '}
+          </Text>
+          <Text fontSize="2xs" color={subColor}>
+            {proj.data && proj.data.pace.short_window_weekly_ha > 0
+              ? `~${Math.ceil(proj.data.remaining_hectares / proj.data.pace.short_window_weekly_ha)} weeks to 30K at current pace`
+              : ' '}
           </Text>
         </Box>
 
@@ -180,7 +171,7 @@ export function HomePage() {
           </Skeleton>
           <Progress value={Math.min(100, callsPct)} size="xs" colorScheme={callsPct >= 100 ? 'green' : callsPct >= 60 ? 'brand' : 'orange'} rounded="sm" mt={2} mb={1} />
           <Text fontSize="2xs" color={subColor}>
-            {cm.data ? `${callsStormboy} Storm Boy · ${visitsBooked ?? '—'} visits booked from calls` : ' '}
+            {cm.data ? `${callsStormboy} SB / ${callsTotal} total · ${visitsBooked ?? '—'} visits booked from calls` : ' '}
           </Text>
         </Box>
 
@@ -199,7 +190,7 @@ export function HomePage() {
             {atRiskHa > 0 ? `${Math.round(atRiskHa).toLocaleString()} ha exposed` : '—'}
           </Text>
           <Text fontSize="2xs" color={subColor}>
-            {fcst.data ? `stuck > ${fcst.data.at_risk.threshold_days}d in current stage` : ' '}
+            {fcst.data ? `stuck > ${fcst.data.at_risk.threshold_days}d · of ${Math.round(fcst.data.open_pipeline_hectares).toLocaleString()} ha open pipeline` : ' '}
           </Text>
         </Box>
       </SimpleGrid>
@@ -258,17 +249,17 @@ export function HomePage() {
       </Box>
 
       {/* Hobbs calendar + Call volume */}
-      <Grid templateColumns={{ base: '1fr', lg: '1.4fr 1fr' }} gap={4} mb={6}>
+      <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={4} mb={6}>
         <GridItem>
           <Box bg={cardBg} border="1px solid" borderColor={cardBorder} rounded="md" p={4} h="100%">
             <HStack justify="space-between" align="baseline" mb={3} flexWrap="wrap">
-              <Heading size="sm">Hobbs · next two weeks</Heading>
+              <Heading size="sm">Hobbs · this week + next two</Heading>
               <Text fontSize="xs" color={headColor}>
                 {hc.data?.totals?.booked != null ? `${hc.data.totals.booked} booked in window` : 'farm-visit diary'}
               </Text>
             </HStack>
             {hc.error && <Alert status="error" size="sm" rounded="md" mb={2}><AlertIcon />Calendar failed.</Alert>}
-            {hc.loading && !hc.data ? <Skeleton h="46px" rounded="md" /> : <CalendarStrip data={hc.data} days={14} />}
+            {hc.loading && !hc.data ? <Skeleton h="200px" rounded="md" /> : <HobbsHomeGrid data={hc.data} weeks={3} />}
 
             <Text fontSize="2xs" color={subColor} textTransform="uppercase" letterSpacing="0.5px" mt={4} mb={2}>
               Next booked visits
@@ -301,32 +292,14 @@ export function HomePage() {
 
         <GridItem>
           <Box bg={cardBg} border="1px solid" borderColor={cardBorder} rounded="md" p={4} h="100%">
-            <Heading size="sm" mb={1}>Call volume · this week</Heading>
-            <Text fontSize="2xs" color={subColor} mb={3}>
-              {cm.data ? `Storm Boy target ${callsTarget} · ${callsStormboy} connected (${callsPct.toFixed(0)}%)` : 'loading…'}
-            </Text>
-            {cm.error && <Alert status="error" size="sm" rounded="md" mb={2}><AlertIcon />Call monitoring failed.</Alert>}
-            {cm.loading && !cm.data ? (
-              <Skeleton h="36px" rounded="md" />
-            ) : (
-              <Box>
-                <Sparkline values={sparkDays} color={sparkColor} />
-                <Flex justify="space-between" mt={1}>
-                  <Text fontSize="2xs" color={subColor}>last 7 days</Text>
-                  <Text fontSize="2xs" color={subColor}>{sparkDays.reduce((s, v) => s + v, 0)} calls total</Text>
-                </Flex>
-              </Box>
-            )}
-            <Box mt={4}>
-              <Text fontSize="2xs" color={subColor} textTransform="uppercase" letterSpacing="0.5px" mb={1}>
-                Efficacy
+            <Flex justify="space-between" align="baseline" mb={3} flexWrap="wrap">
+              <Heading size="sm">Call volume · this week</Heading>
+              <Text fontSize="xs" color={headColor}>
+                {cm.data ? `${callsStormboy}/${callsTarget} Storm Boy (${callsPct.toFixed(0)}%)` : ''}
               </Text>
-              <Stack spacing={1} fontSize="xs">
-                <Flex justify="space-between"><Text color={subColor}>Visits booked from calls</Text><Text fontWeight={700}>{visitsBooked ?? '—'}</Text></Flex>
-                <Flex justify="space-between"><Text color={subColor}>Calls per visit booked</Text><Text fontWeight={700}>{cm.data?.efficacy_tiles.calls_per_visit_booked ?? '—'}</Text></Flex>
-                <Flex justify="space-between"><Text color={subColor}>Unique contacts engaged</Text><Text fontWeight={700}>{cm.data?.volume_tiles.unique_contacts_engaged ?? '—'}</Text></Flex>
-              </Stack>
-            </Box>
+            </Flex>
+            {cm.error && <Alert status="error" size="sm" rounded="md" mb={2}><AlertIcon />Call monitoring failed.</Alert>}
+            {cm.loading && !cm.data ? <Skeleton h="280px" rounded="md" /> : <CallVolumeCard cm={cm.data} ca={ca.data} />}
           </Box>
         </GridItem>
       </Grid>
