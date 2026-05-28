@@ -5,6 +5,7 @@ import type {
   BrainDistillatesResponse,
   BrainObjectionCardsResponse,
 } from '@/types/brain';
+import type { StandupSummaryResponse } from '@/types/standup';
 
 export const brainClient = {
   personas: (): Promise<BrainPersonasResponse> =>
@@ -15,4 +16,8 @@ export const brainClient = {
     rest.get<BrainDistillatesResponse>('/api/brain/distillates'),
   objectionCards: (): Promise<BrainObjectionCardsResponse> =>
     rest.get<BrainObjectionCardsResponse>('/api/brain/objection-cards'),
+  // Team workshopping — standup transcripts. Lives under /api/stats/* on the
+  // backend but is a BRAIN surface concern.
+  standupSummary: (): Promise<StandupSummaryResponse> =>
+    rest.get<StandupSummaryResponse>('/api/stats/standup-summary'),
 };

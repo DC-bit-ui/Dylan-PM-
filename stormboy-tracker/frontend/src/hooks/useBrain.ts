@@ -6,6 +6,7 @@ import type {
   BrainDistillatesResponse,
   BrainObjectionCardsResponse,
 } from '@/types/brain';
+import type { StandupSummaryResponse } from '@/types/standup';
 
 function makeFetchHook<T>(fetcher: () => Promise<T>) {
   return function useFetched(deps: unknown[] = []) {
@@ -45,6 +46,9 @@ export const useBrainDistillates = makeFetchHook<BrainDistillatesResponse>(() =>
 );
 export const useBrainObjectionCards = makeFetchHook<BrainObjectionCardsResponse>(() =>
   brainClient.objectionCards(),
+);
+export const useBrainStandups = makeFetchHook<StandupSummaryResponse>(() =>
+  brainClient.standupSummary(),
 );
 
 // Profile is parameterised by slug — separate hook so deps work

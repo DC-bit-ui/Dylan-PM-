@@ -6,6 +6,7 @@ import type {
   CoachingActiveResponse,
   ExemplarAction,
 } from '@/types/work';
+import type { ContactDiagnosesResponse } from '@/types/stormboy';
 
 export const workClient = {
   exemplars: (): Promise<ExemplarsResponse> => rest.get<ExemplarsResponse>('/api/work/exemplars'),
@@ -15,6 +16,9 @@ export const workClient = {
     rest.get<OpenProbesResponse>('/api/work/open-probes'),
   coachingActive: (): Promise<CoachingActiveResponse> =>
     rest.get<CoachingActiveResponse>('/api/coaching/active'),
+  // Bundle-backed contact diagnoses (synthesis cards on the Storm Boy funnel).
+  contactDiagnoses: (): Promise<ContactDiagnosesResponse> =>
+    rest.get<ContactDiagnosesResponse>('/api/work/contact-diagnoses'),
 
   // Record an exemplar action against the bus (e.g. 'Marked engaged').
   recordAction: (params: {

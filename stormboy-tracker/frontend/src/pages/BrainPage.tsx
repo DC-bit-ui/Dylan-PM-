@@ -26,11 +26,13 @@ import {
   useBrainProfile,
   useBrainDistillates,
   useBrainObjectionCards,
+  useBrainStandups,
 } from '@/hooks/useBrain';
 import { ProfileMarkdown } from '@/components/brain/ProfileMarkdown';
 import { ProfileToc } from '@/components/brain/ProfileToc';
 import { ObjectionCard } from '@/components/brain/ObjectionCard';
 import { DistillateCard } from '@/components/brain/DistillateCard';
+import { StandupCard } from '@/components/brain/StandupCard';
 
 const DEFAULT_PROFILE = 'hobbs';
 
@@ -41,6 +43,7 @@ export function BrainPage() {
   const profile = useBrainProfile(activeSlug);
   const distillates = useBrainDistillates();
   const objectionCards = useBrainObjectionCards();
+  const standups = useBrainStandups();
   const subColor = useColorModeValue('gray.500', 'gray.400');
   const headColor = useColorModeValue('gray.600', 'gray.400');
   const cardBg = useColorModeValue('white', 'gray.800');
@@ -270,25 +273,40 @@ export function BrainPage() {
         )}
       </Box>
 
-      {/* Team workshopping — moved to end per user request */}
+      {/* Team workshopping — standup decisions + new directions */}
       <Box mt={8} pt={6} borderTop="1px solid" borderColor={sectionBorder}>
-        <HStack justify="space-between" align="baseline" mb={2}>
+        <HStack justify="space-between" align="baseline" mb={4} flexWrap="wrap">
           <Heading size="md" letterSpacing="-0.3px">
             Team workshopping · standup decisions and new directions
           </Heading>
           <Text fontSize="xs" color={headColor}>
-            Mon/Fri standups, parsed
+            {standups.data?.headline || 'Mon/Fri standups, parsed'}
           </Text>
         </HStack>
-        <Box bg={cardBg} border="1px solid" borderColor={cardBorder} rounded="md" p={4}>
-          <Text fontSize="sm" color={subColor} fontStyle="italic">
-            Standup summaries port arrives once the data hook is added (see v2
-            /v2/#brain bottom section for the current view).
-          </Text>
-          <Button as="a" href="/v2/#brain" target="_blank" size="xs" variant="link" colorScheme="brand" mt={2}>
-            Open v2 brain view →
-          </Button>
-        </Box>
+        {standups.error && (
+          <Alert status="error" rounded="md">
+            <AlertIcon />
+            Standup summary failed: {standups.error.message}
+          </Alert>
+        )}
+        {standups.loading && !standups.data ? (
+          <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={3}>
+            {[1, 2].map((i) => <Skeleton key={i} h="200px" rounded="md" />)}
+          </SimpleGrid>
+        ) : standups.data && standups.data.standups.length > 0 ? (
+          <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={3}>
+            {standups.data.standups.map((su, i) => (
+              <StandupCard key={su.file_name || `${su.meeting_date}-${i}`} standup={su} isLatest={i === 0} />
+            ))}
+          </SimpleGrid>
+        ) : (
+          <Box bg={cardBg} border="1px solid" borderColor={cardBorder} rounded="md" p={4}>
+            <Text fontSize="sm" color={subColor} fontStyle="italic">
+              No standup transcripts on the bus yet. They flow in from
+              persona-supplements/&lt;rep&gt;/granola-*standup*.md.
+            </Text>
+          </Box>
+        )}
       </Box>
     </Box>
   );

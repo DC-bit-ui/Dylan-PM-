@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 import { workClient } from '@/services/workClient';
+import { stormboyClient } from '@/services/stormboyClient';
 import type {
   ExemplarsResponse,
   RecentWinsResponse,
   OpenProbesResponse,
   CoachingActiveResponse,
 } from '@/types/work';
+import type {
+  StormboySummaryResponse,
+  ContactDiagnosesResponse,
+} from '@/types/stormboy';
 
 function makeFetchHook<T>(fetcher: () => Promise<T>) {
   return function useFetched() {
@@ -48,4 +53,10 @@ export const useRecentWins = makeFetchHook<RecentWinsResponse>(() => workClient.
 export const useOpenProbes = makeFetchHook<OpenProbesResponse>(() => workClient.openProbes());
 export const useCoachingActive = makeFetchHook<CoachingActiveResponse>(() =>
   workClient.coachingActive(),
+);
+export const useStormboySummary = makeFetchHook<StormboySummaryResponse>(() =>
+  stormboyClient.summary(),
+);
+export const useContactDiagnoses = makeFetchHook<ContactDiagnosesResponse>(() =>
+  workClient.contactDiagnoses(),
 );

@@ -2,7 +2,6 @@ import {
   Alert,
   AlertIcon,
   Box,
-  Button,
   Flex,
   Grid,
   GridItem,
@@ -29,11 +28,18 @@ import {
   useExemplars,
   useRecentWins,
   useOpenProbes,
+  useStormboySummary,
+  useContactDiagnoses,
 } from '@/hooks/useWork';
 import { ExemplarCard } from '@/components/work/ExemplarCard';
 import { RecentWinRow } from '@/components/work/RecentWinRow';
 import { ProbeCard } from '@/components/work/ProbeCard';
+import { StormboyFunnel } from '@/components/work/StormboyFunnel';
+import { SynthesisCard } from '@/components/work/SynthesisCard';
+import { UpcomingVisitRow } from '@/components/work/UpcomingVisitRow';
 import type { Exemplar } from '@/types/work';
+
+const HEAT_RANK: Record<string, number> = { HOT: 0, WARM: 1, COLD: 2 };
 
 function filterByOwner(list: Exemplar[], owner: string) {
   if (owner === 'all') return list;
@@ -52,6 +58,8 @@ export function WorkPage() {
   const exemplars = useExemplars();
   const wins = useRecentWins();
   const probes = useOpenProbes();
+  const sb = useStormboySummary();
+  const cd = useContactDiagnoses();
   const [owner, setOwner] = useState<string>('all');
   const [query, setQuery] = useState('');
 
@@ -198,27 +206,94 @@ export function WorkPage() {
             </Tabs>
           )}
 
-          {/* TODO stubs — heavier sub-surfaces port in next pass */}
+          {/* Storm Boy funnel */}
           <Box mt={8} pt={6} borderTop="1px solid" borderColor={sectionBorder}>
-            <Heading size="md" letterSpacing="-0.3px" mb={2}>
-              Storm Boy funnel · synthesis cards · upcoming farm visits
-            </Heading>
-            <Box bg={cardBg} border="1px solid" borderColor={cardBorder} rounded="md" p={4}>
-              <Text fontSize="sm" color={subColor} fontStyle="italic">
-                The Storm Boy funnel + farm-visit synthesis cards + upcoming-visits
-                right rail port in a follow-up pass. Until then, the v2 view holds
-                the live data.
+            <HStack justify="space-between" align="baseline" mb={3} flexWrap="wrap">
+              <Heading size="md" letterSpacing="-0.3px">Storm Boy funnel</Heading>
+              <Text fontSize="xs" color={headColor}>
+                Identified → Exited · contact-stage counts
               </Text>
-              <Button as="a" href="/v2/#work" target="_blank" size="xs" variant="link" colorScheme="brand" mt={2}>
-                Open v2 work view →
-              </Button>
-            </Box>
+            </HStack>
+            {sb.error && (
+              <Alert status="error" rounded="md" mb={3}>
+                <AlertIcon />
+                Funnel failed: {sb.error.message}
+              </Alert>
+            )}
+            {sb.loading && !sb.data ? (
+              <Skeleton h="240px" rounded="md" />
+            ) : (
+              <StormboyFunnel data={sb.data} />
+            )}
+          </Box>
+
+          {/* Farm Visit completed · synthesis cards */}
+          <Box mt={8}>
+            <HStack justify="space-between" align="baseline" mb={3} flexWrap="wrap">
+              <Heading size="md" letterSpacing="-0.3px">Farm visits completed · synthesis</Heading>
+              <Text fontSize="xs" color={headColor}>
+                Pursue vs disengage · diagnosis-backed
+              </Text>
+            </HStack>
+            {cd.error && (
+              <Alert status="error" rounded="md" mb={3}>
+                <AlertIcon />
+                Contact diagnoses failed: {cd.error.message}
+              </Alert>
+            )}
+            {cd.loading && !cd.data ? (
+              <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3}>
+                {[1, 2, 3, 4].map((i) => <Skeleton key={i} h="140px" rounded="md" />)}
+              </SimpleGrid>
+            ) : (() => {
+              const all = Object.values(cd.data?.contacts || {});
+              const completed = all
+                .filter((c) => c.stage === 'Farm Visit completed')
+                .sort((a, b) => (HEAT_RANK[a.heat] ?? 9) - (HEAT_RANK[b.heat] ?? 9));
+              const urlMap = new Map<string, string>();
+              (sb.data?.recent_visits || []).forEach((v) => urlMap.set(v.id, v.hubspot_url));
+              if (completed.length === 0) {
+                return (
+                  <Text fontSize="sm" color={subColor} fontStyle="italic">
+                    No farm-visit synthesis cards yet — diagnoses are produced by the
+                    intelligence-bundle processor; check the Intelligence queue if this stays empty.
+                  </Text>
+                );
+              }
+              return (
+                <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3}>
+                  {completed.slice(0, 12).map((c) => (
+                    <SynthesisCard
+                      key={c.contact_id}
+                      contact={c}
+                      hubspotUrl={urlMap.get(c.contact_id)}
+                    />
+                  ))}
+                </SimpleGrid>
+              );
+            })()}
           </Box>
         </GridItem>
 
         {/* Right rail */}
         <GridItem display={{ base: 'none', xl: 'block' }}>
           <Box position="sticky" top="76px" maxH="calc(100vh - 100px)" overflowY="auto" pr={1}>
+            <Box mb={5}>
+              <Heading size="sm" mb={2} color={headColor}>
+                Upcoming farm visits
+              </Heading>
+              {sb.loading && !sb.data ? (
+                <Skeleton h="64px" rounded="md" />
+              ) : (sb.data?.upcoming || []).length > 0 ? (
+                <Stack spacing={1.5}>
+                  {sb.data!.upcoming.slice(0, 8).map((v) => (
+                    <UpcomingVisitRow key={v.id} visit={v} />
+                  ))}
+                </Stack>
+              ) : (
+                <Text fontSize="xs" color={subColor} fontStyle="italic">None booked.</Text>
+              )}
+            </Box>
             <Box mb={5}>
               <Heading size="sm" mb={2} color={headColor}>
                 Recent wins
