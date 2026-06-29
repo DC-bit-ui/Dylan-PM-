@@ -25,3 +25,9 @@
 ## Kept (worked)
 - Closer "Any questions at all, just shout, always happy to chat."
 - "Links, and what each one's for:" with a one-line purpose per link.
+
+## Update — Cadel sign-off email (2026-06-29)
+- **Greeting: "Hey Cadel", not "Hi Cadel."** I drafted "Hi"; Dylan changed to "Hey". Default to "Hey {first name}" for close team (Cadel/Steve/Will/Ben/Daniel), per [[dylans-voice]] Profile A. Reserve "Hi" / "Good [morning]" for external/formal. (My "Hi" was the deviation.)
+- **Attachments as plain bullets.** He listed the prototype simply as a bullet "The Claude Code prototype" rather than my longer explanatory line. Keep attachment references short in the body.
+- **Framing:** he called Land Titles "the first full build epic" (Dashboard + KCT mapping are re-skins). Useful programme framing for comms.
+- Otherwise sent my draft near-verbatim (short version, links with purpose, target sub-bullets, the one open question, warm close).
