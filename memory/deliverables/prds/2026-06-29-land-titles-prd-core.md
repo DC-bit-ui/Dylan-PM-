@@ -2,12 +2,12 @@
 
 | Field | Value |
 |---|---|
-| **Feature Owner** | Cadel (approval) · Will |
+| **Feature Owner** | Steve (approval) · Will |
 | **Delivery Owner** | Dylan Cronje |
 | **Programme** | Prospective Projects Restructure (Phase 1 — Prospects), Epic 3 |
 | **Epic Hub** | [Prospective Projects Restructure — Epic Hub (613515266)](https://agriprove.atlassian.net/wiki/spaces/SCRUM/pages/613515266) |
 | **Jira Epic** | [AP-2566](https://agriprove.atlassian.net/browse/AP-2566) — Prospective Projects — Land Titles |
-| **Status** | Draft — for Cadel review |
+| **Status** | Draft — for Steve review |
 | **Last Updated** | 2026-06-29 |
 
 > This is the highest-value functional build in the programme. Approving this Core unlocks the Land Titles design + atomic stories. The detailed requirements (sub-jobs, EIH classification, DBYD R1–R8, Native Title NT1–NT5) sit in the linked requirements doc — this Core is the what/why for sign-off.
@@ -161,4 +161,5 @@ Where the open questions landed. One remains open for the team.
 | Date | Version | Change | Author |
 |---|---|---|---|
 | 2026-06-29 | 1.0 | Initial Land Titles PRD Core, drawn from the requirements doc + programme PRD | Dylan / Cowork |
+| 2026-06-30 | 1.2 | Approver re-routed Cadel → **Steve** (Cadel departing) | Dylan / Cowork |
 | 2026-06-29 | 1.1 | Job 1 reframed to speed/accuracy → KCT-fast (core); cores = jobs 1 & 4; concrete metric targets (KCT −15%, <10% re-purchase, >50% EIH-C packs pre-registration in 90 days, +15% unconditional); D&D API dropped; open questions resolved (HubSpot EIH object remains open) | Dylan / Cowork |
