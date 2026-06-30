@@ -77,7 +77,7 @@ Quality (dev-owned): EIH classification manual-correction rate kept low (target 
 - **Source titles, three methods, cheapest-first** — SharePoint (held titles, auto-parse + auto-identify) → state-routed purchase (assisted; manual buy on corporate card; D&D GlobalX override) → PDF upload. All converge into one title list.
 - **Deterministic parse + review** — the 6-state parser-service (not an LLM); confidence shown; low-confidence to a review queue.
 - **Confirm + exclude** — explicit operator confirm gate; **exclude as a reversible, reason-coded action** (not a delete) → the confirmed title set.
-- **EIH identification** — classify all interest holders per CFI Act s43–45A; curate (exclude/edit/add/change type); confirm the list; write to HubSpot/DB.
+- **EIH identification** — classify all interest holders per CFI Act s43–45A; curate (exclude/edit/add/change type); confirm the list; write to HubSpot/DB. **The confirmed titles + identified EIHs feed the CPP** (a structured input — titles, EIH table, encumbrances) and drive Consents; they are not a disconnected step.
 - **DBYD** — lodge (pre-populated hand-off to 1100.com.au), capture responses, flag in-boundary utilities for the exclusion-zone step.
 - **Native Title** — the 3-way check (none / extinguished + statement / not-extinguished → Native Title EIH).
 
