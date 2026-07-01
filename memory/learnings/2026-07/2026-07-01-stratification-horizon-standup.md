@@ -16,3 +16,6 @@
 - Gayathri: KCT config script processing ~2,070 NSW properties (running hours); Cadel confirmed DB can be queried to verify increments. Baseline experiment + new temperature-data column being tested.
 - Steve: built an account-respawn method (24–48h create→reset gap) via Athul's referral tool; starting Lorico Farm.
 - Cadel to nail the Verterra first-pass goal with Kieren and send to Dylan.
+
+## Preference (reinforced) — don't prescribe layout
+Dylan: a **stakeholder's suggested UI solution (e.g. Steve's inline/BCR-style placement) is a design *reference*, not a requirement.** Keep **behaviour + content** as the rails (what must be true: in-screen always-visible per-CP run status + inputs, plan progress, notification); leave **layout / placement / treatment** as open canvas so Claude Design can find the most effective solution. Applies generally: capture the intent, not the pixels. (Reinforces the remix-not-patch strategy.)
