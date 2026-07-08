@@ -209,6 +209,44 @@ Dylan's strategic spine: move the farmer from *"should I do a soil carbon projec
 
 ---
 
+## 10. Addendum 2 (2026-07-08, evening) — agreed delivery strategy + fenceline build path
+
+### 10a. Delivery strategy (agreed Dylan + Cowork, this session)
+
+- **Positioning:** "the next evolution of the farm map draw tool, with conversion focus." Rides the team's existing mental model and the tool's earned credibility.
+- **Flow correction to §9a:** the planner is a **post-snapshot** touchpoint, not an in-visit aid — the HORIZON model run must exist to produce the heat map. Sequence: farm visit → snapshot request → model run → HORIZON Profile issued (with doorway section) → **Hobbs runs the planner in the follow-up conversation**. The planner is the key conversion mechanism and Hobbs's follow-up instrument.
+- **Doorway:** ships inside the snapshot generator build currently in flight. CTA is a concierge door — captures interest, Hobbs follows up with a planner session. Demand measured before build path exists; clicks arrive pre-segmented via the farm-type qualifier.
+- **Demo = decision meeting:** real Stormboy pipeline property (country the field team recognises), Hobbs co-presents the science, explicit closing ask: approve the doorway section + pilot the planner on the next N post-snapshot follow-ups.
+- **Lane:** Stormboy/recruitment tooling under priority 1 — not paused platform dev.
+
+### 10b. The vector question — largely answered from the backend domain model
+
+Source: agriprove-backend skill (schema-confirmed 16 Apr 2026):
+
+- **Parcels: true vectors.** PostGIS `boundary` MultiPolygon (SRID 7844); canonical source of all geospatial truth. Property boundary is derived from parcels at runtime (not stored).
+- **Heat map (Carbon Gradient): HORIZON model output → S3 file.** Format unconfirmed in the skill — likely raster/gridded [ASSUMPTION].
+- **Zones (Strength/Reference/Opportunity): plausibly `RunStratificationWorkflow` output** (stratification requires a completed SOC model run — matches the product flow) [moderate].
+- **Paddocks are NOT a domain entity.** The crisp internal boundaries in HORIZON Analysis are almost certainly parcel boundaries. The planner introduces the paddock/cell concept: demo = client-side only (fine); production = new entity → schema migration, higher cost per the backend cost heuristics. Flag this early in any build ask.
+- **Narrowed question for Cadel (this week, before departure):** "What format are `RunModelUnifiedWorkflow` outputs in S3, and is the zone classification stored as vector polygons (stratification output) or raster?" One question, 15 minutes, unblocks everything.
+
+### 10c. Fenceline generation — demo build path (real property, functional)
+
+**Principle: precompute offline, interact live.** Live computational geometry on stage is where demos die; precomputed geometry swapped at 60fps is indistinguishable from magic.
+
+**Step 1 — data prep (one Claude Code session, Python + shapely):**
+1. Pick the demo property (Stormboy pipeline, completed HORIZON run).
+2. Export: parcel polygons (PostGIS → GeoJSON), heat map PNG + bounding box (S3), zones as vectors if stratification output has them — else polygonise from the raster / colour-threshold the PNG (ramp is known).
+3. Zonal stats: mean gradient per parcel → hot→cold ranking.
+4. **Split generator** — for each parcel and every cell count N=2..12, compute proposed cells: minimum rotated rectangle → cuts perpendicular to the long axis → iterative adjustment to equal areas → in cold parcels, snap the nearest cut to the internal zone boundary (weakest core becomes its own recovery cell, per Hobbs S4) → straighten to single segments, clip to parcel. Emit precomputed cell + fenceline GeoJSON per (parcel, N).
+
+**Step 2 — prototype consumes precomputed geometry.** The cell-count slider swaps geometries instantly; rest-days maths runs live (it's arithmetic); drag-to-adjust enabled on the hero parcel only. Every geometry shown on demo day was validated the day before.
+
+**Step 3 — nothing is built twice.** The prep script IS the seed of the production fenceline service: same rules, run per-property server-side (or client-side against a vectors API) once the build is sanctioned. Production additions: zones/gradient via GraphQL, paddock/cell entity (schema migration — cost flagged), signed property-token route for unique URLs.
+
+**Owner note:** post-Cadel, the data-prep export needs Gayathri/Athul or Dylan-via-Claude-Code against `ava-approved-front-end-customer` + PostGIS. The split generator itself needs no platform access at all.
+
+---
+
 ## Sources
 - Hobbs, `paddock_planning_principles.docx` (Horizon Management Science Layer, Confidential) — two-carbon model, solar-panel analogy, Establishment/Expansion/Maturity phasing with indicative year bands
 - Hobbs, `infrastructure_planning_principles.docx` — abstracted rule engine, farmer-facing language, surface-don't-prescribe constraint
