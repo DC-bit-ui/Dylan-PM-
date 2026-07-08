@@ -1,5 +1,7 @@
 # Grazing & Infrastructure Scenario Tool — Claude Design Build Guide
 
+> **SUPERSEDED 2026-07-08 (same day) by [v2](2026-07-08-grazing-scenario-tool-claude-design-guide-v2.md).** Dylan's revised scope + Hobbs's `infrastructure_planning_principles.docx` changed the core constraints: fencelines are now propose-and-adjust (not zones-only), phasing is stage-ordered not year-banded, and zones already exist as HORIZON Analysis product layers. Part 1 (tooling chain + landscape) remains valid.
+
 **Date:** 2026-07-08
 **Author:** Cowork (for Dylan)
 **Source:** Granola meeting "Grazing management insights via snapshots" (2026-07-08, meeting ID e29d2cb6-84f0-4ec7-b460-e551f5716a92)
@@ -195,5 +197,4 @@ Export → **Handoff to Claude Code** → point it at the Snapshot v2 codebase. 
 - Granola: "Grazing management insights via snapshots", 2026-07-08 (meeting e29d2cb6-84f0-4ec7-b460-e551f5716a92) — principles, 3-phase plan, zones-not-fences finding, farm-type qualifier, value-density goal
 - [Get started with Claude Design — Claude Help Center](https://support.claude.com/en/articles/14604416-get-started-with-claude-design) — capabilities, exports, limitations (fetched live 2026-07-08)
 - [Using Claude Design for prototypes and UX — claude.com](https://claude.com/resources/tutorials/using-claude-design-for-prototypes-and-ux) — prompting patterns, codebase linking, Claude Code handoff (fetched live 2026-07-08)
-- agriprove-design skill `references/tokens.md` — light theme token set (farmer-facing surface rule)
-- Landscape: [AgriWebb](https://www.agriwebb.com/solutions/grazing-management/), [MaiaGrazing / Atlas Ag](https://atlasag.com/maiagrazing), [Cattlytics](https://www.cattlytics.com/au/farm-mapping-software/), [P2PAgri](https://p2pagri.com.au/features/farm-mapping), [FARMap](https://farmap.com.au/) (searched 2026-07-08)
+- 
