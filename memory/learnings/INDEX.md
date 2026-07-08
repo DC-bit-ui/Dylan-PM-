@@ -5,6 +5,7 @@
 ## Recent (last 30 days)
 | Date | Type | Title | File |
 |---|---|---|---|
+| 2026-07-08 | ops (Cowork/git) | Connected-folder sync can feed git truncated files — verify mount copy before staging + blob line-count after commit; VM-side write is authoritative on mismatch | `2026-07/2026-07-08-mount-sync-truncated-git-blobs.md` |
 | 2026-07-08 | tooling preference | Claude Design chosen over Magic Patterns for farmer-facing scenario prototyping (grazing/infrastructure tool). Diverges from agriprove-design skill's "Magic Patterns is primary" — may be surface-dependent; Tier 2 skill update if pattern repeats | `2026-07/2026-07-08-claude-design-for-farmer-facing-prototypes.md` |
 | 2026-07-02 | product direction / scope | Post-submission "what next" screen: Done / assess another property (loop to start, contact pre-filled) / refer a friend (shareable link, viral volume play). Round 11 added. v1 = no attribution; pre-fill is client-side state | `2026-07/2026-07-02-post-submit-growth-loops-another-property-refer-friend.md` |
 | 2026-07-08 | tooling (Jira) | createJiraIssue markdown can double-escape newlines (render literal \n); re-set via editJiraIssue markdown or use adf. Eyeball returned description | `2026-07/2026-07-08-jira-create-markdown-newline-escaping.md` |
