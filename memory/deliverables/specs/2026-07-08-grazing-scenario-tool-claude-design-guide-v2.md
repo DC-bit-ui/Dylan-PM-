@@ -1,5 +1,7 @@
 # Grazing Infrastructure Planner — Claude Design Build Guide (v2)
 
+> **SUPERSEDED 2026-07-08 (same day) by [v3](2026-07-08-grazing-scenario-tool-claude-design-guide-v3.md).** v3 wraps this in the two-surface architecture Dylan asked for (static Snapshot insight section + live link to this interactive tool) and renames the play-forward phases to Hobbs's Establishment/Expansion/Maturity. **This file's master prompt (§5) is still the canonical interactive-tool spec — v3 carries it forward with one phase-naming amendment (v3 §4).**
+
 **Date:** 2026-07-08
 **Author:** Cowork (for Dylan)
 **Supersedes:** [v1](2026-07-08-grazing-scenario-tool-claude-design-guide.md) — same day. v1's "never draw fence lines" constraint is retired; v1's fixed year-band phasing (Y1–3/4–6/7–10) is corrected to stage-based sequencing per Hobbs's logic guide.
@@ -226,6 +228,4 @@ CONSTRAINTS:
 
 **Open items for Dylan:**
 1. **Vector confirmation with Cadel** — do Strength/Reference/Opportunity zones + paddock boundaries exist as polygons? Determines whether production fenceline proposal is geometry ops (cheap) or requires raster work first. **[ASSUMPTION: vectors exist]**
-2. Stocking-rate default heuristic — sensible pre-fill per property size/region needs a rough basis; Hobbs or field team can supply. **[ASSUMPTION in prototype: coarse default is fine]**
-3. Naming — "HORIZON Profile" carried from the 08 Jul meeting; not yet formally decided.
-4. Hobbs's doc cites `paddock_planning_principles.docx` (Horizon — Management Science Layer) as its source — worth attaching to the Claude Design project too if the tool's copy needs deeper scientific grounding.
+2. Stocking-rate default

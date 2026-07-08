@@ -15,17 +15,10 @@
 - _(YYYY-MM-DD — title — `decision-memos/<file>.md`)_
 
 ## Specs
-- 2026-07-08 — Grazing Infrastructure Planner — Claude Design build guide **v2** (Hobbs rule engine encoded; propose+adjust fencelines; live rest-days maths; stage order / pace slider; choose-your-own-adventure flow per farm map draw tool) — `specs/2026-07-08-grazing-scenario-tool-claude-design-guide-v2.md`
-- 2026-07-08 — Grazing & Infrastructure Scenario Tool — Claude Design build guide (v1; superseded by v2 same day — tooling chain + landscape sections still valid) — `specs/2026-07-08-grazing-scenario-tool-claude-design-guide.md`
+- 2026-07-08 — HORIZON Grazing Insight — Two-surface build guide **v3** (CURRENT: static Snapshot insight section + "why carbon" education from Hobbs's deep doc + live link to interactive planner; Establishment/Expansion/Maturity phasing; build-sequencing + deep-link architecture) — `specs/2026-07-08-grazing-scenario-tool-claude-design-guide-v3.md`
+- 2026-07-08 — Grazing Infrastructure Planner — build guide v2 (superseded by v3; §5 master prompt still canonical for the interactive tool) — `specs/2026-07-08-grazing-scenario-tool-claude-design-guide-v2.md`
+- 2026-07-08 — Grazing & Infrastructure Scenario Tool — build guide v1 (superseded by v2 same day — tooling chain + landscape still valid) — `specs/2026-07-08-grazing-scenario-tool-claude-design-guide.md`
+- Source docs (Hobbs): `specs/2026-07-08-hobbs-infrastructure-planning-principles.docx` (abstracted rule engine) · `specs/2026-07-08-hobbs-paddock-planning-principles-CONFIDENTIAL.docx` (deep science — internal only)
 
 ## System proposals
-- 2026-05-27 — Scheduled-task token optimisation (12 proposals across 14 tasks; ~75-100k token saving per Monday with zero efficacy loss) — `2026-05-27-scheduled-task-token-optimisation.md`
-
-## Updates / status
-- 2026-05-21 — Ceres Tag escalation email (for Kieren to send to Brianna + Joe re Rod McIntyre / Box Range RANCHER regression) — `updates/2026-05-21-ceres-escalation-email-for-kieren.md`
-- _(YYYY-MM-DD — audience — `updates/<file>.md`)_
-
-## Meetings (notes & prep)
-- _(YYYY-MM-DD — meeting — `meetings/<file>.md`)_
-
-## Rese
+- 2026-05-27 — Scheduled-task token optimisation (12 proposals across 14 tasks; ~75-100k token savin
