@@ -147,6 +147,8 @@ def load_real_paddocks(indir, zones):
         gm = shp_transform(TO_M, g)
         if isinstance(gm, MultiPolygon):
             gm = max(gm.geoms, key=lambda x: x.area)
+        if gm.area / 10_000.0 < 6.0:
+            continue          # sliver parcels aren't manageable paddocks
         best_cls, best_area = "Stable", 0.0
         num = den = 0.0
         for zm, pr in zones_m:
