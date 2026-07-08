@@ -180,6 +180,8 @@ and A4-portrait both clean.
 4. **Naming** — "HORIZON Profile" carried from 08 Jul; not formally decided.
 5. The original `paddock_planning_principles.docx` is marked **Confidential** — confirm the two metaphors (two-accounts, solar-panel) are cleared for farmer-facing use before they ship. They're strong; worth an explicit OK.
 
+---
+
 ## 9. Addendum (2026-07-08, later same session) — strategy confirmation, demo-first audience, eligibility layer
 
 Dylan's answers to the two open strategy questions change three things:
@@ -187,4 +189,28 @@ Dylan's answers to the two open strategy questions change three things:
 ### 9a. The v1 audience is the TEAM, not farmers
 
 There is **no sanctioned build path** — the tool's current job is an innovation demo that makes the team think "aha" and produces a build decision. That changes what "v1 done" means:
-- Optimise the Claude Design prototype for the **internal aha moment**, not field robustness. The demo script: Snapshot page → doorway section → unique URL → tool opens on a real (generalised) property → instinct test → 
+- Optimise the Claude Design prototype for the **internal aha moment**, not field robustness. The demo script: Snapshot page → doorway section → unique URL → tool opens on a real (generalised) property → instinct test → green-zone click → play forward → eligibility close.
+- The two demo moments most likely to land the "aha" with leadership: **the instinct test** (the tool earning trust by letting you be wrong) and **the eligibility close** (§9c — the funnel reframe made visible).
+- Field-hardening items (offline HTML export, tablet touch targets) drop to post-decision backlog.
+
+### 9b. Doorway naming + link
+
+Snapshot section title candidates per Dylan: **"Where to start"** or **"Management insights"**. Link is a **unique URL per property** into the tool for situation modelling — consistent with the §3 signed-token pattern.
+
+### 9c. The eligibility layer — the tool's ending
+
+Dylan's strategic spine: move the farmer from *"should I do a soil carbon project?"* to *"how will I structure my business (literally) to enable the soil carbon project?"* The tool's closing act makes this explicit:
+
+- As the farmer builds their scenario, the tool quietly tracks that the modelled changes — subdivision into rotational cells, changed grazing intensity/duration, full-season rest scheduling — **constitute the kind of new management activity a soil carbon project requires** [moderate — under the 2021 soil carbon method a project must adopt new/materially different eligible management activities, and changed grazing/pasture management is among them; **verify exact wording against the method documentation before any farmer-facing copy ships**].
+- Closing screen addition: an "eligibility" beat after the play-forward — *"The plan you just built isn't only a productivity plan. Structuring your grazing this way is the management change a soil carbon project is built on. You've already done the hard thinking — the project is the next step, not a leap."* CTA unchanged ("Talk to us about your baseline").
+- This inverts the sales motion: the farmer arrives at the conversation having already designed the business restructure; AgriProve's role is to credit it. Fellowship-not-sales, encoded in a product flow.
+
+**Captured to strategy (Tier 2):** Snapshot-as-acquisition-model is explicit strategy + the funnel reframe — see `../../business/strategy.md` (2026-07-08 entry, PR pending).
+
+---
+
+## Sources
+- Hobbs, `paddock_planning_principles.docx` (Horizon Management Science Layer, Confidential) — two-carbon model, solar-panel analogy, Establishment/Expansion/Maturity phasing with indicative year bands
+- Hobbs, `infrastructure_planning_principles.docx` — abstracted rule engine, farmer-facing language, surface-don't-prescribe constraint
+- Granola 2026-07-08 "Grazing management insights via snapshots" (e29d2cb6-84f0-4ec7-b460-e551f5716a92) — "why carbon" education gap, Snapshot v2 grazing section action, value-density goal
+- v2 guide (interactive tool master prompt) — `2026-07-08-grazing-scenario-tool-claude-design-guide-v2.md`
