@@ -180,8 +180,11 @@ and A4-portrait both clean.
 4. **Naming** — "HORIZON Profile" carried from 08 Jul; not formally decided.
 5. The original `paddock_planning_principles.docx` is marked **Confidential** — confirm the two metaphors (two-accounts, solar-panel) are cleared for farmer-facing use before they ship. They're strong; worth an explicit OK.
 
-## Sources
-- Hobbs, `paddock_planning_principles.docx` (Horizon Management Science Layer, Confidential) — two-carbon model, solar-panel analogy, Establishment/Expansion/Maturity phasing with indicative year bands
-- Hobbs, `infrastructure_planning_principles.docx` — abstracted rule engine, farmer-facing language, surface-don't-prescribe constraint
-- Granola 2026-07-08 "Grazing management insights via snapshots" (e29d2cb6-84f0-4ec7-b460-e551f5716a92) — "why carbon" education gap, Snapshot v2 grazing section action, value-density goal
-- v2 guide (interactive tool master prompt) — `2026-07-08-grazing-scenario-tool-claude-design-guide-v2.md`
+## 9. Addendum (2026-07-08, later same session) — strategy confirmation, demo-first audience, eligibility layer
+
+Dylan's answers to the two open strategy questions change three things:
+
+### 9a. The v1 audience is the TEAM, not farmers
+
+There is **no sanctioned build path** — the tool's current job is an innovation demo that makes the team think "aha" and produces a build decision. That changes what "v1 done" means:
+- Optimise the Claude Design prototype for the **internal aha moment**, not field robustness. The demo script: Snapshot page → doorway section → unique URL → tool opens on a real (generalised) property → instinct test → 
