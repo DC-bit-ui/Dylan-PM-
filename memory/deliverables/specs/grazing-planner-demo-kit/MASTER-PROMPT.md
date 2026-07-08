@@ -45,6 +45,16 @@ Map layers (match HORIZON Analysis):
 - Recovery cell (recovery_cell_index in bundle): hatched overlay + label
   "recovery cell — weakest core, rests first"
 
+PADDOCK NAMING (new step 1b, right after MEET YOUR COUNTRY): the bundle's
+units carry generic labels. Add a fast, warm naming pass: each unit
+highlights in turn ("What do you call this one?") with a big text field
+and a skip. Names the user gives (e.g. Kenny's, Sugar Loaf, The Pub)
+replace labels EVERYWHERE downstream — the plan must speak the farmer's
+language ("Rest Kenny's first — it has the most to gain"). Pre-fill from
+unit.name when present. This is a feature, not a workaround: naming their
+own country is an ownership moment, and the presenter (Hobbs) can drive
+it in under two minutes.
+
 FLOW — 6 steps, persistent progress dots, back always available:
 
 1. MEET YOUR COUNTRY. Full-bleed map of the bundle property (name + total ha
