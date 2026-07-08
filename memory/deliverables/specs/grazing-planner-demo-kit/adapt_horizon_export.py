@@ -51,8 +51,10 @@ def load_export(indir):
     eligible_gj = gj("classified.geojson")
     eligible = shape(eligible_gj["features"][0]["geometry"]) if eligible_gj else boundary
     zones = []
-    for ft in gj("horizon_landscape.geojson")["features"]:
-        zones.append((shape(ft["geometry"]), ft["properties"]))
+    hl = gj("horizon_landscape.geojson")
+    if hl:
+        for ft in hl["features"]:
+            zones.append((shape(ft["geometry"]), ft["properties"]))
     meta = {}
     mpath = os.path.join(indir, "metadata.txt")
     if os.path.exists(mpath):
@@ -159,15 +161,72 @@ def load_real_paddocks(indir, zones):
     return out
 
 
+def raster_unit_scorer(indir):
+    """Mean SOC per unit from l1_soc.tif (GeoTIFF, any CRS). Returns f(geom_wgs84)->score
+    normalised 0..1 across calls via closure state, or None if no raster."""
+    p = os.path.join(indir, "l1_soc.tif")
+    if not os.path.exists(p):
+        return None
+    import rasterio, rasterio.mask
+    from pyproj import Transformer
+    src = rasterio.open(p)
+    tfm = Transformer.from_crs("EPSG:4326", src.crs, always_xy=True).transform
+    def mean_soc(geom_deg):
+        g = shp_transform(tfm, geom_deg)
+        try:
+            arr, _ = rasterio.mask.mask(src, [mapping(g)], crop=True, filled=False)
+        except ValueError:
+            return None
+        band = arr[0]
+        return float(band.mean()) if band.count() else None
+    return mean_soc
+
+
+def parcels_as_units(indir, min_ha):
+    """Use the export's cadastral parcels (input.geojson features) as planning
+    units. Small slivers below min_ha are dropped. Returns [(poly_m, props)]."""
+    feats = json.load(open(os.path.join(indir, "input.geojson")))["features"]
+    units = []
+    for i, ft in enumerate(feats):
+        g = shape(ft["geometry"])
+        if isinstance(g, MultiPolygon):
+            g = max(g.geoms, key=lambda x: x.area)
+        gm = shp_transform(TO_M, g)
+        if gm.area / 10_000.0 >= min_ha:
+            units.append((gm, ft.get("properties") or {}, i))
+    return units
+
+
 def build(indir, name, min_ha):
     boundary, eligible, zones, meta, bounds = load_export(indir)
-    real = load_real_paddocks(indir, zones)
-    units = None
+    real = load_real_paddocks(indir, zones) if zones else None
+    parcel_mode = False
     if real:
         units = [(g, cls) for g, cls, score, nm in real]
-        real_meta = real
-    else:
+    elif zones:
         units = derive_units(eligible, zones, min_ha)
+    else:
+        # no zone vectors in export: cadastral parcels + raster scoring
+        scorer = raster_unit_scorer(indir)
+        if scorer is None:
+            raise SystemExit("Export has neither zone vectors nor l1_soc.tif.")
+        parcel_mode = True
+        raw = parcels_as_units(indir, min_ha)
+        scored_p = []
+        for gm, props, idx in raw:
+            g_deg = shp_transform(TO_DEG, gm)
+            s = scorer(g_deg)
+            scored_p.append((gm, props, idx, s if s is not None else 0.0))
+        vals = sorted(sp[3] for sp in scored_p)
+        t1, t2 = vals[len(vals)//3], vals[2*len(vals)//3]
+        lo, hi = vals[0], vals[-1]
+        real = []
+        for gm, props, idx, s in scored_p:
+            cls = "Strength" if s >= t2 else ("Stable" if s >= t1 else "Opportunity")
+            norm = (s - lo) / (hi - lo) if hi > lo else 0.5
+            nm = props.get("pId") and f"Parcel {props.get('lot','?')} ({idx})" or f"Parcel {idx}"
+            real.append((gm, cls, norm, nm))
+        units = [(g, cls) for g, cls, score, nm in real]
     if not units:
         raise SystemExit("No planning units >= min-ha derived; lower --min-ha.")
 
@@ -224,7 +283,8 @@ def build(indir, name, min_ha):
             "planned_area_ha": round(covered, 1),
             "planned_coverage_pct": round(covered / eligible_ha * 100, 1),
             "unit_count": len(out_units),
-            "units_source": "real_paddocks" if real else "derived_zones",
+            "units_source": ("cadastral_parcels_raster_scored" if parcel_mode
+                              else ("real_paddocks" if real else "derived_zones")),
             "units_note": ("REAL paddock boundaries (traced/parcel-sourced), ranked by "
                            "area-weighted zone score" if real else
                            "Planning units derived from HORIZON zone classes via "

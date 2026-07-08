@@ -30,6 +30,13 @@ THEME — LIGHT, exact hex values, no substitutions:
 - Primary accent #2D6A4F (buttons, active states, key numbers)
 - Success #34D399 · Warning #F59E0B · Error #EF4444 · Border #E2E8F0
 - Font: Inter, system-ui, sans-serif · Cards radius 8px, 1px #E2E8F0 border
+SATELLITE UNDERLAY (required): the map renders on a Mapbox satellite
+(hybrid) base layer — reuse AgriProve's existing Mapbox token (same as the
+farm map draw tool; placeholder MAPBOX_TOKEN). All layers draw over it:
+heat overlay (attached heat_overlay.png at heat_overlay.bounds.json, ~55%
+opacity), then unit/paddock boundaries, then proposed fencelines. A layer
+toggle switches Satellite / Heat map / Both.
+
 Map layers (match HORIZON Analysis):
 - Heat map base: red→green gradient render (use bundle parcel scores to tint
   parcels as a stand-in if no raster image is attached)
