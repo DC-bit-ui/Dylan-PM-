@@ -25,7 +25,7 @@ import argparse, json, math, re, sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from shapely.geometry import shape, mapping, MultiPolygon, Polygon
 from shapely.ops import transform as shp_transform, unary_union
-from prep_demo_data import (TO_M, TO_DEG, split_equal_area, geoms_to_geojson,
+from prep_demo_data import (TO_M, TO_DEG, split_buildable, geoms_to_geojson,
                             MAX_CELLS)
 
 BAND_BY_CLASS = {"Strength": "hot", "Stable": "mid", "Opportunity": "cold"}
@@ -147,13 +147,18 @@ def build(indir, name, min_ha):
         max_n = int(min(MAX_CELLS, max(2, area_ha // HA_PER_CELL_MIN)))
         splits = {}
         for n in range(2, max_n + 1):
-            cells, fences = split_equal_area(poly_m, n)
+            cells, fences, res = split_buildable(poly_m, n)
+            if cells is None:
+                continue           # no buildable orientation at this N
             splits[str(n)] = {
                 "cells": geoms_to_geojson(cells),
                 "fences": geoms_to_geojson(fences),
                 "cell_areas_ha": [round(c.area / 10_000.0, 1) for c in cells],
                 "recovery_cell_index": None,
+                "logic": res,      # fence_m, min_cell_width_m, worst_aspect
             }
+        if not splits:
+            print(f"  [logic] {label}: no buildable split even at N=2 -- unit ships view-only")
         out_units.append({
             "id": f"unit-{rank}", "name": label, "rank": rank,
             "band": BAND_BY_CLASS[cls], "zone_class": cls,
@@ -220,6 +225,8 @@ def render(bundle, out_png, n_show=6):
                     ax.add_patch(MP(poly[0], closed=True, facecolor=band_col[u["band"]],
                                     alpha=0.45, edgecolor="#1A2B3C", lw=0.8))
             else:
+                if not u["splits"]:
+                    continue
                 key = str(N) if str(N) in u["splits"] else max(u["splits"], key=int)
                 for ci, cell in enumerate(u["splits"][key]["cells"]):
                     polys = [cell["coordinates"]] if cell["type"] == "Polygon" else cell["coordinates"]
@@ -250,7 +257,8 @@ def main():
           f"({p['planned_coverage_pct']}%)")
     for u in bundle["parcels"]:
         ns = sorted(map(int, u["splits"].keys()))
-        print(f"  #{u['rank']:>2} {u['name']:<14} {u['band']:<5} {u['area_ha']:>7.1f} ha  N=2..{max(ns)}")
+        opts = ",".join(map(str, ns)) if ns else "view-only"
+        print(f"  #{u['rank']:>2} {u['name']:<14} {u['band']:<5} {u['area_ha']:>7.1f} ha  N: {opts}")
     if args.render:
         render(bundle, args.render)
         print(f"rendered {args.render}")

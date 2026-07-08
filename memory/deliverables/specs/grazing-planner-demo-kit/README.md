@@ -39,6 +39,16 @@ Everything needed to build the functional demo on a REAL property: data prep scr
 
 **Rebuild for any other property:** `python3 adapt_horizon_export.py --indir <export_dir> --name "<Name>" --out demo_bundle.json --render check.png`
 
+## The logic layer (Dylan's foundational rule, 2026-07-08)
+
+"It has to be logical — fencelines and suggestions must be what a farmer could actually implement, reviewed with an eye of logic." Encoded at three levels:
+
+**L1 — buildable by construction (in the generator, shipped).** Every candidate split is validated before it enters the bundle: cells contiguous (no fragments stranded across concavities), >=120 m working width, aspect <=6:1, >=6 ha floor. The generator searches 8 cut orientations per (unit, N) and emits the first buildable one; N values with no buildable orientation are omitted — the slider goes sparse rather than showing a line a contractor couldn't build. Each shipped split carries logic metrics (fence_m, min_cell_width_m, worst_aspect). This also matches Hobbs in the source meeting: auto-drawn subdivision was rejected ("horrible failure... we don't want to do that") — generation is only acceptable when constrained to buildable geometry with the farmer adjusting.
+
+**L2 — practicality flags (prototype + next iteration).** Fence-km per scenario displayed (cost intuition); water access is the farmer's call — v2 lets Hobbs mark existing water points and fences on screen, and proposals then reuse existing fences as free edges (the single biggest real-world implementability lever we can't see from the export).
+
+**L3 — human logic review (process, non-negotiable).** No generated plan reaches a farmer without a named review — Hobbs, demo-day minus one: every line buildable? every cell reachable for stock and machinery? mustering makes sense? would you put your name on it? The tool's logic metrics make this a 10-minute pass, not an audit.
+
 ## Demo-day checklist
 
 - [ ] Bundle built from the real property; splits eyeballed (render or in-tool)

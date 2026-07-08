@@ -191,8 +191,97 @@ def isolate_recovery_cell(poly_m, weakest_zone_m):
     return core, remainder
 
 
+# ---------------------------------------------------------------- logic layer
+# Implementability constraints (Dylan 2026-07-08: "it has to be logical --
+# fencelines must be something a farmer could actually implement").
+MIN_CELL_WIDTH_M = 120     # narrower than this and stock flow / machinery fail
+MAX_ASPECT = 6.0           # no spaghetti cells
+MIN_CELL_HA = 6.0          # absolute floor regardless of unit size
+
+def validate_cells(cells_m, fences_m):
+    """Hard buildability checks. Returns (ok, metrics|reason).
+    - every cell contiguous (a cut through a concave unit can strand a
+      disconnected fragment -- unbuildable as one paddock)
+    - min working width (short side of min rotated rect)
+    - aspect ratio cap
+    - min area floor
+    Metrics: total new fence metres, min cell width, worst aspect."""
+    total_fence_m = sum(f.length for f in fences_m)
+    min_w, worst_ar = float("inf"), 0.0
+    for c in cells_m:
+        if isinstance(c, MultiPolygon):
+            return False, "disconnected cell"
+        if c.area / 10_000.0 < MIN_CELL_HA:
+            return False, "cell below area floor"
+        mrr = c.minimum_rotated_rectangle
+        xs = list(mrr.exterior.coords)[:4]
+        d1 = math.dist(xs[0], xs[1]); d2 = math.dist(xs[1], xs[2])
+        w, L = min(d1, d2), max(d1, d2)
+        if w < MIN_CELL_WIDTH_M:
+            return False, "cell too narrow"
+        ar = L / w if w else 99
+        min_w, worst_ar = min(min_w, w), max(worst_ar, ar)
+        if ar > MAX_ASPECT:
+            return False, "aspect ratio"
+    return True, {"fence_m": round(total_fence_m), "min_cell_width_m": round(min_w),
+                  "worst_aspect": round(worst_ar, 1)}
+
+
 def geoms_to_geojson(geoms):
     return [mapping(shp_transform(TO_DEG, g)) for g in geoms]
+
+
+def split_buildable(poly_m, n):
+    """Try several cut orientations; return the first split that passes
+    validate_cells, preferring the long-axis-perpendicular default.
+    Returns (cells, fences, metrics) or (None, None, reason)."""
+    base = long_axis_angle(poly_m)
+    last_reason = "no valid orientation"
+    for delta in (0, 90, 45, -45, 30, -30, 60, -60):
+        cells, fences = split_equal_area_at(poly_m, n, base + delta)
+        ok, res = validate_cells(cells, fences)
+        if ok:
+            return cells, fences, res
+        last_reason = res
+    return None, None, last_reason
+
+
+def split_equal_area_at(poly_m, n, ang):
+    """split_equal_area with an explicit cut-perpendicular angle."""
+    if n <= 1:
+        return [poly_m], []
+    origin = poly_m.centroid
+    rot = rotate(poly_m, -ang, origin=origin)
+    minx, miny, maxx, maxy = rot.bounds
+    pad = (maxy - miny) * 0.05 + 1.0
+    total = rot.area
+
+    def area_left_of(x):
+        return rot.intersection(box(minx - 1, miny - pad, x, maxy + pad)).area
+
+    cuts = []
+    for k in range(1, n):
+        target, lo, hi = total * k / n, minx, maxx
+        for _ in range(26):
+            mid = (lo + hi) / 2
+            if area_left_of(mid) < target:
+                lo = mid
+            else:
+                hi = mid
+        cuts.append((lo + hi) / 2)
+
+    edges = [minx - 1] + cuts + [maxx + 1]
+    cells, fences = [], []
+    for a, b in zip(edges[:-1], edges[1:]):
+        cell = rot.intersection(box(a, miny - pad, b, maxy + pad))
+        if not cell.is_empty and cell.area > 1.0:
+            cells.append(cell)
+    for x in cuts:
+        seg = rot.intersection(LineString([(x, miny - pad), (x, maxy + pad)]))
+        if not seg.is_empty:
+            fences.append(seg)
+    back = lambda g: rotate(g, ang, origin=origin)
+    return [back(c) for c in cells], [back(f) for f in fences]
 
 
 # ---------------------------------------------------------------- pipeline

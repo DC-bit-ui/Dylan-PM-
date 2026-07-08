@@ -101,6 +101,14 @@ FLOW — 6 steps, persistent progress dots, back always available:
 
 CONSTRAINTS:
 - Precomputed geometry only — read cells/fences/areas from demo_bundle.json.
+- THE LOGIC RULE (foundational): every line shown has already passed
+  buildability checks (contiguous cells, >=120 m working width, aspect
+  <=6:1, >=6 ha). The cell slider must offer ONLY the N values present in
+  that unit's splits — they may be sparse (e.g. 2,3,5) and that is
+  deliberate: missing N values were unbuildable. Show each scenario's
+  "new fence: ~X km" from splits[n].logic.fence_m. Units with no splits
+  render view-only with the note "subdivision here needs local knowledge
+  — sketch it with your agent".
 - Order hard-coded hottest→mid→coldest; pace is the only time variable; no
   fixed calendar years pinned to phases.
 - Every recommendation carries its one-line WHY beside it.
