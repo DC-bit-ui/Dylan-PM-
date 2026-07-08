@@ -1,0 +1,18 @@
+Classified Area Extraction Metadata
+========================================
+
+Project name: Farm 217
+
+Total input area:    789.74 ha
+Eligible area:       648.90 ha
+Eligible percentage: 82.2%
+
+Address: 360 Elaroo Rd, Coleambally, NSW, 2707
+Rainfall: 390 mm
+
+Additional Metadata
+========================================
+
+Soil classes in eligible area: Sodosol
+pH range in eligible area: 5.49 - 6.00
+Soil depth range in eligible area: 1.14 - 2.11 m

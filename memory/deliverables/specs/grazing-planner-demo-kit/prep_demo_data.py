@@ -151,7 +151,7 @@ def split_equal_area(poly_m, n):
     cuts = []
     for k in range(1, n):
         target, lo, hi = total * k / n, minx, maxx
-        for _ in range(48):                       # ~1e-14 relative precision
+        for _ in range(26):                       # ~1e-8 relative precision — ample
             mid = (lo + hi) / 2
             if area_left_of(mid) < target:
                 lo = mid

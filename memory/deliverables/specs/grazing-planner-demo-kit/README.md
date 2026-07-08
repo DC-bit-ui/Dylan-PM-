@@ -24,6 +24,21 @@ Everything needed to build the functional demo on a REAL property: data prep scr
    Sanity-check first with: `python3 prep_demo_data.py --selftest`
 4. **Build in Claude Design:** attach `demo_bundle.json` + both Hobbs docs + screenshots, paste `MASTER-PROMPT.md`'s prompt block, iterate.
 
+
+## Farm 217 — REAL bundle built 2026-07-08 (READY)
+
+`farm217/demo_bundle.json` is the real thing: Farm 217, Coleambally NSW (789.7 ha total, 648.9 ha eligible, 390 mm rainfall). 16 planning units — Strength 150 ha (5 units, hot) / Stable 241 ha (5, mid) / Opportunity 212 ha (6, cold), 93% of eligible area planned, splits precomputed to each unit's area-capped max N. `farm217/units_check.png` is the verification render; `farm217/map.png` + `map.bounds.json` are the heat map base layer for the prototype.
+
+**What the export taught us (folds back into the spec):**
+- Zones ARE vectors in the export (`horizon_landscape.geojson`, class + class_value + median SOC t/ha). Cadel question half-answered; remaining half is whether the raw raster (`l1_soc.tif`) or the vectors are canonical platform-side.
+- Zone classes are **Strength / Stable / Opportunity** — "Stable", not "Reference" as the earlier screenshot legend suggested.
+- **No internal paddock fences in the export** — planning units are derived from zone geometry via 120 m majority-vote grid + heal + simplify (`adapt_horizon_export.py`). Units may overlap ~60 m at heal seams: render z-order cold under mid under hot; treat area sums as approximate.
+- Real zone country is interleaved lace, not tidy bands — the derived-unit approach IS the product answer, not a demo hack.
+
+**To build in Claude Design now:** attach `farm217/demo_bundle.json` + `farm217/map.png` + `map.bounds.json` + both Hobbs docs → paste MASTER-PROMPT.md's prompt block.
+
+**Rebuild for any other property:** `python3 adapt_horizon_export.py --indir <export_dir> --name "<Name>" --out demo_bundle.json --render check.png`
+
 ## Demo-day checklist
 
 - [ ] Bundle built from the real property; splits eyeballed (render or in-tool)
