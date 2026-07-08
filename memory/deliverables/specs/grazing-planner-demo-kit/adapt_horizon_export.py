@@ -128,20 +128,65 @@ def derive_units(eligible, zones, min_ha):
     return units
 
 
+def load_real_paddocks(indir, zones):
+    """If paddocks.geojson exists (traced from imagery or platform parcels),
+    use REAL paddocks as planning units. Each paddock is ranked by
+    area-weighted zone score (Strength=3, Stable=2, Opportunity=1) and
+    banded by its dominant class. Returns [(poly_m, class_name)] or None."""
+    p = os.path.join(indir, "paddocks.geojson")
+    if not os.path.exists(p):
+        return None
+    feats = json.load(open(p))["features"]
+    zones_m = [(shp_transform(TO_M, shape(f)), pr) for f, pr in
+               [(z[0].__geo_interface__, z[1]) for z in zones]]
+    out = []
+    for ft in feats:
+        g = shape(ft["geometry"])
+        gm = shp_transform(TO_M, g)
+        if isinstance(gm, MultiPolygon):
+            gm = max(gm.geoms, key=lambda x: x.area)
+        best_cls, best_area = "Stable", 0.0
+        num = den = 0.0
+        for zm, pr in zones_m:
+            inter = gm.intersection(zm)
+            if not inter.is_empty:
+                num += inter.area * CLASS_ORDER[pr["class"]]
+                den += inter.area
+                if inter.area > best_area:
+                    best_area, best_cls = inter.area, pr["class"]
+        out.append((gm, best_cls, (num / den / 3.0) if den else 0.5,
+                    (ft.get("properties") or {}).get("name")))
+    return out
+
+
 def build(indir, name, min_ha):
     boundary, eligible, zones, meta, bounds = load_export(indir)
-    units = derive_units(eligible, zones, min_ha)
+    real = load_real_paddocks(indir, zones)
+    units = None
+    if real:
+        units = [(g, cls) for g, cls, score, nm in real]
+        real_meta = real
+    else:
+        units = derive_units(eligible, zones, min_ha)
     if not units:
         raise SystemExit("No planning units >= min-ha derived; lower --min-ha.")
 
-    # rank: class value desc, then area desc within class
-    units.sort(key=lambda u: (-CLASS_ORDER[u[1]], -u[0].area))
+    # rank: real paddocks by continuous zone score; derived units by class then area
+    if real:
+        scored = sorted(real, key=lambda r: (-r[2], -r[0].area))
+        units = [(g, cls) for g, cls, s, nm in scored]
+        real_names = [nm for g, cls, s, nm in scored]
+        real_scores = [s for g, cls, s, nm in scored]
+    else:
+        units.sort(key=lambda u: (-CLASS_ORDER[u[1]], -u[0].area))
     letters = {}
     out_units = []
     covered = 0.0
     for rank, (poly_m, cls) in enumerate(units, 1):
         letters[cls] = letters.get(cls, 0) + 1
         label = f"{cls} {chr(64 + letters[cls])}"
+        if real and real_names[rank - 1]:
+            label = str(real_names[rank - 1])
         area_ha = poly_m.area / 10_000.0
         covered += area_ha
         max_n = int(min(MAX_CELLS, max(2, area_ha // HA_PER_CELL_MIN)))
@@ -162,7 +207,7 @@ def build(indir, name, min_ha):
         out_units.append({
             "id": f"unit-{rank}", "name": label, "rank": rank,
             "band": BAND_BY_CLASS[cls], "zone_class": cls,
-            "score": CLASS_ORDER[cls] / 3.0,
+            "score": round(real_scores[rank - 1], 3) if real else CLASS_ORDER[cls] / 3.0,
             "area_ha": round(area_ha, 1),
             "geometry": mapping(shp_transform(TO_DEG, poly_m)),
             "splits": splits,
@@ -179,7 +224,10 @@ def build(indir, name, min_ha):
             "planned_area_ha": round(covered, 1),
             "planned_coverage_pct": round(covered / eligible_ha * 100, 1),
             "unit_count": len(out_units),
-            "units_note": ("Planning units derived from HORIZON zone classes via "
+            "units_source": "real_paddocks" if real else "derived_zones",
+            "units_note": ("REAL paddock boundaries (traced/parcel-sourced), ranked by "
+                           "area-weighted zone score" if real else
+                           "Planning units derived from HORIZON zone classes via "
                            "120m majority-vote grid (no internal fences in "
                            "export). Strength=hot, Stable=mid, Opportunity=cold. "
                            "Units may overlap ~60m at heal seams - render "
