@@ -265,7 +265,10 @@ def build(indir, name, min_ha):
             }
         if not splits:
             print(f"  [logic] {label}: no buildable split even at N=2 -- unit ships view-only")
+        ns = sorted(int(k) for k in splits)
+        rec_n = ns[len(ns)//2] if ns else None   # median buildable option
         out_units.append({
+            "recommended_n": rec_n,
             "id": f"unit-{rank}", "name": label, "rank": rank,
             "band": BAND_BY_CLASS[cls], "zone_class": cls,
             "score": round(real_scores[rank - 1], 3) if real else CLASS_ORDER[cls] / 3.0,

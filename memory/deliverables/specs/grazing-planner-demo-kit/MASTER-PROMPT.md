@@ -45,6 +45,13 @@ Map layers (match HORIZON Analysis):
 - Recovery cell (recovery_cell_index in bundle): hatched overlay + label
   "recovery cell — weakest core, rests first"
 
+STATIC ENTRY STATE (the very first thing the user sees): before any
+interaction, the map already shows the SUGGESTED PLAN — every unit
+rendered at its recommended_n split from the bundle, fences dashed,
+bands tinted. Caption: "Here's what your country suggests. Make it
+yours." One primary CTA starts the flow. Never open on a blank canvas —
+the estimate is the anchor; everything after is the farmer correcting us.
+
 PADDOCK NAMING (new step 1b, right after MEET YOUR COUNTRY): the bundle's
 units carry generic labels. Add a fast, warm naming pass: each unit
 highlights in turn ("What do you call this one?") with a big text field
@@ -136,6 +143,31 @@ CONSTRAINTS:
 - 1440×900 and tablet landscape first-class; hero content above the fold.
 - Realistic Australian pastoral voice; no lorem ipsum anywhere.
 ```
+
+## Second design pass — the no-paddock-map journey (build after the core flow works)
+
+For users with no digital paddock map, the tool must never present a blank
+canvas. Three-layer cascade, each layer optional:
+
+1. DETECT (zero user effort — always available): cadastral parcels + zone
+   geometry produce estimated units and suggested splits (exactly what the
+   bundle contains). This IS the static entry state above.
+2. CONFIRM + ADJUST (light effort, per-unit not global): "Do these look
+   like your paddocks?" Per-unit actions on tap: Keep / Merge with a
+   neighbour (tap two units) / Split (tap a suggested fence to accept, drag
+   its handles to move) / Redraw one boundary (tap-to-place vertices — the
+   farm map draw tool interaction, never freehand). Small commitments;
+   no step asks them to fix the whole farm at once.
+3. CLEAR + DRAW (full control, rare): per-unit or whole-property "Start
+   from my own fences" — tap-to-place boundary drawing over the satellite
+   + heat underlay. The detected estimate is parked in an UNDO drawer,
+   one tap to restore, never destroyed. (Field-test lesson: undo was the
+   single moment of user confusion — make it permanent, visible, labelled.)
+
+Rules: every edit re-clips to the property boundary; edited units re-rank
+against the zones automatically; buildability checks re-run on any user-
+drawn split and warn (never block) if a cell goes below width/area floors:
+"That one's tighter than most fencing setups — sure?"
 
 ## Iteration prompts (run one at a time after first generation)
 
