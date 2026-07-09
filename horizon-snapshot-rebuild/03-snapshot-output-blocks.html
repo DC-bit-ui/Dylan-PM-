@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HORIZON Snapshot — Modular Output Blocks</title>
+<!--
+  HORIZON Snapshot — modular HTML output blocks
+  ---------------------------------------------
+  Each snapshot page is a self-contained BLOCK: <section class="page" data-block="...">.
+  Named slots are marked with data-slot="name" and Handlebars-style {{tokens}} where
+  the copy/calc/map engine injects content. In the platform build these partials are
+  server-rendered, concatenated in block order, and printed with Puppeteer
+  (A4, printBackground:true, margin:0) or served as a tokenised preview URL.
+
+  Colours: zone/pH/depth values are the SINGLE SOURCE OF TRUTH from
+  COLOUR_SPEC_FOR_HORIZON_OUTPUT.md. Chrome colours (teal band, sage heading) are
+  eyeballed from the Canva template PNGs — [ASSUMPTION], confirm against brand spec.
+
+  Demo data below = "Eungella" (from the live prod walkthrough). Slots show both the
+  {{token}} form (commented) and a filled demo value so the file renders standalone.
+-->
+<style>
+  :root{
+    /* --- Snapshot chrome (eyeballed from template PNGs — [ASSUMPTION]) --- */
+    --teal:        #0A2E2A;   /* dark teal header bands + table headers */
+    --teal-2:      #16403A;   /* secondary band / wave */
+    --sage:        #93C572;   /* heading text on teal */
+    --sage-dark:   #3E7C4F;   /* headings on white */
+    --ink:         #16261F;   /* body text */
+    --muted:       #5A6B6B;   /* captions, disclaimers */
+    --paper:       #FFFFFF;
+    --card:        #DDE7E1;   /* light grey-green info card (p4/p6) */
+    --line:        #C7D3CC;
+
+    /* --- Zone map (map.png) — colour spec §1 --- */
+    --zone-strength:   #008000;
+    --zone-reference:  #67B876;
+    --zone-opportunity:#FF8300;
+    --boundary:        #E74C3C;
+    --eligible:        #1F3A2D;
+
+    /* --- pH bands — colour spec §2 --- */
+    --ph-89:#1C9549; --ph-78:#659131; --ph-67:#88A201;
+    --ph-56:#E8B40B; --ph-45:#ED7B30; --ph-34:#ED4343;
+
+    /* --- Depth bands — colour spec §3 --- */
+    --d-opt:#22C55E; --d-60:#E8B45B; --d-30:#4F5FA1; --d-lt30:#1A1A1A;
+  }
+
+  /* A4 page geometry (96dpi): 794 x 1123 px. Print rules honour real A4. */
+  @page { size: A4; margin: 0; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; background:#33403C; font-family:Inter,system-ui,sans-serif; color:var(--ink); }
+
+  .page{
+    position:relative; width:794px; min-height:1123px; margin:24px auto;
+    background:var(--paper); overflow:hidden;
+    box-shadow:0 6px 30px rgba(0,0,0,.35);
+  }
+  @media print{
+    html,body{ background:#fff; }
+    .page{ margin:0; box-shadow:none; page-break-after:always; width:210mm; min-height:297mm; }
+    .page:last-child{ page-break-after:auto; }
+  }
+
+  /* --- shared band + heading --- */
+  .band{ background:var(--teal); color:var(--sage); }
+  .band--title{ padding:26px 48px; }
+  .band--title h1{ margin:0; font-size:46px; font-weight:800; letter-spacing:.5px; }
+  .band--sub{ padding:14px 40px; margin:0 44px; }
+  .band--sub h2{ margin:0; font-size:30px; font-weight:800; color:var(--sage); }
+  h2.on-white{ color:var(--sage-dark); font-size:34px; font-weight:800; margin:0 0 14px; }
+
+  .wave{ position:absolute; left:0; right:0; bottom:0; height:90px;
+    background:linear-gradient(180deg, transparent, var(--teal-2) 60%);
+    clip-path: polygon(0 40%,15% 55%,35% 42%,55% 58%,75% 44%,100% 56%,100% 100%,0 100%); opacity:.9; }
+
+  .disclaimer{ font-size:11px; color:var(--muted); font-style:italic; }
+
+  /* --- map frame + legends --- */
+  .mapframe{ position:relative; background:linear-gradient(180deg,#bfe0f2 0%,#cfe8d6 55%,#7fae4e 100%);
+    border:0; overflow:hidden; }
+  .mapframe .satnote{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    color:#31513f; font-size:13px; opacity:.7; }
+  .legend{ position:absolute; background:rgba(255,255,255,.94); border-radius:8px; padding:8px 10px;
+    font-size:11px; color:#16261f; box-shadow:0 1px 4px rgba(0,0,0,.2); }
+  .legend b{ display:block; margin-bottom:4px; font-size:11px; }
+  .legend .row{ display:flex; align-items:center; gap:6px; margin:2px 0; }
+  .sw{ width:13px; height:13px; border-radius:2px; display:inline-block; }
+  .sw--line{ height:0; border-top:2px solid var(--boundary); width:14px; }
+  .sw--dash{ height:0; border-top:2px dashed var(--eligible); width:14px; }
+
+  /* --- tables --- */
+  table.grid{ width:100%; border-collapse:collapse; font-size:13px; }
+  table.grid th{ background:var(--teal); color:var(--sage); font-weight:700; text-transform:uppercase;
+    font-size:11px; padding:10px 8px; text-align:left; }
+  table.grid td{ border:1px solid var(--line); padding:12px 8px; vertical-align:top; }
+
+  /* --- p4 potential card --- */
+  .potential{ background:var(--card); border-radius:16px; padding:26px 30px; text-align:center; }
+  .potential .big{ font-size:40px; font-weight:800; color:var(--teal); }
+  .potential .tiles{ display:flex; gap:14px; margin-top:18px; }
+  .potential .tile{ flex:1; background:#cdd9d1; border-radius:10px; padding:14px; }
+  .potential .tile .v{ font-size:20px; font-weight:800; color:var(--sage-dark); }
+  .potential .tile .l{ font-size:11px; text-transform:uppercase; color:var(--muted); }
+
+  /* --- economics --- */
+  .opt-h{ display:flex; align-items:center; gap:8px; color:var(--sage-dark); font-weight:800; font-size:16px; margin:18px 0 8px; }
+  .price{ font-weight:800; color:var(--teal); text-align:center; }
+
+  .slotnote{ outline:1px dashed rgba(61,186,120,.0); } /* slot markers are invisible in print */
+</style>
+</head>
+<body>
+
+<!-- ============================================================= -->
+<!-- BLOCK: cover  (page 1, dynamic: property name + hero image)     -->
+<!-- ============================================================= -->
+<section class="page" data-block="cover" data-page="1">
+  <!-- slot: heroImage  {{hero.satelliteUrl}} -->
+  <div data-slot="heroImage" style="position:absolute; inset:0;
+       background:linear-gradient(180deg,#9fc0d8 0%,#8fae5a 55%,#5c7f3e 100%);"></div>
+  <!-- brand mark -->
+  <div style="position:absolute; top:34px; left:40px; background:var(--teal); color:var(--sage);
+       padding:10px 16px; border-radius:8px; font-weight:800;">agriprove</div>
+  <!-- title plate -->
+  <div style="position:absolute; right:0; top:300px; width:360px; background:rgba(10,46,42,.86);
+       padding:40px 44px 48px; border-top-left-radius:16px; border-bottom-left-radius:16px;">
+    <h1 style="margin:0; color:var(--sage); font-size:52px; font-weight:800; line-height:1.02;">HORIZON<br>SNAPSHOT</h1>
+    <!-- slot: propertyName  {{property.name}} -->
+    <div data-slot="propertyName" style="color:#fff; font-size:20px; font-weight:700; margin-top:14px;">EUNGELLA</div>
+  </div>
+  <div style="position:absolute; right:44px; bottom:40px; text-align:right; color:#fff;">
+    <div style="font-size:12px; opacity:.85;">Prepared by</div>
+    <div style="font-weight:800; color:var(--sage);">AgriProve</div>
+  </div>
+</section>
+
+<!-- ============================================================= -->
+<!-- BLOCK: horizon-analysis  (page 2, dynamic: zone map + summary)  -->
+<!-- source: horizon | copy: page2 (~150w) | slots: mapLayer,legend,summaryText -->
+<!-- ============================================================= -->
+<section class="page" data-block="horizon-analysis" data-page="2">
+  <div class="band band--title"><h1>HORIZON SNAPSHOT</h1></div>
+  <div class="band band--sub"><h2>HORIZON ANALYSIS</h2></div>
+
+  <!-- slot: mapLayer  {{maps.zone}}  (vector classified.geojson over Esri satellite) -->
+  <div data-slot="mapLayer" class="mapframe" style="height:560px; margin:16px 44px 0;">
+    <div class="satnote">[ zone map: classified.geojson over Esri World_Imagery ]</div>
+    <!-- slot: legend  (static horizon-zones legend, colour spec §1) -->
+    <div data-slot="legend" class="legend" style="right:14px; bottom:14px;">
+      <b>Horizon Layer</b>
+      <div class="row"><span class="sw sw--line"></span>Farm Boundary</div>
+      <div class="row"><span class="sw sw--dash"></span>Eligible Area</div>
+      <div class="row"><span class="sw" style="background:var(--zone-strength)"></span>Strength Zones</div>
+      <div class="row"><span class="sw" style="background:var(--zone-reference)"></span>Reference Zones</div>
+      <div class="row"><span class="sw" style="background:var(--zone-opportunity)"></span>Opportunity Zones</div>
+    </div>
+  </div>
+
+  <!-- slot: summaryText  {{copy.page2}}  (~150 words, Standard/Stormboy) -->
+  <div style="margin:20px 44px 0;">
+    <span style="font-weight:800;">HORIZON Summary:</span>
+    <span data-slot="summaryText">The HORIZON analysis of Eungella identifies where soil carbon
+      could respond most strongly to management change. Strength Zones show the most consistent
+      carbon signal, Reference Zones sit near the district median, and Opportunity Zones indicate
+      areas that could support the largest estimated gains. The eligible area is smaller than the
+      total property because it excludes ineligible land uses and features. These zones are derived
+      from spatial modelling and are estimates only.</span>
+  </div>
+  <div class="wave"></div>
+</section>
+
+<!-- ============================================================= -->
+<!-- BLOCK: soil-carbon-indicators (page 3, composite dynamic)       -->
+<!-- sub-slots: phMap, depthMap, carbonTable                          -->
+<!-- ============================================================= -->
+<section class="page" data-block="soil-carbon-indicators" data-page="3">
+  <div class="band band--title"><h1>HORIZON SNAPSHOT</h1></div>
+
+  <!-- pH map -->
+  <div class="band band--sub" style="margin-top:12px;"><h2>PH &amp; SOIL TYPE</h2></div>
+  <div data-slot="phMap" class="mapframe" style="height:280px; margin:12px 44px 0;">
+    <div class="satnote">[ pH map: map_ph.png over satellite ]</div>
+    <div class="legend" style="left:12px; bottom:12px;">
+      <b>pH</b>
+      <div class="row"><span class="sw" style="background:var(--ph-89)"></span>8 – 9</div>
+      <div class="row"><span class="sw" style="background:var(--ph-78)"></span>7 – 8</div>
+      <div class="row"><span class="sw" style="background:var(--ph-67)"></span>6 – 7</div>
+      <div class="row"><span class="sw" style="background:var(--ph-56)"></span>5 – 6</div>
+      <div class="row"><span class="sw" style="background:var(--ph-45)"></span>4 – 5</div>
+      <div class="row"><span class="sw" style="background:var(--ph-34)"></span>3 – 4</div>
+    </div>
+  </div>
+
+  <!-- depth map -->
+  <div class="band band--sub" style="margin-top:18px;"><h2>SOIL DEPTH</h2></div>
+  <div data-slot="depthMap" class="mapframe" style="height:250px; margin:12px 44px 0;">
+    <div class="satnote">[ depth map: map_depth.png over satellite ]</div>
+    <div class="legend" style="right:12px; bottom:12px;">
+      <b>Soil Depth</b>
+      <div class="row"><span class="sw" style="background:var(--d-opt)"></span>&gt; 1.0 m · Optimal</div>
+      <div class="row"><span class="sw" style="background:var(--d-60)"></span>60 – 100 cm</div>
+      <div class="row"><span class="sw" style="background:var(--d-30)"></span>30 – 60 cm</div>
+      <div class="row"><span class="sw" style="background:var(--d-lt30)"></span>&lt; 30 cm</div>
+    </div>
+  </div>
+
+  <!-- carbon indicators table -->
+  <h2 class="on-white" style="margin:22px 44px 10px;">CARBON INDICATORS</h2>
+  <!-- slot: carbonTable  rows from calcs.soil.allChars + accuRate -->
+  <table class="grid" data-slot="carbonTable" style="width:auto; margin:0 44px;">
+    <thead><tr>
+      <th>Soil Type</th><th>Rainfall (mm)</th><th>Water Holding</th>
+      <th>Productivity</th><th>Carbon Stability</th><th>ACCU / ha / year</th>
+    </tr></thead>
+    <tbody>
+      <!-- {{#each calcs.soil.allChars}} -->
+      <tr><td>Dermosol</td><td>1,100</td><td>High</td><td>High</td><td>High</td><td>5.5</td></tr>
+      <!-- {{/each}} -->
+    </tbody>
+  </table>
+  <div class="wave"></div>
+</section>
+
+<!-- ============================================================= -->
+<!-- BLOCK: portfolio-accu-potential (page 4, dynamic)               -->
+<!-- source: horizon + agriprove-portfolio | copy: page4 (~190w)     -->
+<!-- slots: portfolioMap, namedNeighbour, summaryText, potential grid -->
+<!-- ============================================================= -->
+<section class="page" data-block="portfolio-accu-potential" data-page="4" style="background:var(--teal);">
+  <div style="padding:26px 44px 0;"><h1 style="margin:0; color:var(--sage); font-size:40px; font-weight:800;">HORIZON SNAPSHOT</h1></div>
+
+  <!-- slot: portfolioMap  {{maps.portfolio}} -->
+  <div data-slot="portfolioMap" class="mapframe" style="height:360px; margin:16px 44px 0; border-radius:6px;
+       background:linear-gradient(180deg,#5b6b52,#3f4a38);">
+    <div class="satnote" style="color:#dfe7d8;">[ portfolio proximity map: your property + nearby ACCU projects ]</div>
+    <div class="legend" style="right:12px; bottom:12px;">
+      <b>AgriProve Projects</b>
+      <div class="row"><span class="sw" style="background:#f4b400; border-radius:50%"></span>Your property</div>
+      <div class="row"><span class="sw" style="background:#ff8300; border-radius:50%"></span>ACCUs issued</div>
+      <div class="row"><span class="sw" style="background:#67b876; border-radius:50%"></span>Measured SOC increase</div>
+      <div class="row"><span class="sw" style="background:#3dba78; border-radius:50%"></span>New project</div>
+    </div>
+  </div>
+
+  <!-- slot: namedNeighbour {{geoContext.namedNeighbour.name}} -->
+  <div style="padding:14px 44px 0; color:var(--sage);">
+    <span style="font-weight:800;" data-slot="namedNeighbour">◎ TABLETOP ANGUS</span>
+  </div>
+  <!-- slot: summaryText {{copy.page4}} (~190-200w, incl. portfolio-proximity social proof) -->
+  <div style="padding:6px 44px 0; color:#e8efe6; font-size:13px;">
+    <span style="font-weight:700;">Property Summary:</span>
+    <span data-slot="summaryText">Eungella's soils, rainfall and depth profile suggest genuine
+      potential to build soil carbon over time. Nearby AgriProve projects in the district have
+      recorded measured increases in soil organic carbon, including a comparable operation at
+      Tabletop Angus. These figures are estimates based on spatial modelling and final ACCU yields
+      depend on measured soil carbon increases.</span>
+  </div>
+
+  <!-- potential card -->
+  <div class="potential" style="margin:18px 44px 0;">
+    <div style="font-size:16px; font-weight:700; color:var(--teal);">Estimated ACCU Potential</div>
+    <!-- slot: totalAccu {{calcs.totalAccu}} -->
+    <div class="big">~<span data-slot="totalAccu">5,026</span></div>
+    <div style="color:var(--muted);">over 25 years</div>
+    <div class="tiles">
+      <div class="tile"><div class="v" data-slot="eligibleArea">36.55 ha</div><div class="l">Eligible Area · <span data-slot="eligiblePct">%</span> of property</div></div>
+      <div class="tile"><div class="v" data-slot="accuRate">5.5</div><div class="l">Estimated Rate · ACCUs/ha/year</div></div>
+      <div class="tile"><div class="v" data-slot="numProjects">1</div><div class="l">Number of projects · ~400ha each</div></div>
+    </div>
+  </div>
+  <div class="disclaimer" style="padding:12px 44px 0; color:#bccabb;">
+    Disclaimer: All figures are estimates. Final ACCU yields depend on measured soil carbon increases.
+  </div>
+</section>
+
+<!-- ============================================================= -->
+<!-- BLOCK: agriprove-economics (page 6, dynamic: Option 1 / Option 2) -->
+<!-- source: horizon(calcs) | LIVE calc fields (moved out of the PNG)  -->
+<!-- ============================================================= -->
+<section class="page" data-block="agriprove-economics" data-page="6">
+  <h1 style="margin:0; padding:30px 44px 6px; color:var(--sage-dark); font-size:44px; font-weight:800;">THE AGRIPROVE<br>ECONOMICS.</h1>
+
+  <div style="padding:0 44px;">
+    <div class="opt-h">▧ OPTION 1: <span style="color:var(--zone-opportunity)">SUCCESS FEE MODEL</span></div>
+    <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">BASELINE SAMPLING FEE &amp; 25% OF ACCUS</div>
+    <table class="grid">
+      <thead><tr><th>Fee</th><th>Description</th><th>Price</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Baseline sampling</td>
+          <td>The only cost to the customer over the lifetime of the project is the baseline sampling cost. This is an initial estimate and will be finalised in the SLA.</td>
+          <!-- slot: baselineCost {{calcs.baselineCost}} -->
+          <td class="price" data-slot="baselineCost">$10,728</td>
+        </tr>
+        <tr>
+          <td>ACCU success fee</td>
+          <td>AgriProve will cover the cost of all project administration, sampling design, certification, baseline reporting, carbon project plan, offset reporting, project auditing, subsequent sampling, data processing from our 25% success fee.</td>
+          <td class="price">25%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="opt-h">▧ OPTION 2: <span style="color:var(--zone-opportunity)">SUCCESS FEE + FUTURE ACCU MODEL*</span></div>
+    <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">DEFER BASELINE SAMPLING FEE &amp; 25% OF ACCUS</div>
+    <table class="grid">
+      <thead><tr><th>Fee</th><th>Description · Deferred baseline available up to $50,000 AUD</th><th>Price</th></tr></thead>
+      <tbody>
+        <tr>
+          <td rowspan="2">Baseline sampling</td>
+          <td>The only cost to the customer over the lifetime of the project is the baseline sampling cost. This is an initial estimate and will be finalised in the SLA.</td>
+          <td class="price">$0</td>
+        </tr>
+        <tr>
+          <td>Payment of baselining can be deferred to be paid with ACCUs. These ACCUs are priced at $12.50 and must be generated within the first 5 years.</td>
+          <!-- slot: deferredAccus {{calcs.deferredAccus}} -->
+          <td class="price"><span data-slot="deferredAccus">859</span> ACCUs</td>
+        </tr>
+        <tr>
+          <td>ACCU success fee</td>
+          <td>AgriProve will cover the cost of all project administration, sampling design, certification, baseline reporting, carbon project plan, offset reporting, project auditing, subsequent sampling, data processing from our 25% success fee.</td>
+          <td class="price">25%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="wave"></div>
+</section>
+
+<!-- ============================================================= -->
+<!-- BLOCK: static brand pages (5,7,8,9,10,11,12)                    -->
+<!-- StaticBlock: render partial only, no source, no copy prompt.     -->
+<!-- Rendered as the Canva template PNG background at full bleed.      -->
+<!-- ============================================================= -->
+<section class="page" data-block="background" data-page="5">
+  <!-- slot: templateImage {{static.template_page_05}} -->
+  <div data-slot="templateImage" style="position:absolute; inset:0;
+       background:#0F1A24 url('template_page_05.png') center/cover no-repeat;
+       display:flex; align-items:center; justify-content:center; color:#8FA3B8; font-size:13px;">
+    STATIC BLOCK — Background (template_page_05.png)
+  </div>
+</section>
+
+<!--
+  Remaining static blocks follow the same StaticBlock pattern:
+    data-block="difference"  data-page="7"   template_page_07.png
+    data-block="advantage"   data-page="8"   template_page_08.png
+    data-block="process"     data-page="9"   template_page_09.png
+    data-block="your-accus"  data-page="10"  template_page_10.png
+    data-block="assessment"  data-page="11"  template_page_11.png
+    data-block="contact"     data-page="12"  template_page_12.png
+  They carry no data source and no copy prompt — only a templateImage slot.
+-->
+
+</body>
+</html>

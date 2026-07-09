@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HORIZON Snapshot — Template Authoring Guide (Marketing)</title>
+<style>
+  :root{ --teal:#0A2E2A; --sage:#3E7C4F; --ink:#1c2b26; --muted:#5f6f69; --line:#d8e0dc; --paper:#fff; --amber:#8a5a00; --amberbg:#fdf3e0; --greenbg:#e8f2e2; }
+  *{box-sizing:border-box}
+  body{font-family:Inter,system-ui,Arial,sans-serif; color:var(--ink); margin:0; background:#eef2f0; line-height:1.55;}
+  .wrap{max-width:900px; margin:0 auto; padding:32px 28px 60px;}
+  h1{font-size:26px; margin:0 0 4px; color:var(--teal);}
+  h2{font-size:18px; margin:28px 0 8px; color:var(--teal); border-bottom:2px solid var(--line); padding-bottom:4px;}
+  h3{font-size:14px; margin:18px 0 6px; color:var(--sage); text-transform:uppercase; letter-spacing:.5px;}
+  p{margin:6px 0;}
+  .sub{color:var(--muted); font-size:14px;}
+  .rule{background:var(--teal); color:#dff0e4; padding:16px 18px; border-radius:10px; margin:16px 0;}
+  .rule b{color:#fff;}
+  ol{margin:6px 0 6px 18px; padding:0;} li{margin:4px 0;}
+  table{width:100%; border-collapse:collapse; font-size:13px; margin:8px 0 4px;}
+  th{background:var(--teal); color:#dff0e4; text-align:left; padding:8px 10px; font-weight:600;}
+  td{border:1px solid var(--line); padding:7px 10px; vertical-align:top;}
+  code{background:#eef2f0; padding:1px 6px; border-radius:4px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12.5px; color:var(--teal);}
+  .done{background:var(--greenbg); color:#1d5b2a; font-size:11px; padding:1px 7px; border-radius:20px; white-space:nowrap;}
+  .todo{background:var(--amberbg); color:var(--amber); font-size:11px; padding:1px 7px; border-radius:20px; white-space:nowrap;}
+  .static{color:var(--muted); font-size:12px;}
+  .card{background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:20px 22px; margin:14px 0;}
+  .chip{display:inline-block; background:#eef2f0; border:1px solid var(--line); border-radius:20px; padding:2px 10px; font-size:12px; margin:2px 4px 2px 0; color:var(--teal);}
+  a{color:var(--sage);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>HORIZON Snapshot — Template Authoring Guide</h1>
+<p class="sub">For the marketing team. How to build a Canva template the Snapshot system can fill automatically. Last updated 8 July 2026.</p>
+
+<div class="rule">
+<b>The golden rule.</b> Put a <b>named data field</b> wherever a value, summary or map should change per property. Never type or paste content over the artwork. Named fields are what let the system fill your template cleanly and keep it pixel-perfect. Text pasted over a flattened image is what caused the old misaligned, overlapping look — we are moving away from that.
+</div>
+
+<h2>How it works, in six steps</h2>
+<div class="card">
+<ol>
+<li>Design the page in Canva using an AgriProve brand kit.</li>
+<li>Wherever content changes per property, add a Canva <b>data field</b> (a text box or an image frame) and <b>name it exactly</b> from the cheat-sheet below.</li>
+<li>One field per frame, generously sized (frames are fixed, so leave room for longer values).</li>
+<li>For maps, add an <b>image frame</b> and name it (e.g. <code>zone_map</code>). Do not draw a legend — the system adds the correct legend.</li>
+<li>Everything else stays as static artwork and is never touched.</li>
+<li><b>Publish as a Brand Template.</b> Paste the link into the Template Hub, confirm the auto-mapped fields, preview with a sample property, and publish live.</li>
+</ol>
+<p class="sub">To name a field in Canva: select the text box or image frame, then rename the layer to the exact field name (Layers panel). The system reads those names.</p>
+</div>
+
+<h2>The field cheat-sheet (use these exact names)</h2>
+<p class="sub">These are the values the system can fill. A field named from this list auto-maps with no manual work. Anything not on the list either stays static or needs a new field approved by the PM first.</p>
+<p>
+<span class="chip">property_name</span><span class="chip">hero_image</span><span class="chip">horizon_summary</span><span class="chip">zone_map</span><span class="chip">ph_map</span><span class="chip">depth_map</span><span class="chip">carbon_table</span><span class="chip">portfolio_map</span><span class="chip">property_summary</span><span class="chip">estimated_accu</span><span class="chip">eligible_area</span><span class="chip">accu_rate</span><span class="chip">num_projects</span><span class="chip">named_neighbour</span><span class="chip">baseline_cost</span><span class="chip">deferred_accus</span>
+</p>
+
+<h2>Field map for the current HORIZON template</h2>
+<p class="sub">This is exactly what to name each variable element, page by page. The "in the example" column shows what is already tagged in the worked example (the duplicate linked at the bottom). Static pages have no fields.</p>
+
+<h3>Page 1 — Cover</h3>
+<table>
+<tr><th>Element on the page</th><th>Field name</th><th>Type</th><th>In the example</th></tr>
+<tr><td>"[Insert Property Name]"</td><td><code>property_name</code></td><td>text</td><td><span class="done">tagged</span></td></tr>
+<tr><td>Hero satellite image</td><td><code>hero_image</code></td><td>image</td><td><span class="done">tagged</span></td></tr>
+</table>
+
+<h3>Page 2 — HORIZON Analysis</h3>
+<table>
+<tr><th>Element</th><th>Field name</th><th>Type</th><th>In the example</th></tr>
+<tr><td>"HORIZON Summary: [Insert here]"</td><td><code>horizon_summary</code></td><td>text</td><td><span class="done">tagged</span></td></tr>
+<tr><td>SOC zone map</td><td><code>zone_map</code></td><td>image</td><td><span class="todo">add in Canva</span></td></tr>
+</table>
+
+<h3>Page 3 — Soil &amp; Carbon Indicators</h3>
+<table>
+<tr><th>Element</th><th>Field name</th><th>Type</th><th>In the example</th></tr>
+<tr><td>pH map</td><td><code>ph_map</code></td><td>image</td><td><span class="todo">add in Canva</span></td></tr>
+<tr><td>Soil depth map</td><td><code>depth_map</code></td><td>image</td><td><span class="todo">add in Canva</span></td></tr>
+<tr><td>Carbon indicators data row</td><td><code>carbon_table</code></td><td>table / text</td><td><span class="todo">add in Canva</span></td></tr>
+</table>
+
+<h3>Page 4 — Portfolio &amp; ACCU Potential</h3>
+<table>
+<tr><th>Element</th><th>Field name</th><th>Type</th><th>In the example</th></tr>
+<tr><td>Portfolio proximity map</td><td><code>portfolio_map</code></td><td>image</td><td><span class="todo">add in Canva</span></td></tr>
+<tr><td>"Property Summary: [Insert here]"</td><td><code>property_summary</code></td><td>text</td><td><span class="done">tagged</span></td></tr>
+<tr><td>"~[Insert here]" (Estimated ACCU Potential)</td><td><code>estimated_accu</code></td><td>text</td><td><span class="done">tagged</span></td></tr>
+<tr><td>"[Insert here] ha" (Eligible Area)</td><td><code>eligible_area</code></td><td>text</td><td><span class="done">tagged</span></td></tr>
+<tr><td>"[Insert here]" (Estimated Rate)</td><td><code>accu_rate</code></td><td>text</td><td><span class="todo">add in Canva</span></td></tr>
+<tr><td>"[Insert here]" (Number of projects)</td><td><code>num_projects</code></td><td>text</td><td><span class="todo">add in Canva</span></td></tr>
+<tr><td>"TABLETOP ANGUS" (nearby project)</td><td><code>named_neighbour</code></td><td>text</td><td><span class="done">tagged</span></td></tr>
+</table>
+
+<h3>Page 6 — The AgriProve Economics</h3>
+<table>
+<tr><th>Element</th><th>Field name</th><th>Type</th><th>In the example</th></tr>
+<tr><td>Option 1 baseline "[Insert here]" price</td><td><code>baseline_cost</code></td><td>text</td><td><span class="done">tagged</span></td></tr>
+<tr><td>Option 2 "[Insert here] ACCUs" (deferred)</td><td><code>deferred_accus</code></td><td>text</td><td><span class="done">tagged</span></td></tr>
+</table>
+
+<h3>Static pages — no fields</h3>
+<p class="static">Pages 5 (Background), 7 (The AgriProve Difference), 8 (Advantage), 9 (Process), 10 (Your ACCUs), 11 (Assessment) and 12 (Contact) are brand/educational pages. Leave them entirely as static artwork.</p>
+
+<h2>Adding a metric that is not on the list</h2>
+<div class="card">
+<p>If a template needs a value that is not on the cheat-sheet (for example a partner metric like LawrieCo's microbe test output), name the field in a partner namespace, e.g. <code>lawrieco.microbe_test</code>, and flag it in the Template Hub. The PM approves it once, choosing how it is filled: <b>manual</b> (typed in per snapshot), <b>computed</b>, or from a <b>data feed</b>. It then works like any other field.</p>
+</div>
+
+<h2>Send-ready checklist</h2>
+<div class="card">
+<ol>
+<li>Every changing element is a named field, not text pasted over art.</li>
+<li>Every field name matches the cheat-sheet (or is an approved new field).</li>
+<li>Every map is an image frame with a name and no baked-in legend.</li>
+<li>Text frames are generously sized for longer values.</li>
+<li>Published as a Brand Template and previewed with a sample property.</li>
+</ol>
+</div>
+
+<h2>Worked example</h2>
+<div class="card">
+<p>A duplicate of the current template has been set up with the fields marked "tagged" above, so you can see exactly how a field is named and connected. Open it in Canva, click a tagged element, and check its layer name.</p>
+<p class="sub">Note: the remaining "add in Canva" fields (the four maps, plus estimated rate and number of projects) are the ones to add to complete the template — they follow the same naming pattern.</p>
+</div>
+
+</div>
+</body>
+</html>
