@@ -5,6 +5,7 @@
 ## Recent (last 30 days)
 | Date | Type | Title | File |
 |---|---|---|---|
+| 2026-07-08 | delivery principle (Dylan directive) | Technically lightweight: no month-long timelines; design as-close-to-product; scripts + tech plan dev-ready; pilot = zero new backend services | `2026-07/2026-07-08-technically-lightweight-delivery-principle.md` |
 | 2026-07-08 | design rule (Dylan directive) | Implementability is the gate for the grazing planner: generator omits unbuildable splits (contiguity/width/aspect checks + orientation search); human logic review before farmer exposure. Fail closed, not open | `2026-07/2026-07-08-implementability-first-grazing-planner.md` |
 | 2026-07-08 | ops (Cowork/git) | Connected-folder sync can feed git truncated files — verify mount copy before staging + blob line-count after commit; VM-side write is authoritative on mismatch | `2026-07/2026-07-08-mount-sync-truncated-git-blobs.md` |
 | 2026-07-08 | tooling preference | Claude Design chosen over Magic Patterns for farmer-facing scenario prototyping (grazing/infrastructure tool). Diverges from agriprove-design skill's "Magic Patterns is primary" — may be surface-dependent; Tier 2 skill update if pattern repeats | `2026-07/2026-07-08-claude-design-for-farmer-facing-prototypes.md` |
