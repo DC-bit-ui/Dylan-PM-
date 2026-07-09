@@ -15,11 +15,7 @@
 - _(YYYY-MM-DD — title — `decision-memos/<file>.md`)_
 
 ## Specs
-- 2026-07-08 — **Grazing planner demo kit** (tested prep script: parcel ranking + equal-area splits N=2..12 + recovery cells; consolidated Claude Design master prompt; demo-day checklist) — `specs/grazing-planner-demo-kit/`
-- 2026-07-08 — HORIZON Grazing Insight — Two-surface build guide **v3** (CURRENT: static Snapshot insight section + "why carbon" education from Hobbs's deep doc + live link to interactive planner; Establishment/Expansion/Maturity phasing; build-sequencing + deep-link architecture) — `specs/2026-07-08-grazing-scenario-tool-claude-design-guide-v3.md`
-- 2026-07-08 — Grazing Infrastructure Planner — build guide v2 (superseded by v3; §5 master prompt still canonical for the interactive tool) — `specs/2026-07-08-grazing-scenario-tool-claude-design-guide-v2.md`
-- 2026-07-08 — Grazing & Infrastructure Scenario Tool — build guide v1 (superseded by v2 same day — tooling chain + landscape still valid) — `specs/2026-07-08-grazing-scenario-tool-claude-design-guide.md`
-- Source docs (Hobbs): `specs/2026-07-08-hobbs-infrastructure-planning-principles.docx` (abstracted rule engine) · `specs/2026-07-08-hobbs-paddock-planning-principles-CONFIDENTIAL.docx` (deep science — internal only)
+- 2026-07-08 — **Grazing Management Tool** — full project (design guides v1–v3, demo kit, tested scripts, Glenlogie bundle, tech plan, snapshot-generator reqs, source exports) RELOCATED to project folder `../../Grazing management tool/` — start at its `README.md`
 
 ## System proposals
-- 2026-05-27 — Scheduled-task token optimisation (12 proposals across 14 tasks; ~75-100k token savin
+- 2026-05-27 — Scheduled-task token optimisation (12 proposals across 14 tasks; ~75-100k token savi

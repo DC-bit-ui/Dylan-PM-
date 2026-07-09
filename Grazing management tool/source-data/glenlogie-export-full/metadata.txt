@@ -1,0 +1,18 @@
+Classified Area Extraction Metadata
+========================================
+
+Project name: Glenlogie
+
+Total input area:    451.10 ha
+Eligible area:       273.70 ha
+Eligible percentage: 60.7%
+
+Address: 146 Horse Creek Rd, Jingellic, NSW, 2642
+Rainfall: 808 mm
+
+Additional Metadata
+========================================
+
+Soil classes in eligible area: Chromosol, Sodosol
+pH range in eligible area: 4.88 - 5.20
+Soil depth range in eligible area: 0.00 - 2.11 m
