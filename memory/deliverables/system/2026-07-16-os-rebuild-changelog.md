@@ -93,3 +93,7 @@ Every change below is auditable in git history (originals preserved; nothing con
 - Skill updates use appended dated override blocks rather than in-body rewrites — preserves history and is safe against mount truncation, at the cost of some file length; `/sweep` can fold them in later.
 - Archived initiative files were NOT edited (their stale status blocks stand, warned about in the INDEX) — append-only principle over cosmetic accuracy.
 - `apex-pm/` gitignored per Q3/Q4 answers even though that leaves `retired-commands/` untracked — git history preserves the originals at their old paths.
+
+## 10. Push status
+
+Rebuild committed locally as `f506008` (+ this note as a follow-up commit). `git push origin main` failed from the Cowork sandbox — no GitHub credentials available to the VM (auth-class failure; not retried per rules.md 2026-05-11). **Dylan action: push from Claude Code or a git client** (`git push origin main`). Blobs verified intact pre-push (`git show HEAD:<path>` line counts match working files).
