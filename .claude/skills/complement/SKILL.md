@@ -115,3 +115,6 @@ After 30 days, review with Dylan:
 - Source coverage — which connectors yielded the most useful candidates?
 
 Findings → learning entry; tune source filters and keyword sets accordingly.
+
+---
+**SUPERSEDED 2026-07-16:** the Stack B leverage-scoring mechanism this skill implements was retired with the simplified dual-stack (`memory/decisions/2026-07-16-os-rebuild.md`). The replacement is a one-line leverage watch inside /focus and briefings. Do not run this skill's scoring model; kept for history.

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What happens if I sell my property? | AgriProve</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F6F1;            /* warm off-white, snapshot canvas */
+    --card:#FFFFFF;
+    --teal:#15323B;          /* dark teal ink, headings + labels */
+    --teal-deep:#102A32;     /* top bar / footer */
+    --ink-soft:#5C6B66;      /* body grey-green */
+    --sage:#8FBF9A;          /* soft display green (big headers) */
+    --green:#2D6A4F;         /* AgriProve brand green, solid accents */
+    --green-bright:#3DBA78;  /* fresh accent, arrows + highlights */
+    --green-soft:#E7F0EA;
+    --line:#E2E7DE;
+    --shadow:0 1px 2px rgba(21,50,59,.04),0 12px 30px rgba(21,50,59,.06);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--teal);line-height:1.58;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px}
+  .eyebrow{font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--green)}
+  .eyebrow .dot{color:var(--sage)}
+
+  /* TOP BAR */
+  .topbar{background:var(--teal-deep)}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .topbar img{height:28px;width:auto;display:block}
+  .topbar .nav{display:flex;gap:26px}
+  .topbar .nav a{color:#BFD4C9;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.02em}
+  .topbar .nav a:hover{color:#fff}
+
+  /* HERO (light, snapshot style) */
+  header.hero{background:var(--bg);padding:54px 0 30px;border-bottom:1px solid var(--line)}
+  .hero .eyebrow{margin-bottom:18px}
+  .hero h1{font-size:46px;line-height:1.04;font-weight:900;letter-spacing:-.015em;text-transform:uppercase;color:var(--teal);max-width:15ch}
+  .hero h1 .accent{color:var(--sage)}
+  .hero .lede{margin-top:22px;font-size:18px;color:var(--ink-soft);max-width:60ch}
+  .hero .cred{margin-top:26px;display:flex;flex-wrap:wrap;gap:8px 30px;font-size:13px;font-weight:600;color:var(--ink-soft)}
+  .hero .cred b{color:var(--green);font-weight:800}
+  .hero .cred .sep{color:var(--line)}
+
+  /* STAT STRIP, snapshot big-number blocks */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:40px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  .stat{padding:26px 24px;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:none}
+  .stat .n{font-size:42px;font-weight:900;color:var(--green);letter-spacing:-.03em;line-height:.95}
+  .stat .t{margin-top:12px;font-size:13px;color:var(--ink-soft);line-height:1.5}
+  .statnote{font-size:12.5px;color:var(--ink-soft);margin:16px auto 0;max-width:70ch;text-align:center}
+
+  section{margin-top:56px}
+  .sec-eyebrow{font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:8px}
+  h2{font-size:27px;font-weight:800;letter-spacing:-.01em;margin-bottom:8px;color:var(--teal)}
+  h2 .dot{color:var(--sage)}
+  .sub{color:var(--ink-soft);font-size:15px;margin-bottom:24px;max-width:64ch}
+  p{margin-bottom:14px}
+
+  .answer{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--green);border-radius:var(--radius);padding:30px 30px;box-shadow:var(--shadow)}
+  .answer p{color:#33403B;font-size:16px}
+  .answer p:last-child{margin-bottom:0}
+  .answer strong{color:var(--teal)}
+
+  .cards{display:grid;gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .card-head{display:flex;align-items:center;gap:18px;padding:22px 24px;cursor:pointer;user-select:none;transition:background .15s}
+  .card-head:hover{background:#F3F7F3}
+  .pill{flex:none;width:48px;height:48px;border-radius:12px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;color:var(--green)}
+  .pill svg{width:24px;height:24px}
+  .card-head .ct{flex:1}
+  .card-head .ct h3{font-size:17px;font-weight:700;margin-bottom:3px;color:var(--teal)}
+  .card-head .ct .one{font-size:13.5px;color:var(--ink-soft)}
+  .chev{flex:none;color:var(--green);transition:transform .2s}
+  .card.open .chev{transform:rotate(180deg)}
+  .card-body{max-height:0;overflow:hidden;transition:max-height .3s ease;border-top:1px solid transparent}
+  .card.open .card-body{border-top-color:var(--line)}
+  .card-body .inner{padding:22px 24px 26px}
+  .steps{list-style:none;counter-reset:s;display:grid;gap:14px;margin-top:4px}
+  .steps li{position:relative;padding-left:40px;font-size:14.5px;color:#33403B}
+  .steps li:before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-1px;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:5px 13px;border-radius:20px;margin-top:6px;background:var(--green-soft);color:var(--green)}
+
+  .proof{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--green-bright);border-radius:var(--radius);padding:26px 28px;box-shadow:var(--shadow)}
+  .proof p{font-size:15.5px;color:#33403B}
+  .proof .src{font-size:12.5px;color:var(--ink-soft);margin-top:10px;margin-bottom:0}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .mini{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow)}
+  .mini h4{font-size:15px;font-weight:700;margin-bottom:7px;display:flex;align-items:center;gap:9px;color:var(--teal)}
+  .mini h4 svg{width:19px;height:19px;color:var(--green);flex:none}
+  .mini p{font-size:13.8px;color:var(--ink-soft);margin-bottom:0}
+
+  .faq{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
+  .q{border-top:1px solid var(--line)}
+  .q:first-child{border-top:none}
+  .q-head{padding:19px 24px;cursor:pointer;display:flex;justify-content:space-between;gap:16px;align-items:center;font-weight:600;font-size:15px;color:var(--teal)}
+  .q-head:hover{background:#F3F7F3}
+  .q-body{max-height:0;overflow:hidden;transition:max-height .28s ease}
+  .q-body .inner{padding:0 24px 20px;font-size:14.3px;color:#3a4742}
+  .q .chev{transition:transform .2s;color:var(--green)}
+  .q.open .chev{transform:rotate(180deg)}
+
+  .cta{margin-top:56px;background:var(--teal-deep);border-radius:18px;padding:42px 34px;color:#fff;text-align:center}
+  .cta .eyebrow{color:var(--sage);margin-bottom:12px}
+  .cta h2{color:#fff}
+  .cta p{color:#C9DBD0;max-width:52ch;margin:10px auto 26px;font-size:15.5px}
+  .btn{display:inline-block;background:var(--green-bright);color:#08231b;font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:15px 32px;border-radius:8px;text-decoration:none}
+
+  footer{background:var(--teal-deep);color:#A9C4B7;margin-top:0;padding:46px 0 36px}
+  footer .wrap{display:grid;gap:20px}
+  footer img{height:26px;width:auto}
+  footer .cols{display:flex;flex-wrap:wrap;gap:28px 50px;font-size:13px;line-height:1.7}
+  footer a{color:#C9DBD0;text-decoration:none}
+  footer a:hover{color:#fff}
+  footer .src{font-size:12px;color:#88A89A;border-top:1px solid rgba(255,255,255,.1);padding-top:18px}
+  footer .disc{font-size:11.5px;color:#7C9A8C;margin-top:6px}
+  footer .legal{font-size:11.5px;color:#7C9A8C;display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:8px}
+
+  @media(max-width:720px){
+    .topbar .nav{display:none}
+    .hero h1{font-size:32px}
+    .hero .lede{font-size:16px}
+    .stats{grid-template-columns:1fr}
+    .stat{border-right:none;border-bottom:1px solid var(--line)}
+    .stat:last-child{border-bottom:none}
+    .grid2{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <img src="https://static1.squarespace.com/static/5d23dd85b8355d00013add1e/t/67ff20975ba58e3f56b9eb58/1744773271748/AgriProve+Logo+reverse+W500px.png?format=750w" alt="AgriProve">
+    <nav class="nav">
+      <a href="https://agriprove.io/about-agriprove">About</a>
+      <a href="https://help.agriprove.io">Help Centre</a>
+      <a href="https://agriprove.io/casestudies">Case Studies</a>
+      <a href="https://agriprove.io/horizon">HORIZON</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Soil Carbon Projects <span class="dot">·</span> Your Questions Answered</div>
+    <h1>What happens if I <span class="accent">sell</span> my property?</h1>
+    <p class="lede">Short answer: selling is a normal, well-worn process, and you are never locked in. Your project moves with the land or comes off it cleanly, and the credits you have earned stay yours.</p>
+    <div class="cred">
+      <span>Australia's leading soil carbon developer</span>
+      <span class="sep">|</span>
+      <span><b>70%</b> of all Australian soil carbon projects</span>
+      <span class="sep">|</span>
+      <span><b>120,000+</b> ACCUs issued</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="stats">
+    <div class="stat">
+      <div class="n">1</div>
+      <div class="t">Landholder on record has sold part or all of their property while their soil carbon project was running. The project continued with the new owner.</div>
+    </div>
+    <div class="stat">
+      <div class="n">0</div>
+      <div class="t">Credits that landholder had to return, and zero projects ever stopped or put on ice because of a sale.</div>
+    </div>
+    <div class="stat">
+      <div class="n">600+</div>
+      <div class="t">Registered AgriProve projects, zero relinquishment notices ever triggered. AgriProve carries the compliance, not you.</div>
+    </div>
+  </div>
+  <p class="statnote">Figures from AgriProve project records and our internal ACCU Scheme regulatory review, June 2026. Properties change hands and not every sale is reported to us, so the true count of in-project sales may be higher. The point that holds: across our whole portfolio, no landholder has ever been required to hand back carbon credits.</p>
+
+  <section>
+    <div class="answer">
+      <div class="sec-eyebrow">The short version<span class="dot" style="color:var(--sage)">.</span></div>
+      <h2>A carbon project does not trap you on your land<span class="dot">.</span></h2>
+      <p>A registered soil carbon project "runs with the land". That sounds technical, but it works in your favour: it means the project is tied to the property, not to you personally. When you sell, you have real, straightforward options, and the law already has a clear path for each one.</p>
+      <p>Better still, AgriProve stays on as the project's proponent through the sale. That means the buyer does not have to learn how to run a carbon project, take on the reporting, or do anything to keep it going. The compliance work stays with us.</p>
+      <p>The one real commitment you make is to keep the land in an agricultural system for the permanence period. Not a set crop or a set practice, just farmland rather than a housing estate or a quarry. You keep full ownership and title the whole way through.</p>
+      <p><strong>You are not signing away your ability to sell. You are adding an income stream a buyer can inherit, or that you can wind down on your terms.</strong></p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-eyebrow">When you sell<span style="color:var(--sage)">.</span></div>
+    <h2>Three ways it can go<span class="dot">.</span></h2>
+    <p class="sub">Tap each one to see exactly how it works. Every path here follows the Clean Energy Regulator's own published process for selling a property with a carbon project on it.</p>
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-head">
+          <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></span>
+          <div class="ct">
+            <h3>1. You sell the whole property</h3>
+            <div class="one">The buyer continues the project, and they keep earning from it.</div>
+          </div>
+          <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+        <div class="card-body"><div class="inner">
+          <p style="font-size:14.5px;color:#33403B">The project transfers with the property. This is the most common outcome, and the Regulator processes these transfers as routine.</p>
+          <ol class="steps">
+            <li>The project, its records and the legal right to run it transfer to the buyer as part of the sale.</li>
+            <li>AgriProve can remain the project proponent, so the buyer inherits the income without inheriting the workload.</li>
+            <li>We lodge the proponent variation with the Clean Energy Regulator. They aim to process these within 90 days.</li>
+            <li>You and the buyer agree how to handle credits in the current reporting period. We can time it so credits already earned are issued to you before settlement.</li>
+          </ol>
+          <span class="tag">A carbon project is a feature you can sell, not a liability you pass on.</span>
+        </div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 14h7v7h-7z"/><path d="M14 3h7v7h-7z" opacity=".35"/></svg></span>
+          <div class="ct">
+            <h3>2. You sell only part of the property</h3>
+            <div class="one">We shape the project around what you keep. The sold block comes off.</div>
+          </div>
+          <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+        <div class="card-body"><div class="inner">
+          <p style="font-size:14.5px;color:#33403B">Your whole property never has to be in the project. We design the project boundary around your plans, including land you might sell or develop later.</p>
+          <ol class="steps">
+            <li>If the carbon area sits entirely on the land you are keeping, you carry on exactly as before. The sold block simply was not part of the project.</li>
+            <li>If a block you are selling contains part of a carbon area, we remove that area from the project before the sale. The rest continues.</li>
+            <li>Planning a sale or a wind farm or a development on one block? Tell us up front and we leave it out of the project from day one.</li>
+          </ol>
+          <span class="tag">Flexible by design. You decide which paddocks are in.</span>
+        </div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg></span>
+          <div class="ct">
+            <h3>3. You want out entirely</h3>
+            <div class="one">You can revoke the project. Treat it as a last resort: it means repaying credits already issued.</div>
+          </div>
+          <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+        <div class="card-body"><div class="inner">
+          <p style="font-size:14.5px;color:#33403B">If neither you nor a buyer keeps the project running, you can revoke it. This is the one path with a real cost, so it is worth understanding clearly. Revoking means returning an equivalent number of all the credits the project has ever been issued, buying them back on the market if you have already sold them. If the project was never issued credits, there is nothing to return.</p>
+          <ol class="steps">
+            <li>You rarely need to revoke. Selling to someone who keeps farming, or simply pausing the activities while the project stays registered, avoids it altogether.</li>
+            <li>There is a natural review at the five year mark. If the project has not delivered credits or no longer stacks up, you can step away before any credits are in play, with nothing to return.</li>
+            <li>If you do revoke after credits were issued, the exiting landholder repays them. A simple way to stay covered: hold your credits rather than selling them, so you always have them on hand.</li>
+          </ol>
+          <span class="tag">Revoking is a choice of last resort, not a trap. Transferring or pausing almost always beats it.</span>
+        </div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="proof">
+      <div class="sec-eyebrow">A real AgriProve example<span style="color:var(--sage)">.</span></div>
+      <p style="margin-top:8px">One of our landholders recently sold a property that already carried issued carbon credits. The outcome: the new owner is taking over the project and continuing it, and the original landholder did not have to return a single credit. The only extra step was some legal work to transfer the project, because the buyer's conveyancer had not handled a carbon project before. That is paperwork we now guide both sides through.</p>
+      <p class="src">Source: AgriProve field and sales records, June 2026. This is currently the only sale on record involving a project with issued credits.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-eyebrow">Your credits<span style="color:var(--sage)">.</span></div>
+    <h2>The credits you earn are yours<span class="dot">.</span></h2>
+    <p class="sub">The thing landholders worry about most is the credits. Here is how that actually works.</p>
+    <div class="grid2">
+      <div class="mini">
+        <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Earned means earned</h4>
+        <p>Credits issued to you for carbon you have already stored are yours. Selling the property does not claw them back.</p>
+      </div>
+      <div class="mini">
+        <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m7 14 4-4 3 3 5-6"/></svg> A genuine asset</h4>
+        <p>Australian Carbon Credit Units are a recognised, tradable asset with domestic and international demand. Holding them is optionality, not risk.</p>
+      </div>
+      <div class="mini">
+        <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg> We carry the long-term risk</h4>
+        <p>AgriProve is the registered project proponent. If stored carbon is ever lost after the permanence period, that liability sits with us, not with you.</p>
+      </div>
+      <div class="mini">
+        <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M21 3l-7 7M8 21H3v-5M3 21l7-7"/></svg> Timed around your sale</h4>
+        <p>We can structure the reporting period so credits earned before settlement are issued to you, not the buyer.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-eyebrow">Common questions<span style="color:var(--sage)">.</span></div>
+    <h2>Questions landholders actually ask<span class="dot">.</span></h2>
+    <p class="sub">The honest answers, in plain English.</p>
+    <div class="faq">
+
+      <div class="q">
+        <div class="q-head"><span>Does my whole property have to be in the project?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></div>
+        <div class="q-body"><div class="inner">No. You can enrol a quarter, a half, or whichever paddocks suit your management. We build the project around your plans, so if there is land you may sell, develop, or keep out for any reason, we leave it out from the start.</div></div>
+      </div>
+
+      <div class="q">
+        <div class="q-head"><span>What if the government changes the scheme over 25 years?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></div>
+        <div class="q-body"><div class="inner">No one can promise what any government does over 25 years, and we will not pretend otherwise. What we can say: once your project is registered it sits inside a legal framework that makes retrospective change hard. Historically, changes to the credit scheme have applied to new projects going forward, not to projects already registered. Your registered project is a binding arrangement with the Clean Energy Regulator and the Australian Government.</div></div>
+      </div>
+
+      <div class="q">
+        <div class="q-head"><span>What if my land goes backwards, say a fire or a drought?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></div>
+        <div class="q-body"><div class="inner">The scheme is built for this. A risk buffer is held back from every project precisely to absorb natural reversals like fire and drought, and the rules account for events outside your control. We work through these situations with you when they happen. You are not personally exposed to a bill the moment the weather turns.</div></div>
+      </div>
+
+      <div class="q">
+        <div class="q-head"><span>What if I want to subdivide later?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></div>
+        <div class="q-body"><div class="inner">You can subdivide, with one rule of thumb: land that stays in the project needs to remain farmland. So if a block might become housing, industry or similar, keep it out of the project from the start, or take it out before that change happens. Tell us your plans and we design the boundary around them.</div></div>
+      </div>
+
+      <div class="q">
+        <div class="q-head"><span>What happens to my project if AgriProve is no longer around?</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></div>
+        <div class="q-body"><div class="inner">AgriProve is the registered proponent, so we carry the reporting and compliance. Your agreement gives you the right to replace the proponent, so if we were ever not performing you can bring in another provider or step in yourself. The credits you have already earned stay an asset you hold either way.</div></div>
+      </div>
+
+      <div class="q">
+        <div class="q-head"><span>Twenty five years feels like a long commitment.</span><span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span></div>
+        <div class="q-body"><div class="inner">It is the permanence period the project commits to, but it is not a 25 year handcuff on you personally. As this page lays out, you can sell, pass the property to family, hand the project to a buyer, or wind it down. There is also a review at the five year mark to check the project is still working for you. The land keeps doing what land does. The project just sits alongside it.</div></div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="cta">
+    <div class="eyebrow">We are here to help<span style="color:var(--sage)">.</span></div>
+    <h2>Still have a "what if" we have not answered?</h2>
+    <p>Bring it to us. The questions you are asking are the right ones, and we would rather work through them with you up front than leave you guessing.</p>
+    <a class="btn" href="https://agriprove.io/contact">Talk to your AgriProve contact</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <img src="https://static1.squarespace.com/static/5d23dd85b8355d00013add1e/t/67ff20975ba58e3f56b9eb58/1744773271748/AgriProve+Logo+reverse+W500px.png?format=750w" alt="AgriProve">
+    <div class="cols">
+      <div>Unit 1, 601 Dean Street<br>Albury, NSW, 2640, Australia</div>
+      <div>1300 467 645<br><a href="https://agriprove.io/contact">Contact us</a></div>
+      <div><a href="https://help.agriprove.io">Help Centre</a><br><a href="https://agriprove.io/terms">Terms &amp; Privacy</a></div>
+    </div>
+    <div class="src">
+      Sources for this guide: Clean Energy Regulator, <a href="https://cer.gov.au/schemes/australian-carbon-credit-unit-scheme/how-to-participate/making-changes-to-your-project/selling-or-buying-accu-scheme-project-property">Selling or buying ACCU Scheme project property</a> and <a href="https://cer.gov.au/schemes/australian-carbon-credit-unit-scheme/how-to-participate-accu-scheme/permanence-obligations">Permanence obligations</a>; AgriProve soil carbon project agreement.
+      <div class="disc">This guide is general information, not legal or financial advice. Your project agreement and your own circumstances set the detail. AgriProve is happy to walk you and your advisers through any of it.</div>
+      <div class="legal"><span>© AgriProve Pty Ltd 2026</span><a href="https://agriprove.io/terms">Terms and Privacy</a><a href="https://agriprove.io/contact">Contact</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.card-head').forEach(function(h){
+    h.addEventListener('click',function(){
+      var card=h.parentElement;
+      var body=card.querySelector('.card-body');
+      var open=card.classList.toggle('open');
+      body.style.maxHeight=open?body.querySelector('.inner').offsetHeight+'px':'0';
+    });
+  });
+  document.querySelectorAll('.q-head').forEach(function(h){
+    h.addEventListener('click',function(){
+      var q=h.parentElement;
+      var body=q.querySelector('.q-body');
+      var open=q.classList.toggle('open');
+      body.style.maxHeight=open?body.querySelector('.inner').offsetHeight+'px':'0';
+    });
+  });
+</script>
+</body>
+</html>

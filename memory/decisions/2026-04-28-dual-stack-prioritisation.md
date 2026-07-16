@@ -117,3 +117,7 @@ If Dylan asks ("show me 5", "anything else?"), expand the cap. Default is 3.
   - Suppression: did the one-line tease ever surface a real opportunity Dylan would have missed
 - Tune weights and source filters based on the review
 - Capture findings in a learning entry; if structural changes needed, supersede this decision
+
+---
+
+**SUPERSEDED 2026-07-16** → by [`2026-07-16-os-rebuild.md`](2026-07-16-os-rebuild.md) §Workstack model. The full Stack A/B mechanism (leverage scoring, suppression rules) was never validated in its 30-day review and production had drifted to a flat 4-bucket model. Replacement: **simplified dual-stack** — Stack A (Mine, cap 3) + one-line leverage watch. Spec: `core/PRINCIPLES.md` §2.

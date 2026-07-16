@@ -1,3 +1,5 @@
+> ⚠️ **PARTIALLY SUPERSEDED (2026-07-16):** schedule claims below are stale — EOD runs **17:30 SAST** (not 12:00); the canonical task inventory + prompts live at `.claude/skills/cowork-scheduled/`; current schedules: `memory/state/NOW.md` §Schedules. The Apex contract concepts (components, output landing zones, failure modes) remain useful history. Kernel contract: `core/`.
+
 # Integration: Cowork (Apex)
 
 **Purpose:** Cowork is the Claude environment where **Apex** runs. Apex is Dylan's automated daily workflow system — the orchestration layer that pulls from connected systems and writes outputs Dylan and this Claude Code repo consume.

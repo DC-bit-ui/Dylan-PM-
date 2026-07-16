@@ -69,3 +69,7 @@ Pre-publish checklist (12 items): see the summary section of that file.
 ---
 
 *Standing decision. Governs all future portfolio-related work. Supersede with a new dated file if rules change.*
+
+---
+
+**SUPERSEDED 2026-07-16** → by [`2026-05-12-career-portfolio-9-rules.md`](2026-05-12-career-portfolio-9-rules.md) (same 9 rules, one day later, synthesised from the full policy review — treat that file as canonical). Duplicate-decision defect resolved in the OS rebuild; see `memory/deliverables/system/2026-07-16-os-rebuild-changelog.md`.

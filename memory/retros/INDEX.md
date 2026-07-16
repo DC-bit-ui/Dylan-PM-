@@ -1,14 +1,3 @@
-# Retros Index
+# INDEX abolished (2026-07-16)
 
-> Session, daily, weekly, initiative, and incident retros. Newest first.
-
-## Session
-- 2026-05-18 — Apex EOD Reconciliation — `session/2026-05-18-apex-eod.md`
-- 2026-04-30 — Apex EOD Reconciliation — `session/2026-04-30-eod.md`
-- 2026-04-29 — Multi-surface strategy shipped (PR #4 merged) — `session/2026-04-29-multi-surface-strategy-shipped.md`
-- 2026-04-28 — Cowork handoff integration — `session/2026-04-28-cowork-handoff-integration.md`
-- 2026-04-28 — Bootstrap of Claude operating system — `session/2026-04-28-bootstrap.md`
-
-## Daily
-- _(none yet)_
-
+Retro indexes drifted and the promised weekly/monthly/initiative/incident retro categories never materialised (audit D3.2/D3.5). Retired in the OS rebuild. **The directory listing of `session/` is the index** (`YYYY-MM-DD-<slug>.md`). The Morning Briefing reads yesterday's EOD retro — that is the consumption loop. Policy: `core/PROTOCOLS.md` §Naming.

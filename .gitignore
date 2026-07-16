@@ -35,3 +35,11 @@ shared-growth-memory/apex-runs.log
 # Coaching cache: corrupted/temp filenames from interrupted writes
 stormboy-tracker/coaching/cache/*TEMP*
 stormboy-tracker/coaching/cache/*.tmp
+
+# Legacy local Apex server (retired 2026-07-16 — not part of the OS; see core/MAP.md §6)
+apex-pm/
+
+# Office/temp junk
+*.tmp
+.~lock.*#
+~$*

@@ -382,3 +382,12 @@ After completing all updates AND the file write, print to chat:
 - **The Teams weighting rules in PRIORITISATION LOGIC must round-trip into Notion's `priority` field.** Spot-check on the first run: any P0/P1 task created today should have the trigger condition visible in `Next step`. If not, the rules aren't being applied.
 - **STEP 0 (memory load) was implicit in 2026-04-29 — the run started cold per the diagnostic.** Making it explicit aligns with COWORK.md §3 which already requires this read at job start.
 - **Schedule unchanged.** Cron stays at `45 12 * * 1-5` (AEST interpretation = 04:45 SAST weekdays).
+---
+
+## SYSTEM UPDATE 2026-07-16 (OS rebuild) — these instructions OVERRIDE anything above that conflicts
+
+1. STEP 0 READS (replaces any earlier read list): core/MAP.md → core/IDENTITY.md → core/PRINCIPLES.md → memory/state/NOW.md → memory/state/rules.md → core/PROTOCOLS.md. The old paths (CLAUDE.md body, COWORK.md, memory/profile/*) are now pointer stubs — do not rely on them.
+2. READ YESTERDAY'S EOD RETRO (memory/retros/session/, most recent file). Carry its "tomorrow" items and unresolved flags into today's prioritisation.
+3. FRESHNESS SWEEP: list every file in memory/state/ and memory/initiatives/ whose Review-by header date is before today. Output a "Needs review" line naming them. Rule: core/PROTOCOLS.md §Freshness.
+4. HYGIENE WARNINGS: (a) if inbox/cowork/ has more than 20 unprocessed files, warn; (b) if memory/state/last-sweep.md is older than 14 days, prepend "Sweep recommended — run /sweep".
+5. OUTPUT MODEL — SIMPLIFIED DUAL-STACK (replaces both the Stack A/Stack B leverage-scored model AND the flat 4-bucket model): **Stack A — Mine (cap 3):** items where Dylan is the named actor or delivery owner, ranked P0–P3 with due-date weighting (criteria: core/PRINCIPLES.md §2). Run reconciliation first (core/PROTOCOLS.md §Reconciliation) — remember Teams channels need read_resource. **Leverage watch (max 1 line):** "N team items may benefit from PM input: <Jira keys / short names>" — only when such items exist. Notion creates remain Status=Proposed with origin tag "Apex · Morning".

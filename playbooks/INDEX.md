@@ -1,13 +1,12 @@
-# Playbooks Index
+# Playbooks — INDEX (regenerated 2026-07-16)
 
-> Reusable processes Dylan + Claude follow together. When a workflow happens twice, promote it from a one-off into a playbook here.
-
-| Playbook | When to run |
+| Playbook | Purpose |
 |---|---|
-| `new-initiative.md` | Spinning up a new piece of work |
-| `prd-process.md` | Writing a PRD, idea → approved spec |
-| `stakeholder-update.md` | Weekly status comms |
-| `decision-process.md` | Making a non-trivial decision |
-| `incident-response.md` | Something went wrong |
-| `local-setup-windows.md` | One-time: clone this repo to `C:\Dylan PM` and wire up MCPs locally |
-| `multi-surface-capture.md` | Bridging claude.ai / mobile sessions back to `memory/` via `inbox/cowork/` |
+| `decision-process.md` | How decisions get made + logged |
+| `incident-response.md` | Production incident handling |
+| `new-initiative.md` | Standing up a new epic/initiative |
+| `prd-process.md` | PRD workflow (pm-strategist → researcher → /prd → critic) |
+| `stakeholder-update.md` | Stakeholder comms process |
+| `multi-surface-capture.md` | chat/mobile → inbox/cowork capture bridge (template used by packs/chat-core.md) |
+| `pack-regen.md` | Regenerating packs/ context packs (added 2026-07-16) |
+| `local-setup-windows.md` | Machine setup — ⚠️ stale branch reference inside (bootstrap branch retired; use main) |

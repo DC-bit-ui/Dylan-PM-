@@ -1,3 +1,5 @@
+> ⚠️ **Canonical-source note (2026-07-16):** the Cowork `agriprove-pm` skill pack carries its own brief/one-pager templates. For AgriProve-official artefacts, that pack (and Confluence) wins; this local skeleton is for quick internal drafts only and must not fork the official format. (Same rule `templates/prd.md` already carries.)
+
 # <Title> — One-Pager
 
 **Audience:** <who is reading this>  |  **Decision sought:** <what action this enables>  |  **Date:** <YYYY-MM-DD>

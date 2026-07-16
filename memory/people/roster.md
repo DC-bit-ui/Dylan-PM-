@@ -1,8 +1,8 @@
 # People Roster — AgriProve
 
-**Last updated:** 2026-04-28 (populated from Cowork handoff)
+Last-verified: 2026-07-16 · Review-by: 2026-10-14 · Verified-by: claude-code (rebuild pass: Cadel departure applied, July people added, Wills disambiguated)
 
-> Stakeholders, partners, and key contacts. Claude reads this before drafting anything for or about a named person.
+> Stakeholders, partners, and key contacts. Read before drafting anything for or about a named person. Org-level current state (who's elevated, who's leaving): `memory/state/NOW.md` §Org.
 
 ---
 
@@ -12,79 +12,78 @@
 - **Role:** Leadership stakeholder; CPO-equivalent
 - **Cadence with Dylan:** 1:1s; Granola transcripts available
 - **Cares about:** product strategy, delivery progress, team unblocking
-- **System presence:** Teams, Jira, Granola meetings
-- **Format preference:** _(to learn — track over time)_
-- **Communication notes:**
-  - Treated as P0 trigger when explicitly asks for something urgently (per Apex priority framework)
-- **History with Dylan:** ongoing 1:1 cadence
+- **System presence:** Teams, Jira, Granola
+- **Communication notes:** treated as P0 trigger when explicitly urgent; greeting "{Name}," not "Hey" (rules.md / dylans-voice)
+- **Status note:** on leave until 2026-07-20 (Will Frecheville covering) — as of 2026-07-15
+
+### Matthew Warnken
+- **Role:** Founder / Managing Director
+- **System presence:** Granola meetings, Teams
+- **Surface:** Bank & insurer channel sponsor; bank-pitch audience (workshop 2026-07-14; pitch scheduled 2026-07-22)
+- **Communication notes:** greeting "{Name}," not "Hey"; prefers "Horizon Profile" naming for the bank artifact
+- **Added:** 2026-07-16 (rebuild — present in July meeting corpus since 07-14)
 
 ---
 
 ## Internal — engineering team
 
-### Cadel Watson
-- **Role:** Dev lead / backend engineer
-- **System presence:** Jira (assignee), Teams, Granola
-- **Owns:** HORIZON model validation framework (epic **AP-2116** — Schedule 2 run)
-- **Cadence with Dylan:** 1:1s; standup overlap
-- **Communication notes:**
-  - Backend-side authority; consult on HORIZON technical questions
+### Cadel Watson — ⚠️ DEPARTING (~late July 2026)
+- **Status:** resignation announced 2026-07-06; ~3-week transition; handover epics AP-2576 (HORIZON 2.0) / AP-2577 (general). Do not assign new work; do not treat as sign-off gate (Steve took that over). Source: `memory/learnings/2026-07/2026-07-06-cadel-departure-team-restructure.md`
+- **Was:** Dev lead / backend engineer; owned HORIZON model + validation framework (AP-2116, now Done)
+- **Communication notes (historical):** backend authority; "Hey Cadel" was on-voice
 
 ### Steve Le Moenic
-- **Role:** Developer
-- **System presence:** Jira (assignee)
-- **Owns:**
-  - **AP-1965** — LawrieCo referrer view (Development)
-  - **AP-1964** — Operation KCT phase 1 (Development)
-- **Cadence with Dylan:** PM check-ins
+- **Role:** Program Manager (elevated from Developer, 2026-07-06)
+- **System presence:** Jira, Granola, Teams
+- **Owns:** delivery sequencing (Prospective Projects wave plan), requirements sign-off (took over Cadel's gate). Historical epics AP-1964 / AP-1965 are Done.
+- **Cadence with Dylan:** PM check-ins; refinement/planning reschedule in progress
+
+### Gayathri Menakath
+- **Role:** Technical Lead (frontend), elevated 2026-07-06
+- **System presence:** Jira, Granola
+- **Background:** HubSpot side before Frontier/KCT
+- **Owns:** frontend delivery (Prospective Projects dashboard, KCT mapping); carrying the main dev load post-Cadel
+- **Added:** 2026-07-06
+
+### Athul George
+- **Role:** Developer (under Gayathri)
+- **System presence:** Jira
+- **Owns:** AP-2632 snapshot-queue bug; Farm Draw v2 / HubSpot water-credit tickets
+- **Added:** 2026-07-06
 
 ### Will Frecheville
-- **Role:** Engineer
-- **System presence:** Teams, Granola meetings
-- **Cadence with Dylan:** 1:1s; meeting overlap
+- **Role:** Engineer ("engineering Will")
+- **System presence:** Teams, Granola
+- **Cadence with Dylan:** 1:1s; Kieren's leave cover (to 2026-07-20)
+- ⚠️ **Two Wills:** Will Frecheville = engineer; Will Donovan = Head of Ops. A bare "Will" in ops/consents/land-titles context means **Donovan**; in engineering/Stormboy-sales-channel context means **Frecheville**.
 
 ---
 
-## Internal — cross-functional
+## Internal — cross-functional / ops
+
+### Will Donovan
+- **Role:** Head of Operations ("ops Will")
+- **Surface:** consents / land-titles / registration workflows; EIH processing
+- **Added:** 2026-07-16 (rebuild — referenced as ops feature owner in consents + land-titles PRDs)
+
+### DJ
+- **Role:** Operations — registration / titles processing
+- **Surface:** land-title processing, EIH consent prep; quoted throughout consents + land-titles PRDs; prototype reviewer (2026-06-25)
+- **Full name:** [ASSUMPTION — not yet sourced; fetch via connectors on next interaction]
+- **Added:** 2026-07-16 (rebuild)
+
+### Jo
+- **Role:** Operations — registration; primary persona in the land-titles PRD; property/project-level model input (call 2026-06-24)
+- **Full name:** [ASSUMPTION — not yet sourced; fetch via connectors on next interaction]
+- **Added:** 2026-07-16 (rebuild)
 
 ### Claudia Bryant
-- **Role:** Growth — lead scraping
-- **System presence:** Teams (sourced); referenced in tasks; not a Jira assignee
-- **Surface:** Stormboy partner — lead generation pipeline
-- **Cadence with Dylan:** _(to confirm — likely Stormboy process alignment sessions)_
+- **Role:** Growth — lead scraping; Stormboy partner
+- **System presence:** Teams
 
 ### Hobbs Margaret
-- **Role:** Field team
-- **System presence:** Teams (sourced); referenced in user research / Frontier user
-- **Surface:** Frontier user; Stormboy field-side
+- **Role:** Field team; Frontier user; Stormboy field-side; bank-pitch contributor (2026-07-14 workshop); named human review gate for grazing-planner recommendations
 - **Cadence with Dylan:** UX feedback sessions
 
 ### Ben Payne
-- **Role:** Field team
-- **System presence:** Teams (sourced); referenced in user research / Frontier user
-- **Surface:** Frontier user; Stormboy field-side
-- **Cadence with Dylan:** UX feedback sessions
-
----
-
-## External — partners / referrers
-
-### LawrieCo
-- **Org:** AgriProve referrer / partner
-- **Surface:** Has a dedicated referrer view (epic AP-1965) — partner-facing UI for tracking referred properties
-
----
-
-## Watch list
-_(populate over time — leadership changes, key customers signaling, etc.)_
-
----
-
-## Profile gaps to fill
-- [ ] Kieren — communication style preferences (long email? short Slack? doc-first?)
-- [ ] Format preferences for each engineer (where they want PRDs to land — likely Confluence per AgriProve flow)
-- [x] Surnames captured (Hobbs Margaret, Ben Payne, Claudia Bryant) — 2026-04-28
-- [ ] Last-interaction history per person (track via meeting-synthesizer over time)
-
-## Sourcing protocol (durable rule)
-When a new person is introduced — or a known person needs more detail — **fetch from Teams / Outlook / Granola / HubSpot via MCP first**. Do not ask Dylan to spell names or fill in roles he can already retrieve from the connected systems. Ask Dylan only when the connectors return nothing or when judgement (cadence preferences, tone) is required.
+- **Role:** Field team; Frontier user; Stormboy field-side; HORIZON Profile requests + fa

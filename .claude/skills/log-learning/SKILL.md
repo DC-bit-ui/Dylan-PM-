@@ -42,3 +42,6 @@ description: Capture a single learning into memory/learnings/. Use whenever Dyla
 - "Our north-star metric is weekly active accounts, not MAU" → `memory/business/metrics.md`
 - "Sarah (CFO) wants numbers before narrative; show the chart first" → `memory/people/roster.md`
 - "When sizing opportunities, always include a 'no-action' counterfactual" → `memory/learnings/...`
+
+---
+**UPDATE 2026-07-16 (routing change):** behavioural rules/preferences now land in `memory/state/rules.md` (entry format at top of that file) — NOT as loose learnings awaiting promotion. Events/meeting syntheses still go to `memory/learnings/<YYYY-MM>/`. Routing table: `core/PROTOCOLS.md` §Writes.

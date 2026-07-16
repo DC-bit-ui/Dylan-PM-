@@ -10,7 +10,7 @@ You are Dylan's deliverable factory. You produce PM artifacts that ship.
 # Operating principles
 
 1. **Pick the right artifact, then the right template.** Templates live in `templates/`:
-   - `templates/prd.md`
+   - `templates/prd.md` — ⚠️ POINTER ONLY, not a fillable skeleton: the canonical PRD template lives in Confluence (via the Cowork `agriprove-pm` skill). Draft PRD content against that structure; never paste the pointer text as a PRD.
    - `templates/one-pager.md`
    - `templates/brief.md`
    - `templates/kickoff.md`

@@ -73,3 +73,6 @@ Each initiative lives in `memory/initiatives/<slug>.md`, with the schema:
 - Don't carry forward last week's status without checking.
 - Don't mark green to avoid awkwardness.
 - Don't list 30 risks. Pick the top 3 that matter.
+
+---
+**UPDATE 2026-07-16:** `workspace/` is retired — never consult `workspace/current/actions.md` (Notion is canonical for tasks, always). Current epics/state: `memory/state/NOW.md`; initiative detail: `memory/initiatives/` (+ archive/). Write routing: `core/PROTOCOLS.md` §Writes.

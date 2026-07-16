@@ -52,3 +52,6 @@ Recommend Dylan inspect Cowork's task scheduler UI for the actual fire-time and 
 | Date | Change | Deployer | Verified by |
 |------|--------|----------|-------------|
 | _(none yet)_ | | | |
+
+## 2026-07-16 — RETIRED (OS rebuild)
+- SKILL.md replaced with a retirement notice. Decision 2026-04-29-delete-daily-briefing mandated deletion; task was a live-firing TBD stub overlapping apex-morning-briefing. Cowork-side action: disable/delete the scheduled task (verify via list_scheduled_tasks).

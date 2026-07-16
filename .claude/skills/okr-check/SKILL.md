@@ -35,3 +35,6 @@ description: Check a piece of work, an initiative, or this week's plan against c
 ## Heuristic
 
 If >30% of the week is orphaned, the plan needs a re-think, not a rationalisation.
+
+---
+**UPDATE 2026-07-16:** current strategy/priorities live in `memory/state/NOW.md` (strategy.md is history + pivot log). OKRs remain unset as of 2026-07-16 — return the strategic threads in NOW.md as the alignment proxy.

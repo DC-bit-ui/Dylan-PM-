@@ -38,3 +38,6 @@ description: Search memory/ for what Claude knows about a topic, person, decisio
 - Don't paste five whole files.
 - Don't fabricate cross-references.
 - Don't claim a fact without a citation.
+
+---
+**UPDATE 2026-07-16:** search order for recall is now: `memory/state/` → `core/` → `memory/decisions/` → `memory/learnings/` → `memory/business/` → `memory/deliverables/`. Ignore `.claude/worktrees/` (deleted), `memory/profile/` and `COWORK.md` (stubs). Canonical-source table: `core/MAP.md` §2.

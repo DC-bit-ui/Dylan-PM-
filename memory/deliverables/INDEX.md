@@ -1,21 +1,3 @@
-# Deliverables Index
+# Deliverables — filing guide (root INDEX abolished 2026-07-16)
 
-> Every PM artifact Dylan produces — PRDs, one-pagers, briefs, decision memos, meeting notes, research, updates. One line per artifact, newest first.
-
-## PRDs
-- _(YYYY-MM-DD — title — `prds/<file>.md` — status)_
-
-## One-pagers
-- _(YYYY-MM-DD — title — `one-pagers/<file>.md`)_
-
-## Briefs
-- _(YYYY-MM-DD — title — `briefs/<file>.md`)_
-
-## Decision memos
-- _(YYYY-MM-DD — title — `decision-memos/<file>.md`)_
-
-## Specs
-- 2026-07-08 — **Grazing Management Tool** — full project (design guides v1–v3, demo kit, tested scripts, Glenlogie bundle, tech plan, snapshot-generator reqs, source exports) RELOCATED to project folder `../../Grazing management tool/` — start at its `README.md`
-
-## System proposals
-- 2026-05-27 — Scheduled-task token optimisation (12 proposals across 14 tasks; ~75-100k token savi
+The old root INDEX was truncated and indexed ~3 of ~45 files (audit D3.5); retired. **The directory listing is the index.** Filing rule (`core/PROTOCOLS.md` §Writes): every deliverable goes in a subdir — `meetings/ prds/ research/ comms/ prompts/ career/ skills/ education/ updates/ handoffs/ system/` — never at deliverables/ root. `prds/INDEX.md` and `meetings/INDEX.md` are kept (accurate, carry supersession notes). Published PRDs are canonical in Confluence; local copies are working drafts.

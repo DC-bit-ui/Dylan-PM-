@@ -1,0 +1,73 @@
+<svg viewBox="0 0 1000 820" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>The AgriProve bank offer as a virtuous circle</title>
+  <desc>A clockwise cycle: AgriProve enrols the farmer in a stacked carbon and reef project; the bank funds establishment with a discounted green loan; the farm issues stacked credits split between farmer, AgriProve and bank plus offtake; the bank wins and grows with new customers across the region. Centre prize: the Great Barrier Reef protected.</desc>
+
+  <defs>
+    <radialGradient id="reefGlow" cx="50%" cy="42%" r="65%">
+      <stop offset="0%" stop-color="#EAF6F5"/>
+      <stop offset="100%" stop-color="#CFE8E6"/>
+    </radialGradient>
+    <marker id="tip" markerWidth="10" markerHeight="10" refX="6.5" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0F7A85"/>
+    </marker>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#2A2A22" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="820" fill="#FAF8F3"/>
+
+  <!-- Title -->
+  <text x="500" y="46" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="28" fill="#23221E">The virtuous circle</text>
+  <text x="500" y="72" text-anchor="middle" font-size="13.5" fill="#8F8B81">The green loan funds project establishment. Credits and a protected reef flow back.</text>
+
+  <!-- faint guide ring -->
+  <circle cx="500" cy="450" r="200" fill="none" stroke="#D8D2C6" stroke-width="1" stroke-dasharray="2 8"/>
+
+  <!-- clockwise arcs -->
+  <path d="M 568.4 262.1 A 200 200 0 0 1 687.9 381.6" fill="none" stroke="#0F7A85" stroke-width="2.2" marker-end="url(#tip)"/>
+  <path d="M 687.9 518.4 A 200 200 0 0 1 568.4 637.9" fill="none" stroke="#0F7A85" stroke-width="2.2" marker-end="url(#tip)"/>
+  <path d="M 431.6 637.9 A 200 200 0 0 1 312.1 518.4" fill="none" stroke="#0F7A85" stroke-width="2.2" marker-end="url(#tip)"/>
+  <path d="M 312.1 381.6 A 200 200 0 0 1 431.6 262.1" fill="none" stroke="#0F7A85" stroke-width="2.2" marker-end="url(#tip)"/>
+
+  <!-- Center reef -->
+  <circle cx="500" cy="450" r="118" fill="url(#reefGlow)" stroke="#0F7A85" stroke-width="2.5" filter="url(#soft)"/>
+  <text x="500" y="424" text-anchor="middle" font-size="10.5" letter-spacing="1.8" fill="#0B5A62">THE SHARED PRIZE</text>
+  <text x="500" y="452" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#14332F">Great Barrier Reef</text>
+  <text x="500" y="475" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="#14332F">protected</text>
+  <text x="500" y="498" text-anchor="middle" font-size="10.5" font-style="italic" fill="#5E7A76">"where you bank helps save the reef"</text>
+
+  <!-- Step 1 top -->
+  <rect x="350" y="144" width="300" height="94" rx="16" fill="#FFFFFF" stroke="#E7E1D6" stroke-width="1.2" filter="url(#soft)"/>
+  <circle cx="374" cy="166" r="13" fill="#0F7A85"/>
+  <text x="374" y="170" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">1</text>
+  <text x="512" y="180" text-anchor="middle" font-size="15" font-weight="700" fill="#23221E">AgriProve enrols the farmer</text>
+  <text x="500" y="201" text-anchor="middle" font-size="12" fill="#6B6860">stacked carbon + reef project</text>
+  <text x="500" y="221" text-anchor="middle" font-size="11" font-style="italic" fill="#9A968C">the engine only AgriProve can run</text>
+
+  <!-- Step 2 right -->
+  <rect x="680" y="398" width="260" height="104" rx="16" fill="#FFFFFF" stroke="#E7E1D6" stroke-width="1.2" filter="url(#soft)"/>
+  <circle cx="704" cy="420" r="13" fill="#0F7A85"/>
+  <text x="704" y="424" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">2</text>
+  <text x="817" y="434" text-anchor="middle" font-size="15" font-weight="700" fill="#23221E">Bank funds set-up</text>
+  <text x="810" y="455" text-anchor="middle" font-size="12" fill="#6B6860">discounted green loan, lower rate</text>
+  <text x="810" y="475" text-anchor="middle" font-size="11" font-weight="700" fill="#0B5A62">pays for project establishment</text>
+
+  <!-- Step 3 bottom -->
+  <rect x="350" y="662" width="300" height="94" rx="16" fill="#FFFFFF" stroke="#E7E1D6" stroke-width="1.2" filter="url(#soft)"/>
+  <circle cx="374" cy="684" r="13" fill="#0F7A85"/>
+  <text x="374" y="688" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">3</text>
+  <text x="514" y="698" text-anchor="middle" font-size="15" font-weight="700" fill="#23221E">Farm issues stacked credits</text>
+  <text x="500" y="719" text-anchor="middle" font-size="12" fill="#6B6860">ACCUs + Reef Credits</text>
+  <text x="500" y="739" text-anchor="middle" font-size="11" fill="#9A968C">split: Farmer 65 · AgriProve 25 · Bank 10 + offtake</text>
+
+  <!-- Step 4 left -->
+  <rect x="60" y="398" width="260" height="104" rx="16" fill="#FFFFFF" stroke="#E7E1D6" stroke-width="1.2" filter="url(#soft)"/>
+  <circle cx="84" cy="420" r="13" fill="#0F7A85"/>
+  <text x="84" y="424" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">4</text>
+  <text x="197" y="434" text-anchor="middle" font-size="15" font-weight="700" fill="#23221E">Bank wins, and grows</text>
+  <text x="190" y="455" text-anchor="middle" font-size="12" fill="#6B6860">de-risked book · reef story</text>
+  <text x="190" y="475" text-anchor="middle" font-size="11" font-weight="700" fill="#0B5A62">new customers across the region</text>
+
+  <text x="500" y="802" text-anchor="middle" font-size="10.5" fill="#9A968C">Leverages assets AgriProve already has. Indicative structure; figures illustrative.</text>
+</svg>

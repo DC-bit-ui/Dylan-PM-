@@ -130,33 +130,37 @@ TOMORROW'S TOP 3:
 3. [Task] — [why]
 ---
 
- ## OBSERVABILITY — ALWAYS RUN LAST
+## OBSERVABILITY — ALWAYS RUN LAST
+(Block repaired 2026-07-16 — the previous version contained copy-paste corruption from the apex-morning template: wrong commit prefixes and filenames mangled with fake URLs.)
 
-  After completing the briefing (or on early failure), write a run marker
-  to git so the run is verifiable from outside Cowork.
+After completing the reconciliation (or on early failure), write a run marker to git so the run is verifiable from outside Cowork.
 
-  CASE A — Normal run (any Notion creates, Notion updates, OR Jira comments
-  happened): no marker needed. The Notion writes ARE the run record.
+CASE A — Normal run (any Notion creates, Notion updates, OR Jira comments happened): no marker needed. The Notion writes ARE the run record.
 
-  CASE B — No-op run (zero Notion creates, zero Notion updates, zero Jira
-  comments): write a marker to
-    memory/retros/session/<YYYY-MM-DD>-apex-eod[-no-op.md](http://apex-morning-no-op.md)
-  containing:
-    - What you scanned (Notion views queried, Jira JQLs run, Granola
-      meeting count, Teams search ran/timed-out, etc.)
-    - Why nothing actionable surfaced (genuinely quiet EOD vs. all
-      discovered items already had matching Notion tasks)
-    - Any system errors observed (Teams timeout, MCP failure, etc.)
-  Commit with message "[apex-morning] no-op marker <YYYY-MM-DD>" and push.
+CASE B — No-op run (zero Notion creates, zero Notion updates, zero Jira comments): write a marker file at exactly this path:
+  memory/retros/session/<YYYY-MM-DD>-apex-eod-no-op.md
+containing:
+  - What you scanned (Notion views queried, Jira JQLs run, Granola meeting count, Teams reads run/timed-out, etc.)
+  - Why nothing actionable surfaced (genuinely quiet EOD vs. all discovered items already had matching Notion tasks)
+  - Any system errors observed (Teams timeout, MCP failure, etc.)
+Commit with message "[apex-eod] no-op marker <YYYY-MM-DD>" and push.
 
-  CASE C — Error mid-execution (a step failed and prevented later steps):
-  write a marker to
-    memory/retros/session/<YYYY-MM-DD>-[apex-](http://apex-morning-error.md)apex-eod[.md](http://apex-morning-error.md)
-  containing:
-    - Which step failed (1-6)
-    - The error message verbatim
-    - What was completed before the failure (so partial work is auditable)
-  Commit with message "[apex-morning] error marker <YYYY-MM-DD>" and push.
+CASE C — Error mid-execution (a step failed and prevented later steps): write a marker file at exactly this path:
+  memory/retros/session/<YYYY-MM-DD>-apex-eod-error.md
+containing:
+  - Which step failed (1-6)
+  - The error message verbatim
+  - What was completed before the failure (so partial work is auditable)
+Commit with message "[apex-eod] error marker <YYYY-MM-DD>" and push.
 
-  Silence is not success. If you complete the briefing without writes
-  AND without writing a no-op marker, the run is invisible to Dylan.
+Silence is not success. If you complete the run without writes AND without writing a no-op marker, the run is invisible to Dylan.
+
+---
+
+## SYSTEM UPDATE 2026-07-16 (OS rebuild) — these instructions OVERRIDE anything above that conflicts
+
+1. STEP 0 READS (replaces any earlier read list): core/MAP.md → core/PRINCIPLES.md → memory/state/NOW.md → memory/state/rules.md → core/PROTOCOLS.md.
+2. STATE UPKEEP: if today produced a current-state change (epic status transition, org change, schedule change, strategy signal), update the matching section of memory/state/NOW.md AND its As-of date (Tier 1). If nothing changed, skip — do not touch the file.
+3. INBOX LIFECYCLE (every run, per core/PROTOCOLS.md §Inbox): route durable content from inbox/cowork/ and inbox/granola/ per the §Writes routing table, then move every processed file to inbox/processed/<YYYY-MM>/. Most morning-brief files contain nothing durable beyond the day's existing writes — moving them unrouted is correct.
+4. TOMORROW'S STACK: simplified dual-stack — Stack A (Mine, cap 3, P0–P3 due-date weighted) + max one leverage-watch line. No Stack B scoring, no 4-bucket format.
+5. EOD retro still lands at memory/retros/session/<YYYY-MM-DD>-apex-eod.md; the Morning Briefing reads it back tomorrow — write the "tomorrow" section with that reader in mind.

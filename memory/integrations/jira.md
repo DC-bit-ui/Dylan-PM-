@@ -1,3 +1,5 @@
+> ⚠️ **CORRECTION (2026-07-16):** MCP tool-ID prefixes below (e.g. `mcp__b19a3849-…`) are stale — prefixes are instance-specific. Trust the tool NAMES (`searchJiraIssuesUsingJql`, `getJiraIssue`, …) and discover the live prefix in-session. The late-April epics snapshot below is historical; active epics: `memory/state/NOW.md`. Also: inspect descriptions after `createJiraIssue` (newline double-escape bug — rules.md 2026-07-08).
+
 # Integration: Jira — Team Workstack
 
 **Purpose:** AgriProve Jira is the **canonical source for team delivery state**. This repo reads it for initiative-tracker reconciliation, sizing, and unblocking analysis.

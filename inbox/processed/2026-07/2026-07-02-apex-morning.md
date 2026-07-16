@@ -16,7 +16,7 @@ Cadel is leaving imminently — HORIZON knowledge transfer window is closing fas
 
 1. **Operating system — Follow up with Kieran on contractor agreement + PE decision** — KW<>DC meeting booked today 07:00 SAST. Kieren messaged "please prioritise as this is now time critical" on Jul 1. Dylan shared proposed amendments already. 183-day PE threshold deadline end of July. [Notion: 38f8c08e]
 2. **Operating system — Cadel knowledge extraction: HORIZON briefing + departure knowledge transfer** — Cadel is departing imminently (~3 weeks). He is the primary HORIZON SME. Window is closing. Book a session today: HORIZON pipeline briefing + knowledge extraction priorities + confirm Gayathri/Athul epic assignment. [Notion: 3918c08e]
-3. **Stormboy — Workshop Verterra commercial strategy with Ben before he leaves** — Ben also departing. Cadel Verterra walkthrough at 06:15 SAST today. Use to align product direction, then workshop commercial strategy with Ben: productisation pathway, commercial signal, Murray-Darling sandbox candidates. [Notion: 3918c08e]
+3. **Stormboy — Verterra commercial strategy walkthrough with Cadel** — Meeting booked 14:30 SAST today. Agenda: productisation pathway for Verterra JV, commercial signal, Murray-Darling sandbox candidates (+ve and -ve outcomes). Olivier technical summary due w/c 6 July — use this session to align product direction before that lands. [Notion: 3918c08e]
 
 ## Stack B (Complement — 3 leverage opportunities)
 
@@ -81,7 +81,7 @@ Cadel is leaving imminently — HORIZON knowledge transfer window is closing fas
 
 **Created (5):**
 1. "Operating system — Cadel knowledge extraction: HORIZON briefing + departure knowledge transfer" [3918c08e-b28f-8101] — P0, Today Rank 2
-2. "Stormboy — Workshop Verterra commercial strategy with Ben before he leaves" [3918c08e-b28f-81ed] — P1, Today Rank 3
+2. "Stormboy — Verterra commercial strategy walkthrough with Cadel (booked 14:30 SAST)" [3918c08e-b28f-81ed] — P1, Today Rank 3
 3. "Frontier — Send Gayathri full Prospective Projects package" [3918c08e-b28f-8129] — P1, Today Rank 4
 4. "Frontier — Finalise land titles requirements and submit for Cadel sign-off" [3918c08e-b28f-8111] — P1, Today Rank 5
 5. "Operating system — Align with Kieran on TERA integration priority" [3918c08e-b28f-811a] — P1, Today Rank 6

@@ -1,12 +1,3 @@
-# inbox/cowork/
+# inbox/cowork — transient drop zone
 
-Landing zone for ad-hoc drops from claude.ai web, Claude mobile, and Cowork session summaries. Read by `/inbox-process` (Apex Morning Briefing or on demand) — durable insights routed to `memory/`, ephemeral drops archived to `inbox/processed/`.
-
-**Format:** drops should follow the capture template in `playbooks/multi-surface-capture.md`. Filename: `<YYYY-MM-DD>-<topic-slug>.md`.
-
-**Empty is healthy.** This directory should empty out as `/inbox-process` runs. If it's accumulating, either the seam is busy (good signal — capture discipline working) or processing has stalled (check Apex).
-
-See:
-- Decision: [`memory/decisions/2026-04-28-multi-surface-strategy.md`](../../memory/decisions/2026-04-28-multi-surface-strategy.md)
-- Playbook: [`playbooks/multi-surface-capture.md`](../../playbooks/multi-surface-capture.md)
-- Skill: [`.claude/skills/inbox-process/SKILL.md`](../../.claude/skills/inbox-process/SKILL.md)
+Drops from Cowork/chat/mobile sessions land here (text files only). **Lifecycle (single model, 2026-07-16):** Apex EOD routes durable content per `core/PROTOCOLS.md` §Writes, then moves every processed file to `inbox/processed/<YYYY-MM>/`. A file may sit here at most 7 days; the Morning Briefing warns at >20 unprocessed. Empty is healthy. (The old second model — briefs persisting here as apex-pm workbench inputs — died with the apex-pm server, retired 2026-07-16.)

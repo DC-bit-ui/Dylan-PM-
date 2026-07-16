@@ -1,48 +1,24 @@
 # Customers
 
-**Last updated:** 2026-04-28 (initial population from Cowork handoff)
+Last-verified: 2026-07-16 · Review-by: 2026-10-14 · Verified-by: claude-code (rebuild pass: bank/insurer buyer added; ops personas added; epic refs corrected)
 
 ## ICP — Ideal Customer Profile
-**Australian landholders** seeking to participate in soil-carbon credit generation under the Emissions Reduction Fund (ERF) and earn ACCUs (Australian Carbon Credit Units).
-
-- Geography: Australia (regulatory specific to ACCU scheme)
-- Land use: agricultural — properties with soil carbon improvement potential
-- Buyer journey: typically multi-year (carbon project commitments span years)
+**Australian landholders** seeking to participate in soil-carbon credit generation under the ERF and earn ACCUs.
+- Geography: Australia (ACCU scheme). Stormboy targets 500+ ha properties, Murray-Darling Basin + VIC expansion.
+- Buyer journey: multi-year (carbon project commitments span years).
 
 ## Segments
+- **Direct landholders** — acquired via Groundwork/Farm Map Tool (self-serve boundary → free HORIZON Profile) and Stormboy field recruitment. Sizing/sub-segments still unconfirmed.
+- **Referred landholders** — partner-driven funnel (LawrieCo referrer view, AP-1965 Done).
+- **Institutional buyers (emerging, 2026-07)** — ag banks/insurers buying risk intelligence, not credits (AASB S2 disclosure driver; Rabobank first target). Pre-revenue; see `memory/state/NOW.md` §Strategy. [moderate]
 
-### Direct landholders
-_(to confirm — sizing, channels, sub-segments)_
-
-### Referred landholders (via partners like LawrieCo)
-- LawrieCo referrer view (epic AP-1965) suggests a partner-driven funnel exists
-- Referrer view is likely the partner-facing UI for tracking referred properties / progress
-
-## Internal users (also "customers" in product terms)
-- **Field team** — Hobbs, Ben — primary Frontier users for property management
-- **Growth team** — Claudia — Stormboy lead pipeline
+## Internal users (product "customers")
+- **Field team** — Hobbs, Ben — primary Frontier users; farmer first-touch.
+- **Growth** — Claudia (lead pipeline), Daniel (HubSpot/Aircall automation, landing pages).
+- **Ops/registration** — DJ, Jo, Will Donovan — land titles, EIH consents, registration; primary personas of the Prospective Projects epics (AP-2566/2567).
 
 ## Personas
-
-### Persona 1: Field operator (Hobbs / Ben archetype)
-- **Role:** field-based property management for AgriProve
-- **Goals:** efficient property creation, accurate spatial data capture, fast snapshot generation
-- **Frustrations / pain points:** _(to learn from feedback sessions)_
-- **What good looks like:** Frontier flows that are fast, mobile-friendly, accurate
-
-### Persona 2: Growth operator (Claudia archetype)
-- **Role:** lead scraping / pipeline ops
-- **Goals:** clean lead data into the pipeline; visible handoff to Field team
-- **Pain points:** Stormboy process alignment is the primary surface for these
-
-### Persona 3: External landholder (end customer)
-_(to populate — JTBD framing)_
-
-### Persona 4: Referrer partner (LawrieCo archetype)
-_(to populate)_
-
-## Anti-personas
-_(populate over time — who AgriProve explicitly does NOT build for)_
-
-## Research artifacts
-_(link to `memory/deliverables/research/...` as research accumulates; from Granola transcripts of UX feedback sessions)_
+1. **Field operator** (Hobbs/Ben archetype): efficient property creation, accurate spatial capture, fast HORIZON Profile turnaround; needs mobile-friendly Frontier flows.
+2. **Growth operator** (Claudia archetype): clean lead data in, visible handoff to Field.
+3. **Ops registrar** (Jo/DJ archetype, added 2026-07-16): source titles, confirm the real parcel set, identify every EIH, chase consents — today manual and error-prone; the land-titles PRD is built around this persona (`memory/deliverables/prds/2026-06-29-land-titles-prd-core.md`).
+4. **External landholder** (end customer): JTBD framing still to be populated from research. Known signals: simple boundary drawing

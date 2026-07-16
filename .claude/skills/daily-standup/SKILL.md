@@ -109,3 +109,6 @@ Surface-weight: Owns 1.0, Contributes 0.6.
 
 ## Heuristic for Dylan
 A good standup is "yesterday I did X, today I'm doing Y, watching Z develop, blocked on W". Four lines. If it's more, it's a status report, not a standup.
+
+---
+**UPDATE 2026-07-16 (overrides conflicting content above):** simplified dual-stack applies — Stack A (Mine, cap 3) + max one leverage-watch line; no Stack B machinery. Spec: `core/PRINCIPLES.md` §2. Current priorities: `memory/state/NOW.md`. Reconciliation procedure: `core/PROTOCOLS.md` §Reconciliation.

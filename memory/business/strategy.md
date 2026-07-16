@@ -1,3 +1,5 @@
+> ⚠️ **HISTORICAL + PIVOT LOG (2026-07-16).** Current strategy/priorities live in `memory/state/NOW.md` (single-source rule, core/MAP.md §2). This file is kept as the strategy history and pivot log — its 'May–July 2026' two-priority block and 'Where Dylan owns' section are period pieces, already partially overtaken (AP-1963/2009/2116/1964/1965 all closed in Jira by 2026-07-16). Append future pivots to the pivot table; do not present anything here as current.
+
 # Strategy & OKRs
 
 **Last updated:** 2026-05-12 (updated from SLT Short Form 12/05 — strategic pivot confirmed)

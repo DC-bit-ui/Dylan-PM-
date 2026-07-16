@@ -68,3 +68,7 @@ Dylan holds options via EOP (240701). 18 options calculated, 16 accepted. Exerci
 - Caution breakdown: [`../../../inbox/cowork/2026-05-11-caution-breakdown.md`](../../../inbox/cowork/2026-05-11-caution-breakdown.md)
 - Policy gaps: [`../../../inbox/cowork/2026-05-11-policy-gaps.md`](../../../inbox/cowork/2026-05-11-policy-gaps.md)
 - Cl 13.1 defensibility: [`../../../inbox/cowork/2026-05-12-cl-13-1-defensibility.md`](../../../inbox/cowork/2026-05-12-cl-13-1-defensibility.md)
+
+---
+
+**DUPLICATE NOTE (2026-07-16):** near-identical to [`2026-05-11-letter-of-offer-compliance-clauses.md`](2026-05-11-letter-of-offer-compliance-clauses.md), which is the canonical extraction (referenced by `core/IDENTITY.md`). Kept for history; read the 05-11 file.

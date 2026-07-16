@@ -1,3 +1,5 @@
+> ⚠️ **CORRECTION (2026-07-16):** MCP tool-ID prefixes below are stale — trust tool NAMES and discover the live prefix in-session.
+
 # Integration: Confluence — Documentation
 
 **Purpose:** AgriProve's long-form documentation lives in Confluence. PRDs, technical specs, process docs.

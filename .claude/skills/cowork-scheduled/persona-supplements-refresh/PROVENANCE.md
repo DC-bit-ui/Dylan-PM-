@@ -45,3 +45,6 @@ Recommended: keep disabled. The cost of leaving it in place is near-zero and acc
 | Date | Change | Deployer | Verified by |
 |------|--------|----------|-------------|
 | _(none yet)_ | | | |
+
+## 2026-07-16 — re-disabled via MCP (OS rebuild)
+- Live inventory showed the task enabled:true and firing (last run 2026-07-14) despite its SUPERSEDED status — it had been re-enabled at some point. Disabled via mcp__scheduled-tasks__update_scheduled_task on 2026-07-16. If it re-enables again, investigate Cowork-side re-arming.

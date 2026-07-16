@@ -92,3 +92,6 @@ Apex's EOD Reconciliation handles part of this at 17:30 SAST, but it doesn't run
 - `/focus` calls this **first**, then ranks the still-open subset.
 - `/standup` calls this **first**, then composes Yesterday/Today against the reconciled state.
 - Standalone use: when Dylan says "what's stale", "reconcile my stack", or "anything I missed".
+
+---
+**UPDATE 2026-07-16:** the canonical reconciliation procedure now lives at `core/PROTOCOLS.md` §Reconciliation (adds: Teams channels via read_resource, availability-blocked ≠ slipping, no P0 on Jira state alone). Where this file and PROTOCOLS differ, PROTOCOLS wins.

@@ -1,3 +1,5 @@
+> ⚠️ **CORRECTION (2026-07-16):** this contract documents `chat_message_search` only — that tool is **DM-only and silently blind to channels**. Channel reads use `read_resource` with `teams:///teams/{groupId}/channels/{channelId}/messages/` — full inventory + procedure: `cowork/apex-data-sources.md` (authoritative) and rules.md 2026-05-22.
+
 # Integration: Microsoft Teams
 
 **Purpose:** Async team comms — chat messages from team members, ad-hoc decisions made in chat, @Dylan mentions needing reply.

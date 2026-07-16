@@ -1,68 +1,39 @@
 # Products
 
-**Last updated:** 2026-04-28 (populated from Cowork handoff)
+Last-verified: 2026-07-16 · Review-by: 2026-10-14 · Verified-by: claude-code (rebuild pass: statuses/epics removed → NOW.md; Verterra/HORIZON Profile/Groundwork added)
 
-> One section per product / surface Dylan touches. Confirmed as of the cowork handoff.
+> One section per product/surface: what it IS (durable). What's active on it right now — status, epics, owners — lives in `memory/state/NOW.md` (single-source rule).
 
 ---
 
 ## HORIZON
-- **What it is:** AgriProve's predictive SOC (Soil Organic Carbon) model — the core product. Gives landholders spatial visibility into soil carbon, enabling ACCU earning.
-- **Stage:** GA / mature; under continuous validation
-- **Backend:** Python Temporal workers
-- **Owner (engineering):** Cadel Watson is dev lead
-- **Dylan's involvement:** PRD support, model validation framework requirements (epic AP-2116), Schedule 2 readiness
-- **Active epic:** **AP-2116** — Prepare model validation framework for first Schedule 2 run (Cadel; Development)
+- Predictive SOC (Soil Organic Carbon) model — the core product. Python Temporal workers. Source of truth for carbon calculations; validated against Schedule 2 requirements (first validation framework epic AP-2116, Done 2026).
+- HORIZON 2.0 model generation in progress (handover from Cadel underway — see NOW.md).
+
+## HORIZON Profile (product — formerly "Snapshot", renamed 2026-07-11)
+- The per-property carbon/natural-capital report generated from a boundary + HORIZON run. Historically produced off-platform ("vibe build"); being rebuilt natively as the **Modular Snapshot Generator** (AP-2609) with water-quality pages.
+- ⚠️ Naming collision: "Horizon Profile" is also the working title of the bank risk-profiling artifact — see NOW.md §Naming.
+
+## Groundwork (working name, 2026-07-13)
+- The top-of-funnel acquisition tool: farmer finds their farm, draws a boundary, submits details, receives a free HORIZON Profile. Comprises the Farm Boundary Drawing Tool (v1 live; AP-2514) + landing pages + HubSpot/Aircall automation + Frontier property auto-creation.
 
 ## Frontier
-- **What it is:** internal CRM-adjacent tool — lead management, property creation, GeoMapper-based spatial mapping, snapshot generation
-- **Stage:** Phase 2 in Development — highest-activity area
-- **Owner:** Dylan (PM)
-- **Tech:** React + Chakra UI; ArcGIS for spatial; integrates with HubSpot
-- **Active epics:**
-  - **AP-1963** — Frontier Phase 2 (Dylan; Development)
-  - **AP-2009** — Frontier property management (Dylan; Development)
-- **Users:** internal team; Field team (Hobbs, Ben) are users
+- Internal CRM-adjacent tool: lead management, property creation, GeoMapper spatial mapping, HORIZON Profile generation. React + Chakra; ArcGIS; HubSpot-integrated. Field team (Hobbs, Ben) are primary users.
+- Current investment: the **Prospective Projects restructure** — 4-stage model: Land Titles (AP-2566) → KCT Mapping → Consents (AP-2567) → Registration.
 
 ## Stormboy
-- **What it is:** systematic field recruitment campaign targeting 500+ ha agricultural properties in the Murray-Darling Basin for soil carbon project sign-ups. 7-stage pipeline: Geographic Scoping → Lead Gen (Claude Code scraper) → Lead Research → Call List & Outreach → Farm Visit → HORIZON Snapshot (post-visit) → Post-Visit Conversion (KCT)
-- **Stage:** active operational; Phase 1 delivered ~23,000 ha pipeline; VIC expansion underway
-- **Owner:** cross-functional — Claudia (Growth tooling / Claude Code scraper), Hobbs & Ben (field team), Dylan (PM-side alignment + Frontier spatial intelligence)
-- **Tech:** Storm Boy Claude Code Tool (Claudia's CLAUDE.md router architecture), HubSpot (`contact_lead_stage_storm_boy` 10-stage pipeline), Frontier (spatial view + snapshot automation), HORIZON model
-- **Positioning:** "Fellowship Not Sales" — ~40% positive response rate vs industry 5-10%
-- **Skill:** `memory/deliverables/skills/operation-stormboy-SKILL.md` — comprehensive end-to-end process reference
-- **Note:** Stormboy spans process + tooling + field operations; not a discrete product surface
+- Systematic field-recruitment campaign targeting 500+ ha properties (Murray-Darling Basin; VIC expansion). 7-stage pipeline: Geographic Scoping → Lead Gen (Claudia's scraper) → Lead Research → Outreach → Farm Visit → HORIZON Profile → Post-Visit Conversion (KCT). "Fellowship Not Sales" positioning (~40% positive response vs industry 5–10%). Spans process + tooling + field ops, not a discrete product surface. Full reference: `memory/deliverables/skills/operation-stormboy-SKILL.md`.
 
 ## Verterra
-- **What it is:** separate product line
-- **Stage:** _(to confirm)_
-- **Owner:** _(to confirm)_
-- **Dylan's involvement:** _(to confirm — likely lower priority than Frontier/HORIZON/Stormboy)_
+- Water-quality/reef-credit collaboration partner (HoA executed 2026-04-16; UJV in negotiation; Joint IP analytical layer). AgriProve × Verterra pathway: HORIZON × DROVER attribution validation + water-quality data exchange (AOI in / results out). Technical contact: Olivier Decitre. Epic AP-2608.
 
 ## ReadyGraze
-- **What it is:** separate product line
-- **Stage:** _(to confirm)_
-- **Owner:** _(to confirm)_
+- Grazing-management software line: turns device data (Ceres GPS tags, moisture/water probes) into on-farm insight. Monetised inside the ECP deal at $70/tag. Major UX rebuild epic AP-948. Related concept work: grazing infrastructure planner (design stage — rules.md 2026-07-08 ×2).
 
 ## KCT (Operation KCT)
-- **What it is:** a crediting workflow tied to **Koolah Carbon Trust** context
-- **Stage:** Phase 1 in Development
-- **Owner:** Steve Le Moenic
-- **Active epic:** **AP-1964** — Operation KCT (phase 1)
-
-## LawrieCo referrer view
-- **What it is:** referrer-view feature for LawrieCo (likely a partner / referrer)
-- **Stage:** Development
-- **Owner:** Steve Le Moenic
-- **Active epic:** **AP-1965** — LawrieCo referrer view
+- Crediting workflow for the Koolah Carbon Trust (phase 1 epic AP-1964, Done). KCT tooling continues inside Frontier (KCT mapping stage of Prospective Projects; live dev tickets — see NOW.md).
 
 ## Crediting Workflow Template — T1 Offsets Report
-- **What it is:** crediting workflow template; T1 Offsets Report
-- **Stage:** Discovery
-- **Owner:** unassigned
-- **Active epic:** **AP-2187** — CREDITING WORKFLOW TEMPLATE — T1 Offsets Report
+- Template for the full crediting workflow to a first Offsets Report + ACCU application under the ERF 2021 Soil Carbon Method (pipeline stages OPS012→OPS017). Epic AP-2187 (Discovery).
 
----
-
-## Decommissioned / archive
-_(none captured yet)_
+## Bank / insurer risk-intelligence offering (

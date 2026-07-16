@@ -31,3 +31,8 @@ Companion patches:
 | Date | Change | Deployer | Verified by |
 |------|--------|----------|-------------|
 | _(none yet — pending Prompt G deploy via Cowork)_ | | | |
+
+## 2026-07-16 — repo patch: OS-rebuild override block (DEPLOY PENDING)
+- Appended "SYSTEM UPDATE 2026-07-16" override: kernel reads (core/ + state/), yesterday-EOD read-back, freshness sweep, inbox/sweep warnings, simplified dual-stack output model.
+- NOTE: the 2026-05-22 read_resource Teams patch is ALSO still undeployed. Next deploy ships both. Deploy per core/PROTOCOLS.md §Deploys (strip frontmatter; verify body diff; record here).
+- Patched by: claude-code (Fable 5), Dylan-approved rebuild session.

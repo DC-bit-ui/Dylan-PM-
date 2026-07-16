@@ -46,3 +46,9 @@ Companion patches:
 | Date | Change | Deployer | Verified by |
 |------|--------|----------|-------------|
 | 2026-05-21 | cron: `0 12 * * 1-5` → `30 1 * * 2-6` (04:00 SAST → 17:30 SAST) | Cowork session hopeful-admiring-dijkstra | next_run_at verified 2026-05-20T15:38:12Z (= 17:38:12 SAST Wed, in 17:30-17:50 SAST Mon-Fri window) |
+
+## 2026-07-16 — repo patch: observability repair + OS-rebuild override block (DEPLOY PENDING)
+- Repaired the mangled OBSERVABILITY section (was corrupted with apex-morning commit prefixes and fake-URL filenames — a literal model would have written wrong markers).
+- Appended "SYSTEM UPDATE 2026-07-16" override: kernel reads, NOW.md upkeep, inbox lifecycle (route + archive to inbox/processed/), simplified dual-stack tomorrow-stack.
+- NOTE: the 2026-05-22 read_resource patch is ALSO still undeployed. Next deploy ships all. Deploy per core/PROTOCOLS.md §Deploys.
+- Patched by: claude-code (Fable 5), Dylan-approved rebuild session.

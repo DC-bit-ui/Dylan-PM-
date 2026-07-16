@@ -41,3 +41,6 @@ A focused, time-stamped context dump. Different from `recall` — a brief is for
 ```
 
 4. **Don't save** unless Dylan asks — briefs are usually disposable. If saved, route to `workspace/current/`.
+
+---
+**UPDATE 2026-07-16:** assemble briefs from the kernel first: `core/MAP.md` §2 canonical-source table → `memory/state/NOW.md` → then topic files. `memory/profile/*` are stubs; use `core/IDENTITY.md` + `core/PRINCIPLES.md`.

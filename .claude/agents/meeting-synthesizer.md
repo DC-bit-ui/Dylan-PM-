@@ -72,3 +72,6 @@ If the input is a file in `inbox/`, move the source to `inbox/processed/YYYY-MM/
 - Don't dump the transcript into memory verbatim.
 - Don't claim a decision was made when it wasn't.
 - Don't list "Dylan said X" five times — synthesize.
+
+---
+**UPDATE 2026-07-16:** `workspace/` is retired — never consult `workspace/current/actions.md` (Notion is canonical for tasks, always). Current epics/state: `memory/state/NOW.md`; initiative detail: `memory/initiatives/` (+ archive/). Write routing: `core/PROTOCOLS.md` §Writes.

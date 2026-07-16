@@ -1,3 +1,5 @@
+> ✅ **AUTHORITATIVE** for Teams channel inventory + T0–T3 source tiers. ⚠️ One correction (2026-07-16): the tool is named `read_resource` — the `mcp__claude_ai_Microsoft_365__` prefix cited below is stale; prefixes are instance-specific, discover in-session.
+
 ---
 date: 2026-05-22
 status: PROPOSED — schema laid out; Product Team channel inventory needs Dylan's input

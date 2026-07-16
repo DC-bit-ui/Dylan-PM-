@@ -133,3 +133,6 @@ The compressed form preserves signal without competing for attention. Be ruthles
 
 ## Validation
 After 30 days, review Stack B usefulness with Dylan (per `memory/decisions/2026-04-28-dual-stack-prioritisation.md`). Tune source filters and leverage weights based on which items he engages vs skips.
+
+---
+**UPDATE 2026-07-16 (overrides conflicting content above):** the workstack model is now the SIMPLIFIED dual-stack — Stack A (Mine, cap 3, P0–P3 due-date weighted) + max one leverage-watch line. No Stack B scoring/suppression. Spec: `core/PRINCIPLES.md` §2; decision: `memory/decisions/2026-07-16-os-rebuild.md`. Read `memory/state/NOW.md` (not `memory/business/strategy.md`) for current priorities. Always run /reconcile first (procedure now at `core/PROTOCOLS.md` §Reconciliation).
