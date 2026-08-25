@@ -1,0 +1,214 @@
+{
+  "note": "Mapbox GL JS layer definitions for the three AgriProve catchment layers. Frontier dark theme, surface #0F1A24. Add sources first, then layers in the order given.",
+  "sources": {
+    "catchments": {
+      "type": "geojson",
+      "data": "frontier-catchments.geojson",
+      "promoteId": "label"
+    },
+    "acwis": {
+      "type": "geojson",
+      "data": "frontier-acwis.geojson"
+    },
+    "reef-credits": {
+      "type": "geojson",
+      "data": "frontier-reef-credits.geojson"
+    }
+  },
+  "layers": [
+    {
+      "id": "reef-fill",
+      "type": "fill",
+      "source": "reef-credits",
+      "paint": {
+        "fill-color": "#3987e5",
+        "fill-opacity": 0.18
+      }
+    },
+    {
+      "id": "reef-line",
+      "type": "line",
+      "source": "reef-credits",
+      "paint": {
+        "line-color": "#3987e5",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          4,
+          1.0,
+          8,
+          2.0,
+          12,
+          3.0
+        ],
+        "line-opacity": 0.95
+      }
+    },
+    {
+      "id": "acwis-fill",
+      "type": "fill",
+      "source": "acwis",
+      "paint": {
+        "fill-color": "#3987e5",
+        "fill-opacity": 0.08
+      }
+    },
+    {
+      "id": "acwis-line",
+      "type": "line",
+      "source": "acwis",
+      "paint": {
+        "line-color": "#3987e5",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          4,
+          1.0,
+          8,
+          1.8,
+          12,
+          2.6
+        ],
+        "line-opacity": 0.9,
+        "line-dasharray": [
+          3,
+          2
+        ]
+      }
+    },
+    {
+      "id": "catchments-line",
+      "type": "line",
+      "source": "catchments",
+      "paint": {
+        "line-color": "#e8e4d8",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          4,
+          0.5,
+          8,
+          0.9,
+          12,
+          1.4
+        ],
+        "line-opacity": 0.35,
+        "line-dasharray": [
+          3,
+          2.5
+        ]
+      }
+    },
+    {
+      "id": "catchments-label",
+      "type": "symbol",
+      "source": "catchments",
+      "minzoom": 5,
+      "layout": {
+        "text-field": [
+          "get",
+          "label"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          5,
+          10,
+          9,
+          13,
+          13,
+          15
+        ],
+        "text-font": [
+          "DIN Offc Pro Medium",
+          "Arial Unicode MS Regular"
+        ],
+        "text-transform": "none",
+        "text-letter-spacing": 0.02,
+        "symbol-placement": "point",
+        "text-allow-overlap": false,
+        "text-padding": 6
+      },
+      "paint": {
+        "text-color": "#e8e4d8",
+        "text-halo-color": "#0F1A24",
+        "text-halo-width": 1.4,
+        "text-opacity": 0.9
+      }
+    },
+    {
+      "id": "scheme-label",
+      "type": "symbol",
+      "source": "catchments",
+      "minzoom": 6,
+      "filter": [
+        "!=",
+        [
+          "get",
+          "water_scheme"
+        ],
+        null
+      ],
+      "layout": {
+        "text-field": [
+          "get",
+          "water_scheme"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          6,
+          9,
+          10,
+          11
+        ],
+        "text-font": [
+          "DIN Offc Pro Medium",
+          "Arial Unicode MS Regular"
+        ],
+        "text-offset": [
+          0,
+          1.4
+        ],
+        "text-allow-overlap": false
+      },
+      "paint": {
+        "text-color": "#3987e5",
+        "text-halo-color": "#0F1A24",
+        "text-halo-width": 1.3
+      }
+    }
+  ],
+  "popup_template": "{label}\n{instruments}\n{water_status}",
+  "palette": {
+    "soil_carbon_fill": "#7f9c18",
+    "water_fill_and_line": "#3987e5",
+    "neutral_reference_line": "#e8e4d8",
+    "surface": "#0F1A24"
+  }
+}

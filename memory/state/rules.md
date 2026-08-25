@@ -105,3 +105,27 @@ Seeded 2026-07-16 from the learnings corpus (rules flagged for promotion 2026-04
 ### 2026-07-16 — Apex workstack model: simplified dual-stack
 **Rule:** Briefings surface Stack A (Mine, cap 3 — Dylan the named actor/delivery owner, ranked P0–P3 with due-date weighting) plus at most a one-line leverage watch ("N team items may benefit from PM input: <keys>"). No Stack B leverage scoring, no suppression rules. Supersedes both the full dual-stack spec (memory/decisions/2026-04-28-dual-stack-prioritisation.md) and the flat 4-bucket production format.
 **Source:** Dylan approval, OS rebuild session 2026-07-16 (memory/decisions/2026-07-16-os-rebuild.md)
+
+### 2026-08-11 — Future capability is a release schedule, not a disclosure problem
+**Rule:** Constrain present-tense measurement claims only — a modelled figure is never shown as measured, and a number on screen today must be real and traceable. Do NOT constrain forward capability: the digital twin is aspirational by design. Never soften, hide, defer or hedge a product line because it isn't live; show it with an availability window ("reservable, method in development"), not a caveat. "Reserve" is the verb, not "register interest". Keep empty layers visible with their reason — that is what makes the forward claims believable. Corrected three times in one session.
+**Source:** memory/learnings/2026-08/2026-08-11-future-capability-claims-unconstrained.md
+
+### 2026-08-13 — A large ESM correction measures basis placement, not mass instability
+**Rule:** Never treat a large Equivalent Soil Mass correction as a defect signal on its own. It measures where M* was frozen relative to the ODM distribution — when M* sits close to the lowest date's ODM median the correction blows up on perfectly sound data, which systematically penalises small homogeneous properties. Check the headroom (Mulloon +109 t/ha vs Glenn Canny +11), re-freeze on the minimum-ODM date, and re-test. Flag on **inter-round mass swing**, which is basis-independent. Also: soil mass is quasi-static, so L1 ODM CV is a free measure of model noise — where SOC varies by less than ODM does, the year-to-year movement carries no interpretable signal, and that is a stronger argument than minimum detectable change because it assumes nothing about effective sample size.
+**Source:** memory/learnings/2026-08/2026-08-13-esm-gate-measures-basis-placement-not-instability.md (AP-2724)
+
+### 2026-08-13 — Register an epic in the OS the moment it is created
+**Rule:** When a Jira epic is created or discovered during a session, add it to `memory/state/NOW.md` (owned-epics table + strategy section if it changes priorities) and create `memory/initiatives/<key>-<slug>.md` per the AP-2514 pattern, then regenerate `memory/initiatives/INDEX.md`. Working folders outside `memory/` are sanctioned ONLY when an initiative file points into them (`core/MAP.md` §6) — a workspace with no initiative file is invisible to the OS. AP-2664 and AP-2693 both ran for days with no OS record.
+**Source:** memory/initiatives/INDEX.md §Known gap; session 2026-08-13
+
+### 2026-08-24 — Verify every named external standard before it reaches a buyer surface
+**Rule:** Any framework, standard, scheme or certification named on a customer-facing surface must be verified current at the time of build, not recalled. A retired or superseded standard on screen does not just cost that tag, it makes every other figure on the surface look unchecked. Found four dead tags on one tab: TCFD (disbanded 2023), Climate Active (closure announced July 2026), GRI 304 (superseded by GRI 101 Biodiversity 2024 from 1 Jan 2026), plus Scope tags applied to offset instruments, which are category errors. Applies equally to a standard a specific buyer has not adopted: BHP mentions TNFD four times in 248 pages, all definitional, and does not disclose GRI 101.
+**Source:** memory/learnings/2026-08/2026-08-24-retired-frameworks-on-buyer-surface.md
+
+### 2026-08-25 — Design prompts carry the problem and the material, never the solution
+**Rule:** When briefing Claude Design, supply the reader, the critique of what exists, the raw facts, and the outcome to design for. Withhold the form entirely, and do NOT attach our own reference renders, which anchor hard and collapse the space. End every prompt with something genuinely open and an explicit invitation to reject our framing. Send one intent per prompt, sequenced, so each can be judged before the next opens. Dylan: "prompt it on what we want to achieve and break it down bit by bit ... in the most creative and innovative manner possible to elicit it to be as creative as it can be."
+**Source:** Extends memory/learnings/2026-08/2026-08-06-claude-design-non-prescriptive-prompting.md, which established the withhold-form rule. This entry adds the sequencing and the no-reference-renders point. Cowork commercial module console thread, 2026-08-25.
+
+### 2026-08-25 — Console to Claude Design, Frontier to the dev team
+**Rule:** Commercial module console work is briefed to Claude Design directly. Frontier work is packaged for the dev team, who pass it to Claude Code, and those packages must be self-contained and Frontier-only. Never mix the two in one document or one handoff. Corrected once when a console brief was written as a dev handoff.
+**Source:** Cowork commercial module console thread, 2026-08.
